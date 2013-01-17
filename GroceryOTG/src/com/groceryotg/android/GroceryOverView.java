@@ -2,7 +2,6 @@ package com.groceryotg.android;
 
 import android.app.Activity;
 import android.os.Bundle;
-import com.groceryotg.android.groceryotg.R;
 
 public class GroceryOverView extends Activity {
     /**

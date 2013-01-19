@@ -1,4 +1,4 @@
-<%@ page import="com.groceryotg.grocery.Hello" %>
+<%@ page import="com.groceryotg.server.Hello" %>
 <%--
   User: robert
   Date: 15/01/13

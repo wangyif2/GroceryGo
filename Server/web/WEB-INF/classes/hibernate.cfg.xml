@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD//EN"
+        "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+
+    <session-factory>
+        <property name="connection.url">jdbc:postgresql://localhost/groceryotg</property>
+        <property name="connection.driver_class">org.postgresql.Driver</property>
+        <property name="connection.username">root</property>
+        <property name="connection.password">1234</property>
+
+        <!--TODO:setup connection pooling for hibernate-->
+        <property name="connection.pool_size">1</property>
+
+        <!--Postgresql Dialect-->
+        <property name="dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+
+        <!--No Second Level Cache-->
+        <!--<property name="cache.provider_class">org.hibernate</property>-->
+
+        <!--Log All SQL to Output-->
+        <property name="show_sql">true</property>
+
+        <!--Drop and Recreate DB schema on startup-->
+        <property name="hbm2ddl.auto">create</property>
+
+        <!--Names the Annotated Entity Class-->
+        <mapping class="com.groceryotg.database.Grocery"/>
+
+        <!-- DB schema will be updated if needed -->
+        <!-- <property name="hbm2ddl.auto">update</property> -->
+    </session-factory>
+
+</hibernate-configuration>

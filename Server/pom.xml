@@ -9,7 +9,7 @@
     <version>1.0.0</version>
     <name>Grocery On The Go</name>
     <properties>
-        <hibernate.version>4.1.3.Final</hibernate.version>
+        <hibernate.version>4.1.9.Final</hibernate.version>
         <log4j.version>1.2.16</log4j.version>
         <guava.version>12.0</guava.version>
         <postgres.version>9.1-901.jdbc4</postgres.version>

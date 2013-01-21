@@ -1,37 +1,127 @@
 package com.groceryotg.database;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.Date;
 
 /**
  * User: robert
  * Date: 20/01/13
  */
 
+//Grocery (_id, item_id, raw_string, unit_price, unit_type_id, total_price, start_date, end_date, line_number, store_id, update_date)
+
 @Entity //tell hibernate to treat this class as entity and save it, refer to the config file
+@Table(name = "Grocery")
 public class Grocery {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "grocery_id")
     private int groceryId;
 
+    @ManyToOne
+    @JoinColumn(name = "store_id")
+    private Store store;
+
+    @Column(name = "total_price")
+    private long totalPrice;
+
+    @Column(name = "unit_price")
+    private long unitPrice;
+
+    @ManyToOne
+    @JoinColumn(name = "unit_id")
+    private Unit unit;
+
+    @Column(name = "start_date")
+    private Date startDate;
+
+    @Column(name = "end_ate")
+    private Date endDate;
+
+    @Column(name = "update_date")
+    private Date updateDate;
+
+    @Column(name = "line_number")
+    private int lineNumber;
+
+    @Column(name = "raw_string")
     private String rawString;
 
-    public Grocery(String rawString) {
+    public Grocery(Store store, long totalPrice, long unitPrice, Unit unit, Date startDate, Date endDate, Date updateDate, int lineNumber, String rawString) {
+        this.store = store;
+        this.totalPrice = totalPrice;
+        this.unitPrice = unitPrice;
+        this.unit = unit;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.updateDate = updateDate;
+        this.lineNumber = lineNumber;
         this.rawString = rawString;
     }
 
-    public Grocery() {
+    public Store getStore() {
+        return store;
     }
 
-    public int getGroceryId() {
-        return groceryId;
+    public void setStore(Store store) {
+        this.store = store;
     }
 
-    public void setGroceryId(int groceryId) {
-        this.groceryId = groceryId;
+    public long getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(long totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    public long getUnitPrice() {
+        return unitPrice;
+    }
+
+    public void setUnitPrice(long unitPrice) {
+        this.unitPrice = unitPrice;
+    }
+
+    public Unit getUnit() {
+        return unit;
+    }
+
+    public void setUnit(Unit unit) {
+        this.unit = unit;
+    }
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+
+    public Date getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
+    }
+
+    public int getLineNumber() {
+        return lineNumber;
+    }
+
+    public void setLineNumber(int lineNumber) {
+        this.lineNumber = lineNumber;
     }
 
     public String getRawString() {

@@ -1,6 +1,6 @@
 package com.groceryotg.server;
 
-import com.groceryotg.database.Grocery;
+import com.groceryotg.database.*;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Date;
 
 /**
  * User: robert
@@ -32,7 +33,12 @@ public class HibernateUtils extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Grocery grocery = new Grocery("Vegie");
+        Store store = new Store("Metro", "downtown kinda", 1, "metro.com");
+        Unit unit = new Unit("kg");
+        Subcategory subcategory = new Subcategory("sirloin", 1, "Meat");
+        Item item = new Item("top sirloin steak", subcategory);
+        Grocery grocery = new Grocery(store, 2, 1, unit, new Date(2010), new Date(2012), new Date(2013), 14, "top sirloin steak $1/kg $2 total");
+
 
         //using the hibernate API
         //create session factory
@@ -43,6 +49,10 @@ public class HibernateUtils extends HttpServlet {
         session.beginTransaction();
 
         //use session to save object
+        session.save(store);
+        session.save(unit);
+        session.save(subcategory);
+        session.save(item);
         session.save(grocery);
         session.getTransaction().commit();
     }

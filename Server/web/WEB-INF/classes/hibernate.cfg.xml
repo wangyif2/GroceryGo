@@ -17,9 +17,6 @@
         <!--Postgresql Dialect-->
         <property name="dialect">org.hibernate.dialect.PostgreSQLDialect</property>
 
-        <!--No Second Level Cache-->
-        <!--<property name="cache.provider_class">org.hibernate</property>-->
-
         <!--Log All SQL to Output-->
         <property name="show_sql">true</property>
 
@@ -28,9 +25,11 @@
 
         <!--Names the Annotated Entity Class-->
         <mapping class="com.groceryotg.database.Grocery"/>
+        <mapping class="com.groceryotg.database.Item"/>
+        <mapping class="com.groceryotg.database.Subcategory"/>
+        <mapping class="com.groceryotg.database.Store"/>
+        <mapping class="com.groceryotg.database.Unit"/>
 
-        <!-- DB schema will be updated if needed -->
-        <!-- <property name="hbm2ddl.auto">update</property> -->
     </session-factory>
 
 </hibernate-configuration>

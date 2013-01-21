@@ -1,18 +1,10 @@
-<%@ page import="com.groceryotg.server.Hello" %>
-<%--
-  User: robert
-  Date: 15/01/13
---%>
+<%-- Created by IntelliJ IDEA. --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
-<head>
+  <head>
     <title></title>
-</head>
+  </head>
+  <body>
 
-<h3 class="message"><%=Hello.getMessage()%>
-</h3>
-
-<body>
-
-</body>
+  </body>
 </html>

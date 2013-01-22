@@ -31,3 +31,7 @@ proguard/
 
 #database files
 *.db
+
+#mac files
+*.DS_Store
+

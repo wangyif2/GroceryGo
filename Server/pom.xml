@@ -13,11 +13,19 @@
         <log4j.version>1.2.16</log4j.version>
         <guava.version>12.0</guava.version>
         <postgres.version>9.1-901.jdbc4</postgres.version>
+        <mysql.version>5.1.22</mysql.version>
         <slf4j.version>1.6.4</slf4j.version>
-        <javax.version>2.5</javax.version>
+        <javax.version>3.0-alpha-1</javax.version>
+        <jthyon.version>2.5.3</jthyon.version>
     </properties>
 
     <dependencies>
+        <!--Jthyon-->
+        <dependency>
+            <groupId>org.python</groupId>
+            <artifactId>jython</artifactId>
+            <version>${jthyon.version}</version>
+        </dependency>
         <!--J2EE Servlet-->
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -25,11 +33,11 @@
             <version>${javax.version}</version>
         </dependency>
 
-        <!--Postgresql-->
+        <!--Mysql-->
         <dependency>
-            <groupId>postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>${postgres.version}</version>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql.version}</version>
         </dependency>
 
         <!-- Hibernate -->

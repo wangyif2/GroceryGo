@@ -38,6 +38,9 @@ public class Store {
         this.storeUrl = storeUrl;
     }
 
+    public Store() {
+    }
+
     public String getStoreName() {
         return storeName;
     }

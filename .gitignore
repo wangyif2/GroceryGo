@@ -31,3 +31,9 @@ proguard/
 
 #database files
 *.db
+
+#backups
+/backup
+
+#tut
+/tutorial

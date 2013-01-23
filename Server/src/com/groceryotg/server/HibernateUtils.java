@@ -54,6 +54,8 @@ public class HibernateUtils extends HttpServlet {
         session.save(subcategory);
         session.save(item);
         session.save(grocery);
+
         session.getTransaction().commit();
+
     }
 }

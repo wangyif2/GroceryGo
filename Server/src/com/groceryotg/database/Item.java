@@ -30,6 +30,9 @@ public class Item {
         this.subcategory = subcategory;
     }
 
+    public Item() {
+    }
+
 
     public String getItemName() {
         return itemName;

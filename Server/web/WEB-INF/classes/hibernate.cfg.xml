@@ -6,8 +6,8 @@
 <hibernate-configuration>
 
     <session-factory>
-        <property name="connection.url">jdbc:postgresql://localhost/groceryotg</property>
-        <property name="connection.driver_class">org.postgresql.Driver</property>
+        <property name="connection.url">jdbc:mysql://localhost/GroceryOTG</property>
+        <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
         <property name="connection.username">root</property>
         <property name="connection.password">1234</property>
 
@@ -15,7 +15,7 @@
         <property name="connection.pool_size">1</property>
 
         <!--Postgresql Dialect-->
-        <property name="dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+        <property name="dialect">org.hibernate.dialect.MySQL5Dialect</property>
 
         <!--Log All SQL to Output-->
         <property name="show_sql">true</property>

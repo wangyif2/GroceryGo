@@ -33,6 +33,9 @@ public class Subcategory {
         this.categoryName = categoryName;
     }
 
+    public Subcategory() {
+    }
+
     public String getSubcategoryName() {
         return subcategoryName;
     }

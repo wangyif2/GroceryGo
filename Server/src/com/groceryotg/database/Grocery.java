@@ -27,7 +27,6 @@ public class Grocery {
     private Store store;
 
     @Column(name = "total_price")
-    @Type(type = Types.DECIMAL)
     private float totalPrice;
 
     @Column(name = "unit_price")

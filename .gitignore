@@ -39,3 +39,9 @@ proguard/
 #mac files
 *.DS_Store
 
+
+#backups
+/backup
+
+#tut
+/tutorial

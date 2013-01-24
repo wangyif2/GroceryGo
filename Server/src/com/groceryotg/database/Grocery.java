@@ -1,6 +1,9 @@
 package com.groceryotg.database;
 
+import org.hibernate.annotations.Type;
+
 import javax.persistence.*;
+import java.sql.Types;
 import java.util.Date;
 
 /**
@@ -24,7 +27,7 @@ public class Grocery {
     private Store store;
 
     @Column(name = "total_price")
-    private long totalPrice;
+    private float totalPrice;
 
     @Column(name = "unit_price")
     private long unitPrice;
@@ -34,18 +37,22 @@ public class Grocery {
     private Unit unit;
 
     @Column(name = "start_date")
+    @Temporal(TemporalType.DATE)
     private Date startDate;
 
     @Column(name = "end_ate")
+    @Temporal(TemporalType.DATE)
     private Date endDate;
 
     @Column(name = "update_date")
+    @Temporal(TemporalType.DATE)
     private Date updateDate;
 
     @Column(name = "line_number")
     private int lineNumber;
 
     @Column(name = "raw_string")
+    @Lob
     private String rawString;
 
     public Grocery(Store store, long totalPrice, long unitPrice, Unit unit, Date startDate, Date endDate, Date updateDate, int lineNumber, String rawString) {
@@ -58,6 +65,9 @@ public class Grocery {
         this.updateDate = updateDate;
         this.lineNumber = lineNumber;
         this.rawString = rawString;
+    }
+
+    public Grocery() {
     }
 
     public Store getStore() {

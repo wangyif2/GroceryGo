@@ -28,8 +28,8 @@ import classifier
 
 
 # Fill in your MySQL user & password
-mysql_user = "USERNAME"
-mysql_password = "PASSWORD"
+mysql_user = "root"
+mysql_password = ""
 mysql_db = "groceryotg"
 
 
@@ -47,6 +47,7 @@ def getFlyer():
             print("Crawling store: %d" % store_id)
             hostname = urlparse(next_url).hostname
             soup = BeautifulSoup(urllib2.urlopen(next_url))
+            print(soup)
             linkElem = soup('span', text=re.compile(r'View accessible flyer'))[0].parent
             flyer_url = "http://" + hostname + linkElem['href']
         elif next_url and next_url.find("metro") != -1:
@@ -122,6 +123,10 @@ try:
     cur = con.cursor()
     print("connected to database")
     
+    #get sub category from database
+    cur.execute('SELECT subcategory_id, subcategory_name FROM subcategory ORDER BY subcategory_id')
+    subcategory = cur.fetchall()
+    
     # TODO: replace SQL calls with SQLAlchemy (a Python ORM)
     #print("SQLAlchemy version: ", sqlalchemy.__version__)
     
@@ -136,14 +141,12 @@ try:
         item_list = items[store_id]
         for item in item_list:
             noun_list = getNouns.getNouns(item[0])
-            print
             print(item[0])
-            print(noun_list)
-            
+            #print(noun_list)
             
             # Step 3: Pass the list of nouns to the "classifier" module to classify the item into one subcategory
             #classifier(noun_list)
-            subcategory_id = classifier.classify(noun_list)
+            subcategory_id = classifier.classify(noun_list, subcategory)
     
     # Step 4: Write to database
     

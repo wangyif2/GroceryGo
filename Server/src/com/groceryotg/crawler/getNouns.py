@@ -1,5 +1,6 @@
 import sys, re
 import _nlplib_pyc.NLPlib as NLPlib
+import nltk
 
 tagger = None
 
@@ -8,11 +9,18 @@ def init():
     global tagger
     tagger = NLPlib.NLPlib()
 
+def getNounsNLTK(rawStr):
+    text = nltk.word_tokenize(rawStr.lower())
+    tags = nltk.pos_tag(text)
+    res = filter(lambda x: x if x[1]=="NN" else [], tags)
+    return res
+
 def getNouns(rawStr):
     '''Takes a string representing 1 item, and returns a list of the nouns in the string.'''
     #tokenize the raw string
-    tokens = re.split(r"\s+", rawStr)
+    tokens = re.split(r"\s+|[.]", rawStr)
     
+    #print(tokens)
     #get tags for tokens
     global tagger
     tags = tagger.tag(tokens)
@@ -22,6 +30,10 @@ def getNouns(rawStr):
     for i in range(len(tags)):
         if tags[i] == "NN":
             nouns.append(tokens[i])
+
+    #filter out numbers, empty tokens
+    nouns = filter(None, map(lambda x: x if re.findall('^[a-zA-Z]+$',x) else [],nouns))
+
 
     return nouns
 

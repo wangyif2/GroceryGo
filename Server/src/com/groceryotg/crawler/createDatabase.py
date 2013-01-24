@@ -3,8 +3,8 @@ import sys
 
 
 # Fill in your MySQL user & password
-mysql_user = "USERNAME"
-mysql_password = "PASSWORD"
+mysql_user = "root"
+mysql_password = ""
 mysql_db = "groceryotg"
 mysql_filename = "groceryotg_create.sql"
 

@@ -7,7 +7,7 @@ import javax.persistence.*;
  * Date: 20/01/13
  */
 
-//Subcategory(subcategory_id PRIMARY KEY, subcategory_name, category_id, category_name)
+//Subcategory(subcategory_id PRIMARY KEY, subcategory_name, subcategory_tags TEXT, category_id)
 
 @Entity
 @Table(name = "Subcategory")
@@ -20,17 +20,17 @@ public class Subcategory {
     @Column(name = "subcategory_name")
     private String subcategoryName;
 
-    //TODO: need to figure out if this is a inter reference
-//    @Column(name = "category_id")
-//    private int categoryId;
+    @Column(name = "subcategory_tag")
+    private String subcategoryTags;
 
-    @Column(name = "category_id")
-    private String categoryName;
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category categoryId;
 
-    public Subcategory(String subcategoryName, int categoryId, String categoryName) {
+    public Subcategory(String subcategoryName, String subcategoryTags, Category categoryId) {
         this.subcategoryName = subcategoryName;
-//        this.categoryId = categoryId;
-        this.categoryName = categoryName;
+        this.subcategoryTags = subcategoryTags;
+        this.categoryId = categoryId;
     }
 
     public Subcategory() {
@@ -44,19 +44,27 @@ public class Subcategory {
         this.subcategoryName = subcategoryName;
     }
 
-//    public int getCategoryId() {
-//        return categoryId;
-//    }
-
-//    public void setCategoryId(int categoryId) {
-//        this.categoryId = categoryId;
-//    }
-
-    public String getCategoryName() {
-        return categoryName;
+    public String getSubcategoryTags() {
+        return subcategoryTags;
     }
 
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
+    public void setSubcategoryTags(String subcategoryTags) {
+        this.subcategoryTags = subcategoryTags;
+    }
+
+    public Category getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Category categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public int getSubcategoryId() {
+        return subcategoryId;
+    }
+
+    public void setSubcategoryId(int subcategoryId) {
+        this.subcategoryId = subcategoryId;
     }
 }

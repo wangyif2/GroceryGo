@@ -11,11 +11,21 @@
         <property name="connection.username">root</property>
         <property name="connection.password">1234</property>
 
-        <!--TODO:setup connection pooling for hibernate-->
-        <property name="connection.pool_size">1</property>
+        <!-- c3p0 config http://www.hibernate.org/214.html -->
+        <!--<property name="connection.provider_class">org.hibernate.connection.C3P0ConnectionProvider</property>-->
+        <!--<property name="hibernate.c3p0.acquire_increment">1</property>-->
+        <!--<property name="hibernate.c3p0.idle_test_period">60</property>-->
+        <!--<property name="hibernate.c3p0.min_size">1</property>-->
+        <!--<property name="hibernate.c3p0.max_size">2</property>-->
+        <!--<property name="hibernate.c3p0.max_statements">50</property>-->
+        <!--<property name="hibernate.c3p0.timeout">0</property>-->
+        <!--<property name="hibernate.c3p0.acquireRetryAttempts">1</property>-->
+        <!--<property name="hibernate.c3p0.acquireRetryDelay">250</property>-->
 
         <!--Postgresql Dialect-->
         <property name="dialect">org.hibernate.dialect.MySQL5Dialect</property>
+
+        <property name="current_session_context_class">org.hibernate.context.ThreadLocalSessionContext</property>
 
         <!--Log All SQL to Output-->
         <property name="show_sql">true</property>
@@ -27,6 +37,7 @@
         <mapping class="com.groceryotg.database.Grocery"/>
         <mapping class="com.groceryotg.database.Item"/>
         <mapping class="com.groceryotg.database.Subcategory"/>
+        <mapping class="com.groceryotg.database.Category"/>
         <mapping class="com.groceryotg.database.Store"/>
         <mapping class="com.groceryotg.database.Unit"/>
 

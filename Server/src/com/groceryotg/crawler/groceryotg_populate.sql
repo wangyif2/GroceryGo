@@ -100,6 +100,17 @@ LOCK TABLES `subcategory` WRITE;
 INSERT INTO `subcategory` VALUES (1,'Dairy and Egg Products','dairy,egg',1),(2,'Spices and Herbs','spices,herbs',7),(3,'Babyfoods','baby,babyfood',7),(4,'Fats and Oils','fats,oils',7),(5,'Poultry Products','poultry',2),(6,'Soups, Sauces and Gravies','soups,sauces,gravies',7),(7,'Sausages and Luncheon meats','sausages,luncheon',2),(8,'Breakfast cereals','breakfast,cereal',5),(9,'Fruits and fruit juices','fruits,juices',3),(10,'Pork Products','pork,porc',2),(11,'Vegetables and Vegetable Products','vegetable',3),(12,'Nuts and Seeds','nuts,seeds',7),(13,'Beef Products','beef',2),(14,'Beverages','beverages,drinks',6),(15,'Finfish and Shellfish Products','finfish,fish,shellfish',4),(16,'Legumes and Legume Products','legumes',3),(17,'Lamb, Veal and Game','lamb,veal,game',2),(18,'Baked Products','bakery,baked,bread',5),(19,'Sweets','sweets,dessert',7),(20,'Cereals, Grains and Pasta','cereal,grain,pasta',5),(21,'Fast Foods','fast,frozen',7),(22,'Mixed Dishes','mixed,dishes',7),(23,'Snacks','snacks',7),(32,'Miscellaneous','miscellaneous',7);
 /*!40000 ALTER TABLE `subcategory` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Dumping data for table `unit`
+--
+
+LOCK TABLES `unit` WRITE;
+/*!40000 ALTER TABLE `unit` DISABLE KEYS */;
+INSERT INTO `unit` VALUES (1,'g'),(2,'kg'),(3,'mg'),(4,'l'),(5,'ml'),(6,'lb'),(7,'oz'),(8,'\'s');
+/*!40000 ALTER TABLE `unit` ENABLE KEYS */;
+UNLOCK TABLES;
+
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

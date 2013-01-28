@@ -43,7 +43,7 @@ CREATE TABLE `grocery` (
   `item_id` int(10) DEFAULT NULL,
   `raw_string` text,
   `unit_price` decimal(10,2) DEFAULT NULL,
-  `unit_type_id` int(10) DEFAULT NULL,
+  `unit_id` int(10) DEFAULT NULL,
   `total_price` decimal(10,2) DEFAULT NULL,
   `start_date` datetime DEFAULT NULL,
   `end_date` datetime DEFAULT NULL,
@@ -173,6 +173,23 @@ CREATE TABLE `subcategory` (
   PRIMARY KEY (`subcategory_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+
+--
+-- Table structure for table `unit`
+--
+
+DROP TABLE IF EXISTS `unit`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `unit` (
+  `unit_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `unit_type_name` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`unit_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

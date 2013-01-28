@@ -150,12 +150,17 @@ try:
     cur = con.cursor()
     print("connected to database")
     
-    #get sub category from database
+    # get subcategories from database
     cur.execute('SELECT subcategory_id, subcategory_tag FROM subcategory ORDER BY subcategory_id')
-    subcategory = cur.fetchall()
+    subcategory = cur.fetchall()    
     
     # TODO: replace SQL calls with SQLAlchemy (a Python ORM)
     #print("SQLAlchemy version: ", sqlalchemy.__version__)
+    
+    # Read in the correct list of labels for the Food basics flyer
+    file_in = open('flyer_labels.txt', 'r')
+    labels = map(lambda x: int(x), file_in.read().split('\n'))
+    file_in.close()
     
     # Step 1: Parse the flyers into (item, price) pairs
     flyers = getFlyer()
@@ -166,18 +171,30 @@ try:
     stores = items.keys()
     for store_id in stores:
         item_list = items[store_id]
+        item_index = 0
+        correctly_classified = 0
+        
         for item in item_list:
             tokens = item[0].split('PRICE')
             noun_list = getNouns.getNouns(tokens[0])
             #print(tokens[0])
-            print(noun_list)
+            #print(noun_list)
             
             # Step 3: Pass the list of nouns to the "classifier" module to classify the item into one subcategory
             subcategory_id = classifier.classify(noun_list, subcategory)
+            if subcategory_id == labels[item_index]:
+                correctly_classified += 1
+            else:
+                print("Misclassified item (predicted: %d, actual: %d): %s" % (subcategory_id, labels[item_index], tokens[0]))
             
-            print
-            print
+            #print
+            #print
             
+            item_index += 1
+        
+        classification_rate = float(correctly_classified)/float(len(item_list))*100.0
+        print("TOTAL CLASSIFICATION RATE: %.2f" % classification_rate)
+        
     # Step 4: Write to database
     
     

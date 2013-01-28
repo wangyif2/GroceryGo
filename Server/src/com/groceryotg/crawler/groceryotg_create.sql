@@ -168,9 +168,10 @@ DROP TABLE IF EXISTS `subcategory`;
 CREATE TABLE `subcategory` (
   `subcategory_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `subcategory_name` varchar(500) DEFAULT NULL,
+  `subcategory_tag` varchar(500) DEFAULT NULL,
   `category_id` int(10) DEFAULT NULL,
   PRIMARY KEY (`subcategory_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

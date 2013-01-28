@@ -1,4 +1,5 @@
 from nltk.corpus import wordnet as wn
+import nltk
 import re
 
 #weighting
@@ -11,14 +12,25 @@ def classify(noun_list, subcategory):
     '''Takes a list of nouns representing 1 item. Returns a subcategory for the item.'''
     #score determining which subcategory to assign the item to
     subcategory_score = [0]*len(subcategory)
+    lemmatizer = nltk.stem.wordnet.WordNetLemmatizer()
+    
     for word in noun_list:
         # Generate three lists: (1) definition terms, (2) synonyms, (3) hypernyms
         
         # Select the first synset of the word (this may need to be modified to select the most relevant synset)
-        #print("Attempting to look up word %s" % word)
-        synset = wn.synsets(word, pos=wn.NOUN)
-        if synset:
-            synset = synset[0]
+        synsets = wn.synsets(word, pos=wn.NOUN)
+        if synsets:
+            
+            # Choose the synset which contains the "food" category as a hypernym
+            apple_food = wn.synsets('apple', pos=wn.NOUN)[0]
+            food_cat = wn.synsets('food', pos=wn.NOUN)[1]
+            synset = synsets[0]
+            for set in synsets:
+                if food_cat in set.common_hypernyms(apple_food):
+                    synset = set
+                    break
+            print("For noun '%s', use the sense: %s" % (word, synset.definition))
+            
             definition = synset.definition
             synonyms = synset.lemma_names
             hypernym_set = synset.hypernyms()
@@ -30,30 +42,31 @@ def classify(noun_list, subcategory):
             definition = definition.lower()
             
             for record in subcategory:
+                # Once the subcategory_tags are implemented, uncomment the below:
+                #subcategory_id, subcategory_name = record[0], re.split(r"[,]", record[1])
                 subcategory_id, subcategory_name = record[0], re.split(r"\s+|[,]", record[1])
-                cat = subcategory_name[0].lower()
-                if cat in word:
-                    print("Word: ", word)
-                    print(record[1])
-                    subcategory_score[subcategory_id-1] += w_word
-                
-                if cat in definition:
-                    print("Word: ", word)
-                    print("Definition: ", definition)
-                    print(record[1])
-                    subcategory_score[subcategory_id-1] += w_def
-
-                if any(cat in s for s in synonyms):
-                    print("Word: ", word)
-                    print("Synonyms: ", synonyms)
-                    print(record[1])
-                    subcategory_score[subcategory_id-1] += w_syn
-                        
-                if any(cat in h for h in hypernyms):
-                    print("Word: ", word)
-                    print("Hypernyms: ", hypernyms)
-                    print(record[1])
-                    subcategory_score[subcategory_id-1] += w_hyp
+                subcategory_words = map(lambda x: x.lower(), subcategory_name)
+                for cat in subcategory_words:
+                    cat = lemmatizer.lemmatize(cat)
+                    if cat == word:
+                        print("Found subcategory word '%s' directly in word '%s'" % (cat, word))
+                        print("Classify word '%s' as subcategory '%s' with score %.2f" % (word, record[1], w_word))
+                        subcategory_score[subcategory_id-1] += w_word
+                    
+                    if cat in definition.split(' '):
+                        print("Found subcategory word '%s' in the definition of word '%s' (%s)" % (cat, word, definition))
+                        print("Classify word '%s' as subcategory '%s' with score %.2f" % (word, record[1], w_def))
+                        subcategory_score[subcategory_id-1] += w_def
+                    
+                    if any(cat in s for s in synonyms):
+                        print("Found subcategory word '%s' in the synonyms of word '%s' (%s)" % (cat, word, synonyms))
+                        print("Classify word '%s' as subcategory '%s' with score %.2f" % (word, record[1], w_syn))
+                        subcategory_score[subcategory_id-1] += w_syn
+                    
+                    if any(cat in h for h in hypernyms):
+                        print("Found subcategory word '%s' in the hypernyms of word '%s' (%s)" % (cat, word, hypernyms))
+                        print("Classify word '%s' as subcategory '%s' with score %.2f" % (word, record[1], w_hyp))
+                        subcategory_score[subcategory_id-1] += w_hyp
 
     #print(subcategory_score)
                         

@@ -29,8 +29,18 @@ import classifier
 
 # Fill in your MySQL user & password
 mysql_user = "root"
-mysql_password = ""
+mysql_password = "1123581321ff$$"
 mysql_db = "groceryotg"
+
+# TODO:
+# 1) Pass in only the item part of the line string to getNouns, so it doesn't get confused with the price 
+# 2) Build a language model of bigram probabilities to detect compound nouns (e.g. "potato chips" vs just "chips")
+#    If a probability of word B to occur after word A is > 0.5, then it's a compound. 
+# 3) Add a "Misc" subcategory in database, in case no subcategories match the line.
+# 4) Add a "tags" column in Subcategory table in database (use that list of tags instead of the subcategory name)
+#    That way, we can exclude words like "and" and improve efficiency.
+# 5) Use all words in the list of tags when determining subcategory_id in classifier.py
+#
 
 
 def getFlyer():
@@ -47,7 +57,7 @@ def getFlyer():
             print("Crawling store: %d" % store_id)
             hostname = urlparse(next_url).hostname
             soup = BeautifulSoup(urllib2.urlopen(next_url))
-            print(soup)
+            #print(soup)
             linkElem = soup('span', text=re.compile(r'View accessible flyer'))[0].parent
             flyer_url = "http://" + hostname + linkElem['href']
         elif next_url and next_url.find("metro") != -1:
@@ -73,14 +83,33 @@ def parseFlyer(flyers):
         print("Parsing store %s, url %s" % (store_id, flyer_url))
         
         today = datetime.date.today()
-        update_date = today.strftime("%Y/%m/%d")
+        update_date = today.strftime("%Y-%m-%d")
         start_date = ""
         end_date = ""
         
         soup = BeautifulSoup(urllib2.urlopen(flyer_url))
-        divPages = soup('div')
+        div_pages = soup('div')
         
-        for page in divPages:
+        # Find the start and end dates
+        months = {'Jan':1,'Feb':2,'Mar':3,'Apr':4,'May':5,'Jun':6,'Jul':7,'Aug':8,'Sep':9,'Oct':10,'Nov':11,'Dec':12}
+        tag_dates = soup.find(text=re.compile('Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec[a-zA-Z]*\s[0-9]')).string
+        pattern = re.compile('(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-zA-Z]*\s([0-9]+)')
+        matches = pattern.findall(tag_dates)
+        pattern = re.compile('2[0-9]{3}')
+        year_matches = pattern.findall(tag_dates)
+        start_year = int(year_matches[0])
+        if len(year_matches) > 1:
+            end_year = int(year_matches[1])
+        else:
+            end_year = start_year
+        
+        start_date = datetime.datetime(start_year, months[matches[0][0]], int(matches[0][1])).strftime('%Y-%m-%d')
+        end_date = datetime.datetime(end_year, months[matches[1][0]], int(matches[1][1])).strftime('%Y-%m-%d')
+        print("start date: ", start_date)
+        print("end date: ", end_date)
+        print("update date: ", update_date)
+        
+        for page in div_pages:
             page_number += 1
             #print("\n\nPAGE: %d" % page_number)
             page_lines = re.sub('<[bB][rR]\s*?>', '', page.text).split('\n')
@@ -94,9 +123,7 @@ def parseFlyer(flyers):
                 #tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
                 #sentences = tokenizer.tokenize(line)
                 
-                # Splitting on price is more effective at separating items, because individual
-                # items often contain several sentences of item information.
-                tokens = line.split('PRICE')
+                # The price is preceded either by a dollar sign ($) or a cent sign (\\xa2)
                 pattern = re.compile('([\\xa2]|[$])([0-9.]+)')
                 total_price = pattern.findall(line)[0]
                 if total_price[0] == "$":
@@ -109,10 +136,10 @@ def parseFlyer(flyers):
                 
                 item_details = [line, unit_price, unit_type_id, total_price, \
                                 start_date, end_date, page_number, update_date]
+                #print(item_details)
                 store_items += [item_details]
         
         items[store_id] = store_items
-    #print(items)
     return items
 
 
@@ -124,7 +151,7 @@ try:
     print("connected to database")
     
     #get sub category from database
-    cur.execute('SELECT subcategory_id, subcategory_name FROM subcategory ORDER BY subcategory_id')
+    cur.execute('SELECT subcategory_id, subcategory_tag FROM subcategory ORDER BY subcategory_id')
     subcategory = cur.fetchall()
     
     # TODO: replace SQL calls with SQLAlchemy (a Python ORM)
@@ -140,14 +167,17 @@ try:
     for store_id in stores:
         item_list = items[store_id]
         for item in item_list:
-            noun_list = getNouns.getNouns(item[0])
-            print(item[0])
-            #print(noun_list)
+            tokens = item[0].split('PRICE')
+            noun_list = getNouns.getNouns(tokens[0])
+            #print(tokens[0])
+            print(noun_list)
             
             # Step 3: Pass the list of nouns to the "classifier" module to classify the item into one subcategory
-            #classifier(noun_list)
             subcategory_id = classifier.classify(noun_list, subcategory)
-    
+            
+            print
+            print
+            
     # Step 4: Write to database
     
     

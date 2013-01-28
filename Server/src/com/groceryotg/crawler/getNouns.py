@@ -1,6 +1,7 @@
 import sys, re
 import _nlplib_pyc.NLPlib as NLPlib
 import nltk
+#from nltk.stem.wordnet import WordNetLemmatizer
 
 tagger = None
 
@@ -17,15 +18,21 @@ def getNounsNLTK(rawStr):
 
 def getNouns(rawStr):
     '''Takes a string representing 1 item, and returns a list of the nouns in the string.'''
-    #tokenize the raw string
+    # Tokenize the raw string
     tokens = re.split(r"\s+|[.]", rawStr)
     
+    # Lemmatize the strings to get the base form (e.g. 'cars' -> 'car')
+    # NB: the lemmatizer is case-sensitive and only works with lower-case nouns
+    # Filter out 'nouns' that are one or two characters long (e.g., 'g', 'ml')
+    lemmatizer = nltk.stem.wordnet.WordNetLemmatizer()
+    tokens = filter(lambda x: x if len(x)>2 else None, map(lambda x: lemmatizer.lemmatize(x.lower()), tokens))
     #print(tokens)
-    #get tags for tokens
+    
+    # Get tags for tokens
     global tagger
     tags = tagger.tag(tokens)
     
-    #store all nouns
+    # Store all nouns
     nouns = []
     for i in range(len(tags)):
         if tags[i] == "NN":

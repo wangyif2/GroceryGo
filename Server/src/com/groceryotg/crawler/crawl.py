@@ -29,7 +29,7 @@ import classifier
 
 # Fill in your MySQL user & password
 mysql_user = "root"
-mysql_password = "1123581321ff$$"
+mysql_password = ""
 mysql_db = "groceryotg"
 
 # TODO:

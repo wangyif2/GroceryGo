@@ -8,8 +8,13 @@
               android:targetSdkVersion="16"/>
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
-    <application android:label="@string/app_name" android:icon="@drawable/ic_launcher">
+    <application android:label="@string/app_name"
+                 android:icon="@drawable/ic_launcher"
+                 android:theme="@style/AppTheme">
+
         <activity android:name=".GroceryOverView"
                   android:label="@string/app_name">
             <intent-filter>
@@ -17,5 +22,11 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+        <service android:name=".Services.UpdateGroceryService"/>
+        <service android:name=".Services.LocationMonitorService"/>
+
+        <receiver android:name=".Services.LocationMonitor"/>
+
     </application>
 </manifest>

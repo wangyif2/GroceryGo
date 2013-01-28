@@ -1,9 +1,6 @@
 package com.groceryotg.database;
 
-import org.hibernate.annotations.Type;
-
 import javax.persistence.*;
-import java.sql.Types;
 import java.util.Date;
 
 /**
@@ -23,14 +20,18 @@ public class Grocery {
     private int groceryId;
 
     @ManyToOne
+    @JoinColumn(name = "item_id")
+    private Item item;
+
+    @ManyToOne
     @JoinColumn(name = "store_id")
     private Store store;
 
-    @Column(name = "total_price")
-    private float totalPrice;
+    @Column(name = "total_price", precision = 2)
+    private double totalPrice;
 
-    @Column(name = "unit_price")
-    private long unitPrice;
+    @Column(name = "unit_price", precision = 2)
+    private double unitPrice;
 
     @ManyToOne
     @JoinColumn(name = "unit_id")
@@ -55,7 +56,8 @@ public class Grocery {
     @Lob
     private String rawString;
 
-    public Grocery(Store store, long totalPrice, long unitPrice, Unit unit, Date startDate, Date endDate, Date updateDate, int lineNumber, String rawString) {
+    public Grocery(Item item, Store store, double totalPrice, double unitPrice, Unit unit, Date startDate, Date endDate, Date updateDate, int lineNumber, String rawString) {
+        this.item = item;
         this.store = store;
         this.totalPrice = totalPrice;
         this.unitPrice = unitPrice;
@@ -70,6 +72,14 @@ public class Grocery {
     public Grocery() {
     }
 
+    public int getGroceryId() {
+        return groceryId;
+    }
+
+    public void setGroceryId(int groceryId) {
+        this.groceryId = groceryId;
+    }
+
     public Store getStore() {
         return store;
     }
@@ -78,7 +88,7 @@ public class Grocery {
         this.store = store;
     }
 
-    public long getTotalPrice() {
+    public double getTotalPrice() {
         return totalPrice;
     }
 
@@ -86,7 +96,7 @@ public class Grocery {
         this.totalPrice = totalPrice;
     }
 
-    public long getUnitPrice() {
+    public double getUnitPrice() {
         return unitPrice;
     }
 
@@ -140,5 +150,13 @@ public class Grocery {
 
     public void setRawString(String rawString) {
         this.rawString = rawString;
+    }
+
+    public Item getItem() {
+        return item;
+    }
+
+    public void setItem(Item item) {
+        this.item = item;
     }
 }

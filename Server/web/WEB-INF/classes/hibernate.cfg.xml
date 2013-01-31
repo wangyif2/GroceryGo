@@ -6,9 +6,9 @@
 <hibernate-configuration>
 
     <session-factory>
-        <property name="connection.url">jdbc:mysql://localhost/GroceryOTG</property>
+        <property name="connection.url">jdbc:mysql://localhost:3306/groceryotg</property>
         <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
-        <property name="connection.username">root</property>
+        <property name="connection.username">user1</property>
         <property name="connection.password">1234</property>
 
         <!-- c3p0 config http://www.hibernate.org/214.html -->
@@ -25,7 +25,7 @@
         <!--Postgresql Dialect-->
         <property name="dialect">org.hibernate.dialect.MySQL5Dialect</property>
 
-        <property name="current_session_context_class">org.hibernate.context.ThreadLocalSessionContext</property>
+        <!--<property name="current_session_context_class">org.hibernate.context.ThreadLocalSessionContext</property>-->
 
         <!--Log All SQL to Output-->
         <property name="show_sql">true</property>

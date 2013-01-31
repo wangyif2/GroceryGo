@@ -18,7 +18,7 @@ import java.util.List;
  * Date: 24/01/13
  */
 
-@WebServlet(name = "GetGeneralInfo", urlPatterns = "/getGeneralInfo")
+@WebServlet(name = "GetGeneralInfo", urlPatterns = "/GetGeneralInfo")
 public class GetGeneralInfo extends HttpServlet {
     Gson gson = new Gson();
 

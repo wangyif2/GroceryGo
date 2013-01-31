@@ -16,8 +16,8 @@ import java.util.Date;
  * Date: 25/01/13
  */
 
-@WebServlet(name = "SetSampleData", urlPatterns = "/setSampleData")
-public class setSampleData extends HttpServlet {
+@WebServlet(name = "SetSampleData", urlPatterns = "/SetSampleData")
+public class SetSampleData extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         System.out.println("in HibernateUtil init method.....******************");
@@ -32,7 +32,8 @@ public class setSampleData extends HttpServlet {
         Category category = new Category("Meat");
         Subcategory subcategory = new Subcategory("top sirloin", "sirloin", category);
         Item item = new Item("top sirloin steak", subcategory);
-        Grocery grocery = new Grocery(item, store, totalPrice, unitPrice, unit, new Date(), new Date(), new Date(), 12, "top sirloin steak at metro with 1.42/kg and 2.42");
+        Grocery grocery = new Grocery(item, store, totalPrice, unitPrice, unit, new Date(), new Date(),
+                new Date(), 12, "top sirloin steak at metro with 1.42/kg and 2.42");
 
         session.save(store);
         session.save(unit);

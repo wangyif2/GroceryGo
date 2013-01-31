@@ -3,6 +3,7 @@ package com.groceryotg.database;
 import javax.persistence.*;
 import java.util.Date;
 
+
 /**
  * User: robert
  * Date: 20/01/13
@@ -41,7 +42,7 @@ public class Grocery {
     @Temporal(TemporalType.DATE)
     private Date startDate;
 
-    @Column(name = "end_ate")
+    @Column(name = "end_date")
     @Temporal(TemporalType.DATE)
     private Date endDate;
 

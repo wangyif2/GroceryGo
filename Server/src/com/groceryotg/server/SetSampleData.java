@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Date;
+import java.text.ParseException;
 
 /**
  * User: robert
@@ -32,8 +32,13 @@ public class SetSampleData extends HttpServlet {
         Category category = new Category("Meat");
         Subcategory subcategory = new Subcategory("top sirloin", "sirloin", category);
         Item item = new Item("top sirloin steak", subcategory);
-        Grocery grocery = new Grocery(item, store, totalPrice, unitPrice, unit, new Date(), new Date(),
-                new Date(), 12, "top sirloin steak at metro with 1.42/kg and 2.42");
+        Grocery grocery = null;
+        try {
+            grocery = new Grocery(item, store, totalPrice, unitPrice, unit, UpdateGroceryInfo.format.parse("2013-01-27"), UpdateGroceryInfo.format.parse("2013-02-02"),
+                    UpdateGroceryInfo.format.parse("2013-01-31"), 12, "top sirloin steak at metro with 1.42/kg and 2.42");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
         session.save(store);
         session.save(unit);

@@ -30,10 +30,11 @@ public class UpdateGroceryInfo extends HttpServlet {
     private List<Grocery> groceries = null;
     Gson gson = new Gson();
     final static Logger logger = LoggerFactory.getLogger(UpdateGroceryInfo.class);
+    public static final DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        DateFormat format = new SimpleDateFormat("yyyy-mm-dd");
+
         Date requestDate = null;
         try {
             requestDate = (req.getParameter("date").isEmpty()) ? null : format.parse(req.getParameter("date"));

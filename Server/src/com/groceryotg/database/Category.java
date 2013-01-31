@@ -14,6 +14,7 @@ import javax.persistence.*;
 public class Category {
 
     @Id
+    @Column(name = "category_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int categoryId;
 

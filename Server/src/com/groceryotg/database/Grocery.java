@@ -28,10 +28,10 @@ public class Grocery {
     @JoinColumn(name = "store_id")
     private Store store;
 
-    @Column(name = "total_price", precision = 2)
+    @Column(name = "total_price", precision = 10, length = 2)
     private double totalPrice;
 
-    @Column(name = "unit_price", precision = 2)
+    @Column(name = "unit_price", precision = 10,length = 2)
     private double unitPrice;
 
     @ManyToOne
@@ -47,7 +47,7 @@ public class Grocery {
     private Date endDate;
 
     @Column(name = "update_date")
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date updateDate;
 
     @Column(name = "line_number")

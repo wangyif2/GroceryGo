@@ -18,172 +18,175 @@ USE `groceryotg`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `category`
+-- Table structure for table `Category`
 --
 
-DROP TABLE IF EXISTS `category`;
+DROP TABLE IF EXISTS `Category`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `category` (
-  `category_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `category_name` varchar(500) DEFAULT NULL,
+CREATE TABLE `Category` (
+  `category_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `category_name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`category_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `grocery`
+-- Table structure for table `Grocery`
 --
 
-DROP TABLE IF EXISTS `grocery`;
+DROP TABLE IF EXISTS `Grocery`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `grocery` (
-  `_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `item_id` int(10) DEFAULT NULL,
+CREATE TABLE `Grocery` (
+  `grocery_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `item_id` int(11) DEFAULT NULL,
   `raw_string` text,
   `unit_price` decimal(10,2) DEFAULT NULL,
-  `unit_id` int(10) DEFAULT NULL,
+  `unit_id` int(11) DEFAULT NULL,
   `total_price` decimal(10,2) DEFAULT NULL,
-  `start_date` datetime DEFAULT NULL,
-  `end_date` datetime DEFAULT NULL,
-  `line_number` int(10) DEFAULT NULL,
-  `store_id` int(10) DEFAULT NULL,
+  `start_date` date DEFAULT NULL,
+  `end_date` date DEFAULT NULL,
+  `line_number` int(11) DEFAULT NULL,
+  `store_id` int(11) DEFAULT NULL,
   `update_date` datetime DEFAULT NULL,
-  PRIMARY KEY (`_id`)
+  PRIMARY KEY (`grocery_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 
 --
--- Table structure for table `item`
+-- Table structure for table `Item`
 --
 
-DROP TABLE IF EXISTS `item`;
+DROP TABLE IF EXISTS `Item`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `item` (
-  `item_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `item_name` varchar(1000) DEFAULT NULL,
-  `subcategory_id` int(10) DEFAULT NULL,
+CREATE TABLE `Item` (
+  `item_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `item_name` varchar(255) DEFAULT NULL,
+  `subcategory_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`item_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8192 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `inventory`
+-- Table structure for table `Inventory`
 --
 
-DROP TABLE IF EXISTS `inventory`;
+DROP TABLE IF EXISTS `Inventory`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `inventory` (
-  `inventory_item_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `inventory_item_name` varchar(1000) DEFAULT NULL,
-  `inventory_item_description` text,
-  `item_id` int(10) DEFAULT NULL,
-  PRIMARY KEY (`inventory_item_id`)
+CREATE TABLE `Inventory` (
+  `inventory_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `inventory_name` varchar(255) DEFAULT NULL,
+  `inventory_description` text,
+  `item_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`inventory_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8192 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 
 --
--- Table structure for table `nt_amt`
+-- Table structure for table `Nutrient_Item`
 --
 
-DROP TABLE IF EXISTS `nt_amt`;
+DROP TABLE IF EXISTS `Nutrient_Item`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `nt_amt` (
-  `item_id` int(10) unsigned NOT NULL,
-  `NT_ID` double DEFAULT NULL,
-  `NT_VALUE` double DEFAULT NULL,
-  `STD_ERR` double DEFAULT NULL,
-  `NUM_OBS` double DEFAULT NULL,
-  `NT_SRC_ID` double DEFAULT NULL,
-  `NT_DT_ENT` varchar(255) DEFAULT NULL,
-  `NT_TR` varchar(255) DEFAULT NULL
+CREATE TABLE `Nutrient_Item` (
+  `item_id` int(11) unsigned NOT NULL,
+  `nutrient_id` int(11) unsigned NOT NULL,
+  `nutrient_value` double DEFAULT NULL,
+  `std_err` double DEFAULT NULL,
+  `num_obs` double DEFAULT NULL,
+  `nutrient_src_id` int(11) unsigned DEFAULT NULL,
+  `nutrient_dt_ent` varchar(255) DEFAULT NULL,
+  `nutrient_tr` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `nt_nm`
+-- Table structure for table `Nutrient`
 --
 
-DROP TABLE IF EXISTS `nt_nm`;
+DROP TABLE IF EXISTS `Nutrient`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `nt_nm` (
-  `NT_ID` double DEFAULT NULL,
-  `NT_COD` double DEFAULT NULL,
-  `NT_SYM` varchar(255) DEFAULT NULL,
-  `UNIT` varchar(255) DEFAULT NULL,
-  `NT_NME` varchar(255) DEFAULT NULL,
-  `NT_NMF` varchar(255) DEFAULT NULL,
-  `TAGNAME` varchar(255) DEFAULT NULL,
-  `NT_DEC` double DEFAULT NULL
+CREATE TABLE `Nutrient` (
+  `nutrient_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `nutrient_code` double DEFAULT NULL,
+  `nutrient_sym` varchar(255) DEFAULT NULL,
+  `nutrient_unit` varchar(255) DEFAULT NULL,
+  `nutrient_name_english` varchar(255) DEFAULT NULL,
+  `nutrient_name_french` varchar(255) DEFAULT NULL,
+  `nutrient_tagname` varchar(255) DEFAULT NULL,
+  `nutrient_dec` double DEFAULT NULL,
+  PRIMARY KEY (`nutrient_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 
 --
--- Table structure for table `nt_src`
+-- Table structure for table `Nutrient_Source`
 --
 
-DROP TABLE IF EXISTS `nt_src`;
+DROP TABLE IF EXISTS `Nutrient_Source`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `nt_src` (
-  `NT_SRC_ID` double DEFAULT NULL,
-  `NT_SRC_COD` double DEFAULT NULL,
-  `NT_SRC_NME` varchar(255) DEFAULT NULL,
-  `NT_SRC_NMF` varchar(255) DEFAULT NULL
+CREATE TABLE `Nutrient_Source` (
+  `nutrient_src_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `nutrient_src_code` double DEFAULT NULL,
+  `nutrient_src_name_english` varchar(255) DEFAULT NULL,
+  `nutrient_src_name_french` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`nutrient_src_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `store`
+-- Table structure for table `Store`
 --
 
-DROP TABLE IF EXISTS `store`;
+DROP TABLE IF EXISTS `Store`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `store` (
-  `store_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `store_name` varchar(1000) DEFAULT NULL,
+CREATE TABLE `Store` (
+  `store_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `store_name` varchar(255) DEFAULT NULL,
   `store_address` text,
   `store_url` text,
+  `store_parent` int(11) unsigned DEFAULT NULL,
   PRIMARY KEY (`store_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 
 --
--- Table structure for table `subcategory`
+-- Table structure for table `Subcategory`
 --
 
-DROP TABLE IF EXISTS `subcategory`;
+DROP TABLE IF EXISTS `Subcategory`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `subcategory` (
-  `subcategory_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `subcategory_name` varchar(500) DEFAULT NULL,
-  `subcategory_tag` varchar(500) DEFAULT NULL,
-  `category_id` int(10) DEFAULT NULL,
+CREATE TABLE `Subcategory` (
+  `subcategory_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `subcategory_name` varchar(255) DEFAULT NULL,
+  `subcategory_tag` varchar(255) DEFAULT NULL,
+  `category_id` int(11) unsigned NOT NULL,
   PRIMARY KEY (`subcategory_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 
 --
--- Table structure for table `unit`
+-- Table structure for table `Unit`
 --
 
-DROP TABLE IF EXISTS `unit`;
+DROP TABLE IF EXISTS `Unit`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `unit` (
-  `unit_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+CREATE TABLE `Unit` (
+  `unit_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `unit_type_name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`unit_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;

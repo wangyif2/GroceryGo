@@ -20,7 +20,6 @@ import java.text.ParseException;
 public class SetSampleData extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        System.out.println("in HibernateUtil init method.....******************");
         Session session = HibernateUtils.getSessionFactory().openSession();
         session.beginTransaction();
 

@@ -52,6 +52,7 @@ CREATE TABLE `Grocery` (
   `grocery_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `item_id` int(11) DEFAULT NULL,
   `raw_string` text,
+  `raw_price` varchar(255),
   `unit_price` decimal(10,2) DEFAULT NULL,
   `unit_id` int(11) DEFAULT NULL,
   `total_price` decimal(10,2) DEFAULT NULL,

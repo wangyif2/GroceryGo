@@ -897,7 +897,7 @@ try:
     print("connected to database\n")
     
     # get subcategories from database
-    cur.execute('SELECT subcategory_id, subcategory_tag FROM subcategory ORDER BY subcategory_id')
+    cur.execute('SELECT subcategory_id, subcategory_tag FROM Subcategory ORDER BY subcategory_id')
     subcategory = cur.fetchall()    
     
     # TODO: replace SQL calls with SQLAlchemy (a Python ORM)

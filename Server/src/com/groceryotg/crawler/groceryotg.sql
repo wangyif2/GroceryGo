@@ -52,7 +52,7 @@ CREATE TABLE `Grocery` (
   `grocery_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `item_id` int(11) DEFAULT NULL,
   `raw_string` text,
-  `raw_price` varchar(255),
+  `raw_price` varchar(255) DEFAULT NULL,
   `unit_price` decimal(10,2) DEFAULT NULL,
   `unit_id` int(11) DEFAULT NULL,
   `total_price` decimal(10,2) DEFAULT NULL,
@@ -234,7 +234,7 @@ CREATE TABLE `Store` (
 
 LOCK TABLES `Store` WRITE;
 /*!40000 ALTER TABLE `Store` DISABLE KEYS */;
-INSERT INTO `Store` VALUES (1,'metro',NULL,'http://www.metro.ca/en/on/circulaire-liste.html?method=getAvailableFlyers',NULL),(2,'loblaws',NULL,'',NULL),(3,'foodbasics',NULL,'http://www.foodbasics.ca/en/circulaire.html',NULL),(4,'nofrills',NULL,'',NULL),(5,'sobeys',NULL,'',NULL);
+INSERT INTO `Store` VALUES (1,'metro',NULL,'http://www.metro.ca/en/on/circulaire-liste.html?method=getAvailableFlyers',NULL),(2,'loblaws',NULL,'http://director.flyerservices.com/LCL/PublicationDirector.ashx?BannerName=LOB',NULL),(3,'foodbasics',NULL,'http://www.foodbasics.ca/en/circulaire.html',NULL),(4,'nofrills',NULL,'',NULL),(5,'sobeys',NULL,'',NULL);
 /*!40000 ALTER TABLE `Store` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -297,4 +297,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-02-01 14:06:23
+-- Dump completed on 2013-02-03 20:36:11

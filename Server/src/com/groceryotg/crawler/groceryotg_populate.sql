@@ -87,7 +87,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `Store` WRITE;
 /*!40000 ALTER TABLE `Store` DISABLE KEYS */;
-INSERT INTO `Store` VALUES (1,'metro',NULL,'http://www.metro.ca/en/on/circulaire-liste.html?method=getAvailableFlyers',NULL),(2,'loblaws',NULL,'',NULL),(3,'foodbasics',NULL,'http://www.foodbasics.ca/en/circulaire.html',NULL),(4,'nofrills',NULL,'',NULL),(5,'sobeys',NULL,'',NULL);
+INSERT INTO `Store` VALUES (1,'metro',NULL,'http://www.metro.ca/en/on/circulaire-liste.html?method=getAvailableFlyers',NULL),(2,'loblaws',NULL,'http://director.flyerservices.com/LCL/PublicationDirector.ashx?BannerName=LOB',NULL),(3,'foodbasics',NULL,'http://www.foodbasics.ca/en/circulaire.html',NULL),(4,'nofrills',NULL,'',NULL),(5,'sobeys',NULL,'',NULL);
 /*!40000 ALTER TABLE `Store` ENABLE KEYS */;
 UNLOCK TABLES;
 

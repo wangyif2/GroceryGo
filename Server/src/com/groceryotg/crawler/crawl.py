@@ -102,7 +102,7 @@ def getFlyer():
                         end_date = ""
                         
                         soup = BeautifulSoup(urllib2.urlopen(flyer_url))
-                        div_pages = soup('div')
+                        div_pages = soup.find_all(lambda tag: tag.name=='div' and tag.has_key('style') and not tag.has_key('id'))
                         
                         # Find the start and end dates
                         months = {'Jan':1,'Feb':2,'Mar':3,'Apr':4,'May':5,'Jun':6,'Jul':7,'Aug':8,'Sep':9,'Oct':10,'Nov':11,'Dec':12}
@@ -680,7 +680,7 @@ def getFlyer():
                 response = opener.open(target_url, post_data).read()
                 soup = BeautifulSoup(response)
                 accessible_link = parsed_url.scheme + "://" + parsed_url.netloc + \
-                                  soup('a', {'id':'vieaccessibleflyer'})[0]['href']
+                                  soup('a', text=re.compile(r'Accessible Flyer'))[0]['href']
                 
                 # Before getting to the actual flyer page, submit an intermediate page web form
                 response = opener.open(accessible_link).read()
@@ -914,8 +914,9 @@ try:
         predictions = []
         
         for item in item_list:
-            tokens = item[0]
-            noun_list = getNouns.getNouns(tokens[0])
+            # Only pass in the raw_item string, without the price
+            noun_list = getNouns.getNouns(item[0])
+#            print(noun_list)
             
             # Step 3: Pass the list of nouns to the "classifier" module to classify the item into one subcategory
             subcategory_id = classifier.classify(noun_list, subcategory)

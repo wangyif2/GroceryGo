@@ -155,7 +155,7 @@ def getFlyer():
                                     raw_item = line[:index_price].strip()
                                 
                                 item_details = [raw_item, raw_price, unit_price, unit_type_id, total_price, \
-                                                start_date, end_date, line_number, update_date]
+                                                start_date, end_date, line_number, store_id, update_date]
                                 
                                 #print(item_details)
                                 store_items += [item_details]
@@ -314,7 +314,7 @@ def getFlyer():
                         # 3) 4/$5               (ratio)
                         # 4) $3.99 - $4.29      (range)
                         unit_price = None
-                        unit_type_id = ""
+                        unit_type_id = None
                         total_price = None
                         
                         raw_price = item['price']
@@ -369,7 +369,7 @@ def getFlyer():
                                         unit_type_id = filter(lambda x: x if x[1]=='kg' else None,units)[0][0]
                         
                         item_details = [raw_item, orig_price, unit_price, unit_type_id, total_price, \
-                                        start_date, end_date, line_number, update_date]
+                                        start_date, end_date, line_number, store_id, update_date]
                         
                         store_items += [item_details]
                         
@@ -422,7 +422,7 @@ def getFlyer():
                         for line in page_lines:
                             line_number += 1
                             unit_price = 0
-                            unit_type_id = 0
+                            unit_type_id = None
                             total_price = None
                             
                             # Split up sentences and identify items.
@@ -450,7 +450,7 @@ def getFlyer():
                                 raw_item = line[:index_price].strip()
                             
                             item_details = [raw_item, raw_price, unit_price, unit_type_id, total_price, \
-                                            start_date, end_date, line_number, update_date]
+                                            start_date, end_date, line_number, store_id, update_date]
                             
                             #print(item_details)
                             store_items += [item_details]
@@ -591,7 +591,7 @@ def getFlyer():
                         # 3) 4/$5               (ratio)
                         # 4) $3.99 - $4.29      (range)
                         unit_price = None
-                        unit_type_id = ""
+                        unit_type_id = None
                         total_price = None
                         
                         raw_price = item['price']
@@ -646,7 +646,7 @@ def getFlyer():
                                         unit_type_id = filter(lambda x: x if x[1]=='kg' else None,units)[0][0]
                         
                         item_details = [raw_item, orig_price, unit_price, unit_type_id, total_price, \
-                                        start_date, end_date, line_number, update_date]
+                                        start_date, end_date, line_number, store_id, update_date]
                         
                         store_items += [item_details]
                         
@@ -789,7 +789,7 @@ def getFlyer():
                     # 4) $3.99 - $4.29        (range)
                     # 5) BUY ONE GET ONE FREE (string)
                     unit_price = None
-                    unit_type_id = ""
+                    unit_type_id = None
                     total_price = None
                     
                     raw_price = item['price']
@@ -845,7 +845,7 @@ def getFlyer():
                                     unit_type_id = filter(lambda x: x if x[1]=='kg' else None,units)[0][0]
                     
                     item_details = [raw_item, orig_price, unit_price, unit_type_id, total_price, \
-                                    start_date, end_date, line_number, update_date]
+                                    start_date, end_date, line_number, store_id, update_date]
                     
                     store_items += [item_details]
                     
@@ -895,59 +895,92 @@ def evaluateAccuracy(store_id, labels, item_list = None, noun_list = None):
                   
     return float(correctly_classified) / float(len(targets))
 
+
 #******************************************************************************
-#An entry in a database table, handles writing to database
+# An interface for accessing a database table, handles writing data to table
 #******************************************************************************
-class TableEntry:
+class TableInterface:
+    
+    # A list of rows of data, buffered to be inserted into database table
     data = []
+    
+    # A list of field names for the database table
     columns = []
-    def __init__(self, con, name, columns):  
-        self.dbc = con.cursor()
-        self.name = name
-        self.columns = columns
-           
-    #data list in the same order as the columns
-    def addData(self, dataList):
-        if len(dataList) != len(self.columns):
+    
+    def __init__(self, con, table_name): 
+        '''Default constructor. Takes two arguments: "con" - a valid database 
+           connection to the GroceryOTG database, and "table_name" - a valid 
+           string name of a database table.''' 
+        self.dbcon = con
+        self.dbcur = con.cursor()
+        self.table_name = table_name
+        
+        # Fetch list of columns from database
+        self.dbcur.execute("DESCRIBE " + table_name)
+        cols = self.dbcur.fetchall()
+        
+        # Keep the field names only, and discard the table ID field
+        self.columns = [x[0] for x in cols][1:]
+        print("Created a TableInterface with columns: %s" % self.columns)
+        
+    
+    def add_data(self, data_list):
+        '''Takes one arguments, "data_list" - a list of values corresponding to one row 
+           to be inserted into the table. Assumes the values are in the same order as 
+           the columns in the database. Returns False if the provided list is invalid. 
+           Returns True otherwise.'''
+        
+        if len(data_list) != len(self.columns):
             return False
-        self.data += [dataList]
+        
+        # NB: For blank values, you should pass in None, not NULL
+        self.data += [data_list]
         return True
 
-    #write data to database
-    def writeDB(self):
-        columnStr = ", ".join(self.columns)
-        typeStr = ", ".join(["%s"] * len(self.columns))
-        sql = "INSERT INTO " + self.name + " (" + columnStr +") VALUES (" + typeStr + ")"
-        print(sql)
-        formatted_data = [tuple(x) for x in self.data]
-        lines_inserted = self.dbc.executemany(sql, formatted_data)
-        print("Inserted %d lines into %s" %(lines_inserted, self.name))
+
+    def write_data(self):
+        '''Takes no arguments. Writes the buffered rows of values stored in "data" to the 
+           database table. Returns void.'''
         
-        #recall to debug
-        self.dbc.execute('SELECT * from Grocery')
-        print (self.dbc.fetchall())  
+        print("\nWriting data to database table...")
+        
+        # Encode the raw strings as UTF-8 before adding to database, so all special 
+        # characters are preserved.
+        self.data = map(lambda x: [x[0]] + [str(x[1]).encode('utf-8')] + [str(x[2]).encode('utf-8')] + x[3:], self.data)
+        
+        column_str = ", ".join(self.columns)
+        type_str = ", ".join(["%s"] * len(self.columns))
+        sql = "INSERT INTO " + self.table_name + " (" + column_str +") VALUES (" + type_str + ")"
+        formatted_data = [tuple(x) for x in self.data]
+        
+        lines_inserted = self.dbcur.executemany(sql, formatted_data)
+        print("Inserted %d lines into %s" %(lines_inserted, self.table_name))
+        
+        # Commit changes to database
+        self.dbcon.commit()
+        
 
 # ***************************************************************************
 # ***************************************************************************
 con = None
-#output grocery table
-grocery_name = "Grocery"
-grocery_columns = ["grocery_id", "item_id", "raw_string", "raw_price", "unit_price",
-                   "unit_id", "total_price", "starting_date", "end_date", "line_number",
-                   "store_id", "update_date"]
+
+# Output parsed results to a database table
+output_table = "Grocery"
+
 try:
     con = mdb.connect('localhost', mysql_user, mysql_password, mysql_db)
     cur = con.cursor()
     print("connected to database\n")
     
-    # get subcategories from database
+    # Get subcategories from database
     cur.execute('SELECT subcategory_id, subcategory_tag FROM Subcategory ORDER BY subcategory_id')
     subcategory = cur.fetchall()    
+    
     # TODO: replace SQL calls with SQLAlchemy (a Python ORM)
     #print("SQLAlchemy version: ", sqlalchemy.__version__)
     
-    #create a grocery entry
-    grocery = TableEntry(con, grocery_name, grocery_columns)
+    # Create an interface for writing output to the database table
+    grocery = TableInterface(con, output_table)
     
     # Step 1: Parse the flyers into (item, price) pairs
     items = getFlyer()
@@ -955,37 +988,33 @@ try:
     # Step 2: Pass the items one by one to the "getNouns" module to get a list of nouns for each item
     getNouns.init()
     stores = items.keys()
-    grocery_entries = []
-    grocery_id = 1
-    item_id = 1
     for store_id in stores:
         item_list = items[store_id]
         predictions = []
-        
         noun_table = []
+        
         for item in item_list:
+            
             # Only pass in the raw_item string, without the price
             noun_list = getNouns.getNouns(item[0])
             noun_table += [noun_list]
+            
             # Step 3: Pass the list of nouns to the "classifier" module to classify the item into one subcategory
             subcategory_id = classifier.classify(noun_list, subcategory)
             predictions += [subcategory_id]
             
-            #add to grocery table
-            grocery.addData([grocery_id] + [item_id] + item[:-1] + [store_id] + [item[-1]])
-            
-            #TODO set these to correct values
-            item_id += 1
-            grocery_id += 1
-    
+            # Add to output buffer
+            # TODO: Add to Item table as well
+            grocery.add_data([None] + item)
+        
         # Evaluate classification accuraucy for each store flyer based on hand-labelled subcategories
         classification_rate = evaluateAccuracy(store_id, predictions, item_list, noun_table)
         if classification_rate:
-            print("TOTAL CLASSIFIATION RATE for store %d: %.2f" % (store_id, classification_rate))
+            print("TOTAL CLASSIFICATION RATE for store %d: %.2f" % (store_id, classification_rate))
        
     
     # Step 4: Write to database
-    grocery.writeDB()
+    grocery.write_data()
     
 except mdb.Error, e:
     print("error: %s" % e)

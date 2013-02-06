@@ -857,7 +857,7 @@ def getFlyer():
     return items
 
 
-def evaluateAccuracy(store_id, labels, item_list = None):
+def evaluateAccuracy(store_id, labels, item_list = None, noun_list = None):
     '''Takes a list of correct classifications, "targets", and a list of predicted classifications, "labels". 
        Returns None if either list is empty or the lists are not of the same length. Returns the fraction 
        of correctly classified items otherwise (as a floating point value between 0 and 1). '''
@@ -871,26 +871,70 @@ def evaluateAccuracy(store_id, labels, item_list = None):
         print("Classification accuracy for store %d could not be determined due to missing labelled targets" % store_id)
         return None
     
-    targets = map(lambda x: int(x), file_contents.split('\n'))
+    targets = map(lambda x: int(x), filter(None, file_contents.replace('\n', ',').split(',')))
+    '''
     if (not targets or not labels) or (len(targets) != len(labels)):
+        print("Classification accuracy for store %d could not be determined due to missing labelled targets" % store_id)
+        return None
+    '''
+    if len(targets) == 0:
         print("Classification accuracy for store %d could not be determined due to missing labelled targets" % store_id)
         return None
     
     correctly_classified = 0
+    
     for i in range(len(targets)):
+        if i >= len(labels):
+            print("Too many targets comapred to labels")
+            break;
+        #print("(predicted: %d, actual: %d): %s" % (labels[i], targets[i], item_list[i]))
         if targets[i] == labels[i]:
             correctly_classified += 1
         elif item_list:
-            print("Misclassified item (predicted: %d, actual: %d): %s" % (labels[i], targets[i], item_list[i]))
+            print("Misclassified item (predicted: %d, actual: %d): %s" % (labels[i], targets[i], noun_list[i]))
                   
     return float(correctly_classified) / float(len(targets))
 
+#******************************************************************************
+#An entry in a database table, handles writing to database
+#******************************************************************************
+class TableEntry:
+    data = []
+    columns = []
+    def __init__(self, con, name, columns):  
+        self.dbc = con.cursor()
+        self.name = name
+        self.columns = columns
+           
+    #data list in the same order as the columns
+    def addData(self, dataList):
+        if len(dataList) != len(self.columns):
+            return False
+        self.data += [dataList]
+        return True
 
+    #write data to database
+    def writeDB(self):
+        columnStr = ", ".join(self.columns)
+        typeStr = ", ".join(["%s"] * len(self.columns))
+        sql = "INSERT INTO " + self.name + " (" + columnStr +") VALUES (" + typeStr + ")"
+        print(sql)
+        formatted_data = [tuple(x) for x in self.data]
+        lines_inserted = self.dbc.executemany(sql, formatted_data)
+        print("Inserted %d lines into %s" %(lines_inserted, self.name))
+        
+        #recall to debug
+        self.dbc.execute('SELECT * from Grocery')
+        print (self.dbc.fetchall())  
 
 # ***************************************************************************
 # ***************************************************************************
 con = None
-
+#output grocery table
+grocery_name = "Grocery"
+grocery_columns = ["grocery_id", "item_id", "raw_string", "raw_price", "unit_price",
+                   "unit_id", "total_price", "starting_date", "end_date", "line_number",
+                   "store_id", "update_date"]
 try:
     con = mdb.connect('localhost', mysql_user, mysql_password, mysql_db)
     cur = con.cursor()
@@ -899,9 +943,11 @@ try:
     # get subcategories from database
     cur.execute('SELECT subcategory_id, subcategory_tag FROM Subcategory ORDER BY subcategory_id')
     subcategory = cur.fetchall()    
-    
     # TODO: replace SQL calls with SQLAlchemy (a Python ORM)
     #print("SQLAlchemy version: ", sqlalchemy.__version__)
+    
+    #create a grocery entry
+    grocery = TableEntry(con, grocery_name, grocery_columns)
     
     # Step 1: Parse the flyers into (item, price) pairs
     items = getFlyer()
@@ -909,28 +955,37 @@ try:
     # Step 2: Pass the items one by one to the "getNouns" module to get a list of nouns for each item
     getNouns.init()
     stores = items.keys()
+    grocery_entries = []
+    grocery_id = 1
+    item_id = 1
     for store_id in stores:
         item_list = items[store_id]
         predictions = []
         
+        noun_table = []
         for item in item_list:
             # Only pass in the raw_item string, without the price
             noun_list = getNouns.getNouns(item[0])
-#            print(noun_list)
-            
+            noun_table += [noun_list]
             # Step 3: Pass the list of nouns to the "classifier" module to classify the item into one subcategory
             subcategory_id = classifier.classify(noun_list, subcategory)
             predictions += [subcategory_id]
-        
-        # Evaluate classification accuracy for each store flyer based on hand-labelled subcategories
-        classification_rate = evaluateAccuracy(store_id, predictions, item_list)
-        if classification_rate:
-            print("TOTAL CLASSIFICATION RATE for store %d: %.2f" % (store_id, classification_rate))
             
+            #add to grocery table
+            grocery.addData([grocery_id] + [item_id] + item[:-1] + [store_id] + [item[-1]])
+            
+            #TODO set these to correct values
+            item_id += 1
+            grocery_id += 1
+    
+        # Evaluate classification accuraucy for each store flyer based on hand-labelled subcategories
+        classification_rate = evaluateAccuracy(store_id, predictions, item_list, noun_table)
+        if classification_rate:
+            print("TOTAL CLASSIFIATION RATE for store %d: %.2f" % (store_id, classification_rate))
+       
     
     # Step 4: Write to database
-    
-    
+    grocery.writeDB()
     
 except mdb.Error, e:
     print("error: %s" % e)

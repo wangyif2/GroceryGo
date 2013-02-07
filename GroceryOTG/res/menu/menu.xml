@@ -20,8 +20,5 @@
         android:showAsAction="always"
         android:title="Shopping Cart"
         android:icon="@drawable/ic_menu_cart"/>
-    <item
-        android:id="@+id/load_sample"
-        android:showAsAction="always"
-        android:title="Load"/>
+
 </menu>

@@ -18,7 +18,7 @@ public class CategoryTable {
     public static final String DATABASE_CREATE = "create table "
             + TABLE_CATEGORY
             + "(" + COLUMN_ID + " integer primary key autoincrement, "
-            + COLUMN_CATEGORY_ID + " integer not null, "
+            + COLUMN_CATEGORY_ID + " integer unique not null, "
             + COLUMN_CATEGORY_NAME + " text not null" + ");";
 
     public static void onCreate(SQLiteDatabase database) {

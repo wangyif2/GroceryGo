@@ -13,11 +13,10 @@
         android:text="@+id/overview_row_text"
         android:textSize="24dp"
         android:drawableLeft="@drawable/category_icon"
-        android:drawablePadding="2dip"
-        android:paddingLeft="30dip"
-        android:paddingRight="26dip"
+        android:drawablePadding="10dip"
+        android:paddingLeft="20dip"
         android:singleLine="true"
-        android:gravity="center">
+        android:gravity="center_vertical">
     </TextView>
 
 </LinearLayout>

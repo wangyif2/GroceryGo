@@ -2,7 +2,6 @@ package com.groceryotg.android;
 
 import android.app.ListActivity;
 import android.app.LoaderManager;
-import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -46,30 +45,11 @@ public class GroceryOverView extends ListActivity implements LoaderManager.Loade
             case R.id.shop_cart:
                 launchShopCartActivity();
                 return true;
-            case R.id.load_sample:
-                loadSampleData();
-                return true;
             case android.R.id.home:
                 launchHomeActivity();
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private void loadSampleData() {
-        ContentValues Meat = new ContentValues();
-        Meat.put(CategoryTable.COLUMN_CATEGORY_ID, 1);
-        Meat.put(CategoryTable.COLUMN_CATEGORY_NAME, "Meat");
-
-        ContentValues Dairy = new ContentValues();
-        Dairy.put(CategoryTable.COLUMN_CATEGORY_ID, 2);
-        Dairy.put(CategoryTable.COLUMN_CATEGORY_NAME, "Dairy");
-
-        ContentValues[] categories = new ContentValues[]{
-                Meat, Dairy
-        };
-        getContentResolver().bulkInsert(GroceryotgProvider.CONTENT_URI, categories);
-        fillData();
     }
 
     private void launchHomeActivity() {

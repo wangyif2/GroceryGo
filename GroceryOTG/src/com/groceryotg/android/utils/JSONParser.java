@@ -1,4 +1,4 @@
-package com.groceryotg.android.Utils;
+package com.groceryotg.android.utils;
 
 import android.util.Log;
 import org.apache.http.HttpEntity;

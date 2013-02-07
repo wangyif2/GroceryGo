@@ -1,4 +1,4 @@
-package com.groceryotg.android.Services.Location;
+package com.groceryotg.android.services.Location;
 
 import android.os.HandlerThread;
 import android.os.PowerManager;

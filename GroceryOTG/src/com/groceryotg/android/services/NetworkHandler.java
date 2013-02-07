@@ -1,10 +1,13 @@
-package com.groceryotg.android.Services;
+package com.groceryotg.android.services;
 
 import android.app.IntentService;
 import android.content.Intent;
 import android.util.Log;
-import com.groceryotg.android.Utils.JSONParser;
+import com.google.gson.Gson;
+import com.groceryotg.android.database.objects.Category;
+import com.groceryotg.android.utils.JSONParser;
 import org.json.JSONArray;
+import org.json.JSONException;
 
 /**
  * User: robert
@@ -12,6 +15,7 @@ import org.json.JSONArray;
  */
 public class NetworkHandler extends IntentService {
     private final String getCategory = "http://groceryotg.elasticbeanstalk.com/GetGeneralInfo";
+    Gson gson = new Gson();
 
     public NetworkHandler() {
         super("NetworkHandler");
@@ -21,7 +25,13 @@ public class NetworkHandler extends IntentService {
     protected void onHandleIntent(Intent intent) {
         Log.i("GroceryOTG", "in intent service");
         JSONParser categoryJSON = new JSONParser();
-        JSONArray category = categoryJSON.getJSONFromUrl(getCategory);
+        JSONArray categoryArray = categoryJSON.getJSONFromUrl(getCategory);
+        Category category = null;
+        try {
+            category = (Category) gson.fromJson(categoryArray.getJSONObject(0).toString(), Category.class);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         Log.i("GroceryOTG", category.toString());
     }
 

@@ -1,21 +1,30 @@
 package com.groceryotg.android;
 
-import android.app.Activity;
+import android.app.ListActivity;
+import android.app.LoaderManager;
+import android.content.ContentValues;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import com.groceryotg.android.Services.NetworkHandler;
+import android.widget.SimpleCursorAdapter;
+import com.groceryotg.android.database.CategoryTable;
+import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
+import com.groceryotg.android.services.NetworkHandler;
 
-public class GroceryOverView extends Activity {
-    /**
-     * Called when the activity is first created.
-     */
+public class GroceryOverView extends ListActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+    private SimpleCursorAdapter adapter;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.overview);
+        setContentView(R.layout.overview_list);
+        this.getListView().setDividerHeight(2);
+        fillData();
     }
 
     @Override
@@ -37,31 +46,76 @@ public class GroceryOverView extends Activity {
             case R.id.shop_cart:
                 launchShopCartActivity();
                 return true;
+            case R.id.load_sample:
+                loadSampleData();
+                return true;
             case android.R.id.home:
                 launchHomeActivity();
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
-    
+
+    private void loadSampleData() {
+        ContentValues Meat = new ContentValues();
+        Meat.put(CategoryTable.COLUMN_CATEGORY_ID, 1);
+        Meat.put(CategoryTable.COLUMN_CATEGORY_NAME, "Meat");
+
+        ContentValues Dairy = new ContentValues();
+        Dairy.put(CategoryTable.COLUMN_CATEGORY_ID, 2);
+        Dairy.put(CategoryTable.COLUMN_CATEGORY_NAME, "Dairy");
+
+        ContentValues[] categories = new ContentValues[]{
+                Meat, Dairy
+        };
+        getContentResolver().bulkInsert(GroceryotgProvider.CONTENT_URI, categories);
+        fillData();
+    }
+
     private void launchHomeActivity() {
         Intent intent = new Intent(this, GroceryOverView.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
 
-    private void launchShopCartActivity() {
-    	
-    }
-    
     private void refreshCurrentCategory() {
         Intent intent = new Intent(this, NetworkHandler.class);
         startService(intent);
+    }
+
+    private void launchShopCartActivity() {
+
+    }
+
+    private void fillData() {
+        String[] from = new String[]{CategoryTable.COLUMN_CATEGORY_NAME};
+        int[] to = new int[]{R.id.overview_row_label};
+
+        getLoaderManager().initLoader(0, null, this);
+        adapter = new SimpleCursorAdapter(this, R.layout.overview_row, null, from, to, 0);
+
+        setListAdapter(adapter);
     }
 
     private void launchMapActivity() {
         Intent intent = new Intent(this, GroceryMapView.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        String[] projection = {CategoryTable.COLUMN_ID, CategoryTable.COLUMN_CATEGORY_NAME};
+        return new CursorLoader(this, GroceryotgProvider.CONTENT_URI, projection, null, null, null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        adapter.swapCursor(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        adapter.swapCursor(null);
     }
 }

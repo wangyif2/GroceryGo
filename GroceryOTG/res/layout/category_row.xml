@@ -6,11 +6,11 @@
               android:layout_height="wrap_content">
 
     <TextView
-        android:id="@+id/overview_row_label"
+        android:id="@+id/category_row_label"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
-        android:text="@+id/overview_row_text"
+        android:text="@+id/category_row_text"
         android:textSize="24dp"
         android:drawableLeft="@drawable/category_icon"
         android:drawablePadding="10dip"

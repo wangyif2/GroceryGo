@@ -3,7 +3,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="fill_parent"
-              android:layout_height="wrap_content">
+              android:layout_height="wrap_content"
+              android:gravity="center_vertical">
 
     <TextView
         android:id="@+id/category_row_label"
@@ -14,9 +15,9 @@
         android:textSize="24dp"
         android:drawableLeft="@drawable/category_icon"
         android:drawablePadding="10dip"
-        android:paddingLeft="20dip"
+        android:paddingLeft="10dip"
         android:singleLine="true"
-        android:gravity="center_vertical">
+        >
     </TextView>
 
 </LinearLayout>

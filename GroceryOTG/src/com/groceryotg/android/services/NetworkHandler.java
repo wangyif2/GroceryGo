@@ -6,9 +6,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.groceryotg.android.database.CategoryTable;
+import com.groceryotg.android.database.GroceryTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 import com.groceryotg.android.database.objects.Category;
+import com.groceryotg.android.database.objects.Grocery;
 import com.groceryotg.android.utils.JSONParser;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,9 +33,9 @@ public class NetworkHandler extends IntentService {
     public static final DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
     private final String getCategory = "http://groceryotg.elasticbeanstalk.com/GetGeneralInfo";
-    private final String getGrocery = "http://groceryotg.elasticbeanstalk.com/UpdateGroceryInfo?date=";
+    private final String getGroceryBase = "http://groceryotg.elasticbeanstalk.com/UpdateGroceryInfo?date=";
 
-    Gson gson = new Gson();
+    JSONParser jsonParser = new JSONParser();
 
     public NetworkHandler() {
         super("NetworkHandler");
@@ -59,20 +62,36 @@ public class NetworkHandler extends IntentService {
     }
 
     private void refreshGrocery() {
-        StringBuilder url = new StringBuilder();
-        url.append(getGrocery);
+        //TODO: hard coded date format!! not good...
+        Gson gson=  new GsonBuilder().setDateFormat("MMM dd, yyyy").create();
+        String getGrocery = buildGroceryURL(new Date());
+        JSONArray groceryArray = jsonParser.getJSONFromUrl(getGrocery);
+        ArrayList<ContentValues> contentValuesArrayList = new ArrayList<ContentValues>();
 
-        Date now = new Date();
-        Log.i("GroceryOTG", "freshGrocery with date: " + format.format(now));
-        url.append(format.format(now));
+        try {
+            for (int i = 0; i < groceryArray.length(); i++) {
+                Grocery grocery = gson.fromJson(groceryArray.getJSONObject(i).toString(), Grocery.class);
 
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(GroceryTable.COLUMN_GROCERY_ID, grocery.getGroceryId());
+                contentValues.put(GroceryTable.COLUMN_GROCERY_NAME, grocery.getRawString());
+                contentValues.put(GroceryTable.COLUMN_GROCERY_PRICE, grocery.getTotalPrice());
 
+                contentValuesArrayList.add(contentValues);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        ContentValues[] groceries = new ContentValues[contentValuesArrayList.size()];
+        contentValuesArrayList.toArray(groceries);
+
+        getContentResolver().bulkInsert(GroceryotgProvider.CONTENT_URI_GRO, groceries);
     }
 
     private void refreshCategory() {
-        Log.d("GroceryOTG", "in intent service");
-        JSONParser categoryJSON = new JSONParser();
-        JSONArray categoryArray = categoryJSON.getJSONFromUrl(getCategory);
+        Gson gson = new Gson();
+        JSONArray categoryArray = jsonParser.getJSONFromUrl(getCategory);
         ArrayList<ContentValues> contentValuesArrayList = new ArrayList<ContentValues>();
 
         try {
@@ -93,5 +112,12 @@ public class NetworkHandler extends IntentService {
         contentValuesArrayList.toArray(categories);
 
         getContentResolver().bulkInsert(GroceryotgProvider.CONTENT_URI_CAT, categories);
+    }
+
+    private String buildGroceryURL(Date date) {
+        Log.i("GroceryOTG", "freshGrocery with date: " + format.format(date));
+
+        StringBuilder url = new StringBuilder();
+        return url.append(getGroceryBase).append(format.format(date)).toString();
     }
 }

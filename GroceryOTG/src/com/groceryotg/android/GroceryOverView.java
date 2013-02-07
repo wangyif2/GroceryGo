@@ -2,6 +2,8 @@ package com.groceryotg.android;
 
 import android.app.ListActivity;
 import android.app.LoaderManager;
+import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
@@ -11,7 +13,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.SimpleCursorAdapter;
 import com.groceryotg.android.database.CategoryTable;
+import com.groceryotg.android.database.GroceryTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
+import com.groceryotg.android.services.NetworkHandler;
 
 /**
  * User: robert
@@ -19,7 +23,7 @@ import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
  */
 public class GroceryOverView extends ListActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     private SimpleCursorAdapter adapter;
-    private Uri contactUri;
+    private Uri groceryUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,12 +32,12 @@ public class GroceryOverView extends ListActivity implements LoaderManager.Loade
 
         Bundle extras = getIntent().getExtras();
 
-        contactUri = (savedInstanceState == null) ? null : (Uri) savedInstanceState.getParcelable(GroceryotgProvider.CONTENT_ITEM_TYPE_CAT);
+        groceryUri = (savedInstanceState == null) ? null : (Uri) savedInstanceState.getParcelable(GroceryotgProvider.CONTENT_ITEM_TYPE_CAT);
 
         if (extras != null) {
-            contactUri = extras.getParcelable(GroceryotgProvider.CONTENT_ITEM_TYPE_CAT);
+            groceryUri = extras.getParcelable(GroceryotgProvider.CONTENT_ITEM_TYPE_CAT);
             String[] projection = {CategoryTable.COLUMN_CATEGORY_NAME};
-            Cursor cursor = getContentResolver().query(contactUri, projection, null, null, null);
+            Cursor cursor = getContentResolver().query(groceryUri, projection, null, null, null);
 
             if (cursor != null) {
                 cursor.moveToFirst();
@@ -41,6 +45,9 @@ public class GroceryOverView extends ListActivity implements LoaderManager.Loade
                 this.getActionBar().setTitle(cursor.getString(cursor.getColumnIndexOrThrow(CategoryTable.COLUMN_CATEGORY_NAME)));
             }
         }
+
+        this.getListView().setDividerHeight(2);
+        fillData();
     }
 
     @Override
@@ -71,23 +78,40 @@ public class GroceryOverView extends ListActivity implements LoaderManager.Loade
     }
 
     private void launchMapActivity() {
+        Intent intent = new Intent(this, GroceryMapView.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 
     private void refreshCurrentGrocery() {
-
+        Intent intent = new Intent(this, NetworkHandler.class);
+        intent.putExtra(NetworkHandler.REFRESH_CONTENT, NetworkHandler.GRO);
+        startService(intent);
     }
 
+    private void fillData() {
+        String[] from = new String[]{GroceryTable.COLUMN_GROCERY_NAME, GroceryTable.COLUMN_GROCERY_PRICE};
+        int[] to = new int[]{R.id.grocery_row_label, R.id.grocery_row_price};
+
+        getLoaderManager().initLoader(0, null, this);
+        adapter = new SimpleCursorAdapter(this, R.layout.grocery_row, null, from, to, 0);
+
+        setListAdapter(adapter);
+    }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return null;
+        String[] projection = {GroceryTable.COLUMN_ID, GroceryTable.COLUMN_GROCERY_NAME, GroceryTable.COLUMN_GROCERY_PRICE};
+        return new CursorLoader(this, GroceryotgProvider.CONTENT_URI_GRO, projection, null, null, null);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        adapter.swapCursor(data);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
+        adapter.swapCursor(null);
     }
 }

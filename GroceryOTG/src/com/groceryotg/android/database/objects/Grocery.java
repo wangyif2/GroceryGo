@@ -29,7 +29,7 @@ public class Grocery {
 
     private String rawString;
 
-    public Grocery(Item item, Store store, double totalPrice, double unitPrice, Unit unit, Date startDate, Date endDate, Date updateDate, int lineNumber, String rawString) {
+    public Grocery(Item item, Store store, Double totalPrice, Double unitPrice, Unit unit, Date startDate, Date endDate, Date updateDate, Integer lineNumber, String rawString) {
         this.item = item;
         this.store = store;
         this.totalPrice = totalPrice;
@@ -61,7 +61,7 @@ public class Grocery {
         this.store = store;
     }
 
-    public double getTotalPrice() {
+    public Double getTotalPrice() {
         return totalPrice;
     }
 
@@ -69,7 +69,7 @@ public class Grocery {
         this.totalPrice = totalPrice;
     }
 
-    public double getUnitPrice() {
+    public Double getUnitPrice() {
         return unitPrice;
     }
 
@@ -109,7 +109,7 @@ public class Grocery {
         this.updateDate = updateDate;
     }
 
-    public int getLineNumber() {
+    public Integer getLineNumber() {
         return lineNumber;
     }
 

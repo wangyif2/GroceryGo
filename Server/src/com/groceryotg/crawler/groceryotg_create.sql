@@ -1,5 +1,18 @@
 CREATE DATABASE  IF NOT EXISTS `groceryotg` /*!40100 DEFAULT CHARACTER SET utf8 */;
 USE `groceryotg`;
+
+DROP TABLE IF EXISTS `Category`;
+DROP TABLE IF EXISTS `Grocery`;
+DROP TABLE IF EXISTS `Inventory`;
+DROP TABLE IF EXISTS `Item`;
+DROP TABLE IF EXISTS `Nutrient`;
+DROP TABLE IF EXISTS `Nutrient_Item`;
+DROP TABLE IF EXISTS `Nutrient_Source`;
+DROP TABLE IF EXISTS `Store`;
+DROP TABLE IF EXISTS `Subcategory`;
+DROP TABLE IF EXISTS `Unit`;
+
+
 -- MySQL dump 10.13  Distrib 5.5.16, for Win32 (x86)
 --
 -- Host: localhost    Database: groceryotg

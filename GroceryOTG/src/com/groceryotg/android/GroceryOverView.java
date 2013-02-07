@@ -1,7 +1,12 @@
 package com.groceryotg.android;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import com.groceryotg.android.Services.NetworkHandler;
 
 public class GroceryOverView extends Activity {
     /**
@@ -10,23 +15,53 @@ public class GroceryOverView extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        setContentView(R.layout.overview);
     }
 
-//    ContentValues values = new ContentValues();
-//    JSONArray projects = new JSONArray(_webService.getStringResponse());
-//    int counter = 0;
-//    int projectSize = projects.length();
-//
-//    while(projectCount < projectSize) {
-//        JSONObject projectData = projects.getJSONObject(projectCount);
-//
-//        values.put(DbProperties.PROJECT_ID, projectData.getString("pid"));
-//        values.put(DbProperties.CUSTOMER_ID, projectData.getString("cid"));
-//        values.put(DbProperties.SETTLEMENT, projectData.getString("settl"));
-//        //Do some database saving for example
-//
-//        counter++;
-//    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.refresh:
+                refreshCurrentCategory();
+                return true;
+            case R.id.map:
+                launchMapActivity();
+                return true;
+            case R.id.shop_cart:
+                launchShopCartActivity();
+                return true;
+            case android.R.id.home:
+                launchHomeAcitivity();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void launchHomeAcitivity() {
+        Intent intent = new Intent(this, GroceryOverView.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+    }
+
+    private void launchShopCartActivity() {
+
+    }
+
+    private void refreshCurrentCategory() {
+        Intent intent = new Intent(this, NetworkHandler.class);
+        startService(intent);
+    }
+
+    private void launchMapActivity() {
+        Intent intent = new Intent(this, GroceryMapView.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+    }
 }

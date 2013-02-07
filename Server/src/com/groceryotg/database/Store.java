@@ -16,7 +16,7 @@ public class Store {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "store_id")
-    private int storeId;
+    private Integer storeId;
 
     @Column(name = "store_name")
     private String storeName;
@@ -24,9 +24,9 @@ public class Store {
     @Column(name = "store_address")
     private String storeAddress;
 
-    //TODO: need to figure out if this is a inner reference
+    //TODO: need to figure out if this is a inner reference, as well as update Client side database
     @Column(name = "store_parent")
-    private int storeParent;
+    private Integer storeParent;
 
     @Column(name = "store_url")
     private String storeUrl;

@@ -31,7 +31,7 @@
         <property name="show_sql">true</property>
 
         <!--Drop and Recreate DB schema on startup-->
-        <property name="hbm2ddl.auto">create</property>
+        <property name="hbm2ddl.auto">update</property>
 
         <!--Names the Annotated Entity Class-->
         <mapping class="com.groceryotg.database.Grocery"/>

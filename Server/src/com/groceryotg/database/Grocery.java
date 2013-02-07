@@ -18,7 +18,7 @@ public class Grocery {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "grocery_id")
-    private int groceryId;
+    private Integer groceryId;
 
     @ManyToOne
     @JoinColumn(name = "item_id")
@@ -29,10 +29,10 @@ public class Grocery {
     private Store store;
 
     @Column(name = "total_price", precision = 10, length = 2)
-    private double totalPrice;
+    private Double totalPrice;
 
     @Column(name = "unit_price", precision = 10,length = 2)
-    private double unitPrice;
+    private Double unitPrice;
 
     @ManyToOne
     @JoinColumn(name = "unit_id")
@@ -51,7 +51,7 @@ public class Grocery {
     private Date updateDate;
 
     @Column(name = "line_number")
-    private int lineNumber;
+    private Integer lineNumber;
 
     @Column(name = "raw_string")
     @Lob
@@ -93,7 +93,7 @@ public class Grocery {
         return totalPrice;
     }
 
-    public void setTotalPrice(long totalPrice) {
+    public void setTotalPrice(Double totalPrice) {
         this.totalPrice = totalPrice;
     }
 
@@ -101,7 +101,7 @@ public class Grocery {
         return unitPrice;
     }
 
-    public void setUnitPrice(long unitPrice) {
+    public void setUnitPrice(Double unitPrice) {
         this.unitPrice = unitPrice;
     }
 

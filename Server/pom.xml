@@ -10,11 +10,9 @@
     <name>Grocery On The Go</name>
     <properties>
         <hibernate.version>4.1.9.Final</hibernate.version>
-        <log4j.version>1.2.16</log4j.version>
         <guava.version>12.0</guava.version>
         <postgres.version>9.1-901.jdbc4</postgres.version>
         <mysql.version>5.1.22</mysql.version>
-        <slf4j.version>1.6.4</slf4j.version>
         <javax.version>3.0-alpha-1</javax.version>
         <jthyon.version>2.5.3</jthyon.version>
     </properties>
@@ -59,29 +57,11 @@
             <!--<version>3.6.3.Final</version>-->
         <!--</dependency>-->
 
-        <!-- Logging -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jcl-over-slf4j</artifactId>
-            <version>${slf4j.version}</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>${slf4j.version}</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>${log4j.version}</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>log4j</groupId>-->
+            <!--<artifactId>log4j</artifactId>-->
+            <!--<version>${log4j.version}</version>-->
+        <!--</dependency>-->
 
         <!-- Others -->
         <dependency>

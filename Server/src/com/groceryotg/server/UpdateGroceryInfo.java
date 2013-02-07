@@ -3,6 +3,7 @@ package com.groceryotg.server;
 import com.google.gson.Gson;
 import com.groceryotg.database.Grocery;
 import org.hibernate.Session;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +38,10 @@ public class UpdateGroceryInfo extends HttpServlet {
 
         Date requestDate = null;
         try {
-            requestDate = (req.getParameter("date").isEmpty()) ? null : format.parse(req.getParameter("date"));
+            if (req.getParameterMap().containsKey("date"))
+                requestDate = (req.getParameter("date").isEmpty()) ? null : format.parse(req.getParameter("date"));
+            else
+                requestDate = null;
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -57,7 +61,9 @@ public class UpdateGroceryInfo extends HttpServlet {
         session.beginTransaction();
 
         if (requestDate == null) {
-            gro = (List<Grocery>) session.createCriteria(Grocery.class).list();
+            Date lastestDate = (Date) session.createCriteria(Grocery.class).setProjection(Projections.max("updateDate")).uniqueResult();
+            logger.info("date is null, lastestDate is: " + lastestDate.toString());
+            gro = (List<Grocery>) session.createCriteria(Grocery.class).add(Restrictions.ge("updateDate", lastestDate)).list();
         } else {
             gro = (List<Grocery>) session.createCriteria(Grocery.class).add(Restrictions.ge("endDate", requestDate)).list();
         }

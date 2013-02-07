@@ -7,8 +7,6 @@ import javax.persistence.*;
  * Date: 24/01/13
  */
 
-//Category(category_id, category_name)
-
 @Entity
 @Table(name = "Category")
 public class Category {
@@ -16,7 +14,7 @@ public class Category {
     @Id
     @Column(name = "category_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int categoryId;
+    private Integer categoryId;
 
     @Column(name = "category_name")
     private String categoryName;
@@ -30,8 +28,8 @@ public class Category {
     }
 
     public Category(){
-
     }
+
     public Category(String categoryName) {
         this.categoryName = categoryName;
     }

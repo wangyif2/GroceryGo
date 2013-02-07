@@ -38,22 +38,22 @@ public class GroceryOverView extends Activity {
                 launchShopCartActivity();
                 return true;
             case android.R.id.home:
-                launchHomeAcitivity();
+                launchHomeActivity();
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
-
-    private void launchHomeAcitivity() {
+    
+    private void launchHomeActivity() {
         Intent intent = new Intent(this, GroceryOverView.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
 
     private void launchShopCartActivity() {
-
+    	
     }
-
+    
     private void refreshCurrentCategory() {
         Intent intent = new Intent(this, NetworkHandler.class);
         startService(intent);

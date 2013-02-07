@@ -13,7 +13,7 @@ def init():
 def getNounsNLTK(rawStr):
     text = nltk.word_tokenize(rawStr.lower())
     tags = nltk.pos_tag(text)
-    res = filter(lambda x: x if x[1]=="NN" else [], tags)
+    res = filter(lambda x: x if x[1]=="NN" or x[1][:2] == "VB" else [], tags)
     return res
 
 def getNouns(rawStr):
@@ -26,7 +26,6 @@ def getNouns(rawStr):
     # Filter out 'nouns' that are one or two characters long (e.g., 'g', 'ml')
     lemmatizer = nltk.stem.wordnet.WordNetLemmatizer()
     tokens = filter(lambda x: x if len(x)>2 else None, map(lambda x: lemmatizer.lemmatize(x.lower()), tokens))
-    #print(tokens)
     
     # Get tags for tokens
     global tagger
@@ -35,13 +34,11 @@ def getNouns(rawStr):
     # Store all nouns
     nouns = []
     for i in range(len(tags)):
-        if tags[i] == "NN":
+        if tags[i] == "NN" or tags[i][:2] == "VB":
             nouns.append(tokens[i])
 
     #filter out numbers, empty tokens
     nouns = filter(None, map(lambda x: x if re.findall('^[a-zA-Z]+$',x) else [],nouns))
-
-
     return nouns
 
 #init()

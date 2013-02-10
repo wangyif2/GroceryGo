@@ -1,4 +1,4 @@
-# This script crawls the following grocery store flyer websites:
+# This script crawls the following grocery_table store flyer websites:
 # 1. Dominion - same as Metro
 # 2. Loblaws
 # 3. Food Basics
@@ -17,6 +17,7 @@ from bs4 import BeautifulSoup
 import cookielib
 import datetime
 import htmllib
+import logging
 import MySQLdb as mdb
 import nltk
 import re
@@ -35,6 +36,10 @@ mysql_user = "root"
 mysql_password = ""
 mysql_db = "groceryotg"
 
+# define logging level (if you set this to logging.DEBUG, the debug print messages will be displayed)
+logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
+
+
 # TODO:
 # Done. 1) Pass in only the item part of the line string to getNouns, so it doesn't get confused with the price 
 #       2) Build a language model of bigram probabilities to detect compound nouns (e.g. "potato chips" vs just "chips")
@@ -44,6 +49,10 @@ mysql_db = "groceryotg"
 #          That way, we can exclude words like "and" and improve efficiency.
 # Done. 5) Use all words in the list of tags when determining subcategory_id in classifier.py
 #
+
+
+# When getting a table's primary key from MySQL, this is the index of the primary key column name
+SQL_INDEX_PRIMARY_KEY = 4
 
 
 def unescape(s):
@@ -56,7 +65,7 @@ def unescape(s):
 
 def getFlyer():
     '''No input parameters, accesses the database directly. 
-       Finds this week's URL of the accessible plain-text flyer web pages for each grocery store
+       Finds this week's URL of the accessible plain-text flyer web pages for each grocery_table store
        in the database. Parses the accessible plain-text only flyer webpages to identify items. 
        Return a dictionary of {store_id : item} pairs, where "items" is a list of 
        [item_raw_string, unit_price, unit_type_id, total_price, start_date, end_date, page_number, 
@@ -64,8 +73,8 @@ def getFlyer():
     flyers = {}
     items = {}
     
-    today = datetime.date.today()
-    update_date = today.strftime("%Y-%m-%d")
+    today = datetime.datetime.now()
+    update_date = today.strftime("%Y-%m-%d %H:%M:%S")
     
     # Get unit IDs from the database
     cur.execute('SELECT unit_id, unit_type_name FROM Unit;')
@@ -161,7 +170,7 @@ def getFlyer():
                                 store_items += [item_details]
                         
                         items[store_id] = store_items
-                except URLError as e:
+                except urllib2.URLError as e:
                     print("Could not connect to store %d due to Error %d (%s)" % (store_id, e.errno, e.strerror))
             # Loblaws
             elif store_id == 2:
@@ -207,10 +216,20 @@ def getFlyer():
                     # Click on the "Accessible Flyer" link to get to the actual flyer page
                     accessible_link = soup('a', text=re.compile(r'Accessible Flyer'))[0]['href']
                     accessible_link = "http://" + hostname + "/LCL/" + accessible_link
-                    
-                    # Before getting to the actual flyer page, submit an intermediate page web form
+                    #print("Accessible link: %s" % accessible_link)
                     response = opener.open(accessible_link).read()
                     soup = BeautifulSoup(response)
+                    
+                    # On the last day of a flyer's period, the page may change to give the user
+                    # the option of selecting either the current or next week's flyer from a 
+                    # list of publications
+                    if soup('div', {'id': 'PublicationList'}):
+                        pub_link = soup('span', {'class':'publicationDate'})[-1].parent['href']
+                        pub_link = "http://" + hostname + "/LCL/" + pub_link.lstrip('.').lstrip('/')
+                        response = opener.open(pub_link).read()
+                        soup = BeautifulSoup(response)
+                    
+                    # Before getting to the actual flyer page, submit an intermediate page web form
                     the_form = soup('form', {'name':'form1'})[0]
                     target_url = the_form['action']
                     children = the_form.findChildren()
@@ -218,9 +237,10 @@ def getFlyer():
                     for param in children:
                         if param.has_key("value"):
                             post_data += [(param['id'], param['value'])]
-                        else:
+                        elif param.has_key("id"):
                             post_data += [(param['id'], '')]
-                            
+                    
+                    #print("target url: %s" % target_url)
                     post_data = urllib.urlencode(post_data)
                     response = opener.open(target_url, post_data).read()
                     
@@ -272,7 +292,7 @@ def getFlyer():
                         "&publicationtype=" + PUBLICATION_TYPE + "&bannername=" + BANNER_NAME + \
                         "&customername=" + CUSTOMER_NAME + "&pageid1=" + str(page_id) + \
                         "&languageid=" + LANGUAGE_ID + "&bannerid=" + BANNER_ID
-                    
+                    print(ajax_query)
                     response = opener.open(ajax_query).read()
                     dict_items = ast.literal_eval(response)
                     
@@ -319,7 +339,16 @@ def getFlyer():
                         
                         raw_price = item['price']
                         orig_price = raw_price
-                        if raw_price:
+                        
+                        numeric_pattern = re.compile("[0-9]+")
+                        numeric_only = re.compile("^[0-9.]+$")
+                        
+                        # If the price contains any spaces, e.g. "Starting from $19.99", then 
+                        # split on space and keep the elements that contains numeric chars
+                        if raw_price.find(" ") != -1:
+                            raw_price = " ".join(filter(lambda x: x if numeric_pattern.findall(x) else None, raw_price.split(" ")))
+                        
+                        if raw_price and numeric_pattern.findall(raw_price):
                             # If a range given, take the lowest value
                             if raw_price.find("-") != -1:
                                 raw_price = raw_price.split("-")[0].strip()
@@ -327,27 +356,35 @@ def getFlyer():
                             index_ratio = raw_price.find("/")
                             index_dollar = raw_price.find("$")
                             index_cents = raw_price.find("\xa2")
+                            #print(raw_price)
                             if index_ratio != -1:
                                 num_products = float(raw_price[:index_ratio])
                                 total_price = raw_price[index_ratio+1:]
                                 if index_dollar != -1:
-                                    total_price = float(total_price.strip().strip("$").strip())
+                                    the_price = total_price.strip().strip("$").strip()
+                                    if numeric_only.findall(the_price):
+                                        total_price = float(the_price)
+                                        # Default unit_price
+                                        unit_price = total_price / num_products
                                 else:
-                                    total_price = float(total_price.strip("\xa2").strip("\xc2")) / 100.0
-                                
-                                # Default unit_price
-                                unit_price = total_price / num_products
+                                    the_price = total_price.strip("\xa2").strip("\xc2")
+                                    if numeric_only.findall(the_price):
+                                        total_price = float(the_price) / 100.0
+                                        # Default unit_price
+                                        unit_price = total_price / num_products
                             
                             elif index_dollar != -1:
-                                total_price = float(raw_price.strip("$"))
-                                
-                                # Default unit_price
-                                unit_price = total_price
+                                the_price = raw_price.strip("$")
+                                if numeric_only.findall(the_price):
+                                    total_price = float(the_price)
+                                    # Default unit_price
+                                    unit_price = total_price
                             else:
-                                total_price = float(raw_price.strip("\xa2").strip("\xc2"))
-                                
-                                # Default unit_price
-                                unit_price = total_price
+                                the_price = raw_price.strip("\xa2").strip("\xc2")
+                                if numeric_only.findall(the_price):
+                                    total_price = float(the_price)
+                                    # Default unit_price
+                                    unit_price = total_price
                             
                             # When price units are specified, the unit price is usually given in
                             # the "priceunits" key-value pair
@@ -374,7 +411,7 @@ def getFlyer():
                         store_items += [item_details]
                         
                     items[store_id] = store_items
-                except URLError as e:
+                except urllib2.URLError as e:
                     print("Could not connect to store %d due to Error %d (%s)" % (store_id, e.errno, e.strerror))
             # Food Basics
             elif store_id == 3:
@@ -456,7 +493,7 @@ def getFlyer():
                             store_items += [item_details]
                     
                     items[store_id] = store_items
-                except URLError as e:
+                except urllib2.URLError as e:
                     print("Could not connect to store %d due to Error %d (%s)" % (store_id, e.errno, e.strerror))
             # No Frills
             elif store_id == 4:
@@ -474,9 +511,10 @@ def getFlyer():
                      # Click on the "Accessible Flyer" link to get to the actual flyer page
                     accessible_link = soup('a', text=re.compile(r'Accessible Flyer'))[0]['href']
                     accessible_link = "http://" + hostname + "/LCL/" + accessible_link
+                    response = opener.open(accessible_link).read()
+                    soup = BeautifulSoup(response)
                     
                     # Before getting to the actual flyer page, submit an intermediate page web form
-                    response = opener.open(accessible_link).read()
                     parsed_accessible = urlparse(accessible_link)
                     index_end = parsed_accessible.path.rfind("/")
                     
@@ -485,10 +523,19 @@ def getFlyer():
                                 "publicationdirector.ashx?PublicationType=32&OrganizationId=797d6dd1-a19f-4f1c-882d-12d6601dc376&" +\
                                 "BannerId=1f2ff19d-2888-44b3-93ea-1905aa0d9756&Language=EN&BannerName=NOFR&" +\
                                 "Version=Text&pubclass=1&province=9&city=4802&storeid=2f476909-e9c6-41a8-90fd-7bc8a2e14e03"
-                    
-                    # Before getting to the actual flyer page, submit an intermediate page web form
                     response = opener.open(link_store).read()
                     soup = BeautifulSoup(response)
+                    
+                    # On the last day of a flyer's period, the page may change to give the user
+                    # the option of selecting either the current or next week's flyer from a 
+                    # list of publications
+                    if soup('div', {'id': 'PublicationList'}):
+                        pub_link = soup('span', {'class':'publicationDate'})[-1].parent['href']
+                        pub_link = "http://" + hostname + "/LCL/" + pub_link.lstrip('.').lstrip('/')
+                        response = opener.open(pub_link).read()
+                        soup = BeautifulSoup(response)
+                    
+                    # Before getting to the actual flyer page, submit an intermediate page web form
                     the_form = soup('form', {'name':'form1'})[0]
                     target_url = the_form['action']
                     children = the_form.findChildren()
@@ -496,7 +543,7 @@ def getFlyer():
                     for param in children:
                         if param.has_key("value"):
                             post_data += [(param['id'], param['value'])]
-                        else:
+                        elif param.has_key("id"):
                             post_data += [(param['id'], '')]
                             
                     post_data = urllib.urlencode(post_data)
@@ -651,7 +698,7 @@ def getFlyer():
                         store_items += [item_details]
                         
                     items[store_id] = store_items
-                except URLError as e:
+                except urllib2.URLError as e:
                     print("Could not connect to store %d due to Error %d (%s)" % (store_id, e.errno, e.strerror))
                 
             # Sobeys
@@ -794,7 +841,14 @@ def getFlyer():
                     
                     raw_price = item['price']
                     orig_price = raw_price
+                    
                     numeric_pattern = re.compile("[0-9]+")
+                    
+                    # If the price contains any spaces, e.g. "Starting from $19.99", then 
+                    # split on space and keep the elements that contains numeric chars
+                    if raw_price.find(" ") != -1:
+                        raw_price = " ".join(filter(lambda x: x if numeric_pattern.findall(x) else None, raw_price.split(" ")))
+                    
                     if raw_price and numeric_pattern.findall(raw_price):
                         # If a range given, take the lowest value
                         if raw_price.find("-") != -1:
@@ -809,6 +863,7 @@ def getFlyer():
                             if index_dollar != -1:
                                 total_price = float(total_price.strip().strip("$").strip())
                             else:
+                                print("raw price: %s" % raw_price)
                                 total_price = float(total_price.strip("\xa2").strip("\xc2")) / 100.0
                             
                             # Default unit_price
@@ -891,7 +946,7 @@ def evaluateAccuracy(store_id, labels, item_list = None, noun_list = None):
         if targets[i] == labels[i]:
             correctly_classified += 1
         elif item_list:
-            print("Misclassified item (predicted: %d, actual: %d): %s" % (labels[i], targets[i], noun_list[i]))
+            logging.debug("Misclassified item (predicted: %d, actual: %d): %s" % (labels[i], targets[i], noun_list[i]))
                   
     return float(correctly_classified) / float(len(targets))
 
@@ -899,18 +954,20 @@ def evaluateAccuracy(store_id, labels, item_list = None, noun_list = None):
 #******************************************************************************
 # An interface for accessing a database table, handles writing data to table
 #******************************************************************************
+
 class TableInterface:
-    
-    # A list of rows of data, buffered to be inserted into database table
-    data = []
-    
-    # A list of field names for the database table
-    columns = []
     
     def __init__(self, con, table_name): 
         '''Default constructor. Takes two arguments: "con" - a valid database 
            connection to the GroceryOTG database, and "table_name" - a valid 
            string name of a database table.''' 
+        
+        # A list of rows of data, buffered to be inserted into database table
+        self.data = []
+        
+        # A list of field names for the database table
+        self.columns = []
+        
         self.dbcon = con
         self.dbcur = con.cursor()
         self.table_name = table_name
@@ -919,13 +976,26 @@ class TableInterface:
         self.dbcur.execute("DESCRIBE " + table_name)
         cols = self.dbcur.fetchall()
         
-        # Keep the field names only, and discard the table ID field
-        self.columns = [x[0] for x in cols][1:]
-        print("Created a TableInterface with columns: %s" % self.columns)
+        # Keep the field names only (this contains all auto-increment fields and table primary keys)
+        self.columns = [x[0] for x in cols]
+        
+        # The primary key column names for the table
+        self.primary_key = []
+        self.dbcur.execute("SHOW KEYS FROM " + self.table_name + " WHERE Key_name = 'PRIMARY'")
+        res = self.dbcur.fetchall()
+        if len(res) > 0:
+            # Grab only the primary key column name from each entry in the results
+            for key in res:
+                if key:
+                    # Remove the primary key from the columns list and get its index
+                    key_index = self.columns.index(key[SQL_INDEX_PRIMARY_KEY])
+                    self.columns.pop(key_index)
+                    self.primary_key += [key_index]
+        print("Created a TableInterface with primary key: %s, columns: %s" % (str(self.primary_key), self.columns))
         
     
     def add_data(self, data_list):
-        '''Takes one arguments, "data_list" - a list of values corresponding to one row 
+        '''Takes one argument, "data_list" - a list of values corresponding to one row 
            to be inserted into the table. Assumes the values are in the same order as 
            the columns in the database. Returns False if the provided list is invalid. 
            Returns True otherwise.'''
@@ -937,35 +1007,78 @@ class TableInterface:
         self.data += [data_list]
         return True
 
+    def add_batch(self, data_matrix):
+        '''Takes one argument, "data_matrix" - a list of lists of values, each corresponding 
+           to one row to be inserted into the table. Assumes the values are in the same order as 
+           the columns in the database. Returns False if the provided list is invalid. 
+           Returns True otherwise.'''
+        
+        if not len(data_matrix) or len(data_matrix[0]) != len(self.columns):
+            return False
+        
+        for row in data_matrix:
+            self.data += [row]
+            if len(self.data) == 1:
+                print(self.data)
+        return True
 
+    def get_data(self):
+        '''Takes no arguments. Returns the table's buffered data, as a list of lists, where each corresponds 
+           to one row to be inserted into the table.'''
+        return self.data
+    
     def write_data(self):
         '''Takes no arguments. Writes the buffered rows of values stored in "data" to the 
-           database table. Returns void.'''
+           database table, if they don't already exist in the table. Returns a list of the 
+           newly created row ID's (or the existing row ID's), in the order in which 
+           they were created.'''
         
-        print("\nWriting data to database table...")
-        
-        # Encode the raw strings as UTF-8 before adding to database, so all special 
-        # characters are preserved.
-        self.data = map(lambda x: [x[0]] + [str(x[1]).encode('utf-8')] + [str(x[2]).encode('utf-8')] + x[3:], self.data)
+        print("Writing data to database table...")
+        if len(self.columns) > 4:
+            print(self.data[0])
+        id_list = []
         
         column_str = ", ".join(self.columns)
         type_str = ", ".join(["%s"] * len(self.columns))
-        sql = "INSERT INTO " + self.table_name + " (" + column_str +") VALUES (" + type_str + ")"
+        where_clause = ""
+        for counter in range(len(self.columns)):
+            if where_clause:
+                where_clause += " AND "
+            where_clause += self.columns[counter] + "=%s"
+        
+        sql_exists = "SELECT * FROM " + self.table_name + " WHERE " + where_clause
+        sql = "INSERT INTO " + self.table_name + " (" + column_str + ") VALUES (" + type_str + ")"
         formatted_data = [tuple(x) for x in self.data]
         
-        lines_inserted = self.dbcur.executemany(sql, formatted_data)
-        print("Inserted %d lines into %s" %(lines_inserted, self.table_name))
+        for item in self.data:
+            # Check if the row with these data already exists in the table
+            # If it does, return the existing row ID
+            cur.execute(sql_exists, item)
+            res = cur.fetchall()
+            if res:
+                # Return the first primary key for the row
+                id_list += [res[0][self.primary_key[0]]]
+            # Otherwise, insert the row and return the new row ID
+            else:
+                cur.execute(sql, item)
+                new_id = cur.lastrowid
+                id_list += [new_id]
+        
+        #lines_inserted = self.dbcur.executemany(sql, formatted_data)
+        print("Inserted %d lines into %s" %(len(id_list), self.table_name))
         
         # Commit changes to database
         self.dbcon.commit()
+        
+        # Clear the buffer
+        self.data = []
+        
+        return id_list
         
 
 # ***************************************************************************
 # ***************************************************************************
 con = None
-
-# Output parsed results to a database table
-output_table = "Grocery"
 
 try:
     con = mdb.connect('localhost', mysql_user, mysql_password, mysql_db)
@@ -980,13 +1093,15 @@ try:
     #print("SQLAlchemy version: ", sqlalchemy.__version__)
     
     # Create an interface for writing output to the database table
-    grocery = TableInterface(con, output_table)
+    grocery_table = TableInterface(con, "Grocery")
+    item_table = TableInterface(con, "Item")
     
     # Step 1: Parse the flyers into (item, price) pairs
     items = getFlyer()
     
     # Step 2: Pass the items one by one to the "getNouns" module to get a list of nouns for each item
     getNouns.init()
+    print
     stores = items.keys()
     for store_id in stores:
         item_list = items[store_id]
@@ -1004,17 +1119,30 @@ try:
             predictions += [subcategory_id]
             
             # Add to output buffer
-            # TODO: Add to Item table as well
-            grocery.add_data([None] + item)
-        
+            res_flag = item_table.add_data([str(item[0]).encode('utf-8')] + [subcategory_id])
+            if not res_flag:
+                raise Error("item data could not be added to the item table handler")
+            
         # Evaluate classification accuraucy for each store flyer based on hand-labelled subcategories
         classification_rate = evaluateAccuracy(store_id, predictions, item_list, noun_table)
         if classification_rate:
             print("TOTAL CLASSIFICATION RATE for store %d: %.2f" % (store_id, classification_rate))
-       
+        
+        # Step 4: Write to Item
+        item_ids = item_table.write_data()
+        grocery_data = [tuple(item_ids)] + zip(*item_list)
+        grocery_data = map(lambda x: list(x), zip(*grocery_data))
+        
+        # Encode the raw strings as UTF-8 before adding to database, so all special 
+        # characters are preserved.
+        grocery_data = map(lambda x: [x[0]] + [str(x[1]).encode('utf-8')] + [str(x[2]).encode('utf-8')] + x[3:], grocery_data)
+        res_flag = grocery_table.add_batch(grocery_data)
+        if not res_flag:
+            raise Error("grocery data could not be added to the Grocery table handler")
+        print
     
-    # Step 4: Write to database
-    grocery.write_data()
+    # Step 5: Write to Grocery
+    grocery_ids = grocery_table.write_data()
     
 except mdb.Error, e:
     print("error: %s" % e)

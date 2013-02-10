@@ -1,6 +1,6 @@
 package com.groceryotg.android;
 
-import android.app.ListActivity;
+import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -12,21 +12,44 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.Toast;
+
+import com.groceryotg.android.CategoryGridCursorAdapter;
 import com.groceryotg.android.database.CategoryTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 import com.groceryotg.android.services.NetworkHandler;
 
-public class CategoryOverView extends ListActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class CategoryOverView extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
     private SimpleCursorAdapter adapter;
-
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.category_list);
-        this.getListView().setDividerHeight(2);
+        //this.getListView().setDividerHeight(2);
         fillData();
+        
+        // Set adapter for the grid view
+        GridView gridview = (GridView) findViewById(R.id.gridview);
+        gridview.setAdapter(adapter);
+        //gridview.setAdapter(new CategoryImageAdapter(this));
+        
+        gridview.setOnItemClickListener(new OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                //Toast.makeText(CategoryOverView.this, "" + position, Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(CategoryOverView.this, GroceryOverView.class);
+                Uri uri = Uri.parse(GroceryotgProvider.CONTENT_URI_CAT + "/" + id);
+                intent.putExtra(GroceryotgProvider.CONTENT_ITEM_TYPE_CAT, uri);
+                startActivity(intent);
+            }
+        });
+        
+        
     }
 
     @Override
@@ -51,7 +74,8 @@ public class CategoryOverView extends ListActivity implements LoaderManager.Load
         }
         return super.onOptionsItemSelected(item);
     }
-
+    
+    /*
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
@@ -61,7 +85,8 @@ public class CategoryOverView extends ListActivity implements LoaderManager.Load
 
         startActivity(intent);
     }
-
+    */
+    
     //TODO: implement IntentService Callback
     private void refreshCurrentCategory() {
         Intent intent = new Intent(this, NetworkHandler.class);
@@ -84,9 +109,9 @@ public class CategoryOverView extends ListActivity implements LoaderManager.Load
         int[] to = new int[]{R.id.category_row_label};
 
         getLoaderManager().initLoader(0, null, this);
-        adapter = new SimpleCursorAdapter(this, R.layout.category_row, null, from, to, 0);
-
-        setListAdapter(adapter);
+        //adapter = new SimpleCursorAdapter(this, R.layout.category_row, null, from, to, 0);
+        adapter = new CategoryGridCursorAdapter(this, R.layout.category_row, null, from, to);
+        
     }
 
     @Override

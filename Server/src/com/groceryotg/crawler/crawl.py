@@ -1119,7 +1119,12 @@ try:
             predictions += [subcategory_id]
             
             # Add to output buffer
-            res_flag = item_table.add_data([str(item[0]).encode('utf-8')] + [subcategory_id])
+            try:
+                item_data = [item[0].encode('utf-8')] + [subcategory_id]
+            except:
+                item_data = [item[0]] + [subcategory_id]
+                
+            res_flag = item_table.add_data(item_data)
             if not res_flag:
                 raise RuntimeError("item data could not be added to the item table handler")
             
@@ -1135,7 +1140,11 @@ try:
         
         # Encode the raw strings as UTF-8 before adding to database, so all special 
         # characters are preserved.
-        grocery_data = map(lambda x: [x[0]] + [str(x[1]).encode('utf-8')] + [str(x[2]).encode('utf-8')] + x[3:], grocery_data)
+        try:
+            grocery_data = map(lambda x: [x[0]] + [x[1].encode('utf-8')] + [x[2].encode('utf-8')] + x[3:], grocery_data)
+        except:
+            grocery_data = map(lambda x: [x[0]] + [x[1]] + [x[2]] + x[3:], grocery_data)
+            
         res_flag = grocery_table.add_batch(grocery_data)
         if not res_flag:
             raise RuntimeError("grocery data could not be added to the Grocery table handler")

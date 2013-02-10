@@ -21,10 +21,13 @@
             android:layout_marginTop="6dp"
             android:text="@+id/grocery_row_text"
             android:textSize="24dp"
-            android:drawableLeft="@drawable/grocery_icon"
+            android:fontFamily="sans-serif-light"
+        	android:textStyle="normal"
+            android:drawableStart="@drawable/add_icon"
             android:drawablePadding="10dip"
             android:paddingLeft="10dip"
-            android:singleLine="true"
+            android:singleLine="false"
+            android:gravity="top|left"
             >
         </TextView>
 
@@ -36,6 +39,8 @@
             android:text="@+id/grocery_row_price_text"
             android:textColor="@android:color/holo_red_dark"
             android:textSize="24dp"
+            android:fontFamily="sans-serif-condensed"
+        	android:textStyle="bold"
             android:singleLine="true"
             android:gravity="right"
             android:layout_weight="1.0"

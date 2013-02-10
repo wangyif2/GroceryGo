@@ -117,6 +117,7 @@ public class NetworkHandler extends IntentService {
     private String buildGroceryURL(Date date) {
         Log.i("GroceryOTG", "freshGrocery with date: " + format.format(date));
 
+        // TODO: Accept a second argument, int categoryId, and append to querystring
         StringBuilder url = new StringBuilder();
         return url.append(getGroceryBase).append(format.format(date)).toString();
     }

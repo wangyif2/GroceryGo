@@ -17,7 +17,7 @@
         android:textColor="#ffffff"
         android:gravity="right|bottom"
         android:paddingLeft="10dip"
-        android:singleLine="true"
+        android:singleLine="false"
         >
     </TextView>
 

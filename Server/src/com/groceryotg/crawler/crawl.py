@@ -1121,7 +1121,7 @@ try:
             # Add to output buffer
             res_flag = item_table.add_data([str(item[0]).encode('utf-8')] + [subcategory_id])
             if not res_flag:
-                raise Error("item data could not be added to the item table handler")
+                raise RuntimeError("item data could not be added to the item table handler")
             
         # Evaluate classification accuraucy for each store flyer based on hand-labelled subcategories
         classification_rate = evaluateAccuracy(store_id, predictions, item_list, noun_table)
@@ -1138,7 +1138,7 @@ try:
         grocery_data = map(lambda x: [x[0]] + [str(x[1]).encode('utf-8')] + [str(x[2]).encode('utf-8')] + x[3:], grocery_data)
         res_flag = grocery_table.add_batch(grocery_data)
         if not res_flag:
-            raise Error("grocery data could not be added to the Grocery table handler")
+            raise RuntimeError("grocery data could not be added to the Grocery table handler")
         print
     
     # Step 5: Write to Grocery

@@ -2,54 +2,47 @@ package com.groceryotg.android;
 
 import android.app.Activity;
 import android.app.LoaderManager;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
+import android.view.*;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
-import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
-import android.widget.Toast;
-
-import com.groceryotg.android.CategoryGridCursorAdapter;
+import android.widget.TextView;
 import com.groceryotg.android.database.CategoryTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 import com.groceryotg.android.services.NetworkHandler;
 
 public class CategoryOverView extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
     private SimpleCursorAdapter adapter;
-    
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.category_list);
-        //this.getListView().setDividerHeight(2);
         fillData();
-        
+
         // Set adapter for the grid view
         GridView gridview = (GridView) findViewById(R.id.gridview);
         gridview.setAdapter(adapter);
-        //gridview.setAdapter(new CategoryImageAdapter(this));
-        
+
         gridview.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                //Toast.makeText(CategoryOverView.this, "" + position, Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(CategoryOverView.this, GroceryOverView.class);
                 Uri uri = Uri.parse(GroceryotgProvider.CONTENT_URI_CAT + "/" + id);
                 intent.putExtra(GroceryotgProvider.CONTENT_ITEM_TYPE_CAT, uri);
                 startActivity(intent);
             }
         });
-        
-        
+
+
     }
 
     @Override
@@ -74,19 +67,7 @@ public class CategoryOverView extends Activity implements LoaderManager.LoaderCa
         }
         return super.onOptionsItemSelected(item);
     }
-    
-    /*
-    @Override
-    protected void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
-        Intent intent = new Intent(this, GroceryOverView.class);
-        Uri uri = Uri.parse(GroceryotgProvider.CONTENT_URI_CAT + "/" + id);
-        intent.putExtra(GroceryotgProvider.CONTENT_ITEM_TYPE_CAT, uri);
 
-        startActivity(intent);
-    }
-    */
-    
     //TODO: implement IntentService Callback
     private void refreshCurrentCategory() {
         Intent intent = new Intent(this, NetworkHandler.class);
@@ -111,7 +92,7 @@ public class CategoryOverView extends Activity implements LoaderManager.LoaderCa
         getLoaderManager().initLoader(0, null, this);
         //adapter = new SimpleCursorAdapter(this, R.layout.category_row, null, from, to, 0);
         adapter = new CategoryGridCursorAdapter(this, R.layout.category_row, null, from, to);
-        
+
     }
 
     @Override
@@ -129,4 +110,63 @@ public class CategoryOverView extends Activity implements LoaderManager.LoaderCa
     public void onLoaderReset(Loader<Cursor> loader) {
         adapter.swapCursor(null);
     }
+
+    public class CategoryGridCursorAdapter extends SimpleCursorAdapter {
+        private Context mContext;
+        private int mLayout;
+        private int[] gridColours;
+
+        @SuppressWarnings("deprecation")
+        public CategoryGridCursorAdapter(Context context, int layout, Cursor c, String[] from, int[] to) {
+            super(context, layout, c, from, to);
+            this.mContext = context;
+            this.mLayout = layout;
+
+            String[] allColours = mContext.getResources().getStringArray(R.array.colours);
+            gridColours = new int[allColours.length];
+
+            for (int i = 0; i < allColours.length; i++) {
+                gridColours[i] = Color.parseColor(allColours[i]);
+            }
+        }
+
+        @Override
+        public View newView(Context context, Cursor cursor, ViewGroup parent) {
+
+            Cursor c = getCursor();
+            final LayoutInflater inflater = LayoutInflater.from(context);
+            View v = inflater.inflate(mLayout, parent, false);
+
+            // Get the next row from the cursor
+            String colName = CategoryTable.COLUMN_CATEGORY_NAME;
+            String categoryName = c.getString(c.getColumnIndex(colName));
+
+            // Set the name of the next category in the grid view
+            TextView name_text = (TextView) v.findViewById(R.id.category_row_label);
+            if (name_text != null) {
+                name_text.setText(categoryName);
+            }
+
+            return v;
+        }
+
+        @Override
+        public void bindView(View v, Context context, Cursor c) {
+
+            // Get the next row from the cursor
+            String colName = CategoryTable.COLUMN_CATEGORY_NAME;
+            String categoryName = c.getString(c.getColumnIndex(colName));
+
+            // Set the name of the next category in the grid view
+            TextView name_text = (TextView) v.findViewById(R.id.category_row_label);
+            if (name_text != null) {
+                name_text.setText(categoryName);
+            }
+
+            int position = c.getPosition();
+            v.setBackgroundColor(gridColours[position % gridColours.length]);
+        }
+
+    }
+
 }

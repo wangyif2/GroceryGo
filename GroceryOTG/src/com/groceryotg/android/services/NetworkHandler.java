@@ -33,7 +33,7 @@ public class NetworkHandler extends IntentService {
     public static final DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
     private final String getCategory = "http://groceryotg.elasticbeanstalk.com/GetGeneralInfo";
-    private final String getGroceryBase = "http://groceryotg.elasticbeanstalk.com/UpdateGroceryInfo?date=";
+    private final String getGroceryBase = "http://groceryotg.elasticbeanstalk.com/UpdateGroceryInfo";
 
     JSONParser jsonParser = new JSONParser();
 
@@ -63,8 +63,14 @@ public class NetworkHandler extends IntentService {
 
     private void refreshGrocery() {
         //TODO: hard coded date format!! not good...
-        Gson gson=  new GsonBuilder().setDateFormat("MMM dd, yyyy").create();
-        String getGrocery = buildGroceryURL(new Date());
+        Gson gson = new GsonBuilder().setDateFormat("MMM dd, yyyy").create();
+
+        //build request url
+        String date = "?date=" + format.format(new Date());
+        String[] requestArgs = new String[]{date};
+        String getGrocery = buildGroceryURL(requestArgs);
+
+        //network request
         JSONArray groceryArray = jsonParser.getJSONFromUrl(getGrocery);
         ArrayList<ContentValues> contentValuesArrayList = new ArrayList<ContentValues>();
 
@@ -114,11 +120,11 @@ public class NetworkHandler extends IntentService {
         getContentResolver().bulkInsert(GroceryotgProvider.CONTENT_URI_CAT, categories);
     }
 
-    private String buildGroceryURL(Date date) {
-        Log.i("GroceryOTG", "freshGrocery with date: " + format.format(date));
-
+    private String buildGroceryURL(String[] args) {
         // TODO: Accept a second argument, int categoryId, and append to querystring
         StringBuilder url = new StringBuilder();
-        return url.append(getGroceryBase).append(format.format(date)).toString();
+        for (String arg : args)
+            url.append(getGroceryBase).append(arg);
+        return url.toString();
     }
 }

@@ -11,6 +11,7 @@ import android.net.Uri;
 import com.groceryotg.android.database.CategoryTable;
 import com.groceryotg.android.database.GroceryTable;
 import com.groceryotg.android.database.GroceryotgDatabaseHelper;
+import com.groceryotg.android.database.StoreTable;
 
 /**
  * User: robert
@@ -25,20 +26,26 @@ public class GroceryotgProvider extends ContentProvider {
     private static final int CATEGORY_ID = 20;
     private static final int GROCERIES = 30;
     private static final int GROCERY_ID = 40;
+    private static final int STORES = 50;
+    private static final int STORE_ID = 60;
 
     // Content URI
     private static final String AUTHORITY = "com.groceryotg.android.database.contentprovider";
     private static final String BASE_PATH_CAT = "categories";
     private static final String BASE_PATH_GRO = "groceries";
+    private static final String BASE_PATH_STO = "stores";
 
     public static final Uri CONTENT_URI_CAT = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH_CAT);
     public static final Uri CONTENT_URI_GRO = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH_GRO);
+    public static final Uri CONTENT_URI_STO = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH_STO);
 
     // MIME type for multiple rows
     public static final String CONTENT_TYPE_CAT = ContentResolver.CURSOR_DIR_BASE_TYPE + "/categories";
     public static final String CONTENT_ITEM_TYPE_CAT = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/category";
     public static final String CONTENT_TYPE_GRO = ContentResolver.CURSOR_DIR_BASE_TYPE + "/groceries";
     public static final String CONTENT_ITEM_TYPE_GRO = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/grocery";
+    public static final String CONTENT_TYPE_STO = ContentResolver.CURSOR_DIR_BASE_TYPE + "/stores";
+    public static final String CONTENT_ITEM_TYPE_STO = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/store";
 
     private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
@@ -47,6 +54,8 @@ public class GroceryotgProvider extends ContentProvider {
         sURIMatcher.addURI(AUTHORITY, BASE_PATH_CAT + "/#", CATEGORY_ID);
         sURIMatcher.addURI(AUTHORITY, BASE_PATH_GRO, GROCERIES);
         sURIMatcher.addURI(AUTHORITY, BASE_PATH_GRO + "/#", GROCERY_ID);
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH_STO, STORES);
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH_STO + "/#", STORE_ID);
     }
 
     @Override
@@ -106,6 +115,10 @@ public class GroceryotgProvider extends ContentProvider {
                 id = sqlDB.insert(GroceryTable.TABLE_GROCERY, null, values);
                 getContext().getContentResolver().notifyChange(uri, null);
                 return Uri.parse(BASE_PATH_GRO + "/" + id);
+            case STORES:
+                id = sqlDB.insert(StoreTable.TABLE_STORE, null, values);
+                getContext().getContentResolver().notifyChange(uri, null);
+                return Uri.parse(BASE_PATH_STO + "/" + id);
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }

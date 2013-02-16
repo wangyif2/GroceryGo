@@ -9,9 +9,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.groceryotg.android.database.CategoryTable;
 import com.groceryotg.android.database.GroceryTable;
+import com.groceryotg.android.database.StoreTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 import com.groceryotg.android.database.objects.Category;
 import com.groceryotg.android.database.objects.Grocery;
+import com.groceryotg.android.database.objects.Store;
 import com.groceryotg.android.utils.JSONParser;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,11 +31,13 @@ public class NetworkHandler extends IntentService {
     public static final String REFRESH_CONTENT = "content";
     public static final int CAT = 10;
     public static final int GRO = 20;
+    public static final int STO = 30;
 
     public static final DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
     private final String getCategory = "http://groceryotg.elasticbeanstalk.com/GetGeneralInfo";
     private final String getGroceryBase = "http://groceryotg.elasticbeanstalk.com/UpdateGroceryInfo";
+    private final String getStore = "http://groceryotg.elasticbeanstalk.com/GetStoreInfo";
 
     JSONParser jsonParser = new JSONParser();
 
@@ -54,11 +58,41 @@ public class NetworkHandler extends IntentService {
                 case GRO:
                     refreshGrocery();
                     break;
+                case STO:
+                    refreshStore();
+                    break;
                 default:
                     Log.e("GroceryOTG", "unknown request received by NetworkHandler");
                     break;
             }
         }
+    }
+
+    private void refreshStore() {
+        Gson gson = new Gson();
+        JSONArray categoryArray = jsonParser.getJSONFromUrl(getStore);
+        ArrayList<ContentValues> contentValuesArrayList = new ArrayList<ContentValues>();
+
+        try {
+            for (int i = 0; i < categoryArray.length(); i++) {
+                Store store = gson.fromJson(categoryArray.getJSONObject(i).toString(), Store.class);
+
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(StoreTable.COLUMN_STORE_ID, store.getStoreId());
+                contentValues.put(StoreTable.COLUMN_STORE_NAME, store.getStoreName());
+                contentValues.put(StoreTable.COLUMN_STORE_PARENT, store.getStoreParent());
+                contentValues.put(StoreTable.COLUMN_STORE_ADDR, store.getStoreAddress());
+
+                contentValuesArrayList.add(contentValues);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        ContentValues[] stores = new ContentValues[contentValuesArrayList.size()];
+        contentValuesArrayList.toArray(stores);
+
+        getContentResolver().bulkInsert(GroceryotgProvider.CONTENT_URI_STO, stores);
     }
 
     private void refreshGrocery() {

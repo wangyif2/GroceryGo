@@ -5,21 +5,25 @@ import android.util.Log;
 
 /**
  * User: robert
- * Date: 07/02/13
+ * Date: 15/02/13
  */
-public class CategoryTable {
+public class StoreTable {
     // database table
-    public static final String TABLE_CATEGORY = "category";
+    public static final String TABLE_STORE = "store";
     public static final String COLUMN_ID = "_id";
-    public static final String COLUMN_CATEGORY_ID = "category_id";
-    public static final String COLUMN_CATEGORY_NAME = "category_name";
+    public static final String COLUMN_STORE_ID = "store_id";
+    public static final String COLUMN_STORE_NAME = "store_name";
+    public static final String COLUMN_STORE_PARENT = "store_parent";
+    public static final String COLUMN_STORE_ADDR = "store_addr";
 
     // database creation SQL statement
     public static final String DATABASE_CREATE = "create table "
-            + TABLE_CATEGORY
+            + TABLE_STORE
             + "(" + COLUMN_ID + " integer primary key autoincrement, "
-            + COLUMN_CATEGORY_ID + " integer unique not null, "
-            + COLUMN_CATEGORY_NAME + " text not null" + ");";
+            + COLUMN_STORE_ID + " integer unique not null, "
+            + COLUMN_STORE_NAME + " text not null, "
+            + COLUMN_STORE_PARENT + " integer, "
+            + COLUMN_STORE_ADDR + " text);";
 
     public static void onCreate(SQLiteDatabase database) {
         database.execSQL(DATABASE_CREATE);
@@ -29,7 +33,7 @@ public class CategoryTable {
         Log.w(CategoryTable.class.getName(), "Upgrading database from version "
                 + oldVersion + " to " + newVersion
                 + ", which will destroy all old data");
-        database.execSQL("DROP TABLE IF EXISTS " + TABLE_CATEGORY);
+        database.execSQL("DROP TABLE IF EXISTS " + TABLE_STORE);
         onCreate(database);
     }
 }

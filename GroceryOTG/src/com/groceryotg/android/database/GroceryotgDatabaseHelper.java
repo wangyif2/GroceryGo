@@ -20,11 +20,13 @@ public class GroceryotgDatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         CategoryTable.onCreate(db);
         GroceryTable.onCreate(db);
+        StoreTable.onCreate(db);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         CategoryTable.onUpgrade(db, oldVersion, newVersion);
         GroceryTable.onUpgrade(db, oldVersion, newVersion);
+        StoreTable.onUpgrade(db,oldVersion,newVersion);
     }
 }

@@ -26,8 +26,8 @@ public class CategoryOverView extends Activity implements LoaderManager.LoaderCa
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.category_list);
         fillData();
+        setContentView(R.layout.category_list);
 
         // Set adapter for the grid view
         GridView gridview = (GridView) findViewById(R.id.gridview);

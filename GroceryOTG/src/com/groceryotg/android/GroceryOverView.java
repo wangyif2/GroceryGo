@@ -2,6 +2,7 @@ package com.groceryotg.android;
 
 import android.app.ListActivity;
 import android.app.LoaderManager;
+import android.app.PendingIntent;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -14,11 +15,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 import com.groceryotg.android.database.CategoryTable;
 import com.groceryotg.android.database.GroceryTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 import com.groceryotg.android.services.NetworkHandler;
 import com.groceryotg.android.services.ServerURL;
+import com.groceryotg.android.utils.RefreshAnimation;
 
 /**
  * User: robert
@@ -26,6 +29,7 @@ import com.groceryotg.android.services.ServerURL;
  */
 public class GroceryOverView extends ListActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     private SimpleCursorAdapter adapter;
+    private MenuItem refreshItem;
     private Uri groceryUri;
     private String categoryName;
     private Integer categoryId;
@@ -68,6 +72,8 @@ public class GroceryOverView extends ListActivity implements LoaderManager.Loade
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.refresh:
+                refreshItem = item;
+                RefreshAnimation.refreshIcon(this, true, refreshItem);
                 refreshCurrentGrocery();
                 return true;
             case R.id.map:
@@ -92,7 +98,11 @@ public class GroceryOverView extends ListActivity implements LoaderManager.Loade
 
     private void refreshCurrentGrocery() {
         Intent intent = new Intent(this, NetworkHandler.class);
+
+        PendingIntent pendingIntent = createPendingResult(1, intent, PendingIntent.FLAG_ONE_SHOT);
         intent.putExtra(NetworkHandler.REFRESH_CONTENT, NetworkHandler.GRO);
+        intent.putExtra("pendingIntent", pendingIntent);
+
         startService(intent);
     }
 
@@ -116,6 +126,13 @@ public class GroceryOverView extends ListActivity implements LoaderManager.Loade
         });
 
         setListAdapter(adapter);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        RefreshAnimation.refreshIcon(this, false, refreshItem);
+        Toast toast = Toast.makeText(this, "Groceries updated", Toast.LENGTH_LONG);
+        toast.show();
     }
 
     @Override

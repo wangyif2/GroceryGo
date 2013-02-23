@@ -1,6 +1,7 @@
 package com.groceryotg.android.services;
 
 import android.app.IntentService;
+import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Bundle;
@@ -40,6 +41,7 @@ public class NetworkHandler extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         Bundle extras = intent.getExtras();
+        PendingIntent pendingIntent = (PendingIntent) extras.get("pendingIntent");
 
         if (extras != null) {
             Integer requestType = (Integer) extras.get(REFRESH_CONTENT);
@@ -57,6 +59,11 @@ public class NetworkHandler extends IntentService {
                     Log.e("GroceryOTG", "unknown request received by NetworkHandler");
                     break;
             }
+        }
+        try {
+            pendingIntent.send();
+        } catch (PendingIntent.CanceledException e) {
+            e.printStackTrace();
         }
     }
 

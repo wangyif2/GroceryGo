@@ -2,6 +2,7 @@ package com.groceryotg.android;
 
 import android.app.Activity;
 import android.app.LoaderManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -11,17 +12,16 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.*;
-import android.widget.AdapterView;
+import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.GridView;
-import android.widget.SimpleCursorAdapter;
-import android.widget.TextView;
 import com.groceryotg.android.database.CategoryTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 import com.groceryotg.android.services.NetworkHandler;
+import com.groceryotg.android.utils.RefreshAnimation;
 
 public class CategoryOverView extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
     private SimpleCursorAdapter adapter;
+    private MenuItem refreshItem;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -41,8 +41,6 @@ public class CategoryOverView extends Activity implements LoaderManager.LoaderCa
                 startActivity(intent);
             }
         });
-
-
     }
 
     @Override
@@ -56,6 +54,8 @@ public class CategoryOverView extends Activity implements LoaderManager.LoaderCa
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.refresh:
+                refreshItem = item;
+                RefreshAnimation.refreshIcon(this, true, refreshItem);
                 refreshCurrentCategory();
                 return true;
             case R.id.map:
@@ -68,10 +68,13 @@ public class CategoryOverView extends Activity implements LoaderManager.LoaderCa
         return super.onOptionsItemSelected(item);
     }
 
-    //TODO: implement IntentService Callback
     private void refreshCurrentCategory() {
         Intent intent = new Intent(this, NetworkHandler.class);
+
+        PendingIntent pendingIntent = createPendingResult(1, intent, PendingIntent.FLAG_ONE_SHOT);
         intent.putExtra(NetworkHandler.REFRESH_CONTENT, NetworkHandler.CAT);
+        intent.putExtra("pendingIntent", pendingIntent);
+
         startService(intent);
     }
 
@@ -90,9 +93,15 @@ public class CategoryOverView extends Activity implements LoaderManager.LoaderCa
         int[] to = new int[]{R.id.category_row_label};
 
         getLoaderManager().initLoader(0, null, this);
-        //adapter = new SimpleCursorAdapter(this, R.layout.category_row, null, from, to, 0);
         adapter = new CategoryGridCursorAdapter(this, R.layout.category_row, null, from, to);
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        RefreshAnimation.refreshIcon(this, false, refreshItem);
+        Toast toast = Toast.makeText(this, "Categories updated", Toast.LENGTH_LONG);
+        toast.show();
     }
 
     @Override

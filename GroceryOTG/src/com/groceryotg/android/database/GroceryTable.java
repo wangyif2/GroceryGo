@@ -15,6 +15,7 @@ public class GroceryTable {
     public static final String COLUMN_GROCERY_ID = "grocery_id";
     public static final String COLUMN_GROCERY_NAME = "grocery_name";
     public static final String COLUMN_GROCERY_PRICE = "grocery_price";
+    public static final String COLUMN_GROCERY_CATEGORY = "grocery_category";
 
     // database creation SQL statement
     public static final String DATABASE_CREATE = "create table "
@@ -22,7 +23,8 @@ public class GroceryTable {
             + "(" + COLUMN_ID + " integer primary key autoincrement, "
             + COLUMN_GROCERY_ID + " integer unique not null, "
             + COLUMN_GROCERY_NAME + " text not null, "
-            + COLUMN_GROCERY_PRICE + " real);";
+            + COLUMN_GROCERY_PRICE + " real, "
+            + COLUMN_GROCERY_CATEGORY + " integer);";
 
     public static void onCreate(SQLiteDatabase database) {
         database.execSQL(DATABASE_CREATE);

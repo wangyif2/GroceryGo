@@ -14,7 +14,7 @@ public class ServerURL {
     private static final String storeUrl = "http://groceryotg.elasticbeanstalk.com/GetStoreInfo";
 
     private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    private static final DecimalFormat getDecimalFormat = new DecimalFormat("#.##");
+    private static final DecimalFormat getDecimalFormat = new DecimalFormat("#.00");
 
     public static DecimalFormat getGetDecimalFormat() {
         return getDecimalFormat;

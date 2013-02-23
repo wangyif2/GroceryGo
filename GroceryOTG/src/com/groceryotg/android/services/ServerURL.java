@@ -1,6 +1,7 @@
 package com.groceryotg.android.services;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 
 /**
@@ -12,10 +13,15 @@ public class ServerURL {
     private static final String groceryBaseUrl = "http://groceryotg.elasticbeanstalk.com/UpdateGroceryInfo";
     private static final String storeUrl = "http://groceryotg.elasticbeanstalk.com/GetStoreInfo";
 
-    private static final DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+    private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private static final DecimalFormat getDecimalFormat = new DecimalFormat("#.##");
 
-    public static DateFormat getFormat() {
-        return format;
+    public static DecimalFormat getGetDecimalFormat() {
+        return getDecimalFormat;
+    }
+
+    public static DateFormat getDateFormat() {
+        return dateFormat;
     }
 
     public static String getCateoryUrl() {

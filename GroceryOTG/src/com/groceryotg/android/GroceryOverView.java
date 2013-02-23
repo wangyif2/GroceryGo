@@ -11,11 +11,14 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 import com.groceryotg.android.database.CategoryTable;
 import com.groceryotg.android.database.GroceryTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 import com.groceryotg.android.services.NetworkHandler;
+import com.groceryotg.android.services.ServerURL;
 
 /**
  * User: robert
@@ -24,6 +27,8 @@ import com.groceryotg.android.services.NetworkHandler;
 public class GroceryOverView extends ListActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     private SimpleCursorAdapter adapter;
     private Uri groceryUri;
+    private String categoryName;
+    private Integer categoryId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,13 +41,15 @@ public class GroceryOverView extends ListActivity implements LoaderManager.Loade
 
         if (extras != null) {
             groceryUri = extras.getParcelable(GroceryotgProvider.CONTENT_ITEM_TYPE_CAT);
-            String[] projection = {CategoryTable.COLUMN_CATEGORY_NAME};
+            String[] projection = {CategoryTable.COLUMN_CATEGORY_NAME, CategoryTable.COLUMN_CATEGORY_ID};
             Cursor cursor = getContentResolver().query(groceryUri, projection, null, null, null);
 
             if (cursor != null) {
                 cursor.moveToFirst();
+                categoryName = cursor.getString(cursor.getColumnIndexOrThrow(CategoryTable.COLUMN_CATEGORY_NAME));
+                categoryId = cursor.getInt(cursor.getColumnIndexOrThrow(CategoryTable.COLUMN_CATEGORY_ID));
 
-                this.getActionBar().setTitle(cursor.getString(cursor.getColumnIndexOrThrow(CategoryTable.COLUMN_CATEGORY_NAME)));
+                this.getActionBar().setTitle(categoryName);
             }
         }
 
@@ -96,13 +103,27 @@ public class GroceryOverView extends ListActivity implements LoaderManager.Loade
         getLoaderManager().initLoader(0, null, this);
         adapter = new SimpleCursorAdapter(this, R.layout.grocery_row, null, from, to, 0);
 
+        adapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
+            @Override
+            public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
+                if (columnIndex == 2) {
+                    TextView textView = (TextView) view;
+                    textView.setText("$" + ServerURL.getGetDecimalFormat().format(cursor.getDouble(columnIndex)));
+                    return true;
+                }
+                return false;
+            }
+        });
+
         setListAdapter(adapter);
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String[] projection = {GroceryTable.COLUMN_ID, GroceryTable.COLUMN_GROCERY_NAME, GroceryTable.COLUMN_GROCERY_PRICE};
-        return new CursorLoader(this, GroceryotgProvider.CONTENT_URI_GRO, projection, null, null, null);
+        String selection = GroceryTable.COLUMN_GROCERY_CATEGORY + "=?";
+        String[] selectionArgs = {categoryId.toString()};
+        return new CursorLoader(this, GroceryotgProvider.CONTENT_URI_GRO, projection, selection, selectionArgs, null);
     }
 
     @Override

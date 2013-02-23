@@ -117,7 +117,7 @@ public class NetworkHandler extends IntentService {
         Gson gson = new GsonBuilder().setDateFormat("MMM dd, yyyy").create();
 
         //build request url
-        String date = "?date=" + ServerURL.getFormat().format(new Date());
+        String date = "?date=" + ServerURL.getDateFormat().format(new Date());
         String[] requestArgs = new String[]{date};
         String getGrocery = buildGroceryURL(requestArgs);
 

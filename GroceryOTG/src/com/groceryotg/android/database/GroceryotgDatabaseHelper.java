@@ -46,7 +46,7 @@ public class GroceryotgDatabaseHelper extends SQLiteOpenHelper {
 
     private void initGrocery(SQLiteDatabase db) {
         Gson gson = new GsonBuilder().setDateFormat("MMM dd, yyyy").create();
-//        String date = "?date=" + ServerURL.getFormat().format(new Date());
+//        String date = "?date=" + ServerURL.getDateFormat().format(new Date());
         String date = "?date=2012-01-01";
 
         JSONArray groceryArray = jsonParser.getJSONFromUrl(ServerURL.getGroceryBaseUrl() + date);
@@ -62,6 +62,8 @@ public class GroceryotgDatabaseHelper extends SQLiteOpenHelper {
                 ih.bind(ih.getColumnIndex(GroceryTable.COLUMN_GROCERY_NAME), grocery.getRawString());
                 if (grocery.getTotalPrice() != null)
                     ih.bind(ih.getColumnIndex(GroceryTable.COLUMN_GROCERY_PRICE), grocery.getTotalPrice());
+                if (grocery.getCategoryId() != null)
+                    ih.bind(ih.getColumnIndex(GroceryTable.COLUMN_GROCERY_CATEGORY), grocery.getCategoryId());
                 ih.execute();
             }
         } catch (JSONException e) {

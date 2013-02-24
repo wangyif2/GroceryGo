@@ -36,6 +36,7 @@ public class GroceryotgDatabaseHelper extends SQLiteOpenHelper {
         CategoryTable.onCreate(db);
         GroceryTable.onCreate(db);
         StoreTable.onCreate(db);
+        CartTable.onCreate(db);
 
         init(db);
     }

@@ -3,7 +3,10 @@ package com.groceryotg.android.services;
 import android.app.IntentService;
 import android.app.PendingIntent;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import com.google.gson.Gson;
@@ -32,6 +35,9 @@ public class NetworkHandler extends IntentService {
     public static final int GRO = 20;
     public static final int STO = 30;
 
+    public static final int CONNECTION = 10;
+    public static final int NO_CONNECTION = 11;
+
     JSONParser jsonParser = new JSONParser();
 
     public NetworkHandler() {
@@ -42,8 +48,9 @@ public class NetworkHandler extends IntentService {
     protected void onHandleIntent(Intent intent) {
         Bundle extras = intent.getExtras();
         PendingIntent pendingIntent = (PendingIntent) extras.get("pendingIntent");
+        int connectionState = NO_CONNECTION;
 
-        if (extras != null) {
+        if (isOnline() && extras != null) {
             Integer requestType = (Integer) extras.get(REFRESH_CONTENT);
             switch (requestType) {
                 case CAT:
@@ -59,9 +66,13 @@ public class NetworkHandler extends IntentService {
                     Log.e("GroceryOTG", "unknown request received by NetworkHandler");
                     break;
             }
+            connectionState = CONNECTION;
+        } else if (!isOnline()) {
+            connectionState = NO_CONNECTION;
         }
+
         try {
-            pendingIntent.send();
+            pendingIntent.send(connectionState);
         } catch (PendingIntent.CanceledException e) {
             e.printStackTrace();
         }
@@ -160,5 +171,15 @@ public class NetworkHandler extends IntentService {
         for (String arg : args)
             url.append(arg);
         return url.toString();
+    }
+
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnected()) {
+            return true;
+        }
+        return false;
     }
 }

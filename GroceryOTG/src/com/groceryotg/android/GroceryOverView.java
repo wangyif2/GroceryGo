@@ -130,8 +130,14 @@ public class GroceryOverView extends ListActivity implements LoaderManager.Loade
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Toast toast = null;
         RefreshAnimation.refreshIcon(this, false, refreshItem);
-        Toast toast = Toast.makeText(this, "Groceries updated", Toast.LENGTH_LONG);
+        if (resultCode == NetworkHandler.CONNECTION) {
+            toast = Toast.makeText(this, "Groceries Updated", Toast.LENGTH_LONG);
+        } else if (resultCode == NetworkHandler.NO_CONNECTION) {
+            toast = Toast.makeText(this, "No Internet Connection", Toast.LENGTH_LONG);
+        }
+        assert toast != null;
         toast.show();
     }
 

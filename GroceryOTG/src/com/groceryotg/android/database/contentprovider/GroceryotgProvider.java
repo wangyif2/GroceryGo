@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.text.TextUtils;
 import com.groceryotg.android.database.*;
 
 /**
@@ -142,11 +143,51 @@ public class GroceryotgProvider extends ContentProvider {
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        return 0;
+        int uriType = sURIMatcher.match(uri);
+
+        SQLiteDatabase sqlDB = database.getWritableDatabase();
+        int rowsDeleted = 0;
+        switch (uriType) {
+            case CART_ITEMS:
+                rowsDeleted = sqlDB.delete(CartTable.TABLE_CART, selection, selectionArgs);
+                break;
+            case CART_ITEM_ID:
+                String id = uri.getLastPathSegment();
+                if (TextUtils.isEmpty(selection)) {
+                    rowsDeleted = sqlDB.delete(CartTable.TABLE_CART, CartTable.COLUMN_ID + "=" + id, null);
+                } else {
+                    rowsDeleted = sqlDB.delete(CartTable.TABLE_CART, CartTable.COLUMN_ID + "=" + id + " and " + selection, selectionArgs);
+                }
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown URI: " + uri);
+        }
+        getContext().getContentResolver().notifyChange(uri, null);
+        return rowsDeleted;
     }
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        return 0;
+        int uriType = sURIMatcher.match(uri);
+
+        SQLiteDatabase sqlDB = database.getWritableDatabase();
+        int rowsUpdated = 0;
+        switch (uriType) {
+            case CART_ITEMS:
+                rowsUpdated = sqlDB.update(CartTable.TABLE_CART, values, selection, selectionArgs);
+                break;
+            case CART_ITEM_ID:
+                String id = uri.getLastPathSegment();
+                if (TextUtils.isEmpty(selection)) {
+                    rowsUpdated = sqlDB.update(CartTable.TABLE_CART, values, CartTable.COLUMN_ID + "=" + id, null);
+                } else {
+                    rowsUpdated = sqlDB.update(CartTable.TABLE_CART, values, CartTable.COLUMN_ID + "=" + id + " and " + selection, selectionArgs);
+                }
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown URI: " + uri);
+        }
+        getContext().getContentResolver().notifyChange(uri, null);
+        return rowsUpdated;
     }
 }

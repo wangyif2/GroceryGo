@@ -3,19 +3,19 @@ package com.groceryotg.android;
 import android.app.ListActivity;
 import android.app.LoaderManager;
 import android.app.PendingIntent;
+import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
+import android.view.*;
+import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.CategoryTable;
 import com.groceryotg.android.database.GroceryTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
@@ -84,6 +84,20 @@ public class GroceryOverView extends ListActivity implements LoaderManager.Loade
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+        TextView textView = (TextView) v.findViewById(R.id.grocery_row_label);
+
+        ContentValues values = new ContentValues();
+        values.put(CartTable.COLUMN_CART_GROCERY_NAME, textView.getText().toString());
+
+        getContentResolver().insert(GroceryotgProvider.CONTENT_URI_CART_ITEM, values);
+
+        Toast t = Toast.makeText(this, "Item added to Shopping Cart", Toast.LENGTH_SHORT);
+        t.show();
     }
 
     private void launchShopCartActivity() {

@@ -87,7 +87,8 @@ public class GroceryOverView extends ListActivity implements LoaderManager.Loade
     }
 
     private void launchShopCartActivity() {
-
+        Intent intent = new Intent(this, ShopCartOverView.class);
+        startActivity(intent);
     }
 
     private void launchMapActivity() {

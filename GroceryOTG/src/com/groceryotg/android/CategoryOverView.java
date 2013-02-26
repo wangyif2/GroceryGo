@@ -79,7 +79,8 @@ public class CategoryOverView extends Activity implements LoaderManager.LoaderCa
     }
 
     private void launchShopCartActivity() {
-
+        Intent intent = new Intent(this, ShopCartOverView.class);
+        startActivity(intent);
     }
 
     private void launchMapActivity() {

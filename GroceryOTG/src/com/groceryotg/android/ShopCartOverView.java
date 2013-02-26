@@ -8,10 +8,8 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
+import android.view.*;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import com.groceryotg.android.database.CartTable;
@@ -22,6 +20,7 @@ import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
  * Date: 23/02/13
  */
 public class ShopCartOverView extends ListActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+    private static final int DELETE_ID = 1;
     private SimpleCursorAdapter adapter;
 
     @Override
@@ -48,6 +47,25 @@ public class ShopCartOverView extends ListActivity implements LoaderManager.Load
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        menu.add(0, DELETE_ID, 0, R.string.cart_item_delete);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case DELETE_ID:
+                AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+                Uri uri = Uri.parse(GroceryotgProvider.CONTENT_URI_CART_ITEM + "/" + info.id);
+                getContentResolver().delete(uri, null, null);
+                fillData();
+                return true;
+        }
+        return super.onContextItemSelected(item);
     }
 
     @Override

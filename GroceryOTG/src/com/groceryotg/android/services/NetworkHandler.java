@@ -151,6 +151,7 @@ public class NetworkHandler extends IntentService {
                 contentValues.put(GroceryTable.COLUMN_GROCERY_ID, grocery.getGroceryId());
                 contentValues.put(GroceryTable.COLUMN_GROCERY_NAME, grocery.getRawString());
                 contentValues.put(GroceryTable.COLUMN_GROCERY_PRICE, grocery.getTotalPrice());
+                contentValues.put(GroceryTable.COLUMN_GROCERY_CATEGORY, grocery.getCategoryId());
 
                 contentValuesArrayList.add(contentValues);
             }

@@ -10,10 +10,8 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.SystemClock;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
+import android.view.*;
+import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,7 +22,6 @@ import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 import com.groceryotg.android.services.NetworkHandler;
 import com.groceryotg.android.services.ServerURL;
 import com.groceryotg.android.utils.RefreshAnimation;
-
 
 /**
  * User: robert

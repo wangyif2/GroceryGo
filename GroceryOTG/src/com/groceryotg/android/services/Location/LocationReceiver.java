@@ -16,7 +16,7 @@ public class LocationReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Location loc = (Location)intent.getExtras().get(LocationMonitor.EXTRA_LOCATION);
         String msg;
-        
+        Log.i("GroceryOTG", <X,Y coordinate>)
         if (loc == null) {
         	msg = intent.getStringExtra(LocationMonitor.EXTRA_ERROR);
         } else {

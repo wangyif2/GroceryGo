@@ -1,13 +1,17 @@
 package com.groceryotg.android;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.LoaderManager;
+import android.app.PendingIntent;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -23,6 +27,8 @@ import com.groceryotg.android.CategoryGridCursorAdapter;
 import com.groceryotg.android.database.CategoryTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 import com.groceryotg.android.services.NetworkHandler;
+import com.groceryotg.android.services.Location.LocationMonitor;
+import com.groceryotg.android.services.Location.LocationReceiver;
 
 public class CategoryOverView extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
     private SimpleCursorAdapter adapter;
@@ -49,7 +55,12 @@ public class CategoryOverView extends Activity implements LoaderManager.LoaderCa
             }
         });
         
-        
+        AlarmManager locationAlarm = (AlarmManager)getSystemService(ALARM_SERVICE);
+        Intent locationIntent = new Intent(this, LocationMonitor.class);
+        locationIntent.putExtra(LocationMonitor.EXTRA_INTENT, new Intent(this, LocationReceiver.class));
+        locationIntent.putExtra(LocationMonitor.EXTRA_PROVIDER, LocationManager.NETWORK_PROVIDER);
+        PendingIntent locationPendingIntent = PendingIntent.getBroadcast(this, 0, locationIntent, 0);
+        locationAlarm.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), 1000*60, locationPendingIntent);
     }
 
     @Override

@@ -37,7 +37,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:text="@+id/grocery_row_price_text"
-            android:textColor="@android:color/holo_red_dark"
+            android:textColor="#00FF0F"
             android:textSize="24dp"
             android:fontFamily="sans-serif-condensed"
         	android:textStyle="bold"

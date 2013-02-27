@@ -4,15 +4,10 @@ import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.LoaderManager;
 import android.app.PendingIntent;
-<<<<<<< HEAD
-=======
-import android.content.Context;
->>>>>>> bc4e5bb68e5c6861c2a6c168b153e2281e132115
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
-<<<<<<< HEAD
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -22,23 +17,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-=======
-import android.graphics.Color;
-import android.net.Uri;
-import android.os.Bundle;
-import android.view.*;
-import android.widget.*;
->>>>>>> bc4e5bb68e5c6861c2a6c168b153e2281e132115
 import android.widget.AdapterView.OnItemClickListener;
 import com.groceryotg.android.database.CategoryTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 import com.groceryotg.android.services.NetworkHandler;
-<<<<<<< HEAD
 import com.groceryotg.android.services.Location.LocationMonitor;
 import com.groceryotg.android.services.Location.LocationReceiver;
-=======
-import com.groceryotg.android.utils.RefreshAnimation;
->>>>>>> bc4e5bb68e5c6861c2a6c168b153e2281e132115
 
 public class CategoryOverView extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
     private SimpleCursorAdapter adapter;

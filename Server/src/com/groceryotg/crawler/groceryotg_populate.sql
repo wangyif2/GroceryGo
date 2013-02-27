@@ -98,7 +98,32 @@ UNLOCK TABLES;
 
 LOCK TABLES `Subcategory` WRITE;
 /*!40000 ALTER TABLE `Subcategory` DISABLE KEYS */;
-INSERT INTO `Subcategory` VALUES (1,'Dairy and Egg Products','dairy,egg',1),(2,'Spices and Herbs','spices,herbs',7),(3,'Babyfoods','baby,babyfood',7),(4,'Fats and Oils','fats,oils',7),(5,'Poultry Products','poultry',2),(6,'Soups, Sauces and Gravies','soups,sauces,gravies',7),(7,'Sausages and Luncheon meats','sausages,luncheon',2),(8,'Breakfast cereals','breakfast,cereal',5),(9,'Fruits and fruit juices','fruits,juices',3),(10,'Pork Products','pork,porc',2),(11,'Vegetables and Vegetable Products','vegetable',3),(12,'Nuts and Seeds','nuts,seeds',7),(13,'Beef Products','beef',2),(14,'Beverages','beverages,drinks',6),(15,'Finfish and Shellfish Products','finfish,fish,shellfish',4),(16,'Legumes and Legume Products','legumes',3),(17,'Lamb, Veal and Game','lamb,veal,game',2),(18,'Baked Products','bakery,baked,bread',5),(19,'Sweets','sweets,dessert',7),(20,'Cereals, Grains and Pasta','cereal,grain,pasta',5),(21,'Fast Foods','fast,frozen',7),(22,'Mixed Dishes','mixed,dishes',7),(23,'Snacks','snacks',7),(32,'Miscellaneous','miscellaneous',7);
+INSERT INTO `Subcategory` (`subcategory_id`, `subcategory_name`, `subcategory_tag`, `category_id`)
+VALUES
+	(1,'Dairy and Egg Products','dairy,egg',1),
+	(2,'Spices and Herbs','spices,herbs',7),
+	(4,'Fats and Oils','fats,oils',7),
+	(5,'Poultry Products','poultry',2),
+	(6,'Soups and Gravies','soups,gravies',7),
+	(7,'Sausages and Luncheon meats','sausages,luncheon,ham,deli',2),
+	(8,'Breakfast cereals','breakfast,cereal',5),
+	(9,'Fruits and fruit juices','fruit,juice',3),
+	(10,'Pork Products','pork,porc',2),
+	(11,'Vegetables and Vegetable Products','vegetable',3),
+	(12,'Nuts and Seeds','nuts,seeds',7),
+	(13,'Beef Products','beef,veal,steak',2),
+	(14,'Beverages','beverages,drinks,cola',6),
+	(15,'Fish','fish,fillet,shrimp',4),
+	(17,'Lamb','lamb',2),
+	(18,'Baked Products','bakery,baked,bread',5),
+	(19,'Sweets','sweets,dessert',7),
+	(20,'Grains and Pasta','grain,pasta',5),
+	(22,'Fast Food','fast,frozen',7),
+	(23,'Snacks','snacks,chips',7),
+	(24,'Frozen Food','frozen',7),
+	(25,'Household','clean,spray,washing,wiping,detergent',7),
+	(26,'Dressing and Sauces','sauces,dip,dressing',7),
+	(32,'Miscellaneous','miscellaneous',7);
 /*!40000 ALTER TABLE `Subcategory` ENABLE KEYS */;
 UNLOCK TABLES;
 

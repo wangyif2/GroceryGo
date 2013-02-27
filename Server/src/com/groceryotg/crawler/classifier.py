@@ -5,8 +5,8 @@ import re
 
 #weighting
 w_word = 1
-w_def = 0.5
-w_syn = 0.5
+w_def = 0.4
+w_syn = 0.6
 w_hyp = 0.5
 
 # define logging level (if you set this to logging.DEBUG, the debug print messages will be displayed)
@@ -15,7 +15,9 @@ logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
 def classify(noun_list, subcategory):
     '''Takes a list of nouns representing 1 item. Returns a subcategory for the item.'''
     #score determining which subcategory to assign the item to
-    subcategory_score = [0]*len(subcategory)
+    subcategory_score = {};
+    for s in subcategory:
+        subcategory_score[s[0]] = 0;
     lemmatizer = nltk.stem.wordnet.WordNetLemmatizer()
     
     # get the ID of the special "catch-all" subcategory ("miscellaneous") for items that cannot be identified
@@ -47,7 +49,7 @@ def classify(noun_list, subcategory):
             #hypernyms = [x.definition for x in hypernym_set]
             
             #lower case
-            word = word.lower()
+            word = str(word.lower())
             definition = definition.lower()
             
             for record in subcategory:
@@ -60,35 +62,33 @@ def classify(noun_list, subcategory):
                     if cat == word:
                         logging.debug("Found subcategory word '%s' directly in word '%s'" % (cat, word))
                         logging.debug("Classify word '%s' as subcategory '%s' with score %.2f" % (word, record[1], w_word))
-                        subcategory_score[subcategory_id-1] += w_word
+                        subcategory_score[subcategory_id] += w_word
                     
                     if cat in definition.split(' '):
                         logging.debug("Found subcategory word '%s' in the definition of word '%s' (%s)" % (cat, word, definition))
                         logging.debug("Classify word '%s' as subcategory '%s' with score %.2f" % (word, record[1], w_def))
-                        subcategory_score[subcategory_id-1] += w_def
+                        subcategory_score[subcategory_id] += w_def
                     
                     if any(cat in s for s in synonyms):
                         logging.debug("Found subcategory word '%s' in the synonyms of word '%s' (%s)" % (cat, word, synonyms))
                         logging.debug("Classify word '%s' as subcategory '%s' with score %.2f" % (word, record[1], w_syn))
-                        subcategory_score[subcategory_id-1] += w_syn
+                        subcategory_score[subcategory_id] += w_syn
                     
                     if any(cat in h for h in hypernyms):
                         logging.debug("Found subcategory word '%s' in the hypernyms of word '%s' (%s)" % (cat, word, hypernyms))
                         logging.debug("Classify word '%s' as subcategory '%s' with score %.2f" % (word, record[1], w_hyp))
-                        subcategory_score[subcategory_id-1] += w_hyp
+                        subcategory_score[subcategory_id] += w_hyp
 
     logging.debug(subcategory_score)
                         
-    if max(subcategory_score) == 0:
+    if max(subcategory_score.values()) == 0:
         logging.debug("unknown id -- miscellaneous!!!")
         return misc_id
-                        
-    max_id = subcategory_score.index(max(subcategory_score)) + 1
-    for record in subcategory:
-        if max_id == record[0]:
-            max_subcat = record[1]
-    logging.debug("subcategory id = %d, %s" % (max_id, max_subcat))
-    return max_id
+    
+    #compute maximum subcat
+    max_id = max(subcategory_score, key = subcategory_score.get);
+    logging.debug("subcategory id = %d" % (max_id));
+    return max_id;
     
 
 #nouns =[u'PORK', u'PICNIC', u'SHOULDER', u'ROAST', u'VACUUM', u'PRICE']

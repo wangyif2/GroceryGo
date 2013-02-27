@@ -11,7 +11,6 @@
 # - nltk (for NLP)
 # - MySQLdb (for connecting to mysql)
 
-
 import ast
 from bs4 import BeautifulSoup
 import cookielib
@@ -20,6 +19,7 @@ import htmllib
 import logging
 import MySQLdb as mdb
 import nltk
+import os
 import re
 #import sqlalchemy
 import sys
@@ -87,7 +87,7 @@ def getFlyer():
         flyer_url = ""
         if next_url:
             print("next url: %s" % next_url)
-            
+
             # Metro
             if store_id == 1:
                 try:
@@ -923,13 +923,13 @@ def getFlyer():
     return items
 
 
-def evaluateAccuracy(store_id, labels, item_list = None, noun_list = None):
+def evaluateAccuracy(store_id, labels,  category_map, item_list = None, noun_list = None):
     '''Takes a list of correct classifications, "targets", and a list of predicted classifications, "labels". 
        Returns None if either list is empty or the lists are not of the same length. Returns the fraction 
        of correctly classified items otherwise (as a floating point value between 0 and 1). '''
     
     # Read in the correct list of targets for this store's flyer
-    file_in = open('flyer_' + str(store_id) + '.txt', 'r')
+    file_in = open('flyer_' + str(store_id) + '.txt', 'rU')
     file_contents = file_in.read()
     file_in.close()
     
@@ -937,7 +937,7 @@ def evaluateAccuracy(store_id, labels, item_list = None, noun_list = None):
         print("Classification accuracy for store %d could not be determined due to missing labelled targets" % store_id)
         return None
     
-    targets = map(lambda x: int(x), filter(None, file_contents.replace('\n', ',').split(',')))
+    targets = map(lambda x: int(x), filter(None, file_contents.replace(os.linesep, ',').split(',')))
     '''
     if (not targets or not labels) or (len(targets) != len(labels)):
         print("Classification accuracy for store %d could not be determined due to missing labelled targets" % store_id)
@@ -948,7 +948,7 @@ def evaluateAccuracy(store_id, labels, item_list = None, noun_list = None):
         return None
     
     correctly_classified = 0
-    
+    correctly_classified_category = 0
     for i in range(len(targets)):
         if i >= len(labels):
             print("Too many targets comapred to labels")
@@ -958,8 +958,11 @@ def evaluateAccuracy(store_id, labels, item_list = None, noun_list = None):
             correctly_classified += 1
         elif item_list:
             logging.debug("Misclassified item (predicted: %d, actual: %d): %s" % (labels[i], targets[i], noun_list[i]))
-                  
-    return float(correctly_classified) / float(len(targets))
+        if category_map[targets[i]] == category_map[labels[i]]:
+            correctly_classified_category += 1
+    
+    return [float(correctly_classified) / float(len(targets)), float(correctly_classified_category) / float(len(targets))]            
+
 
 
 #******************************************************************************
@@ -1100,6 +1103,13 @@ try:
     cur.execute('SELECT subcategory_id, subcategory_tag FROM Subcategory ORDER BY subcategory_id')
     subcategory = cur.fetchall()    
     
+    #Get subcategory and category IDs from the database
+    cur.execute('SELECT subcategory_id, category_id FROM Subcategory;')
+    id_pairs = cur.fetchall()
+    category_map = {} #used in evaluateAccuracy
+    for pair in id_pairs:
+        category_map[pair[0]] = pair[1];
+        
     # TODO: replace SQL calls with SQLAlchemy (a Python ORM)
     #print("SQLAlchemy version: ", sqlalchemy.__version__)
     
@@ -1140,11 +1150,10 @@ try:
                 raise RuntimeError("item data could not be added to the item table handler")
             
         # Evaluate classification accuraucy for each store flyer based on hand-labelled subcategories
-        classification_rate = evaluateAccuracy(store_id, predictions, item_list, noun_table)
-        if classification_rate:
-            print("TOTAL CLASSIFICATION RATE for store %d: %.2f" % (store_id, classification_rate))
-        
-        # Step 4: Write to Item
+        classification_rates = evaluateAccuracy(store_id, predictions, category_map, item_list, noun_table)
+        if classification_rates:
+            print("CATEGORY CLASSIFICATION RATE = %.2f for store %d" % (classification_rates[1],store_id))
+        # Step 4: Write to Item`
         item_ids = item_table.write_data()
         grocery_data = [tuple(item_ids)] + zip(*item_list)
         grocery_data = map(lambda x: list(x), zip(*grocery_data))

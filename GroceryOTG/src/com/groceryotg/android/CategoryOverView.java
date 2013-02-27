@@ -1,6 +1,7 @@
 package com.groceryotg.android;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.LoaderManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -9,15 +10,21 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.view.*;
 import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
 import com.groceryotg.android.database.CategoryTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 import com.groceryotg.android.services.NetworkHandler;
+import com.groceryotg.android.services.Location.LocationMonitor;
+import com.groceryotg.android.services.Location.LocationReceiver;
 import com.groceryotg.android.utils.RefreshAnimation;
+
+import android.util.Log;
 
 public class CategoryOverView extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
     private SimpleCursorAdapter adapter;
@@ -41,6 +48,7 @@ public class CategoryOverView extends Activity implements LoaderManager.LoaderCa
                 startActivity(intent);
             }
         });
+
         AlarmManager locationAlarm = (AlarmManager)getSystemService(ALARM_SERVICE);
         Intent locationIntent = new Intent(this, LocationMonitor.class);
         locationIntent.putExtra(LocationMonitor.EXTRA_INTENT, new Intent(this, LocationReceiver.class));

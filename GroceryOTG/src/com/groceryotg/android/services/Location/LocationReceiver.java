@@ -4,8 +4,7 @@ import android.location.*;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.app.Notification;
-import android.app.NotificationManager;
+import android.util.Log;
 
 /**
  * User: John
@@ -16,7 +15,7 @@ public class LocationReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Location loc = (Location)intent.getExtras().get(LocationMonitor.EXTRA_LOCATION);
         String msg;
-        Log.i("GroceryOTG", <X,Y coordinate>)
+        
         if (loc == null) {
         	msg = intent.getStringExtra(LocationMonitor.EXTRA_ERROR);
         } else {
@@ -26,5 +25,8 @@ public class LocationReceiver extends BroadcastReceiver {
         if (msg == null) {
         	msg = "Invalid location received...";
         }
+        
+        Log.i("GroceryOTG", "barrr");
+        Log.i("GroceryOTG", msg);
     }
 }

@@ -4,10 +4,15 @@ import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.LoaderManager;
 import android.app.PendingIntent;
+<<<<<<< HEAD
+=======
+import android.content.Context;
+>>>>>>> bc4e5bb68e5c6861c2a6c168b153e2281e132115
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+<<<<<<< HEAD
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,44 +22,46 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+=======
+import android.graphics.Color;
+import android.net.Uri;
+import android.os.Bundle;
+import android.view.*;
+import android.widget.*;
+>>>>>>> bc4e5bb68e5c6861c2a6c168b153e2281e132115
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.GridView;
-import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
-import android.widget.Toast;
-
-import com.groceryotg.android.CategoryGridCursorAdapter;
 import com.groceryotg.android.database.CategoryTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 import com.groceryotg.android.services.NetworkHandler;
+<<<<<<< HEAD
 import com.groceryotg.android.services.Location.LocationMonitor;
 import com.groceryotg.android.services.Location.LocationReceiver;
+=======
+import com.groceryotg.android.utils.RefreshAnimation;
+>>>>>>> bc4e5bb68e5c6861c2a6c168b153e2281e132115
 
 public class CategoryOverView extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
     private SimpleCursorAdapter adapter;
-    
+    private MenuItem refreshItem;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.category_list);
-        //this.getListView().setDividerHeight(2);
         fillData();
-        
+        setContentView(R.layout.category_list);
+
         // Set adapter for the grid view
         GridView gridview = (GridView) findViewById(R.id.gridview);
         gridview.setAdapter(adapter);
-        //gridview.setAdapter(new CategoryImageAdapter(this));
-        
+
         gridview.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                //Toast.makeText(CategoryOverView.this, "" + position, Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(CategoryOverView.this, GroceryOverView.class);
                 Uri uri = Uri.parse(GroceryotgProvider.CONTENT_URI_CAT + "/" + id);
                 intent.putExtra(GroceryotgProvider.CONTENT_ITEM_TYPE_CAT, uri);
                 startActivity(intent);
             }
         });
-        
         AlarmManager locationAlarm = (AlarmManager)getSystemService(ALARM_SERVICE);
         Intent locationIntent = new Intent(this, LocationMonitor.class);
         locationIntent.putExtra(LocationMonitor.EXTRA_INTENT, new Intent(this, LocationReceiver.class));
@@ -74,6 +81,8 @@ public class CategoryOverView extends Activity implements LoaderManager.LoaderCa
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.refresh:
+                refreshItem = item;
+                RefreshAnimation.refreshIcon(this, true, refreshItem);
                 refreshCurrentCategory();
                 return true;
             case R.id.map:
@@ -85,28 +94,20 @@ public class CategoryOverView extends Activity implements LoaderManager.LoaderCa
         }
         return super.onOptionsItemSelected(item);
     }
-    
-    /*
-    @Override
-    protected void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
-        Intent intent = new Intent(this, GroceryOverView.class);
-        Uri uri = Uri.parse(GroceryotgProvider.CONTENT_URI_CAT + "/" + id);
-        intent.putExtra(GroceryotgProvider.CONTENT_ITEM_TYPE_CAT, uri);
 
-        startActivity(intent);
-    }
-    */
-    
-    //TODO: implement IntentService Callback
     private void refreshCurrentCategory() {
         Intent intent = new Intent(this, NetworkHandler.class);
+
+        PendingIntent pendingIntent = createPendingResult(1, intent, PendingIntent.FLAG_ONE_SHOT);
         intent.putExtra(NetworkHandler.REFRESH_CONTENT, NetworkHandler.CAT);
+        intent.putExtra("pendingIntent", pendingIntent);
+
         startService(intent);
     }
 
     private void launchShopCartActivity() {
-
+        Intent intent = new Intent(this, ShopCartOverView.class);
+        startActivity(intent);
     }
 
     private void launchMapActivity() {
@@ -120,9 +121,21 @@ public class CategoryOverView extends Activity implements LoaderManager.LoaderCa
         int[] to = new int[]{R.id.category_row_label};
 
         getLoaderManager().initLoader(0, null, this);
-        //adapter = new SimpleCursorAdapter(this, R.layout.category_row, null, from, to, 0);
         adapter = new CategoryGridCursorAdapter(this, R.layout.category_row, null, from, to);
-        
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Toast toast = null;
+        RefreshAnimation.refreshIcon(this, false, refreshItem);
+        if (resultCode == NetworkHandler.CONNECTION) {
+            toast = Toast.makeText(this, "Categories Updated", Toast.LENGTH_LONG);
+        } else if (resultCode == NetworkHandler.NO_CONNECTION) {
+            toast = Toast.makeText(this, "No Internet Connection", Toast.LENGTH_LONG);
+        }
+        assert toast != null;
+        toast.show();
     }
 
     @Override
@@ -140,4 +153,63 @@ public class CategoryOverView extends Activity implements LoaderManager.LoaderCa
     public void onLoaderReset(Loader<Cursor> loader) {
         adapter.swapCursor(null);
     }
+
+    public class CategoryGridCursorAdapter extends SimpleCursorAdapter {
+        private Context mContext;
+        private int mLayout;
+        private int[] gridColours;
+
+        @SuppressWarnings("deprecation")
+        public CategoryGridCursorAdapter(Context context, int layout, Cursor c, String[] from, int[] to) {
+            super(context, layout, c, from, to);
+            this.mContext = context;
+            this.mLayout = layout;
+
+            String[] allColours = mContext.getResources().getStringArray(R.array.colours);
+            gridColours = new int[allColours.length];
+
+            for (int i = 0; i < allColours.length; i++) {
+                gridColours[i] = Color.parseColor(allColours[i]);
+            }
+        }
+
+        @Override
+        public View newView(Context context, Cursor cursor, ViewGroup parent) {
+
+            Cursor c = getCursor();
+            final LayoutInflater inflater = LayoutInflater.from(context);
+            View v = inflater.inflate(mLayout, parent, false);
+
+            // Get the next row from the cursor
+            String colName = CategoryTable.COLUMN_CATEGORY_NAME;
+            String categoryName = c.getString(c.getColumnIndex(colName));
+
+            // Set the name of the next category in the grid view
+            TextView name_text = (TextView) v.findViewById(R.id.category_row_label);
+            if (name_text != null) {
+                name_text.setText(categoryName);
+            }
+
+            return v;
+        }
+
+        @Override
+        public void bindView(View v, Context context, Cursor c) {
+
+            // Get the next row from the cursor
+            String colName = CategoryTable.COLUMN_CATEGORY_NAME;
+            String categoryName = c.getString(c.getColumnIndex(colName));
+
+            // Set the name of the next category in the grid view
+            TextView name_text = (TextView) v.findViewById(R.id.category_row_label);
+            if (name_text != null) {
+                name_text.setText(categoryName);
+            }
+
+            int position = c.getPosition();
+            v.setBackgroundColor(gridColours[position % gridColours.length]);
+        }
+
+    }
+
 }

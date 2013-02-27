@@ -8,9 +8,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
-import com.groceryotg.android.database.CategoryTable;
-import com.groceryotg.android.database.GroceryTable;
-import com.groceryotg.android.database.GroceryotgDatabaseHelper;
+import android.text.TextUtils;
+import com.groceryotg.android.database.*;
 
 /**
  * User: robert
@@ -25,20 +24,32 @@ public class GroceryotgProvider extends ContentProvider {
     private static final int CATEGORY_ID = 20;
     private static final int GROCERIES = 30;
     private static final int GROCERY_ID = 40;
+    private static final int STORES = 50;
+    private static final int STORE_ID = 60;
+    private static final int CART_ITEMS = 70;
+    private static final int CART_ITEM_ID = 80;
 
     // Content URI
     private static final String AUTHORITY = "com.groceryotg.android.database.contentprovider";
     private static final String BASE_PATH_CAT = "categories";
     private static final String BASE_PATH_GRO = "groceries";
+    private static final String BASE_PATH_STO = "stores";
+    private static final String BASE_PATH_CART = "cart_items";
 
     public static final Uri CONTENT_URI_CAT = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH_CAT);
     public static final Uri CONTENT_URI_GRO = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH_GRO);
+    public static final Uri CONTENT_URI_STO = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH_STO);
+    public static final Uri CONTENT_URI_CART_ITEM = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH_CART);
 
     // MIME type for multiple rows
     public static final String CONTENT_TYPE_CAT = ContentResolver.CURSOR_DIR_BASE_TYPE + "/categories";
     public static final String CONTENT_ITEM_TYPE_CAT = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/category";
     public static final String CONTENT_TYPE_GRO = ContentResolver.CURSOR_DIR_BASE_TYPE + "/groceries";
     public static final String CONTENT_ITEM_TYPE_GRO = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/grocery";
+    public static final String CONTENT_TYPE_STO = ContentResolver.CURSOR_DIR_BASE_TYPE + "/stores";
+    public static final String CONTENT_ITEM_TYPE_STO = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/store";
+    public static final String CONTENT_TYPE_CART_ITEM = ContentResolver.CURSOR_DIR_BASE_TYPE + "/cart_items";
+    public static final String CONTENT_ITEM_TYPE_CART_ITEM = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/cart_item";
 
     private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
@@ -47,6 +58,10 @@ public class GroceryotgProvider extends ContentProvider {
         sURIMatcher.addURI(AUTHORITY, BASE_PATH_CAT + "/#", CATEGORY_ID);
         sURIMatcher.addURI(AUTHORITY, BASE_PATH_GRO, GROCERIES);
         sURIMatcher.addURI(AUTHORITY, BASE_PATH_GRO + "/#", GROCERY_ID);
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH_STO, STORES);
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH_STO + "/#", STORE_ID);
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH_CART, CART_ITEMS);
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH_CART + "/#", CART_ITEM_ID);
     }
 
     @Override
@@ -74,6 +89,13 @@ public class GroceryotgProvider extends ContentProvider {
             case GROCERY_ID:
                 queryBuilder.setTables(GroceryTable.TABLE_GROCERY);
                 queryBuilder.appendWhere(GroceryTable.COLUMN_ID + "=" + uri.getLastPathSegment());
+                break;
+            case CART_ITEMS:
+                queryBuilder.setTables(CartTable.TABLE_CART);
+                break;
+            case CART_ITEM_ID:
+                queryBuilder.setTables(CartTable.TABLE_CART);
+                queryBuilder.appendWhere(CartTable.COLUMN_ID + "=" + uri.getLastPathSegment());
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
@@ -106,6 +128,14 @@ public class GroceryotgProvider extends ContentProvider {
                 id = sqlDB.insert(GroceryTable.TABLE_GROCERY, null, values);
                 getContext().getContentResolver().notifyChange(uri, null);
                 return Uri.parse(BASE_PATH_GRO + "/" + id);
+            case STORES:
+                id = sqlDB.insert(StoreTable.TABLE_STORE, null, values);
+                getContext().getContentResolver().notifyChange(uri, null);
+                return Uri.parse(BASE_PATH_STO + "/" + id);
+            case CART_ITEMS:
+                id = sqlDB.insert(CartTable.TABLE_CART, null, values);
+                getContext().getContentResolver().notifyChange(uri, null);
+                return Uri.parse(BASE_PATH_CART + "/" + id);
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }
@@ -113,11 +143,51 @@ public class GroceryotgProvider extends ContentProvider {
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        return 0;
+        int uriType = sURIMatcher.match(uri);
+
+        SQLiteDatabase sqlDB = database.getWritableDatabase();
+        int rowsDeleted = 0;
+        switch (uriType) {
+            case CART_ITEMS:
+                rowsDeleted = sqlDB.delete(CartTable.TABLE_CART, selection, selectionArgs);
+                break;
+            case CART_ITEM_ID:
+                String id = uri.getLastPathSegment();
+                if (TextUtils.isEmpty(selection)) {
+                    rowsDeleted = sqlDB.delete(CartTable.TABLE_CART, CartTable.COLUMN_ID + "=" + id, null);
+                } else {
+                    rowsDeleted = sqlDB.delete(CartTable.TABLE_CART, CartTable.COLUMN_ID + "=" + id + " and " + selection, selectionArgs);
+                }
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown URI: " + uri);
+        }
+        getContext().getContentResolver().notifyChange(uri, null);
+        return rowsDeleted;
     }
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        return 0;
+        int uriType = sURIMatcher.match(uri);
+
+        SQLiteDatabase sqlDB = database.getWritableDatabase();
+        int rowsUpdated = 0;
+        switch (uriType) {
+            case CART_ITEMS:
+                rowsUpdated = sqlDB.update(CartTable.TABLE_CART, values, selection, selectionArgs);
+                break;
+            case CART_ITEM_ID:
+                String id = uri.getLastPathSegment();
+                if (TextUtils.isEmpty(selection)) {
+                    rowsUpdated = sqlDB.update(CartTable.TABLE_CART, values, CartTable.COLUMN_ID + "=" + id, null);
+                } else {
+                    rowsUpdated = sqlDB.update(CartTable.TABLE_CART, values, CartTable.COLUMN_ID + "=" + id + " and " + selection, selectionArgs);
+                }
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown URI: " + uri);
+        }
+        getContext().getContentResolver().notifyChange(uri, null);
+        return rowsUpdated;
     }
 }

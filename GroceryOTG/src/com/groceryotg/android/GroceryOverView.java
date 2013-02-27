@@ -2,6 +2,8 @@ package com.groceryotg.android;
 
 import android.app.ListActivity;
 import android.app.LoaderManager;
+import android.app.PendingIntent;
+import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -13,10 +15,15 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
+import android.widget.Toast;
+import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.CategoryTable;
 import com.groceryotg.android.database.GroceryTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 import com.groceryotg.android.services.NetworkHandler;
+import com.groceryotg.android.services.ServerURL;
+import com.groceryotg.android.utils.RefreshAnimation;
 
 
 /**
@@ -25,7 +32,10 @@ import com.groceryotg.android.services.NetworkHandler;
  */
 public class GroceryOverView extends ListActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     private SimpleCursorAdapter adapter;
+    private MenuItem refreshItem;
     private Uri groceryUri;
+    private String categoryName;
+    private Integer categoryId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,13 +48,15 @@ public class GroceryOverView extends ListActivity implements LoaderManager.Loade
 
         if (extras != null) {
             groceryUri = extras.getParcelable(GroceryotgProvider.CONTENT_ITEM_TYPE_CAT);
-            String[] projection = {CategoryTable.COLUMN_CATEGORY_NAME};
+            String[] projection = {CategoryTable.COLUMN_CATEGORY_NAME, CategoryTable.COLUMN_CATEGORY_ID};
             Cursor cursor = getContentResolver().query(groceryUri, projection, null, null, null);
 
             if (cursor != null) {
                 cursor.moveToFirst();
+                categoryName = cursor.getString(cursor.getColumnIndexOrThrow(CategoryTable.COLUMN_CATEGORY_NAME));
+                categoryId = cursor.getInt(cursor.getColumnIndexOrThrow(CategoryTable.COLUMN_CATEGORY_ID));
 
-                this.getActionBar().setTitle(cursor.getString(cursor.getColumnIndexOrThrow(CategoryTable.COLUMN_CATEGORY_NAME)));
+                this.getActionBar().setTitle(categoryName);
             }
         }
 
@@ -63,6 +75,8 @@ public class GroceryOverView extends ListActivity implements LoaderManager.Loade
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.refresh:
+                refreshItem = item;
+                RefreshAnimation.refreshIcon(this, true, refreshItem);
                 refreshCurrentGrocery();
                 return true;
             case R.id.map:
@@ -75,8 +89,23 @@ public class GroceryOverView extends ListActivity implements LoaderManager.Loade
         return super.onOptionsItemSelected(item);
     }
 
-    private void launchShopCartActivity() {
+    @Override
+    protected void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+        TextView textView = (TextView) v.findViewById(R.id.grocery_row_label);
 
+        ContentValues values = new ContentValues();
+        values.put(CartTable.COLUMN_CART_GROCERY_NAME, textView.getText().toString());
+
+        getContentResolver().insert(GroceryotgProvider.CONTENT_URI_CART_ITEM, values);
+
+        Toast t = Toast.makeText(this, "Item added to Shopping Cart", Toast.LENGTH_SHORT);
+        t.show();
+    }
+
+    private void launchShopCartActivity() {
+        Intent intent = new Intent(this, ShopCartOverView.class);
+        startActivity(intent);
     }
 
     private void launchMapActivity() {
@@ -87,7 +116,11 @@ public class GroceryOverView extends ListActivity implements LoaderManager.Loade
 
     private void refreshCurrentGrocery() {
         Intent intent = new Intent(this, NetworkHandler.class);
+
+        PendingIntent pendingIntent = createPendingResult(1, intent, PendingIntent.FLAG_ONE_SHOT);
         intent.putExtra(NetworkHandler.REFRESH_CONTENT, NetworkHandler.GRO);
+        intent.putExtra("pendingIntent", pendingIntent);
+
         startService(intent);
     }
 
@@ -98,13 +131,40 @@ public class GroceryOverView extends ListActivity implements LoaderManager.Loade
         getLoaderManager().initLoader(0, null, this);
         adapter = new SimpleCursorAdapter(this, R.layout.grocery_row, null, from, to, 0);
 
+        adapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
+            @Override
+            public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
+                if (columnIndex == 2) {
+                    TextView textView = (TextView) view;
+                    textView.setText("$" + ServerURL.getGetDecimalFormat().format(cursor.getDouble(columnIndex)));
+                    return true;
+                }
+                return false;
+            }
+        });
+
         setListAdapter(adapter);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Toast toast = null;
+        RefreshAnimation.refreshIcon(this, false, refreshItem);
+        if (resultCode == NetworkHandler.CONNECTION) {
+            toast = Toast.makeText(this, "Groceries Updated", Toast.LENGTH_LONG);
+        } else if (resultCode == NetworkHandler.NO_CONNECTION) {
+            toast = Toast.makeText(this, "No Internet Connection", Toast.LENGTH_LONG);
+        }
+        assert toast != null;
+        toast.show();
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String[] projection = {GroceryTable.COLUMN_ID, GroceryTable.COLUMN_GROCERY_NAME, GroceryTable.COLUMN_GROCERY_PRICE};
-        return new CursorLoader(this, GroceryotgProvider.CONTENT_URI_GRO, projection, null, null, null);
+        String selection = GroceryTable.COLUMN_GROCERY_CATEGORY + "=?";
+        String[] selectionArgs = {categoryId.toString()};
+        return new CursorLoader(this, GroceryotgProvider.CONTENT_URI_GRO, projection, selection, selectionArgs, null);
     }
 
     @Override

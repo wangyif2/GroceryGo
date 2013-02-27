@@ -1,23 +1,27 @@
 package com.groceryotg.android.services;
 
 import android.app.IntentService;
+import android.app.PendingIntent;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.groceryotg.android.database.CategoryTable;
 import com.groceryotg.android.database.GroceryTable;
+import com.groceryotg.android.database.StoreTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 import com.groceryotg.android.database.objects.Category;
 import com.groceryotg.android.database.objects.Grocery;
+import com.groceryotg.android.database.objects.Store;
 import com.groceryotg.android.utils.JSONParser;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -29,11 +33,10 @@ public class NetworkHandler extends IntentService {
     public static final String REFRESH_CONTENT = "content";
     public static final int CAT = 10;
     public static final int GRO = 20;
+    public static final int STO = 30;
 
-    public static final DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-
-    private final String getCategory = "http://groceryotg.elasticbeanstalk.com/GetGeneralInfo";
-    private final String getGroceryBase = "http://groceryotg.elasticbeanstalk.com/UpdateGroceryInfo?date=";
+    public static final int CONNECTION = 10;
+    public static final int NO_CONNECTION = 11;
 
     JSONParser jsonParser = new JSONParser();
 
@@ -44,8 +47,10 @@ public class NetworkHandler extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         Bundle extras = intent.getExtras();
+        PendingIntent pendingIntent = (PendingIntent) extras.get("pendingIntent");
+        int connectionState = NO_CONNECTION;
 
-        if (extras != null) {
+        if (isOnline() && extras != null) {
             Integer requestType = (Integer) extras.get(REFRESH_CONTENT);
             switch (requestType) {
                 case CAT:
@@ -54,44 +59,28 @@ public class NetworkHandler extends IntentService {
                 case GRO:
                     refreshGrocery();
                     break;
+                case STO:
+                    refreshStore();
+                    break;
                 default:
                     Log.e("GroceryOTG", "unknown request received by NetworkHandler");
                     break;
             }
+            connectionState = CONNECTION;
+        } else if (!isOnline()) {
+            connectionState = NO_CONNECTION;
         }
-    }
-
-    private void refreshGrocery() {
-        //TODO: hard coded date format!! not good...
-        Gson gson=  new GsonBuilder().setDateFormat("MMM dd, yyyy").create();
-        String getGrocery = buildGroceryURL(new Date());
-        JSONArray groceryArray = jsonParser.getJSONFromUrl(getGrocery);
-        ArrayList<ContentValues> contentValuesArrayList = new ArrayList<ContentValues>();
 
         try {
-            for (int i = 0; i < groceryArray.length(); i++) {
-                Grocery grocery = gson.fromJson(groceryArray.getJSONObject(i).toString(), Grocery.class);
-
-                ContentValues contentValues = new ContentValues();
-                contentValues.put(GroceryTable.COLUMN_GROCERY_ID, grocery.getGroceryId());
-                contentValues.put(GroceryTable.COLUMN_GROCERY_NAME, grocery.getRawString());
-                contentValues.put(GroceryTable.COLUMN_GROCERY_PRICE, grocery.getTotalPrice());
-
-                contentValuesArrayList.add(contentValues);
-            }
-        } catch (JSONException e) {
+            pendingIntent.send(connectionState);
+        } catch (PendingIntent.CanceledException e) {
             e.printStackTrace();
         }
-
-        ContentValues[] groceries = new ContentValues[contentValuesArrayList.size()];
-        contentValuesArrayList.toArray(groceries);
-
-        getContentResolver().bulkInsert(GroceryotgProvider.CONTENT_URI_GRO, groceries);
     }
 
     private void refreshCategory() {
         Gson gson = new Gson();
-        JSONArray categoryArray = jsonParser.getJSONFromUrl(getCategory);
+        JSONArray categoryArray = jsonParser.getJSONFromUrl(ServerURL.getCateoryUrl());
         ArrayList<ContentValues> contentValuesArrayList = new ArrayList<ContentValues>();
 
         try {
@@ -114,11 +103,84 @@ public class NetworkHandler extends IntentService {
         getContentResolver().bulkInsert(GroceryotgProvider.CONTENT_URI_CAT, categories);
     }
 
-    private String buildGroceryURL(Date date) {
-        Log.i("GroceryOTG", "freshGrocery with date: " + format.format(date));
+    private void refreshStore() {
+        Gson gson = new Gson();
+        JSONArray categoryArray = jsonParser.getJSONFromUrl(ServerURL.getStoreUrl());
+        ArrayList<ContentValues> contentValuesArrayList = new ArrayList<ContentValues>();
 
+        try {
+            for (int i = 0; i < categoryArray.length(); i++) {
+                Store store = gson.fromJson(categoryArray.getJSONObject(i).toString(), Store.class);
+
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(StoreTable.COLUMN_STORE_ID, store.getStoreId());
+                contentValues.put(StoreTable.COLUMN_STORE_NAME, store.getStoreName());
+                contentValues.put(StoreTable.COLUMN_STORE_PARENT, store.getStoreParent());
+                contentValues.put(StoreTable.COLUMN_STORE_ADDR, store.getStoreAddress());
+
+                contentValuesArrayList.add(contentValues);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        ContentValues[] stores = new ContentValues[contentValuesArrayList.size()];
+        contentValuesArrayList.toArray(stores);
+
+        getContentResolver().bulkInsert(GroceryotgProvider.CONTENT_URI_STO, stores);
+    }
+
+    private void refreshGrocery() {
+        //TODO: hard coded date format!! not good...
+        Gson gson = new GsonBuilder().setDateFormat("MMM dd, yyyy").create();
+
+        //build request url
+        String date = "?date=" + ServerURL.getDateFormat().format(new Date());
+        String[] requestArgs = new String[]{date};
+        String getGrocery = buildGroceryURL(requestArgs);
+
+        //network request
+        JSONArray groceryArray = jsonParser.getJSONFromUrl(getGrocery);
+        ArrayList<ContentValues> contentValuesArrayList = new ArrayList<ContentValues>();
+
+        try {
+            for (int i = 0; i < groceryArray.length(); i++) {
+                Grocery grocery = gson.fromJson(groceryArray.getJSONObject(i).toString(), Grocery.class);
+
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(GroceryTable.COLUMN_GROCERY_ID, grocery.getGroceryId());
+                contentValues.put(GroceryTable.COLUMN_GROCERY_NAME, grocery.getRawString());
+                contentValues.put(GroceryTable.COLUMN_GROCERY_PRICE, grocery.getTotalPrice());
+                contentValues.put(GroceryTable.COLUMN_GROCERY_CATEGORY, grocery.getCategoryId());
+
+                contentValuesArrayList.add(contentValues);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        ContentValues[] groceries = new ContentValues[contentValuesArrayList.size()];
+        contentValuesArrayList.toArray(groceries);
+
+        getContentResolver().bulkInsert(GroceryotgProvider.CONTENT_URI_GRO, groceries);
+    }
+
+    private String buildGroceryURL(String[] args) {
         // TODO: Accept a second argument, int categoryId, and append to querystring
         StringBuilder url = new StringBuilder();
-        return url.append(getGroceryBase).append(format.format(date)).toString();
+        url.append(ServerURL.getGroceryBaseUrl());
+        for (String arg : args)
+            url.append(arg);
+        return url.toString();
+    }
+
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnected()) {
+            return true;
+        }
+        return false;
     }
 }

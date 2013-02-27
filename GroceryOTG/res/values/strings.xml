@@ -2,4 +2,9 @@
 <resources>
     <string name="app_name">GroceryOTG</string>
     <string name="no_content">Currently No Content, Please Refresh</string>
+    <string name="fresh_action">refresing..</string>
+    <string name="no_cart_item">Your shopping cart is currently empty</string>
+    <string name="cart_grocery_edit_name">Grocery item name</string>
+    <string name="cart_confirm_button">Confirm</string>
+    <string name="cart_item_delete">Delete this item</string>
 </resources>

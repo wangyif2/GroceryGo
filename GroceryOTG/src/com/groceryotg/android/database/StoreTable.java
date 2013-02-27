@@ -5,26 +5,25 @@ import android.util.Log;
 
 /**
  * User: robert
- * Date: 07/02/13
+ * Date: 15/02/13
  */
-public class GroceryTable {
-
+public class StoreTable {
     // database table
-    public static final String TABLE_GROCERY = "grocery";
+    public static final String TABLE_STORE = "store";
     public static final String COLUMN_ID = "_id";
-    public static final String COLUMN_GROCERY_ID = "grocery_id";
-    public static final String COLUMN_GROCERY_NAME = "grocery_name";
-    public static final String COLUMN_GROCERY_PRICE = "grocery_price";
-    public static final String COLUMN_GROCERY_CATEGORY = "grocery_category";
+    public static final String COLUMN_STORE_ID = "store_id";
+    public static final String COLUMN_STORE_NAME = "store_name";
+    public static final String COLUMN_STORE_PARENT = "store_parent";
+    public static final String COLUMN_STORE_ADDR = "store_addr";
 
     // database creation SQL statement
     public static final String DATABASE_CREATE = "create table "
-            + TABLE_GROCERY
+            + TABLE_STORE
             + "(" + COLUMN_ID + " integer primary key autoincrement, "
-            + COLUMN_GROCERY_ID + " integer unique not null, "
-            + COLUMN_GROCERY_NAME + " text not null, "
-            + COLUMN_GROCERY_PRICE + " real, "
-            + COLUMN_GROCERY_CATEGORY + " integer);";
+            + COLUMN_STORE_ID + " integer unique not null, "
+            + COLUMN_STORE_NAME + " text not null, "
+            + COLUMN_STORE_PARENT + " integer, "
+            + COLUMN_STORE_ADDR + " text);";
 
     public static void onCreate(SQLiteDatabase database) {
         database.execSQL(DATABASE_CREATE);
@@ -34,7 +33,7 @@ public class GroceryTable {
         Log.w(CategoryTable.class.getName(), "Upgrading database from version "
                 + oldVersion + " to " + newVersion
                 + ", which will destroy all old data");
-        database.execSQL("DROP TABLE IF EXISTS " + TABLE_GROCERY);
+        database.execSQL("DROP TABLE IF EXISTS " + TABLE_STORE);
         onCreate(database);
     }
 }

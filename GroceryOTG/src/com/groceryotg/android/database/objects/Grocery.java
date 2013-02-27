@@ -133,4 +133,7 @@ public class Grocery {
         this.item = item;
     }
 
+    public Integer getCategoryId() {
+        return this.getItem().getSubcategory().getCategoryId().getCategoryId();
+    }
 }

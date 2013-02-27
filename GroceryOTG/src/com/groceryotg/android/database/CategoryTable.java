@@ -32,5 +32,4 @@ public class CategoryTable {
         database.execSQL("DROP TABLE IF EXISTS " + TABLE_CATEGORY);
         onCreate(database);
     }
-
 }

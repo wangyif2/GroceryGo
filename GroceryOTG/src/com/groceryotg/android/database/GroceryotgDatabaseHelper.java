@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.groceryotg.android.CategoryOverView;
 import com.groceryotg.android.database.objects.Category;
 import com.groceryotg.android.database.objects.Grocery;
 import com.groceryotg.android.database.objects.Store;
@@ -42,9 +43,11 @@ public class GroceryotgDatabaseHelper extends SQLiteOpenHelper {
     }
 
     private void init(SQLiteDatabase db) {
-        initCategory(db);
-        initGrocery(db);
-        initStore(db);
+        if (ServerURL.checkNetworkStatus(CategoryOverView.getContext())) {
+            initCategory(db);
+            initGrocery(db);
+            initStore(db);
+        }
     }
 
     private void initGrocery(SQLiteDatabase db) {

@@ -3,10 +3,7 @@ package com.groceryotg.android.services;
 import android.app.IntentService;
 import android.app.PendingIntent;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import com.google.gson.Gson;
@@ -50,7 +47,7 @@ public class NetworkHandler extends IntentService {
         PendingIntent pendingIntent = (PendingIntent) extras.get("pendingIntent");
         int connectionState = NO_CONNECTION;
 
-        if (isOnline() && extras != null) {
+        if (ServerURL.checkNetworkStatus(this.getBaseContext()) && extras != null) {
             Integer requestType = (Integer) extras.get(REFRESH_CONTENT);
             switch (requestType) {
                 case CAT:
@@ -67,7 +64,7 @@ public class NetworkHandler extends IntentService {
                     break;
             }
             connectionState = CONNECTION;
-        } else if (!isOnline()) {
+        } else if (!ServerURL.checkNetworkStatus(this.getBaseContext())) {
             connectionState = NO_CONNECTION;
         }
 
@@ -172,15 +169,5 @@ public class NetworkHandler extends IntentService {
         for (String arg : args)
             url.append(arg);
         return url.toString();
-    }
-
-    public boolean isOnline() {
-        ConnectivityManager cm =
-                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        if (netInfo != null && netInfo.isConnected()) {
-            return true;
-        }
-        return false;
     }
 }

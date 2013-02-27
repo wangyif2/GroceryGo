@@ -27,10 +27,12 @@ import com.groceryotg.android.utils.RefreshAnimation;
 public class CategoryOverView extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
     private SimpleCursorAdapter adapter;
     private MenuItem refreshItem;
+    public static Context context;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        context = this.getBaseContext();
         fillData();
         setContentView(R.layout.category_list);
 
@@ -47,7 +49,7 @@ public class CategoryOverView extends Activity implements LoaderManager.LoaderCa
             }
         });
 
-        AlarmManager locationAlarm = (AlarmManager)getSystemService(ALARM_SERVICE);
+        AlarmManager locationAlarm = (AlarmManager) getSystemService(ALARM_SERVICE);
         Intent locationIntent = new Intent(this, LocationMonitor.class);
         locationIntent.putExtra(LocationMonitor.EXTRA_INTENT, new Intent(this, LocationReceiver.class));
         locationIntent.putExtra(LocationMonitor.EXTRA_PROVIDER, LocationManager.NETWORK_PROVIDER);
@@ -197,4 +199,7 @@ public class CategoryOverView extends Activity implements LoaderManager.LoaderCa
 
     }
 
+    public static Context getContext() {
+        return context;
+    }
 }

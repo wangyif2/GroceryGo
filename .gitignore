@@ -49,5 +49,3 @@ proguard/
 #tut
 /tutorial
 
-# eclipse project properties
-*.properties

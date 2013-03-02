@@ -1,6 +1,5 @@
 package com.groceryotg.android;
 
-import android.app.ListActivity;
 import android.app.LoaderManager;
 import android.app.PendingIntent;
 import android.content.ContentValues;
@@ -22,12 +21,17 @@ import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 import com.groceryotg.android.services.NetworkHandler;
 import com.groceryotg.android.services.ServerURL;
 import com.groceryotg.android.utils.RefreshAnimation;
+import com.actionbarsherlock.app.SherlockListActivity;
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.MenuInflater;
 
 /**
  * User: robert
  * Date: 07/02/13
  */
-public class GroceryOverView extends ListActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class GroceryOverView extends SherlockListActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     private SimpleCursorAdapter adapter;
     private MenuItem refreshItem;
     private Uri groceryUri;
@@ -63,7 +67,7 @@ public class GroceryOverView extends ListActivity implements LoaderManager.Loade
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
+        MenuInflater inflater = getSupportMenuInflater();
         inflater.inflate(R.menu.menu, menu);
         return true;
     }

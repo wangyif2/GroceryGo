@@ -2,11 +2,11 @@ package com.groceryotg.android.utils;
 
 import android.content.Context;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import com.groceryotg.android.R;
+import com.actionbarsherlock.view.MenuItem;
 
 /**
  * User: robert

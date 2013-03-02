@@ -12,12 +12,12 @@
     </ListView>
 
     <TextView
-        android:id="@android:id/empty"
+        android:id="@+id/empty_grocery_list"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:textSize="20dp"
         android:gravity="center"
-        android:text="@string/no_content"
+        android:text="@string/no_new_content"
         android:drawableLeft="@drawable/warning"
         android:drawablePadding="2dip"
         android:paddingLeft="30dip"

@@ -20,6 +20,8 @@ public class ServerURL {
     private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private static final DecimalFormat getDecimalFormat = new DecimalFormat("#.00");
 
+    private static String lastRefreshed = null;
+
     public static DecimalFormat getGetDecimalFormat() {
         return getDecimalFormat;
     }
@@ -48,5 +50,13 @@ public class ServerURL {
             return true;
         }
         return false;
+    }
+
+    public static String getLastRefreshed() {
+        return lastRefreshed;
+    }
+
+    public static void setLastRefreshed(String lastRefreshed) {
+        ServerURL.lastRefreshed = lastRefreshed;
     }
 }

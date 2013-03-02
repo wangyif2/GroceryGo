@@ -9,11 +9,15 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.*;
+import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.actionbarsherlock.app.SherlockListActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.CategoryTable;
 import com.groceryotg.android.database.GroceryTable;
@@ -21,11 +25,6 @@ import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 import com.groceryotg.android.services.NetworkHandler;
 import com.groceryotg.android.services.ServerURL;
 import com.groceryotg.android.utils.RefreshAnimation;
-import com.actionbarsherlock.app.SherlockListActivity;
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.view.MenuInflater;
 
 /**
  * User: robert
@@ -145,6 +144,16 @@ public class GroceryOverView extends SherlockListActivity implements LoaderManag
         });
 
         setListAdapter(adapter);
+        displayEmptyListMessage();
+    }
+
+    private void displayEmptyListMessage() {
+        String emptyStringFormat = getResources().getString(R.string.no_new_content);
+        String emptyStringMsg = (ServerURL.getLastRefreshed() == null) ? String.format(emptyStringFormat, " Never") : String.format(emptyStringFormat, ServerURL.getLastRefreshed());
+        ListView myListView = this.getListView();
+        TextView myTextView = (TextView) findViewById(R.id.empty_grocery_list);
+        myTextView.setText(emptyStringMsg);
+        myListView.setEmptyView(myTextView);
     }
 
     @Override
@@ -158,6 +167,7 @@ public class GroceryOverView extends SherlockListActivity implements LoaderManag
         }
         assert toast != null;
         toast.show();
+        displayEmptyListMessage();
     }
 
     @Override

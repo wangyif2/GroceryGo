@@ -78,13 +78,15 @@ public class ShopCartDetailView extends Activity {
     private void saveState() {
         String name = mCartGroceryName.getText().toString();
 
-        ContentValues values = new ContentValues();
-        values.put(CartTable.COLUMN_CART_GROCERY_NAME, name);
+        if (!name.isEmpty()) {
+            ContentValues values = new ContentValues();
+            values.put(CartTable.COLUMN_CART_GROCERY_NAME, name);
 
-        if (cartGroceryItemUri == null) {
-            cartGroceryItemUri = getContentResolver().insert(GroceryotgProvider.CONTENT_URI_CART_ITEM, values);
-        } else {
-            getContentResolver().update(cartGroceryItemUri, values, null, null);
+            if (cartGroceryItemUri == null) {
+                cartGroceryItemUri = getContentResolver().insert(GroceryotgProvider.CONTENT_URI_CART_ITEM, values);
+            } else {
+                getContentResolver().update(cartGroceryItemUri, values, null, null);
+            }
         }
     }
 

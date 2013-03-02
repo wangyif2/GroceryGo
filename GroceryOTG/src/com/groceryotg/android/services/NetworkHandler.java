@@ -128,9 +128,6 @@ public class NetworkHandler extends IntentService {
     }
 
     private void refreshGrocery() {
-        //TODO: hard coded date format!! not good...
-        Gson gson = new GsonBuilder().setDateFormat("MMM dd, yyyy").create();
-
         //build request url
         String date = "?date=" + ServerURL.getDateFormat().format(new Date());
         String[] requestArgs = new String[]{date};
@@ -140,6 +137,18 @@ public class NetworkHandler extends IntentService {
         JSONArray groceryArray = jsonParser.getJSONFromUrl(getGrocery);
         ArrayList<ContentValues> contentValuesArrayList = new ArrayList<ContentValues>();
 
+        addNewGroceries(groceryArray, contentValuesArrayList);
+        removeExpiredGroceries(new Date());
+    }
+
+    private void removeExpiredGroceries(Date date) {
+        String selection = GroceryTable.COLUMN_GROCERY_EXPIRY + " < '" + date.getTime() + "'";
+        getContentResolver().delete(GroceryotgProvider.CONTENT_URI_GRO, selection, null);
+    }
+
+    private void addNewGroceries(JSONArray groceryArray, ArrayList<ContentValues> contentValuesArrayList) {
+        //TODO: hard coded date format!! not good...
+        Gson gson = new GsonBuilder().setDateFormat("MMM dd, yyyy").create();
         try {
             for (int i = 0; i < groceryArray.length(); i++) {
                 Grocery grocery = gson.fromJson(groceryArray.getJSONObject(i).toString(), Grocery.class);
@@ -149,6 +158,8 @@ public class NetworkHandler extends IntentService {
                 contentValues.put(GroceryTable.COLUMN_GROCERY_NAME, grocery.getRawString());
                 contentValues.put(GroceryTable.COLUMN_GROCERY_PRICE, grocery.getTotalPrice());
                 contentValues.put(GroceryTable.COLUMN_GROCERY_CATEGORY, grocery.getCategoryId());
+                Log.i("GroceryOTG", String.valueOf(grocery.getEndDate().getTime()));
+                contentValues.put(GroceryTable.COLUMN_GROCERY_EXPIRY, grocery.getEndDate().getTime());
 
                 contentValuesArrayList.add(contentValues);
             }

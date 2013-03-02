@@ -71,6 +71,8 @@ public class GroceryotgDatabaseHelper extends SQLiteOpenHelper {
                     ih.bind(ih.getColumnIndex(GroceryTable.COLUMN_GROCERY_PRICE), grocery.getTotalPrice());
                 if (grocery.getCategoryId() != null)
                     ih.bind(ih.getColumnIndex(GroceryTable.COLUMN_GROCERY_CATEGORY), grocery.getCategoryId());
+                if(grocery.getEndDate() != null)
+                    ih.bind(ih.getColumnIndex(GroceryTable.COLUMN_GROCERY_EXPIRY), grocery.getEndDate().getTime());
                 ih.execute();
             }
         } catch (JSONException e) {

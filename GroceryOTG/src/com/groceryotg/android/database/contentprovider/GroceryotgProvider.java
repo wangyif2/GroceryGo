@@ -148,6 +148,9 @@ public class GroceryotgProvider extends ContentProvider {
         SQLiteDatabase sqlDB = database.getWritableDatabase();
         int rowsDeleted = 0;
         switch (uriType) {
+            case GROCERIES:
+                rowsDeleted = sqlDB.delete(GroceryTable.TABLE_GROCERY,selection,selectionArgs);
+                break;
             case CART_ITEMS:
                 rowsDeleted = sqlDB.delete(CartTable.TABLE_CART, selection, selectionArgs);
                 break;

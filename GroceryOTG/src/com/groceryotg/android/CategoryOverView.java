@@ -18,7 +18,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
+
 import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.app.SherlockFragment;
+import com.actionbarsherlock.app.SherlockListFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -28,6 +31,9 @@ import com.groceryotg.android.services.Location.LocationMonitor;
 import com.groceryotg.android.services.Location.LocationReceiver;
 import com.groceryotg.android.services.NetworkHandler;
 import com.groceryotg.android.utils.RefreshAnimation;
+import com.slidingmenu.lib.SlidingMenu;
+import com.slidingmenu.lib.app.SlidingFragmentActivity;
+
 
 public class CategoryOverView extends SherlockActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     private SimpleCursorAdapter adapter;
@@ -47,8 +53,74 @@ public class CategoryOverView extends SherlockActivity implements LoaderManager.
         // Populate the grid with data
         fillData();
         setContentView(R.layout.category_list);
+        //setBehindContentView(R.layout.menu_frame);
         
-        // Set adapter for the grid view
+        // Configure the SlidingMenu
+        SlidingMenu menu = new SlidingMenu(this);
+        menu.setMode(SlidingMenu.LEFT);
+        menu.setShadowWidthRes(R.dimen.shadow_width);
+        menu.setShadowDrawable(R.drawable.shadow);
+        menu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
+        menu.setFadeDegree(0.35f);
+        menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+        menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
+        menu.setMenu(R.layout.menu_frame);
+        
+        // Populate the SlidingMenu
+        String[] slidingmenuItems = new String[] { getString(R.string.slidingmenu_item_cat), 
+				   getString(R.string.slidingmenu_item_cart), 
+				   getString(R.string.slidingmenu_item_map),
+				   getString(R.string.slidingmenu_item_sync),
+				   getString(R.string.slidingmenu_item_settings),
+				   getString(R.string.slidingmenu_item_about) };
+        ListView menuView = (ListView) findViewById(R.id.menu_items);
+		ArrayAdapter<String> menuAdapter = new ArrayAdapter<String>(this, 
+				android.R.layout.simple_list_item_1, android.R.id.text1, slidingmenuItems);
+		menuView.setAdapter(menuAdapter);
+		
+		menuView.setOnItemClickListener(new OnItemClickListener() {
+			  @Override
+			  public void onItemClick(AdapterView<?> parent, View view,
+			    int position, long id) {
+				  	// Switch activity based on what menu item the user selected
+					TextView textView = (TextView) view;
+					String selectedItem = textView.getText().toString();
+					
+					if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_cat))) {
+						// Selected Categories
+						/* TODO: toggle() only works in a SlidingFragmentActivity, but converting this activity
+						 * to a SlidingFragmentActivity leads to several issues: (1) sliding menu is sometimes blank
+						 * (2) slidingmenu is sometimes fullscreen (3) Clicking on the home icon of the ActionBar
+						 * causes the app to crash if homeAsUp is enabled.
+						 */
+						//toggle();
+						startActivity(new Intent(CategoryOverView.this, CategoryOverView.class));
+					}
+					else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_cart))) {
+						// Selected Shopping Cart
+						startActivity(new Intent(CategoryOverView.this, ShopCartOverView.class));
+					}
+					else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_map))) {
+						// Selected Map
+						startActivity(new Intent(CategoryOverView.this, GroceryMapView.class));
+					}
+					else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_sync))) {
+						// Selected Sync
+						//toggle();
+					}
+					else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_settings))) {
+						// Selected Settings
+						//toggle();
+					}
+					else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_about))) {
+						// Selected About
+						//startActivity(new Intent(CategoryOverView.this, About.class));
+						//toggle();
+					}  
+			  }
+			}); 
+        
+		// Set adapter for the grid view
         GridView gridview = (GridView) findViewById(R.id.gridview);
         gridview.setAdapter(adapter);
 
@@ -60,9 +132,9 @@ public class CategoryOverView extends SherlockActivity implements LoaderManager.
                 startActivity(intent);
             }
         });
-
+        
         gridview.setEmptyView(findViewById(R.id.empty_category_list));
-
+        
         AlarmManager locationAlarm = (AlarmManager) getSystemService(ALARM_SERVICE);
         Intent locationIntent = new Intent(this, LocationMonitor.class);
         locationIntent.putExtra(LocationMonitor.EXTRA_INTENT, new Intent(this, LocationReceiver.class));
@@ -92,6 +164,9 @@ public class CategoryOverView extends SherlockActivity implements LoaderManager.
             case R.id.shop_cart:
                 launchShopCartActivity();
                 return true;
+            case R.id.homeAsUp:
+            	// Toggle the sliding menu
+            	//toggle();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -110,22 +185,21 @@ public class CategoryOverView extends SherlockActivity implements LoaderManager.
         Intent intent = new Intent(this, ShopCartOverView.class);
         startActivity(intent);
     }
-
+    
     private void launchMapActivity() {
         Intent intent = new Intent(this, GroceryMapView.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
-
+    
     private void fillData() {
         String[] from = new String[]{CategoryTable.COLUMN_CATEGORY_NAME};
         int[] to = new int[]{R.id.category_row_label};
 
         getLoaderManager().initLoader(0, null, this);
         adapter = new CategoryGridCursorAdapter(this, R.layout.category_row, null, from, to);
-
     }
-
+    
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Toast toast = null;
@@ -154,7 +228,7 @@ public class CategoryOverView extends SherlockActivity implements LoaderManager.
     public void onLoaderReset(Loader<Cursor> loader) {
         adapter.swapCursor(null);
     }
-
+    
     public class CategoryGridCursorAdapter extends SimpleCursorAdapter {
         private Context mContext;
         private int mLayout;
@@ -212,7 +286,7 @@ public class CategoryOverView extends SherlockActivity implements LoaderManager.
         }
 
     }
-
+    
     public static Context getContext() {
         return context;
     }

@@ -162,7 +162,11 @@ public class GroceryOverView extends SherlockListActivity implements LoaderManag
             public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
                 if (columnIndex == 2) {
                     TextView textView = (TextView) view;
-                    textView.setText("$" + ServerURL.getGetDecimalFormat().format(cursor.getDouble(columnIndex)));
+                    if (cursor.getDouble(columnIndex) != 0) {
+                        textView.setText("$" + ServerURL.getGetDecimalFormat().format(cursor.getDouble(columnIndex)));
+                    } else {
+                        textView.setText("N/A");
+                    }
                     return true;
                 }
                 return false;

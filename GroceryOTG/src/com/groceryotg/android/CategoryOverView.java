@@ -38,9 +38,16 @@ public class CategoryOverView extends SherlockActivity implements LoaderManager.
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = this.getBaseContext();
+        
+        // By default, the Home button in the ActionBar is interactive. Since this
+        // is the home screen (and it doesn't make sense to navigate up from the home screen)
+        // the line below disables the button.
+        getSupportActionBar().setHomeButtonEnabled(false);
+        
+        // Populate the grid with data
         fillData();
         setContentView(R.layout.category_list);
-
+        
         // Set adapter for the grid view
         GridView gridview = (GridView) findViewById(R.id.gridview);
         gridview.setAdapter(adapter);

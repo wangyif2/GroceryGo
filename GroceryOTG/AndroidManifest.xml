@@ -72,8 +72,8 @@
         <service android:name=".services.NetworkHandler" />
         <service android:name="com.groceryotg.android.services.Location.LocationMonitorService" />
 		
-        <receiver android:name="com.groceryotg.android.services.Location.location$LocationMonitor" />
-        <receiver android:name="com.groceryotg.android.services.Location.location$LocationReceiver" />
+        <receiver android:name="com.groceryotg.android.services.Location.LocationMonitor" />
+        <receiver android:name="com.groceryotg.android.services.Location.LocationReceiver" />
 
         <provider
             android:name=".database.contentprovider.GroceryotgProvider"

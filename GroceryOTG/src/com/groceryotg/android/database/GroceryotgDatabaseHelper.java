@@ -60,25 +60,27 @@ public class GroceryotgDatabaseHelper extends SQLiteOpenHelper {
         DatabaseUtils.InsertHelper ih = new DatabaseUtils.InsertHelper(db, GroceryTable.TABLE_GROCERY);
         Grocery grocery;
 
-        try {
-            for (int i = 0; i < groceryArray.length(); i++) {
-                grocery = gson.fromJson(groceryArray.getJSONObject(i).toString(), Grocery.class);
+        if (groceryArray != null) {
+            try {
+                for (int i = 0; i < groceryArray.length(); i++) {
+                    grocery = gson.fromJson(groceryArray.getJSONObject(i).toString(), Grocery.class);
 
-                ih.prepareForInsert();
-                ih.bind(ih.getColumnIndex(GroceryTable.COLUMN_GROCERY_ID), grocery.getGroceryId());
-                ih.bind(ih.getColumnIndex(GroceryTable.COLUMN_GROCERY_NAME), grocery.getRawString());
-                if (grocery.getTotalPrice() != null)
-                    ih.bind(ih.getColumnIndex(GroceryTable.COLUMN_GROCERY_PRICE), grocery.getTotalPrice());
-                if (grocery.getCategoryId() != null)
-                    ih.bind(ih.getColumnIndex(GroceryTable.COLUMN_GROCERY_CATEGORY), grocery.getCategoryId());
-                if(grocery.getEndDate() != null)
-                    ih.bind(ih.getColumnIndex(GroceryTable.COLUMN_GROCERY_EXPIRY), grocery.getEndDate().getTime());
-                ih.execute();
+                    ih.prepareForInsert();
+                    ih.bind(ih.getColumnIndex(GroceryTable.COLUMN_GROCERY_ID), grocery.getGroceryId());
+                    ih.bind(ih.getColumnIndex(GroceryTable.COLUMN_GROCERY_NAME), grocery.getRawString());
+                    if (grocery.getTotalPrice() != null)
+                        ih.bind(ih.getColumnIndex(GroceryTable.COLUMN_GROCERY_PRICE), grocery.getTotalPrice());
+                    if (grocery.getCategoryId() != null)
+                        ih.bind(ih.getColumnIndex(GroceryTable.COLUMN_GROCERY_CATEGORY), grocery.getCategoryId());
+                    if (grocery.getEndDate() != null)
+                        ih.bind(ih.getColumnIndex(GroceryTable.COLUMN_GROCERY_EXPIRY), grocery.getEndDate().getTime());
+                    ih.execute();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } finally {
+                ih.close();
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } finally {
-            ih.close();
         }
     }
 
@@ -88,24 +90,26 @@ public class GroceryotgDatabaseHelper extends SQLiteOpenHelper {
         DatabaseUtils.InsertHelper ih = new DatabaseUtils.InsertHelper(db, StoreTable.TABLE_STORE);
         Store store;
 
-        try {
-            for (int i = 0; i < storeArray.length(); i++) {
-                store = gson.fromJson(storeArray.getJSONObject(i).toString(), Store.class);
+        if (storeArray != null) {
+            try {
+                for (int i = 0; i < storeArray.length(); i++) {
+                    store = gson.fromJson(storeArray.getJSONObject(i).toString(), Store.class);
 
-                ih.prepareForInsert();
-                ih.bind(ih.getColumnIndex(StoreTable.COLUMN_STORE_ID), store.getStoreId());
-                ih.bind(ih.getColumnIndex(StoreTable.COLUMN_STORE_NAME), store.getStoreName());
-                if (store.getStoreParent() != null)
-                    ih.bind(ih.getColumnIndex(StoreTable.COLUMN_STORE_PARENT), store.getStoreParent());
-                if (store.getStoreAddress() != null)
-                    ih.bind(ih.getColumnIndex(StoreTable.COLUMN_STORE_ADDR), store.getStoreAddress());
+                    ih.prepareForInsert();
+                    ih.bind(ih.getColumnIndex(StoreTable.COLUMN_STORE_ID), store.getStoreId());
+                    ih.bind(ih.getColumnIndex(StoreTable.COLUMN_STORE_NAME), store.getStoreName());
+                    if (store.getStoreParent() != null)
+                        ih.bind(ih.getColumnIndex(StoreTable.COLUMN_STORE_PARENT), store.getStoreParent());
+                    if (store.getStoreAddress() != null)
+                        ih.bind(ih.getColumnIndex(StoreTable.COLUMN_STORE_ADDR), store.getStoreAddress());
 
-                ih.execute();
+                    ih.execute();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } finally {
+                ih.close();
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } finally {
-            ih.close();
         }
     }
 
@@ -115,20 +119,22 @@ public class GroceryotgDatabaseHelper extends SQLiteOpenHelper {
         DatabaseUtils.InsertHelper ih = new DatabaseUtils.InsertHelper(db, CategoryTable.TABLE_CATEGORY);
         Category category;
 
-        try {
-            for (int i = 0; i < categoryArray.length(); i++) {
-                category = gson.fromJson(categoryArray.getJSONObject(i).toString(), Category.class);
+        if (categoryArray != null) {
+            try {
+                for (int i = 0; i < categoryArray.length(); i++) {
+                    category = gson.fromJson(categoryArray.getJSONObject(i).toString(), Category.class);
 
-                ih.prepareForInsert();
-                ih.bind(ih.getColumnIndex(CategoryTable.COLUMN_CATEGORY_ID), category.getCategoryId());
-                ih.bind(ih.getColumnIndex(CategoryTable.COLUMN_CATEGORY_NAME), category.getCategoryName());
+                    ih.prepareForInsert();
+                    ih.bind(ih.getColumnIndex(CategoryTable.COLUMN_CATEGORY_ID), category.getCategoryId());
+                    ih.bind(ih.getColumnIndex(CategoryTable.COLUMN_CATEGORY_NAME), category.getCategoryName());
 
-                ih.execute();
+                    ih.execute();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } finally {
+                ih.close();
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } finally {
-            ih.close();
         }
     }
 

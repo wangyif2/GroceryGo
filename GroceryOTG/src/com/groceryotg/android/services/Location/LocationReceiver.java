@@ -1,10 +1,12 @@
 package com.groceryotg.android.services.Location;
 
-import android.location.*;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.util.Log;
+
+import java.util.Date;
 
 /**
  * User: John
@@ -13,7 +15,7 @@ import android.util.Log;
 public class LocationReceiver extends BroadcastReceiver {
 
     //currently polling time is every 5 minutes
-    private static final int pollingPeriod = 300000;
+    public static final int pollingPeriod = 300000;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -30,6 +32,6 @@ public class LocationReceiver extends BroadcastReceiver {
             msg = "Invalid location received...";
         }
 
-        Log.i("GroceryOTG", msg);
+        Log.i("GroceryOTG", msg + " Time now is: " + new Date().getTime());
     }
 }

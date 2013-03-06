@@ -1,7 +1,5 @@
 package com.groceryotg.android;
 
-import java.util.Locale;
-
 import android.app.AlarmManager;
 import android.app.LoaderManager;
 import android.app.PendingIntent;
@@ -9,7 +7,6 @@ import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
-import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.location.LocationManager;
@@ -126,7 +123,7 @@ public class CategoryOverView extends SherlockActivity implements LoaderManager.
 		// Set adapter for the grid view
         GridView gridview = (GridView) findViewById(R.id.gridview);
         gridview.setAdapter(adapter);
-        
+
         gridview.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 Intent intent = new Intent(CategoryOverView.this, GroceryOverView.class);
@@ -236,24 +233,19 @@ public class CategoryOverView extends SherlockActivity implements LoaderManager.
         private Context mContext;
         private int mLayout;
         private int[] gridColours;
-        private TypedArray gridIcons;
-        
+
         @SuppressWarnings("deprecation")
         public CategoryGridCursorAdapter(Context context, int layout, Cursor c, String[] from, int[] to) {
             super(context, layout, c, from, to);
             this.mContext = context;
             this.mLayout = layout;
 
-            // An array of colours for solid background fill
             String[] allColours = mContext.getResources().getStringArray(R.array.colours);
             gridColours = new int[allColours.length];
+
             for (int i = 0; i < allColours.length; i++) {
                 gridColours[i] = Color.parseColor(allColours[i]);
             }
-            
-            // An array of icons (to use instead of colours, when available)
-            gridIcons = mContext.getResources().obtainTypedArray(R.array.icons_arr);
-            
         }
 
         @Override
@@ -266,7 +258,7 @@ public class CategoryOverView extends SherlockActivity implements LoaderManager.
             // Get the next row from the cursor
             String colName = CategoryTable.COLUMN_CATEGORY_NAME;
             String categoryName = c.getString(c.getColumnIndex(colName));
-            
+
             // Set the name of the next category in the grid view
             TextView name_text = (TextView) v.findViewById(R.id.category_row_label);
             if (name_text != null) {
@@ -281,37 +273,16 @@ public class CategoryOverView extends SherlockActivity implements LoaderManager.
 
             // Get the next row from the cursor
             String colName = CategoryTable.COLUMN_CATEGORY_NAME;
-            String categoryName = c.getString(c.getColumnIndex(colName)).toLowerCase(Locale.CANADA);
-            
-            // TODO: Update category names in database
-            if (categoryName.equalsIgnoreCase("Miscellaneous")) {
-            	categoryName = "misc";
-            }
-            else if (categoryName.equalsIgnoreCase("Fruits and Vegetables")) {
-            	categoryName = "fruit & veg";
-            }
-            else if (categoryName.equalsIgnoreCase("Bread and Bakery")) {
-            	categoryName = "bread";
-            }
-            else if (categoryName.equalsIgnoreCase("Beverages")) {
-            	categoryName = "drinks";
-            }
-            
-            
+            String categoryName = c.getString(c.getColumnIndex(colName));
+
             // Set the name of the next category in the grid view
             TextView name_text = (TextView) v.findViewById(R.id.category_row_label);
             if (name_text != null) {
                 name_text.setText(categoryName);
             }
-            
+
             int position = c.getPosition();
-            
-            if (position < gridIcons.length()) {
-            	v.setBackgroundResource(gridIcons.getResourceId(position % gridIcons.length(), 0));
-            }
-            else {
-            	v.setBackgroundColor(gridColours[position % gridColours.length]);
-            }
+            v.setBackgroundColor(gridColours[position % gridColours.length]);
         }
 
     }

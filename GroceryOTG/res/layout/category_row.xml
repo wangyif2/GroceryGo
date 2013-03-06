@@ -11,12 +11,14 @@
         android:layout_width="fill_parent"
         android:layout_height="110dp"
         android:text="@+id/category_row_text"
-        android:textSize="18dp"
+        android:textSize="18sp"
         android:fontFamily="sans-serif-light"
-        android:textStyle="normal"
+        android:textStyle="bold"
         android:textColor="#ffffff"
         android:gravity="right|bottom"
-        android:paddingLeft="10dip"
+        android:paddingLeft="8dip"
+        android:paddingRight="8dip"
+        android:paddingBottom="5dip"
         android:singleLine="false"
         >
     </TextView>

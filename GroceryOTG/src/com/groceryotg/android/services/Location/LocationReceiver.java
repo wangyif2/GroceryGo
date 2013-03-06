@@ -15,7 +15,7 @@ import java.util.Date;
 public class LocationReceiver extends BroadcastReceiver {
 
     //currently polling time is every 5 minutes
-    public static final int pollingPeriod = 300000;
+    public static final int pollingPeriod = 3600000;
 
     @Override
     public void onReceive(Context context, Intent intent) {

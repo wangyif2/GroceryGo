@@ -1,9 +1,12 @@
 package com.groceryotg.android;
 
+import java.util.Locale;
+
 import android.app.AlarmManager;
 import android.app.LoaderManager;
 import android.app.PendingIntent;
 import android.content.*;
+import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.location.LocationManager;
@@ -40,7 +43,7 @@ public class CategoryOverView extends SherlockActivity implements LoaderManager.
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = this.getBaseContext();
-
+        
         setContentView(R.layout.category_list);
 
         // By default, the Home button in the ActionBar is interactive. Since this
@@ -50,13 +53,13 @@ public class CategoryOverView extends SherlockActivity implements LoaderManager.
 
         // Configure the SlidingMenu
         configSlidingMenu();
-
+        
         // Set adapter for the grid view
         configGridView();
-
+        
         // Populate the grid with data
         fillData();
-
+        
         // Setup alarm for polling of location data
         configLocationPoll();
     }
@@ -89,17 +92,19 @@ public class CategoryOverView extends SherlockActivity implements LoaderManager.
     }
 
     private void configLocationPoll() {
-        AlarmManager locationAlarm = (AlarmManager) getSystemService(ALARM_SERVICE);
+    	AlarmManager locationAlarm = (AlarmManager) getSystemService(ALARM_SERVICE);
         Intent locationIntent = new Intent(this, LocationMonitor.class);
         locationIntent.putExtra(LocationMonitor.EXTRA_INTENT, new Intent(this, LocationReceiver.class));
         locationIntent.putExtra(LocationMonitor.EXTRA_PROVIDER, LocationManager.NETWORK_PROVIDER);
         PendingIntent locationPendingIntent = PendingIntent.getBroadcast(this, 0, locationIntent, 0);
         locationAlarm.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), LocationReceiver.pollingPeriod, locationPendingIntent);
     }
-
+    
     private void configGridView() {
+    	
+    	// Set adapter for the grid view
         gridview = (GridView) findViewById(R.id.gridview);
-
+        
         gridview.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 Intent intent = new Intent(CategoryOverView.this, GroceryOverView.class);
@@ -108,7 +113,7 @@ public class CategoryOverView extends SherlockActivity implements LoaderManager.
                 startActivity(intent);
             }
         });
-
+        
         gridview.setEmptyView(findViewById(R.id.empty_category_list));
     }
 
@@ -130,7 +135,7 @@ public class CategoryOverView extends SherlockActivity implements LoaderManager.
                 getString(R.string.slidingmenu_item_sync),
                 getString(R.string.slidingmenu_item_settings),
                 getString(R.string.slidingmenu_item_about)};
-
+        
         ListView menuView = (ListView) findViewById(R.id.menu_items);
         ArrayAdapter<String> menuAdapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1, android.R.id.text1, slidingMenuItems);
@@ -151,8 +156,9 @@ public class CategoryOverView extends SherlockActivity implements LoaderManager.
                          * (2) slidingmenu is sometimes fullscreen (3) Clicking on the home icon of the ActionBar
                          * causes the app to crash if homeAsUp is enabled.
                          */
-                    //toggle();
-                    startActivity(new Intent(CategoryOverView.this, CategoryOverView.class));
+                	if (slidingMenu.isMenuShowing())
+                        slidingMenu.showContent();
+                    //startActivity(new Intent(CategoryOverView.this, CategoryOverView.class));
                 } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_cart))) {
                     // Selected Shopping Cart
                     launchShopCartActivity();
@@ -164,11 +170,13 @@ public class CategoryOverView extends SherlockActivity implements LoaderManager.
                     refreshCurrentCategory();
                 } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_settings))) {
                     // Selected Settings
-                    //toggle();
+                	if (slidingMenu.isMenuShowing())
+                        slidingMenu.showContent();
                 } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_about))) {
                     // Selected About
                     //startActivity(new Intent(CategoryOverView.this, About.class));
-                    //toggle();
+                	if (slidingMenu.isMenuShowing())
+                        slidingMenu.showContent();
                 }
             }
         });
@@ -242,19 +250,24 @@ public class CategoryOverView extends SherlockActivity implements LoaderManager.
         private Context mContext;
         private int mLayout;
         private int[] gridColours;
-
+        private TypedArray gridIcons;
+        
         @SuppressWarnings("deprecation")
         public CategoryGridCursorAdapter(Context context, int layout, Cursor c, String[] from, int[] to) {
             super(context, layout, c, from, to);
             this.mContext = context;
             this.mLayout = layout;
 
+            // An array of colours for solid background fill
             String[] allColours = mContext.getResources().getStringArray(R.array.colours);
             gridColours = new int[allColours.length];
-
             for (int i = 0; i < allColours.length; i++) {
                 gridColours[i] = Color.parseColor(allColours[i]);
             }
+            
+            // An array of icons (to use instead of colours, when available)
+            gridIcons = mContext.getResources().obtainTypedArray(R.array.icons_arr);
+            
         }
 
         @Override
@@ -267,7 +280,7 @@ public class CategoryOverView extends SherlockActivity implements LoaderManager.
             // Get the next row from the cursor
             String colName = CategoryTable.COLUMN_CATEGORY_NAME;
             String categoryName = c.getString(c.getColumnIndex(colName));
-
+            
             // Set the name of the next category in the grid view
             TextView name_text = (TextView) v.findViewById(R.id.category_row_label);
             if (name_text != null) {
@@ -282,16 +295,37 @@ public class CategoryOverView extends SherlockActivity implements LoaderManager.
 
             // Get the next row from the cursor
             String colName = CategoryTable.COLUMN_CATEGORY_NAME;
-            String categoryName = c.getString(c.getColumnIndex(colName));
-
+            String categoryName = c.getString(c.getColumnIndex(colName)).toLowerCase(Locale.CANADA);
+            
+            // TODO: Update category names in database
+            if (categoryName.equalsIgnoreCase("Miscellaneous")) {
+            	categoryName = "misc";
+            }
+            else if (categoryName.equalsIgnoreCase("Fruits and Vegetables")) {
+            	categoryName = "fruit & veg";
+            }
+            else if (categoryName.equalsIgnoreCase("Bread and Bakery")) {
+            	categoryName = "bread";
+            }
+            else if (categoryName.equalsIgnoreCase("Beverages")) {
+            	categoryName = "drinks";
+            }
+            
+            
             // Set the name of the next category in the grid view
             TextView name_text = (TextView) v.findViewById(R.id.category_row_label);
             if (name_text != null) {
                 name_text.setText(categoryName);
             }
-
+            
             int position = c.getPosition();
-            v.setBackgroundColor(gridColours[position % gridColours.length]);
+            
+            if (position < gridIcons.length()) {
+            	v.setBackgroundResource(gridIcons.getResourceId(position % gridIcons.length(), 0));
+            }
+            else {
+            	v.setBackgroundColor(gridColours[position % gridColours.length]);
+            }
         }
 
     }

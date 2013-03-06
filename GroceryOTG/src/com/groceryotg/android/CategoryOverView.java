@@ -5,12 +5,8 @@ import java.util.Locale;
 import android.app.AlarmManager;
 import android.app.LoaderManager;
 import android.app.PendingIntent;
-import android.content.Context;
-import android.content.CursorLoader;
-import android.content.Intent;
-import android.content.Loader;
-import android.content.res.TypedArray;
 import android.content.*;
+import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.location.LocationManager;
@@ -47,7 +43,7 @@ public class CategoryOverView extends SherlockActivity implements LoaderManager.
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = this.getBaseContext();
-
+        
         setContentView(R.layout.category_list);
 
         // By default, the Home button in the ActionBar is interactive. Since this
@@ -57,37 +53,13 @@ public class CategoryOverView extends SherlockActivity implements LoaderManager.
 
         // Configure the SlidingMenu
         configSlidingMenu();
-
+        
         // Set adapter for the grid view
         configGridView();
-
+        
         // Populate the grid with data
         fillData();
-        setContentView(R.layout.category_list);
-        //setBehindContentView(R.layout.menu_frame);
         
-		// Set adapter for the grid view
-        GridView gridview = (GridView) findViewById(R.id.gridview);
-        gridview.setAdapter(adapter);
-        
-        gridview.setOnItemClickListener(new OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                Intent intent = new Intent(CategoryOverView.this, GroceryOverView.class);
-                Uri uri = Uri.parse(GroceryotgProvider.CONTENT_URI_CAT + "/" + id);
-                intent.putExtra(GroceryotgProvider.CONTENT_ITEM_TYPE_CAT, uri);
-                startActivity(intent);
-            }
-        });
-        
-        gridview.setEmptyView(findViewById(R.id.empty_category_list));
-        
-        AlarmManager locationAlarm = (AlarmManager) getSystemService(ALARM_SERVICE);
-        Intent locationIntent = new Intent(this, LocationMonitor.class);
-        locationIntent.putExtra(LocationMonitor.EXTRA_INTENT, new Intent(this, LocationReceiver.class));
-        locationIntent.putExtra(LocationMonitor.EXTRA_PROVIDER, LocationManager.NETWORK_PROVIDER);
-        PendingIntent locationPendingIntent = PendingIntent.getBroadcast(this, 0, locationIntent, 0);
-        locationAlarm.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), 300000, locationPendingIntent);
-
         // Setup alarm for polling of location data
         configLocationPoll();
     }
@@ -120,17 +92,19 @@ public class CategoryOverView extends SherlockActivity implements LoaderManager.
     }
 
     private void configLocationPoll() {
-        AlarmManager locationAlarm = (AlarmManager) getSystemService(ALARM_SERVICE);
+    	AlarmManager locationAlarm = (AlarmManager) getSystemService(ALARM_SERVICE);
         Intent locationIntent = new Intent(this, LocationMonitor.class);
         locationIntent.putExtra(LocationMonitor.EXTRA_INTENT, new Intent(this, LocationReceiver.class));
         locationIntent.putExtra(LocationMonitor.EXTRA_PROVIDER, LocationManager.NETWORK_PROVIDER);
         PendingIntent locationPendingIntent = PendingIntent.getBroadcast(this, 0, locationIntent, 0);
         locationAlarm.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), LocationReceiver.pollingPeriod, locationPendingIntent);
     }
-
+    
     private void configGridView() {
+    	
+    	// Set adapter for the grid view
         gridview = (GridView) findViewById(R.id.gridview);
-
+        
         gridview.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 Intent intent = new Intent(CategoryOverView.this, GroceryOverView.class);
@@ -139,7 +113,7 @@ public class CategoryOverView extends SherlockActivity implements LoaderManager.
                 startActivity(intent);
             }
         });
-
+        
         gridview.setEmptyView(findViewById(R.id.empty_category_list));
     }
 
@@ -161,7 +135,7 @@ public class CategoryOverView extends SherlockActivity implements LoaderManager.
                 getString(R.string.slidingmenu_item_sync),
                 getString(R.string.slidingmenu_item_settings),
                 getString(R.string.slidingmenu_item_about)};
-
+        
         ListView menuView = (ListView) findViewById(R.id.menu_items);
         ArrayAdapter<String> menuAdapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1, android.R.id.text1, slidingMenuItems);
@@ -182,8 +156,9 @@ public class CategoryOverView extends SherlockActivity implements LoaderManager.
                          * (2) slidingmenu is sometimes fullscreen (3) Clicking on the home icon of the ActionBar
                          * causes the app to crash if homeAsUp is enabled.
                          */
-                    //toggle();
-                    startActivity(new Intent(CategoryOverView.this, CategoryOverView.class));
+                	if (slidingMenu.isMenuShowing())
+                        slidingMenu.showContent();
+                    //startActivity(new Intent(CategoryOverView.this, CategoryOverView.class));
                 } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_cart))) {
                     // Selected Shopping Cart
                     launchShopCartActivity();
@@ -195,11 +170,13 @@ public class CategoryOverView extends SherlockActivity implements LoaderManager.
                     refreshCurrentCategory();
                 } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_settings))) {
                     // Selected Settings
-                    //toggle();
+                	if (slidingMenu.isMenuShowing())
+                        slidingMenu.showContent();
                 } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_about))) {
                     // Selected About
                     //startActivity(new Intent(CategoryOverView.this, About.class));
-                    //toggle();
+                	if (slidingMenu.isMenuShowing())
+                        slidingMenu.showContent();
                 }
             }
         });

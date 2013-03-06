@@ -23,21 +23,35 @@ import os
 import re
 #import sqlalchemy
 import sys
+import time
 import urllib
 import urllib2
 from urlparse import urlparse
 
+
+# Initialize log file (filename based on YYYY_MM_DD_hhmmsscc.log)
+timestamp = datetime.datetime.now()
+logname = "./log/" + str(timestamp.year).zfill(4) + "_" + str(timestamp.month).zfill(2) + "_" + str(timestamp.day).zfill(2) + "_" + \
+          str(timestamp.hour).zfill(2) + str(timestamp.minute).zfill(2) + str(timestamp.second).zfill(2) + "_" + \
+          str(timestamp.microsecond) + ".log"
+print("writing log to %s..." % logname)
+
+# Define logging level (if you set this to logging.DEBUG, the debug print messages will be displayed)
+logging.basicConfig(filename=logname, format='%(asctime)s:%(levelname)s: %(message)s', level=logging.INFO)
+
+
+# Keep these BELOW the logging setup. Otherwise, their loggers get registered as the root.
 import getNouns
 import classifier
 
+
+# Start timing how long it takes to run the whole script
+start_timer = time.time()
 
 # Fill in your MySQL user & password
 mysql_user = "root"
 mysql_password = ""
 mysql_db = "groceryotg"
-
-# define logging level (if you set this to logging.DEBUG, the debug print messages will be displayed)
-logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
 
 
 # TODO:
@@ -86,13 +100,13 @@ def getFlyer():
         store_id, next_url = record[0], record[1]
         flyer_url = ""
         if next_url:
-            print("next url: %s" % next_url)
-
+            #logging.info("next url: %s" % next_url)
+            
             # Metro
             if store_id == 1:
                 try:
                     flyer_url = ""
-                    print("Crawling store: %d" % store_id)
+                    logging.info("Crawling store: %d" % store_id)
                     hostname = urlparse(next_url).hostname
                     soup = BeautifulSoup(urllib2.urlopen(next_url))
                     foundElems = soup('a', text=re.compile(r'Metro Ontario Flyer'))
@@ -105,12 +119,12 @@ def getFlyer():
                         
                         store_items = []
                         line_number = 0
-                        print("Parsing store %s, url %s" % (store_id, flyer_url))
                         
                         start_date = ""
                         end_date = ""
                         
                         soup = BeautifulSoup(urllib2.urlopen(flyer_url))
+                        logging.info("URL: %s" % flyer_url)
                         div_pages = soup.find_all(lambda tag: tag.name=='div' and tag.has_key('style') and not tag.has_key('id'))
                         
                         # Find the start and end dates
@@ -129,9 +143,9 @@ def getFlyer():
                         
                         start_date = datetime.datetime(start_year, months[matches[0][0]], int(matches[0][1])).strftime('%Y-%m-%d')
                         end_date = datetime.datetime(end_year, months[matches[1][0]], int(matches[1][1])).strftime('%Y-%m-%d')
-                        print("start date: ", start_date)
-                        print("end date: ", end_date)
-                        print("update date: ", update_date)
+                        logging.info("start date: %s" % start_date)
+                        logging.info("end date: %s" % end_date)
+                        logging.info("update date: %s" % update_date)
                         
                         for page in div_pages:
                             
@@ -166,16 +180,16 @@ def getFlyer():
                                 item_details = [raw_item, raw_price, unit_price, unit_type_id, total_price, \
                                                 start_date, end_date, line_number, store_id, update_date]
                                 
-                                #print(item_details)
+                                #logging.info(item_details)
                                 store_items += [item_details]
                         
                         items[store_id] = store_items
                 except urllib2.URLError as e:
-                    print("Could not connect to store %d due to Error %d (%s)" % (store_id, e.errno, e.strerror))
+                    logging.info("Could not connect to store %d due to Error %d (%s)" % (store_id, e.errno, e.strerror))
             # Loblaws
             elif store_id == 2:
                 try:
-                    print("Crawling store: %d" % store_id)
+                    logging.info("Crawling store: %d" % store_id)
                     parsed_url = urlparse(next_url)
                     hostname = parsed_url.hostname
                     
@@ -216,7 +230,7 @@ def getFlyer():
                     # Click on the "Accessible Flyer" link to get to the actual flyer page
                     accessible_link = soup('a', text=re.compile(r'Accessible Flyer'))[0]['href']
                     accessible_link = "http://" + hostname + "/LCL/" + accessible_link
-                    #print("Accessing link: %s" % accessible_link)
+                    #logging.info("Accessing link: %s" % accessible_link)
                     response = opener.open(accessible_link).read()
                     soup = BeautifulSoup(response)
                     
@@ -234,7 +248,7 @@ def getFlyer():
                             soup = BeautifulSoup(response)
                     
                     if flag_nopub:
-                        print("No publications for store %d this week." % store_id)
+                        logging.info("No publications for store %d this week." % store_id)
                     else:
                         # Before getting to the actual flyer page, submit an intermediate page web form
                         the_form = soup('form', {'name':'form1'})[0]
@@ -247,7 +261,7 @@ def getFlyer():
                             elif param.has_key("id"):
                                 post_data += [(param['id'], '')]
                         
-                        #print("target url: %s" % target_url)
+                        #logging.info("target url: %s" % target_url)
                         post_data = urllib.urlencode(post_data)
                         response = opener.open(target_url, post_data).read()
                         
@@ -299,7 +313,7 @@ def getFlyer():
                             "&publicationtype=" + PUBLICATION_TYPE + "&bannername=" + BANNER_NAME + \
                             "&customername=" + CUSTOMER_NAME + "&pageid1=" + str(page_id) + \
                             "&languageid=" + LANGUAGE_ID + "&bannerid=" + BANNER_ID
-                        print(ajax_query)
+                        logging.info("URL: %s" % ajax_query)
                         response = opener.open(ajax_query).read()
                         dict_items = ast.literal_eval(response)
                         
@@ -326,9 +340,9 @@ def getFlyer():
                         
                         start_date = datetime.datetime(start_year, months[matches[0][0]], int(matches[0][1])).strftime('%Y-%m-%d')
                         end_date = datetime.datetime(end_year, months[matches[1][0]], int(matches[1][1])).strftime('%Y-%m-%d')
-                        print("start date: ", start_date)
-                        print("end date: ", end_date)
-                        print("update date: ", update_date)
+                        logging.info("start date: %s" % start_date)
+                        logging.info("end date: %s" % end_date)
+                        logging.info("update date: %s" % update_date)
                         
                         data_list = filter(lambda x: x if x.has_key('regiontypeid') and x['regiontypeid']=='1' else None, data_list)
                         for item in data_list:
@@ -363,7 +377,7 @@ def getFlyer():
                                 index_ratio = raw_price.find("/")
                                 index_dollar = raw_price.find("$")
                                 index_cents = raw_price.find("\xa2")
-                                #print(raw_price)
+                                #logging.info(raw_price)
                                 if index_ratio != -1:
                                     num_products = float(raw_price[:index_ratio])
                                     total_price = raw_price[index_ratio+1:]
@@ -419,11 +433,11 @@ def getFlyer():
                             
                         items[store_id] = store_items
                 except urllib2.URLError as e:
-                    print("Could not connect to store %d due to Error %d (%s)" % (store_id, e.errno, e.strerror))
+                    logging.info("Could not connect to store %d due to Error %d (%s)" % (store_id, e.errno, e.strerror))
             # Food Basics
             elif store_id == 3:
                 try:
-                    print("Crawling store: %d" % store_id)
+                    logging.info("Crawling store: %d" % store_id)
                     hostname = urlparse(next_url).hostname
                     soup = BeautifulSoup(urllib2.urlopen(next_url))
                     linkElem = soup('span', text=re.compile(r'View accessible flyer'))[0].parent
@@ -431,7 +445,7 @@ def getFlyer():
                     
                     store_items = []
                     line_number = 0
-                    print("Parsing store %s, url %s" % (store_id, flyer_url))
+                    #logging.info("Parsing store %s, url %s" % (store_id, flyer_url))
                     
                     start_date = ""
                     end_date = ""
@@ -455,9 +469,9 @@ def getFlyer():
                     
                     start_date = datetime.datetime(start_year, months[matches[0][0]], int(matches[0][1])).strftime('%Y-%m-%d')
                     end_date = datetime.datetime(end_year, months[matches[1][0]], int(matches[1][1])).strftime('%Y-%m-%d')
-                    print("start date: ", start_date)
-                    print("end date: ", end_date)
-                    print("update date: ", update_date)
+                    logging.info("start date: %s" % start_date)
+                    logging.info("end date: %s" % end_date)
+                    logging.info("update date: %s" % update_date)
                     
                     for page in div_pages:
                         
@@ -496,17 +510,17 @@ def getFlyer():
                             item_details = [raw_item, raw_price, unit_price, unit_type_id, total_price, \
                                             start_date, end_date, line_number, store_id, update_date]
                             
-                            #print(item_details)
+                            #logging.info(item_details)
                             store_items += [item_details]
                     
                     items[store_id] = store_items
                 except urllib2.URLError as e:
-                    print("Could not connect to store %d due to Error %d (%s)" % (store_id, e.errno, e.strerror))
+                    logging.info("Could not connect to store %d due to Error %d (%s)" % (store_id, e.errno, e.strerror))
             # No Frills
             elif store_id == 4:
                 try:
                     flyer_url = ""
-                    print("Crawling store: %d" % store_id)
+                    logging.info("Crawling store: %d" % store_id)
                     parsed_url = urlparse(next_url)
                     hostname = parsed_url.hostname
                     
@@ -604,6 +618,7 @@ def getFlyer():
                         "&publicationtype=" + PUBLICATION_TYPE + "&bannername=" + BANNER_NAME + \
                         "&customername=" + CUSTOMER_NAME + "&pageid1=" + str(page_id) + \
                         "&languageid=" + LANGUAGE_ID + "&bannerid=" + BANNER_ID
+                    logging.info("URL: %s" % ajax_query)
                     response = opener.open(ajax_query).read()
                     dict_items = ast.literal_eval(response)
                     
@@ -630,9 +645,9 @@ def getFlyer():
                     
                     start_date = datetime.datetime(start_year, months[matches[0][0]], int(matches[0][1])).strftime('%Y-%m-%d')
                     end_date = datetime.datetime(end_year, months[matches[1][0]], int(matches[1][1])).strftime('%Y-%m-%d')
-                    print("start date: ", start_date)
-                    print("end date: ", end_date)
-                    print("update date: ", update_date)
+                    logging.info("start date: %s" % start_date)
+                    logging.info("end date: %s" % end_date)
+                    logging.info("update date: %s" % update_date)
                     
                     data_list = filter(lambda x: x if x.has_key('regiontypeid') and x['regiontypeid']=='1' else None, data_list)
                     for item in data_list:
@@ -710,12 +725,12 @@ def getFlyer():
                         
                     items[store_id] = store_items
                 except urllib2.URLError as e:
-                    print("Could not connect to store %d due to Error %d (%s)" % (store_id, e.errno, e.strerror))
+                    logging.info("Could not connect to store %d due to Error %d (%s)" % (store_id, e.errno, e.strerror))
                 
             # Sobeys
             elif store_id == 5:
                 flyer_url = ""
-                print("Crawling store: %d" % store_id)
+                logging.info("Crawling store: %d" % store_id)
                 parsed_url = urlparse(next_url)
                 soup = BeautifulSoup(urllib2.urlopen(next_url))
                 
@@ -804,7 +819,7 @@ def getFlyer():
                     "&publicationtype=" + PUBLICATION_TYPE + "&bannername=" + BANNER_NAME + \
                     "&customername=" + CUSTOMER_NAME + "&pageid1=" + str(page_id) + \
                     "&languageid=" + LANGUAGE_ID + "&bannerid=" + BANNER_ID
-                print(ajax_query)
+                logging.info("URL: %s" % ajax_query)
                 response = opener.open(ajax_query).read()
                 dict_items = ast.literal_eval(response)
                 
@@ -831,9 +846,9 @@ def getFlyer():
                 
                 start_date = datetime.datetime(start_year, months[matches[0][0]], int(matches[0][1])).strftime('%Y-%m-%d')
                 end_date = datetime.datetime(end_year, months[matches[1][0]], int(matches[1][1])).strftime('%Y-%m-%d')
-                print("start date: ", start_date)
-                print("end date: ", end_date)
-                print("update date: ", update_date)
+                logging.info("start date: %s" % start_date)
+                logging.info("end date: %s" % end_date)
+                logging.info("update date: %s" % update_date)
                 
                 data_list = filter(lambda x: x if x.has_key('regiontypeid') and x['regiontypeid']=='1' else None, data_list)
                 for item in data_list:
@@ -874,7 +889,6 @@ def getFlyer():
                             if index_dollar != -1:
                                 total_price = float(total_price.strip().strip("$").strip())
                             else:
-                                print("raw price: %s" % raw_price)
                                 total_price = float(total_price.strip("\xa2").strip("\xc2")) / 100.0
                             
                             # Default unit_price
@@ -918,7 +932,7 @@ def getFlyer():
                 items[store_id] = store_items
                 
                 
-            print
+            logging.info('\n')
         
     return items
 
@@ -934,26 +948,26 @@ def evaluateAccuracy(store_id, labels,  category_map, item_list = None, noun_lis
     file_in.close()
     
     if not file_contents:
-        print("Classification accuracy for store %d could not be determined due to missing labelled targets" % store_id)
+        logging.info("Classification accuracy for store %d could not be determined due to missing labelled targets" % store_id)
         return None
     
     targets = map(lambda x: int(x), filter(None, file_contents.replace(os.linesep, ',').split(',')))
     '''
     if (not targets or not labels) or (len(targets) != len(labels)):
-        print("Classification accuracy for store %d could not be determined due to missing labelled targets" % store_id)
+        logging.info("Classification accuracy for store %d could not be determined due to missing labelled targets" % store_id)
         return None
     '''
     if len(targets) == 0:
-        print("Classification accuracy for store %d could not be determined due to missing labelled targets" % store_id)
+        logging.info("Classification accuracy for store %d could not be determined due to missing labelled targets" % store_id)
         return None
     
     correctly_classified = 0
     correctly_classified_category = 0
     for i in range(len(targets)):
         if i >= len(labels):
-            print("Too many targets comapred to labels")
+            logging.info("Too many targets compared to labels")
             break;
-        #print("(predicted: %d, actual: %d): %s" % (labels[i], targets[i], item_list[i]))
+        #logging.info("(predicted: %d, actual: %d): %s" % (labels[i], targets[i], item_list[i]))
         if targets[i] == labels[i]:
             correctly_classified += 1
         elif item_list:
@@ -1005,7 +1019,7 @@ class TableInterface:
                     key_index = self.columns.index(key[SQL_INDEX_PRIMARY_KEY])
                     self.columns.pop(key_index)
                     self.primary_key += [key_index]
-        print("Created a TableInterface with primary key: %s, columns: %s" % (str(self.primary_key), self.columns))
+        logging.debug("Created a TableInterface with primary key: %s, columns: %s" % (str(self.primary_key), self.columns))
         
     
     def add_data(self, data_list):
@@ -1032,8 +1046,7 @@ class TableInterface:
         
         for row in data_matrix:
             self.data += [row]
-            if len(self.data) == 1:
-                print(self.data)
+            
         return True
 
     def get_data(self):
@@ -1047,9 +1060,7 @@ class TableInterface:
            newly created row ID's (or the existing row ID's), in the order in which 
            they were created.'''
         
-        print("Writing data to database table...")
-        if len(self.columns) > 4:
-            print(self.data[0])
+        logging.debug("Writing data to database table...")
         id_list = []
         
         column_str = ", ".join(self.columns)
@@ -1079,7 +1090,7 @@ class TableInterface:
                 id_list += [new_id]
         
         #lines_inserted = self.dbcur.executemany(sql, formatted_data)
-        print("Inserted %d lines into %s" %(len(id_list), self.table_name))
+        logging.info("Wrote %d lines into table %s" %(len(id_list), self.table_name))
         
         # Commit changes to database
         self.dbcon.commit()
@@ -1097,7 +1108,7 @@ con = None
 try:
     con = mdb.connect('localhost', mysql_user, mysql_password, mysql_db)
     cur = con.cursor()
-    print("connected to database\n")
+    logging.info("Connected to database")
     
     # Get subcategories from database
     cur.execute('SELECT subcategory_id, subcategory_tag FROM Subcategory ORDER BY subcategory_id')
@@ -1111,7 +1122,7 @@ try:
         category_map[pair[0]] = pair[1];
         
     # TODO: replace SQL calls with SQLAlchemy (a Python ORM)
-    #print("SQLAlchemy version: ", sqlalchemy.__version__)
+    #logging.info("SQLAlchemy version: ", sqlalchemy.__version__)
     
     # Create an interface for writing output to the database table
     grocery_table = TableInterface(con, "Grocery")
@@ -1122,7 +1133,7 @@ try:
     
     # Step 2: Pass the items one by one to the "getNouns" module to get a list of nouns for each item
     getNouns.init()
-    print
+    logging.info('\n')
     stores = items.keys()
     for store_id in stores:
         item_list = items[store_id]
@@ -1152,7 +1163,7 @@ try:
         # Evaluate classification accuraucy for each store flyer based on hand-labelled subcategories
         classification_rates = evaluateAccuracy(store_id, predictions, category_map, item_list, noun_table)
         if classification_rates:
-            print("CATEGORY CLASSIFICATION RATE = %.2f for store %d" % (classification_rates[1],store_id))
+            logging.info("CATEGORY CLASSIFICATION RATE = %.2f for store %d" % (classification_rates[1],store_id))
         # Step 4: Write to Item`
         item_ids = item_table.write_data()
         grocery_data = [tuple(item_ids)] + zip(*item_list)
@@ -1168,15 +1179,22 @@ try:
         res_flag = grocery_table.add_batch(grocery_data)
         if not res_flag:
             raise RuntimeError("grocery data could not be added to the Grocery table handler")
-        print
+        logging.info('\n')
     
     # Step 5: Write to Grocery
     grocery_ids = grocery_table.write_data()
     
-except mdb.Error, e:
-    print("error: %s" % e)
+except Exception, e:
+    exc_type, exc_obj, exc_tb = sys.exc_info()
+    fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+    logging.info("Error (%s) occurred in %s, line %s: %s" % (exc_type, fname, exc_tb.tb_lineno, e))
     sys.exit(1)
 finally:
     if con:
         con.close()
-        print("\nclosed connection to database")
+        logging.info("Closed connection to database")
+
+elapsed_time = time.time() - start_timer
+logging.info("\nELAPSED: %.2f seconds" % elapsed_time)
+
+print("done")

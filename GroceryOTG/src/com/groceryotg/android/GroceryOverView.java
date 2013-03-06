@@ -1,6 +1,5 @@
 package com.groceryotg.android;
 
-import android.app.ListActivity;
 import android.app.LoaderManager;
 import android.app.PendingIntent;
 import android.content.ContentValues;
@@ -10,11 +9,15 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.*;
+import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.actionbarsherlock.app.SherlockListActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.CategoryTable;
 import com.groceryotg.android.database.GroceryTable;
@@ -27,7 +30,7 @@ import com.groceryotg.android.utils.RefreshAnimation;
  * User: robert
  * Date: 07/02/13
  */
-public class GroceryOverView extends ListActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class GroceryOverView extends SherlockListActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     private SimpleCursorAdapter adapter;
     private MenuItem refreshItem;
     private Uri groceryUri;
@@ -39,6 +42,9 @@ public class GroceryOverView extends ListActivity implements LoaderManager.Loade
         super.onCreate(savedInstanceState);
         setContentView(R.layout.grocery_list);
 
+        // Enable ancestral navigation ("Up" button in ActionBar) for Android < 4.1
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        
         Bundle extras = getIntent().getExtras();
 
         groceryUri = (savedInstanceState == null) ? null : (Uri) savedInstanceState.getParcelable(GroceryotgProvider.CONTENT_ITEM_TYPE_CAT);
@@ -63,7 +69,7 @@ public class GroceryOverView extends ListActivity implements LoaderManager.Loade
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
+        MenuInflater inflater = getSupportMenuInflater();
         inflater.inflate(R.menu.menu, menu);
         return true;
     }
@@ -82,6 +88,17 @@ public class GroceryOverView extends ListActivity implements LoaderManager.Loade
             case R.id.shop_cart:
                 launchShopCartActivity();
                 return true;
+            case android.R.id.home:
+            	// This is called when the Home (Up) button is pressed
+                // in the Action Bar. This handles Android < 4.1.
+            	
+            	// Specify the parent activity
+            	Intent parentActivityIntent = new Intent(this, CategoryOverView.class);
+            	parentActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | 
+            								Intent.FLAG_ACTIVITY_NEW_TASK);
+            	startActivity(parentActivityIntent);
+            	finish();
+            	return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -133,7 +150,11 @@ public class GroceryOverView extends ListActivity implements LoaderManager.Loade
             public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
                 if (columnIndex == 2) {
                     TextView textView = (TextView) view;
-                    textView.setText("$" + ServerURL.getGetDecimalFormat().format(cursor.getDouble(columnIndex)));
+                    if (cursor.getDouble(columnIndex) != 0) {
+                        textView.setText("$" + ServerURL.getGetDecimalFormat().format(cursor.getDouble(columnIndex)));
+                    } else {
+                        textView.setText("N/A");
+                    }
                     return true;
                 }
                 return false;
@@ -141,6 +162,16 @@ public class GroceryOverView extends ListActivity implements LoaderManager.Loade
         });
 
         setListAdapter(adapter);
+        displayEmptyListMessage();
+    }
+
+    private void displayEmptyListMessage() {
+        String emptyStringFormat = getResources().getString(R.string.no_new_content);
+        String emptyStringMsg = (ServerURL.getLastRefreshed() == null) ? String.format(emptyStringFormat, " Never") : String.format(emptyStringFormat, ServerURL.getLastRefreshed());
+        ListView myListView = this.getListView();
+        TextView myTextView = (TextView) findViewById(R.id.empty_grocery_list);
+        myTextView.setText(emptyStringMsg);
+        myListView.setEmptyView(myTextView);
     }
 
     @Override
@@ -154,6 +185,7 @@ public class GroceryOverView extends ListActivity implements LoaderManager.Loade
         }
         assert toast != null;
         toast.show();
+        displayEmptyListMessage();
     }
 
     @Override

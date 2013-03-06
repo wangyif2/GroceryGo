@@ -1,7 +1,7 @@
 package com.groceryotg.android;
 
-import android.app.Activity;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.MenuItem;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 
@@ -17,7 +19,7 @@ import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
  * User: robert
  * Date: 23/02/13
  */
-public class ShopCartDetailView extends Activity {
+public class ShopCartDetailView extends SherlockActivity {
     private EditText mCartGroceryName;
 
     private Uri cartGroceryItemUri;
@@ -27,6 +29,9 @@ public class ShopCartDetailView extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.shopcart_edit);
 
+        // Enable ancestral navigation ("Up" button in ActionBar) for Android < 4.1
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        
         mCartGroceryName = (EditText) findViewById(R.id.cart_grocery_edit_name);
         Button confirmButton = (Button) findViewById(R.id.cart_confirm_button);
 
@@ -50,6 +55,24 @@ public class ShopCartDetailView extends Activity {
                 }
             }
         });
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+            	// This is called when the Home (Up) button is pressed
+                // in the Action Bar. This handles Android < 4.1.
+            	
+            	// Specify the parent activity
+            	Intent parentActivityIntent = new Intent(this, ShopCartOverView.class);
+            	parentActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | 
+            								Intent.FLAG_ACTIVITY_NEW_TASK);
+            	startActivity(parentActivityIntent);
+            	finish();
+            	return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void fillData(Uri cartGroceryItemUri) {
@@ -78,13 +101,15 @@ public class ShopCartDetailView extends Activity {
     private void saveState() {
         String name = mCartGroceryName.getText().toString();
 
-        ContentValues values = new ContentValues();
-        values.put(CartTable.COLUMN_CART_GROCERY_NAME, name);
+        if (!name.isEmpty()) {
+            ContentValues values = new ContentValues();
+            values.put(CartTable.COLUMN_CART_GROCERY_NAME, name);
 
-        if (cartGroceryItemUri == null) {
-            cartGroceryItemUri = getContentResolver().insert(GroceryotgProvider.CONTENT_URI_CART_ITEM, values);
-        } else {
-            getContentResolver().update(cartGroceryItemUri, values, null, null);
+            if (cartGroceryItemUri == null) {
+                cartGroceryItemUri = getContentResolver().insert(GroceryotgProvider.CONTENT_URI_CART_ITEM, values);
+            } else {
+                getContentResolver().update(cartGroceryItemUri, values, null, null);
+            }
         }
     }
 

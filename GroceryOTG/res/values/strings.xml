@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">GroceryOTG</string>
-    <string name="no_content">Currently No Content, Please Refresh</string>
-    <string name="fresh_action">refresing..</string>
+    <string name="no_content">Currently no content, please refresh</string>
+    <string name="no_new_content">There is no new available data. Last checked: %1$s</string>
+    <string name="fresh_action">Refreshing...</string>
     <string name="no_cart_item">Your shopping cart is currently empty</string>
     <string name="cart_grocery_edit_name">Grocery item name</string>
     <string name="cart_confirm_button">Confirm</string>
     <string name="cart_item_delete">Delete this item</string>
+    <string name="slidingmenu_item_cat">Home</string>
+    <string name="slidingmenu_item_cart">Shopping Cart</string>
+    <string name="slidingmenu_item_map">Map</string>
+    <string name="slidingmenu_item_sync">Sync</string>
+    <string name="slidingmenu_item_settings">Settings</string>
+    <string name="slidingmenu_item_about">About</string>
 </resources>

@@ -1,6 +1,5 @@
 package com.groceryotg.android;
 
-import android.app.ListActivity;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -12,6 +11,10 @@ import android.view.*;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import com.actionbarsherlock.app.SherlockListActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 
@@ -19,7 +22,7 @@ import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
  * User: robert
  * Date: 23/02/13
  */
-public class ShopCartOverView extends ListActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class ShopCartOverView extends SherlockListActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final int DELETE_ID = 1;
     private SimpleCursorAdapter adapter;
 
@@ -28,13 +31,17 @@ public class ShopCartOverView extends ListActivity implements LoaderManager.Load
         super.onCreate(savedInstanceState);
         setContentView(R.layout.shopcart_list);
         this.getListView().setDividerHeight(2);
+        
+        // Enable ancestral navigation ("Up" button in ActionBar) for Android < 4.1
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        
         fillData();
         registerForContextMenu(getListView());
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
+        MenuInflater inflater = getSupportMenuInflater();
         inflater.inflate(R.menu.shopcart_menu, menu);
         return true;
     }
@@ -45,6 +52,17 @@ public class ShopCartOverView extends ListActivity implements LoaderManager.Load
             case R.id.cart_add:
                 createCartGroceryItem();
                 return true;
+            case android.R.id.home:
+            	// This is called when the Home (Up) button is pressed
+                // in the Action Bar. This handles Android < 4.1.
+            	
+            	// Specify the parent activity
+            	Intent parentActivityIntent = new Intent(this, CategoryOverView.class);
+            	parentActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | 
+            								Intent.FLAG_ACTIVITY_NEW_TASK);
+            	startActivity(parentActivityIntent);
+            	finish();
+            	return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -56,7 +74,7 @@ public class ShopCartOverView extends ListActivity implements LoaderManager.Load
     }
 
     @Override
-    public boolean onContextItemSelected(MenuItem item) {
+    public boolean onContextItemSelected(android.view.MenuItem item) {
         switch (item.getItemId()) {
             case DELETE_ID:
                 AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();

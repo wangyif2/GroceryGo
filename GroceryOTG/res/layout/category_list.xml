@@ -16,7 +16,7 @@
         android:padding="10dp" />
 
     <TextView
-        android:id="@android:id/empty"
+        android:id="@+id/empty_category_list"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:textSize="20dp"

@@ -2,6 +2,7 @@ package com.groceryotg.android;
 
 import android.app.LoaderManager;
 import android.app.PendingIntent;
+import android.app.SearchManager;
 import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -36,6 +37,7 @@ public class GroceryOverView extends SherlockListActivity implements LoaderManag
     private Uri groceryUri;
     private String categoryName;
     private Integer categoryId;
+    private String mQuery;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,9 +48,17 @@ public class GroceryOverView extends SherlockListActivity implements LoaderManag
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         
         Bundle extras = getIntent().getExtras();
-
+        Intent intent = getIntent();
         groceryUri = (savedInstanceState == null) ? null : (Uri) savedInstanceState.getParcelable(GroceryotgProvider.CONTENT_ITEM_TYPE_CAT);
-
+        
+        // Handle search events
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+        	mQuery = intent.getStringExtra(SearchManager.QUERY);
+		}
+        else {
+        	mQuery = "";
+        }
+        
         if (extras != null) {
             groceryUri = extras.getParcelable(GroceryotgProvider.CONTENT_ITEM_TYPE_CAT);
             String[] projection = {CategoryTable.COLUMN_CATEGORY_NAME, CategoryTable.COLUMN_CATEGORY_ID};
@@ -139,12 +149,22 @@ public class GroceryOverView extends SherlockListActivity implements LoaderManag
     }
 
     private void fillData() {
-        String[] from = new String[]{GroceryTable.COLUMN_GROCERY_NAME, GroceryTable.COLUMN_GROCERY_PRICE};
+    	
+    	Cursor customCursor = null;
+    	String[] from = new String[]{GroceryTable.COLUMN_GROCERY_NAME, GroceryTable.COLUMN_GROCERY_PRICE};
         int[] to = new int[]{R.id.grocery_row_label, R.id.grocery_row_price};
-
+    	
+    	// If the user entered a search query, set up a cursor with selection criteria
+    	if (!mQuery.isEmpty()) {
+    		String selectionClause = GroceryTable.COLUMN_GROCERY_NAME + " = ?";
+    		String[] selectionArgs = {mQuery};
+    		
+    		customCursor = getContentResolver().query(groceryUri, from, selectionClause, selectionArgs, null);
+    	}
+    	
         getLoaderManager().initLoader(0, null, this);
-        adapter = new SimpleCursorAdapter(this, R.layout.grocery_row, null, from, to, 0);
-
+        adapter = new SimpleCursorAdapter(this, R.layout.grocery_row, customCursor, from, to, 0);
+        
         adapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
             @Override
             public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
@@ -165,6 +185,7 @@ public class GroceryOverView extends SherlockListActivity implements LoaderManag
         displayEmptyListMessage();
     }
 
+    
     private void displayEmptyListMessage() {
         String emptyStringFormat = getResources().getString(R.string.no_new_content);
         String emptyStringMsg = (ServerURL.getLastRefreshed() == null) ? String.format(emptyStringFormat, " Never") : String.format(emptyStringFormat, ServerURL.getLastRefreshed());

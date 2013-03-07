@@ -22,4 +22,6 @@
     <string name="groceryoverview_menu_item_select">Select Mode</string>
     <string name="groceryoverview_menu_item_refresh">Refresh</string>
     
+    <string name="search_hint">Search grocery items</string>
+    
 </resources>

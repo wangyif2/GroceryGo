@@ -51,7 +51,8 @@
 
         <activity
             android:name=".GroceryOverView"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:uiOptions="splitActionBarWhenNarrow">
         </activity>
 
         <activity

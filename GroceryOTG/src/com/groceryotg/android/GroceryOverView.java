@@ -70,7 +70,7 @@ public class GroceryOverView extends SherlockListActivity implements LoaderManag
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getSupportMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
+        inflater.inflate(R.menu.groceryoverview_menu, menu);
         return true;
     }
 

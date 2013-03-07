@@ -63,7 +63,7 @@ public class CategoryOverView extends SherlockActivity implements LoaderManager.
         // Setup alarm for polling of location data
         configLocationPoll();
     }
-
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getSupportMenuInflater();
@@ -138,7 +138,7 @@ public class CategoryOverView extends SherlockActivity implements LoaderManager.
         
         ListView menuView = (ListView) findViewById(R.id.menu_items);
         ArrayAdapter<String> menuAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, android.R.id.text1, slidingMenuItems);
+                R.layout.menu_item, android.R.id.text1, slidingMenuItems);
         menuView.setAdapter(menuAdapter);
 
         menuView.setOnItemClickListener(new OnItemClickListener() {
@@ -151,14 +151,8 @@ public class CategoryOverView extends SherlockActivity implements LoaderManager.
 
                 if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_cat))) {
                     // Selected Categories
-                        /* TODO: toggle() only works in a SlidingFragmentActivity, but converting this activity
-                         * to a SlidingFragmentActivity leads to several issues: (1) sliding slidingMenu is sometimes blank
-                         * (2) slidingmenu is sometimes fullscreen (3) Clicking on the home icon of the ActionBar
-                         * causes the app to crash if homeAsUp is enabled.
-                         */
                 	if (slidingMenu.isMenuShowing())
                         slidingMenu.showContent();
-                    //startActivity(new Intent(CategoryOverView.this, CategoryOverView.class));
                 } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_cart))) {
                     // Selected Shopping Cart
                     launchShopCartActivity();
@@ -245,7 +239,7 @@ public class CategoryOverView extends SherlockActivity implements LoaderManager.
     public void onLoaderReset(Loader<Cursor> loader) {
         adapter.swapCursor(null);
     }
-
+    
     public class CategoryGridCursorAdapter extends SimpleCursorAdapter {
         private Context mContext;
         private int mLayout;
@@ -328,8 +322,14 @@ public class CategoryOverView extends SherlockActivity implements LoaderManager.
             }
         }
 
+        // TODO: When should this be called?
+        public void cleanUp() {
+        	// Recycle the obtained type array when done using the adapter
+        	gridIcons.recycle();
+        }
     }
 
+    
     public static Context getContext() {
         return context;
     }

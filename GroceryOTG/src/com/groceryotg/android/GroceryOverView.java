@@ -59,7 +59,6 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         
         Bundle extras = getIntent().getExtras();
-        Intent intent = getIntent();
         groceryUri = (savedInstanceState == null) ? null : (Uri) savedInstanceState.getParcelable(GroceryotgProvider.CONTENT_ITEM_TYPE_CAT);
         
         if (extras != null) {
@@ -76,22 +75,11 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
             }
         }
         
-        // Handle search events
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-        	mQuery = intent.getStringExtra(SearchManager.QUERY);
-        	Toast t = Toast.makeText(this, "Got query", Toast.LENGTH_SHORT);
-            t.show();
-            
-            this.getListView().setDividerHeight(2);
-            filterData();
-		}
-        else {
-        	mQuery = "";
-        	
-        	this.getListView().setDividerHeight(2);
-            fillData();
-        }
-
+        // Initialize the user query to blank
+    	mQuery = "";
+    	
+    	this.getListView().setDividerHeight(2);
+        fillData();
     }
 
     @Override
@@ -111,19 +99,6 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
         mSearchView.setOnQueryTextListener(this);
         mSearchView.setOnCloseListener(this);
         
-	    // To automatically display keyboard when display SearchView
-        /*
-        mSearchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
-        	
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    showInputMethod(v.findFocus());
-                }
-            }
-        });
-        */
-    	
         return true;
     }
 
@@ -261,10 +236,6 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
         
         // Prepare the asynchronous loader.
         getLoaderManager().initLoader(0, null, this);
-    }
-    
-    private void filterData() {
-        getLoaderManager().restartLoader(0, null, this);
     }
     
     private void displayEmptyListMessage() {

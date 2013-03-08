@@ -28,7 +28,8 @@ public class GroceryTable {
             + COLUMN_GROCERY_PRICE + " real, "
             + COLUMN_GROCERY_CATEGORY + " integer, "
             + COLUMN_GROCERY_EXPIRY + " integer, " 
-            + COLUMN_GROCERY_STORE + " integer);";
+            + COLUMN_GROCERY_STORE + " integer, foreign key(" + COLUMN_GROCERY_STORE 
+            + ") references " + StoreTable.TABLE_STORE + "(" + StoreTable.COLUMN_STORE_ID + "));";
 
     public static void onCreate(SQLiteDatabase database) {
         database.execSQL(DATABASE_CREATE);

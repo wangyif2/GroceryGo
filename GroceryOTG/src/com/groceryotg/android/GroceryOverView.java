@@ -30,6 +30,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.CategoryTable;
 import com.groceryotg.android.database.GroceryTable;
+import com.groceryotg.android.database.StoreTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 import com.groceryotg.android.services.NetworkHandler;
 import com.groceryotg.android.services.ServerURL;
@@ -254,7 +255,7 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
 
     private void fillData() {
     	
-    	String[] from = new String[]{GroceryTable.COLUMN_GROCERY_NAME, GroceryTable.COLUMN_GROCERY_PRICE, GroceryTable.COLUMN_GROCERY_STORE};
+    	String[] from = new String[]{GroceryTable.COLUMN_GROCERY_NAME, GroceryTable.COLUMN_GROCERY_PRICE, StoreTable.COLUMN_STORE_NAME};
         int[] to = new int[]{R.id.grocery_row_label, R.id.grocery_row_price, R.id.grocery_row_store};
     	
         adapter = new SimpleCursorAdapter(this, R.layout.grocery_row, null, from, to, 0);
@@ -308,8 +309,9 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         
     	CursorLoader returnValue = null;
-    	String[] projection = {GroceryTable.COLUMN_ID, GroceryTable.COLUMN_GROCERY_NAME, 
-    							GroceryTable.COLUMN_GROCERY_PRICE, GroceryTable.COLUMN_GROCERY_STORE};
+    	String[] projection = {GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_ID, 
+    							GroceryTable.COLUMN_GROCERY_NAME, 
+    							GroceryTable.COLUMN_GROCERY_PRICE, StoreTable.COLUMN_STORE_NAME};
         String selection = GroceryTable.COLUMN_GROCERY_CATEGORY + "=?";
     	List<String> selectionArgs = new ArrayList<String>();
     	selectionArgs.add(categoryId.toString());
@@ -326,7 +328,7 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
         
         final String[] selectionArgsArr = new String[selectionArgs.size()];
         selectionArgs.toArray(selectionArgsArr);
-        returnValue = new CursorLoader(this, GroceryotgProvider.CONTENT_URI_GRO, projection, selection, selectionArgsArr, null);
+        returnValue = new CursorLoader(this, GroceryotgProvider.CONTENT_URI_GRO_JOINSTORE, projection, selection, selectionArgsArr, null);
         return returnValue;
     }
 

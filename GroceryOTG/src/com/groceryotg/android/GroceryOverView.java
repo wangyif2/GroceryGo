@@ -15,6 +15,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.MenuItem.OnActionExpandListener;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ListView;
@@ -41,7 +42,7 @@ import com.groceryotg.android.utils.RefreshAnimation;
  * Date: 07/02/13
  */
 public class GroceryOverView extends SherlockListActivity implements OnQueryTextListener, OnCloseListener, 
-																	LoaderManager.LoaderCallbacks<Cursor> {
+						LoaderManager.LoaderCallbacks<Cursor> {
     private SimpleCursorAdapter adapter;
     private MenuItem refreshItem;
     private Uri groceryUri;
@@ -99,9 +100,34 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
         mSearchView.setOnQueryTextListener(this);
         mSearchView.setOnCloseListener(this);
         
+        // Add callbacks to the menu item that contains the SearchView in order to capture 
+        // the event of pressing the 'back' button
+        MenuItem searchItem = (MenuItem) menu.findItem(R.id.search);
+        searchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+            
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                // TODO Auto-generated method stub
+                return true;
+            }
+            
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+            	// This is called the user presses the 'back' button to exit the collapsed
+            	// search widget view (i.e., to close the search). Here, refresh the query
+            	// to display the whole list of items:
+                clearQuery();
+                return true;
+            }
+        });
+        
         return true;
     }
 
+    public void clearQuery() {
+    	mQuery = "";
+    	getLoaderManager().restartLoader(0, null, this);
+    }
     
 	@Override
     public boolean onQueryTextSubmit(String query) {
@@ -122,10 +148,6 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
 		mQuery = newQuery;
 		getLoaderManager().restartLoader(0, null, this);
 		
-		// When done, hide keyboard
-		//InputMethodManager in = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-		//in.hideSoftInputFromWindow(findViewById(R.id.search_edittext).getWindowToken(), 0);
-		
         return true;
     }
 
@@ -138,12 +160,26 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
     
     @Override
     public boolean onClose() {
+    	/*
+    	 * This method NEVER gets called IF the SearchView is set to be collapsible 
+    	 * (showAsAction=collapsibleActionView in the XML file). Making it collapsible 
+    	 * means that the search widget shows up in the top action bar instead of at the
+    	 * bottom. With a collapsible SearchView, the 'x' button only clears the text in
+    	 * the EditText field. After pressing it once, the 'x' disappears.
+    	 * 
+    	 * With a non-collapsible SearchView, the 'x' button pressed once clears the text
+    	 * in the EditText field, and then (it is still visible) pressing it again invokes this method.
+    	 */
         if (!TextUtils.isEmpty(mSearchView.getQuery())) {
             mSearchView.setQuery(null, true);
         }
+        
+        // Refresh the list to display all items again and hide the search view
+        clearQuery();
+        mSearchView.setVisibility(SearchView.GONE);
+        
         return true;
     }
-
     
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

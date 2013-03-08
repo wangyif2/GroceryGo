@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <searchable xmlns:android="http://schemas.android.com/apk/res/android"
     android:label="@string/app_name"
-    android:hint="@string/search_hint" >
+    android:hint="@string/search_hint">
+    <!--  Voice search currently won't work because it re-launches the GroceryOverView activity instead
+          of invoking the onQueryTextSubmit callback method which is what I am currently using 
+          to handle search submissions. -->
+    <!--  android:voiceSearchMode="showVoiceSearchButton|launchRecognizer" -->
 </searchable>

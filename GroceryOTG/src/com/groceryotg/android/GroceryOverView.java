@@ -15,9 +15,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.MenuItem.OnActionExpandListener;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.SearchView.OnCloseListener;
@@ -48,9 +46,17 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
     private Uri groceryUri;
     private String categoryName;
     private Integer categoryId;
+    
+    // User search
     private String mQuery;
     private SearchView mSearchView;
 
+    // Filters
+    private Integer storeId;
+    private Integer subcategoryId;
+    private Double mPriceRangeMin;
+    private Double mPriceRangeMax;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,7 +113,8 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
             
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
-                // TODO Auto-generated method stub
+                // This is called when the user clicks on the magnifying glass icon to 
+            	// expand the search view widget.
                 return true;
             }
             
@@ -247,8 +254,8 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
 
     private void fillData() {
     	
-    	String[] from = new String[]{GroceryTable.COLUMN_GROCERY_NAME, GroceryTable.COLUMN_GROCERY_PRICE};
-        int[] to = new int[]{R.id.grocery_row_label, R.id.grocery_row_price};
+    	String[] from = new String[]{GroceryTable.COLUMN_GROCERY_NAME, GroceryTable.COLUMN_GROCERY_PRICE, GroceryTable.COLUMN_GROCERY_STORE};
+        int[] to = new int[]{R.id.grocery_row_label, R.id.grocery_row_price, R.id.grocery_row_store};
     	
         adapter = new SimpleCursorAdapter(this, R.layout.grocery_row, null, from, to, 0);
         adapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
@@ -301,7 +308,8 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         
     	CursorLoader returnValue = null;
-    	String[] projection = {GroceryTable.COLUMN_ID, GroceryTable.COLUMN_GROCERY_NAME, GroceryTable.COLUMN_GROCERY_PRICE};
+    	String[] projection = {GroceryTable.COLUMN_ID, GroceryTable.COLUMN_GROCERY_NAME, 
+    							GroceryTable.COLUMN_GROCERY_PRICE, GroceryTable.COLUMN_GROCERY_STORE};
         String selection = GroceryTable.COLUMN_GROCERY_CATEGORY + "=?";
     	List<String> selectionArgs = new ArrayList<String>();
     	selectionArgs.add(categoryId.toString());
@@ -310,6 +318,10 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
         if (!mQuery.isEmpty()) {
     		selection += " AND " + GroceryTable.COLUMN_GROCERY_NAME + " LIKE ?";
     		selectionArgs.add("%" + mQuery + "%");
+        }
+        if (storeId != null) {
+        	selection += " AND " + GroceryTable.COLUMN_GROCERY_STORE + " = ?";
+        	selectionArgs.add(storeId.toString());
         }
         
         final String[] selectionArgsArr = new String[selectionArgs.size()];

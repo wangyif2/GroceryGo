@@ -325,6 +325,14 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
         	selection += " AND " + GroceryTable.COLUMN_GROCERY_STORE + " = ?";
         	selectionArgs.add(storeId.toString());
         }
+        if (mPriceRangeMin != null) {
+        	selection += " AND " + GroceryTable.COLUMN_GROCERY_PRICE + " >= ?";
+        	selectionArgs.add(mPriceRangeMin.toString());
+        }
+        if (mPriceRangeMax != null) {
+        	selection += " AND " + GroceryTable.COLUMN_GROCERY_PRICE + " <= ?";
+        	selectionArgs.add(mPriceRangeMax.toString());
+        }
         
         final String[] selectionArgsArr = new String[selectionArgs.size()];
         selectionArgs.toArray(selectionArgsArr);
@@ -335,6 +343,15 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         adapter.swapCursor(data);
+        
+        if (data.getCount() < 1) {
+        	// Display message that there are no search results
+        	String noSearchResultsMsg = getResources().getString(R.string.no_search_results);
+            ListView myListView = this.getListView();
+            TextView myTextView = (TextView) findViewById(R.id.empty_grocery_list);
+            myTextView.setText(noSearchResultsMsg);
+            myListView.setEmptyView(myTextView);
+        }
     }
 
     @Override

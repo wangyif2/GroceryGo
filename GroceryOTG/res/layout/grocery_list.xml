@@ -15,12 +15,14 @@
         android:id="@+id/empty_grocery_list"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:textSize="20dp"
-        android:gravity="center"
+        android:textSize="18sp"
+        android:fontFamily="sans-serif-light"
+        android:gravity="top|left"
         android:text="@string/no_new_content"
         android:drawableLeft="@drawable/warning"
         android:drawablePadding="2dip"
-        android:paddingLeft="30dip"
-        android:paddingRight="26dip"
+        android:paddingLeft="10dip"
+        android:paddingRight="10dip"
+        android:paddingTop="10dip"
         android:singleLine="false"/>
 </LinearLayout>

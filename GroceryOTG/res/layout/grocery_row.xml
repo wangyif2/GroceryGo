@@ -1,56 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-
-<TableLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:gravity="center_vertical">
-
-    <TableRow
-        android:layout_width="wrap_content"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:weightSum="1.0">
+   
+    <ImageView
+         android:src="@drawable/add_icon"
+         android:padding="10dip"
+         android:paddingLeft="10dip"
+         android:layout_gravity="center_vertical"
+         android:contentDescription="@string/groceryoverview_row_imagedesc"
+         android:layout_width="0dip"
+         android:layout_height="wrap_content"
+         android:layout_weight="0.15">
+    </ImageView>
+   
+    <LinearLayout android:id="@+id/linearLayoutStacked"
+        android:layout_width="0dip"
         android:layout_height="wrap_content"
-        android:padding="5dip">
-
-        <ImageView
-            android:src="@drawable/add_icon"
-            android:padding="10dip"
-            android:paddingLeft="10dip"
-            android:maxHeight="20dp"
-            android:maxWidth="20dp"
-            android:layout_gravity="center_vertical">
-        </ImageView>
-
-        <!--TODO:hard coded Max width!!-->
+        android:layout_weight="0.65"
+        android:orientation="vertical"
+        android:padding="6dp"
+        android:focusable="true"
+        android:clickable="true">
+        
         <TextView
             android:id="@+id/grocery_row_label"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:maxWidth="230dp"
             android:layout_marginTop="6dp"
-            android:text="@+id/grocery_row_text"
-            android:textSize="14dp"
-            android:fontFamily="sans-serif-light"
+            android:text="@+id/grocery_row_label_text"
+            android:textSize="16sp"
+            android:fontFamily="sans-serif"
+            android:textStyle="bold"
+            android:singleLine="true"
+            android:gravity="center_vertical">
+        </TextView>
+        
+        <TextView
+            android:id="@+id/grocery_row_details"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="@+id/grocery_row_details_text"
+            android:textSize="12sp"
+            android:fontFamily="sans-serif"
             android:textStyle="normal"
             android:singleLine="false"
             android:gravity="center_vertical">
         </TextView>
-
-        <TextView
-            android:id="@+id/grocery_row_price"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:text="@+id/grocery_row_price_text"
-            android:textColor="@android:color/holo_red_dark"
-            android:textSize="18dp"
-            android:fontFamily="sans-serif-condensed"
-            android:textStyle="bold"
-            android:singleLine="true"
-            android:gravity="right"
-            android:layout_weight="1.0"
-            android:paddingRight="10dp">
-        </TextView>
-    </TableRow>
-</TableLayout>
+        
+        <TextView 
+		    android:id="@+id/grocery_row_store"
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:textColor="@android:color/holo_red_dark"
+            android:textSize="18sp"
+            android:text="@+id/grocery_row_store_text"
+            android:fontFamily="sans-serif" />
+        
+    </LinearLayout>
+    
+   
+    <TextView
+        android:id="@+id/grocery_row_price"
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.2"
+        android:layout_marginTop="6dp"
+        android:text="@+id/grocery_row_price_text"
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="18sp"
+        android:fontFamily="sans-serif"
+        android:singleLine="true"
+        android:gravity="right"
+        android:paddingRight="10dp">
+    </TextView>
+    
+</LinearLayout>

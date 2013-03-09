@@ -136,4 +136,5 @@ public class Grocery {
     public Integer getCategoryId() {
         return this.getItem().getSubcategory().getCategoryId().getCategoryId();
     }
+    
 }

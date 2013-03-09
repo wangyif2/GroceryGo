@@ -4,6 +4,7 @@
     
     <string name="no_content">Currently no content, please refresh</string>
     <string name="no_new_content">There is no new available data. Last checked: %1$s</string>
+    <string name="no_search_results">No results match your search criteria</string>
     <string name="fresh_action">Refreshing...</string>
     <string name="no_cart_item">Your shopping cart is currently empty</string>
     <string name="cart_grocery_edit_name">Grocery item name</string>
@@ -21,6 +22,8 @@
     <string name="groceryoverview_menu_item_filter">Filter</string>
     <string name="groceryoverview_menu_item_select">Select Mode</string>
     <string name="groceryoverview_menu_item_refresh">Refresh</string>
+    
+    <string name="groceryoverview_row_imagedesc">Subcategory</string>
     
     <string name="search_hint">Search grocery items</string>
     

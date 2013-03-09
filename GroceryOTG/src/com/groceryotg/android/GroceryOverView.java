@@ -1,6 +1,7 @@
 package com.groceryotg.android;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import android.app.LoaderManager;
@@ -255,14 +256,17 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
 
     private void fillData() {
     	
-    	String[] from = new String[]{GroceryTable.COLUMN_GROCERY_NAME, GroceryTable.COLUMN_GROCERY_PRICE, StoreTable.COLUMN_STORE_NAME};
-        int[] to = new int[]{R.id.grocery_row_label, R.id.grocery_row_price, R.id.grocery_row_store};
-    	
+    	String[] from = new String[]{GroceryTable.COLUMN_GROCERY_NAME, GroceryTable.COLUMN_GROCERY_NAME, GroceryTable.COLUMN_GROCERY_PRICE, StoreTable.COLUMN_STORE_NAME};
+        int[] to = new int[]{R.id.grocery_row_label, R.id.grocery_row_details, R.id.grocery_row_price, R.id.grocery_row_store};
+        
         adapter = new SimpleCursorAdapter(this, R.layout.grocery_row, null, from, to, 0);
         adapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
             @Override
             public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
-                if (columnIndex == 2) {
+            	
+            	int viewId = view.getId();
+            	
+                if (columnIndex == cursor.getColumnIndex(GroceryTable.COLUMN_GROCERY_PRICE)) {
                     TextView textView = (TextView) view;
                     if (cursor.getDouble(columnIndex) != 0) {
                         textView.setText("$" + ServerURL.getGetDecimalFormat().format(cursor.getDouble(columnIndex)));
@@ -270,6 +274,66 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
                         textView.setText("N/A");
                     }
                     return true;
+                }
+                else if ( columnIndex == cursor.getColumnIndex(GroceryTable.COLUMN_GROCERY_NAME) 
+                		&& viewId == R.id.grocery_row_label) {
+                	String itemText = cursor.getString(columnIndex);
+                	
+                	if (itemText.contains(". ")) {
+                		String[] itemArray = itemText.split(". ");
+                		itemText = itemArray[0];
+                	}
+                	else if (itemText.contains(", ")) {
+                		String[] itemArray = itemText.split(", ");
+                		itemText = itemArray[0];
+                	}
+                	
+                	TextView textView = (TextView) view;
+                	textView.setText(itemText);
+                	
+                	return true;
+                }
+                else if ( columnIndex == cursor.getColumnIndex(GroceryTable.COLUMN_GROCERY_NAME) 
+                		&& viewId == R.id.grocery_row_details ) {
+                	String itemText = cursor.getString(columnIndex);
+                	String itemDetails = "";
+                	
+                	String delim_period = ". ";
+                	String delim_comma = ", ";
+                	if (itemText.contains(delim_period)) {
+                		String[] itemArray = itemText.split(delim_period);
+                		List<String> itemList = Arrays.asList(itemArray);
+                		List<String> itemSublist = itemList.subList(1, itemList.size());
+                		itemText = itemArray[0];
+                		
+                		StringBuilder sb = new StringBuilder();
+                		for (String s: itemSublist) {
+                			sb.append(s).append(delim_period);
+                		}
+                		sb.deleteCharAt(sb.length()-1); // delete last delimiter
+                		sb.deleteCharAt(sb.length()-1);
+                		itemDetails = sb.toString();
+                		
+                	}
+                	else if (itemText.contains(delim_comma)) {
+                		String[] itemArray = itemText.split(delim_comma);
+                		List<String> itemList = Arrays.asList(itemArray);
+                		List<String> itemSublist = itemList.subList(1, itemList.size());
+                		itemText = itemArray[0];
+                		
+                		StringBuilder sb = new StringBuilder();
+                		for (String s: itemSublist) {
+                			sb.append(s).append(delim_comma);
+                		}
+                		sb.deleteCharAt(sb.length()-1); // delete last delimiter
+                		sb.deleteCharAt(sb.length()-1);
+                		itemDetails = sb.toString();
+                	}
+                	
+                	TextView textView = (TextView) view;
+                	textView.setText(itemDetails);
+                	
+                	return true;
                 }
                 return false;
             }

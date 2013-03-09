@@ -17,7 +17,7 @@
         android:layout_height="fill_parent"
         android:textSize="18sp"
         android:fontFamily="sans-serif-light"
-        android:gravity="top|left"
+        android:gravity="center_vertical|left"
         android:text="@string/no_new_content"
         android:drawableLeft="@drawable/warning"
         android:drawablePadding="2dip"

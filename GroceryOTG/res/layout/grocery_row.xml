@@ -23,8 +23,8 @@
         android:layout_weight="0.65"
         android:orientation="vertical"
         android:padding="6dp"
-        android:focusable="true"
-        android:clickable="true">
+        android:focusable="false"
+        android:clickable="false">
         
         <TextView
             android:id="@+id/grocery_row_label"
@@ -80,7 +80,8 @@
         android:fontFamily="sans-serif"
         android:singleLine="true"
         android:gravity="right"
-        android:paddingRight="10dp">
+        android:paddingRight="10dp"
+        android:background="#dddddd">
     </TextView>
     
 </LinearLayout>

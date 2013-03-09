@@ -1,4 +1,4 @@
-package com.groceryotg.android;
+package com.groceryotg.android.groceryoverview;
 
 import android.app.LoaderManager;
 import android.app.PendingIntent;
@@ -16,6 +16,10 @@ import com.actionbarsherlock.app.SherlockListActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.groceryotg.android.CategoryOverView;
+import com.groceryotg.android.GroceryMapView;
+import com.groceryotg.android.R;
+import com.groceryotg.android.ShopCartOverView;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.CategoryTable;
 import com.groceryotg.android.database.GroceryTable;
@@ -26,7 +30,6 @@ import com.groceryotg.android.services.ServerURL;
 import com.groceryotg.android.utils.RefreshAnimation;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -77,10 +80,33 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
         }
 
         // Initialize the user query to blank
-        mQuery = "";
+        setmQuery("");
 
         this.getListView().setDividerHeight(2);
         fillData();
+    }
+
+    @Override
+    public boolean onClose() {
+        /*
+         * This method NEVER gets called IF the SearchView is set to be collapsible
+    	 * (showAsAction=collapsibleActionView in the XML file). Making it collapsible
+    	 * means that the search widget shows up in the top action bar instead of at the
+    	 * bottom. With a collapsible SearchView, the 'x' button only clears the text in
+    	 * the EditText field. After pressing it once, the 'x' disappears.
+    	 *
+    	 * With a non-collapsible SearchView, the 'x' button pressed once clears the text
+    	 * in the EditText field, and then (it is still visible) pressing it again invokes this method.
+    	 */
+        if (!TextUtils.isEmpty(mSearchView.getQuery())) {
+            mSearchView.setQuery(null, true);
+        }
+
+        // Refresh the list to display all items again and hide the search view
+        loadDataWithQuery(true, "");
+        mSearchView.setVisibility(SearchView.GONE);
+
+        return true;
     }
 
     @Override
@@ -107,7 +133,7 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
 
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
-                // This is called when the user clicks on the magnifying glass icon to 
+                // This is called when the user clicks on the magnifying glass icon to
                 // expand the search view widget.
                 return true;
             }
@@ -117,67 +143,10 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
                 // This is called the user presses the 'back' button to exit the collapsed
                 // search widget view (i.e., to close the search). Here, refresh the query
                 // to display the whole list of items:
-                clearQuery();
+                loadDataWithQuery(true, "");
                 return true;
             }
         });
-
-        return true;
-    }
-
-    public void clearQuery() {
-        mQuery = "";
-        getLoaderManager().restartLoader(0, null, this);
-    }
-
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        /*
-         * You don't need to deal with "appData" and passing bundles back to the search
-         * activity, because you already have the search query here.
-         */
-        String newQuery = !TextUtils.isEmpty(query) ? query : null;
-
-        // Don't do anything if the query hasn't changed
-        if (newQuery == null && mQuery == null) {
-            return true;
-        }
-        if (newQuery != null && mQuery.equals(newQuery)) {
-            return true;
-        }
-
-        mQuery = newQuery;
-        getLoaderManager().restartLoader(0, null, this);
-
-        return true;
-    }
-
-    @Override
-    public boolean onQueryTextChange(String newText) {
-        // This is called when you click the search icon or type characters in the search widget
-        // (called on every keystroke)
-        return true;
-    }
-
-    @Override
-    public boolean onClose() {
-        /*
-    	 * This method NEVER gets called IF the SearchView is set to be collapsible 
-    	 * (showAsAction=collapsibleActionView in the XML file). Making it collapsible 
-    	 * means that the search widget shows up in the top action bar instead of at the
-    	 * bottom. With a collapsible SearchView, the 'x' button only clears the text in
-    	 * the EditText field. After pressing it once, the 'x' disappears.
-    	 * 
-    	 * With a non-collapsible SearchView, the 'x' button pressed once clears the text
-    	 * in the EditText field, and then (it is still visible) pressing it again invokes this method.
-    	 */
-        if (!TextUtils.isEmpty(mSearchView.getQuery())) {
-            mSearchView.setQuery(null, true);
-        }
-
-        // Refresh the list to display all items again and hide the search view
-        clearQuery();
-        mSearchView.setVisibility(SearchView.GONE);
 
         return true;
     }
@@ -194,7 +163,7 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
                 launchMapActivity();
                 return true;
             case R.id.shop_cart:
-                launchShopCartActivity();
+                ShopCartOverView.launchShopCartActivity(getBaseContext());
                 return true;
             case android.R.id.home:
                 // This is called when the Home (Up) button is pressed
@@ -212,6 +181,31 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
     }
 
     @Override
+    public boolean onQueryTextSubmit(String query) {
+        /*
+         * You don't need to deal with "appData" and passing bundles back to the search
+         * activity, because you already have the search query here.
+         */
+        String newQuery = !TextUtils.isEmpty(query) ? query : null;
+
+        // Don't do anything if the query hasn't changed
+        if (newQuery == null && mQuery == null ||
+                newQuery != null && mQuery.equals(newQuery))
+            return true;
+
+        loadDataWithQuery(true, newQuery);
+
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        // This is called when you click the search icon or type characters in the search widget
+        // (called on every keystroke)
+        return true;
+    }
+
+    @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
         TextView textView = (TextView) v.findViewById(R.id.grocery_row_label);
@@ -223,11 +217,6 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
 
         Toast t = Toast.makeText(this, "Item added to Shopping Cart", Toast.LENGTH_SHORT);
         t.show();
-    }
-
-    private void launchShopCartActivity() {
-        Intent intent = new Intent(this, ShopCartOverView.class);
-        startActivity(intent);
     }
 
     private void launchMapActivity() {
@@ -247,100 +236,31 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
     }
 
     private void fillData() {
-
         String[] from = new String[]{GroceryTable.COLUMN_GROCERY_NAME, GroceryTable.COLUMN_GROCERY_NAME, GroceryTable.COLUMN_GROCERY_PRICE, StoreTable.COLUMN_STORE_NAME};
         int[] to = new int[]{R.id.grocery_row_label, R.id.grocery_row_details, R.id.grocery_row_price, R.id.grocery_row_store};
 
         adapter = new SimpleCursorAdapter(this, R.layout.grocery_row, null, from, to, 0);
-        adapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
-            @Override
-            public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
-
-                int viewId = view.getId();
-
-                if (columnIndex == cursor.getColumnIndex(GroceryTable.COLUMN_GROCERY_PRICE)) {
-                    TextView textView = (TextView) view;
-                    if (cursor.getDouble(columnIndex) != 0) {
-                        textView.setText("$" + ServerURL.getGetDecimalFormat().format(cursor.getDouble(columnIndex)));
-                    } else {
-                        textView.setText("N/A");
-                    }
-                    return true;
-                } else if (columnIndex == cursor.getColumnIndex(GroceryTable.COLUMN_GROCERY_NAME)
-                        && viewId == R.id.grocery_row_label) {
-                    String itemText = cursor.getString(columnIndex);
-
-                    if (itemText.contains(". ")) {
-                        String[] itemArray = itemText.split(". ");
-                        itemText = itemArray[0];
-                    } else if (itemText.contains(", ")) {
-                        String[] itemArray = itemText.split(", ");
-                        itemText = itemArray[0];
-                    }
-
-                    TextView textView = (TextView) view;
-                    textView.setText(itemText);
-
-                    return true;
-                } else if (columnIndex == cursor.getColumnIndex(GroceryTable.COLUMN_GROCERY_NAME)
-                        && viewId == R.id.grocery_row_details) {
-                    String itemText = cursor.getString(columnIndex);
-                    String itemDetails = "";
-
-                    String delim_period = ". ";
-                    String delim_comma = ", ";
-                    if (itemText.contains(delim_period)) {
-                        String[] itemArray = itemText.split(delim_period);
-                        List<String> itemList = Arrays.asList(itemArray);
-                        List<String> itemSublist = itemList.subList(1, itemList.size());
-                        itemText = itemArray[0];
-
-                        StringBuilder sb = new StringBuilder();
-                        for (String s : itemSublist) {
-                            sb.append(s).append(delim_period);
-                        }
-                        sb.deleteCharAt(sb.length() - 1); // delete last delimiter
-                        sb.deleteCharAt(sb.length() - 1);
-                        itemDetails = sb.toString();
-
-                    } else if (itemText.contains(delim_comma)) {
-                        String[] itemArray = itemText.split(delim_comma);
-                        List<String> itemList = Arrays.asList(itemArray);
-                        List<String> itemSublist = itemList.subList(1, itemList.size());
-                        itemText = itemArray[0];
-
-                        StringBuilder sb = new StringBuilder();
-                        for (String s : itemSublist) {
-                            sb.append(s).append(delim_comma);
-                        }
-                        sb.deleteCharAt(sb.length() - 1); // delete last delimiter
-                        sb.deleteCharAt(sb.length() - 1);
-                        itemDetails = sb.toString();
-                    }
-
-                    TextView textView = (TextView) view;
-                    textView.setText(itemDetails);
-
-                    return true;
-                }
-                return false;
-            }
-        });
+        adapter.setViewBinder(new GroceryViewBinder());
 
         setListAdapter(adapter);
-        displayEmptyListMessage();
+        displayEmptyListMessage(buildNoNewContentString());
 
         // Prepare the asynchronous loader.
-        getLoaderManager().initLoader(0, null, this);
+        loadDataWithQuery(false, "");
     }
 
-    private void displayEmptyListMessage() {
-        String emptyStringFormat = getResources().getString(R.string.no_new_content);
-        String emptyStringMsg = (ServerURL.getLastRefreshed() == null) ? String.format(emptyStringFormat, " Never") : String.format(emptyStringFormat, ServerURL.getLastRefreshed());
-        ListView myListView = this.getListView();
-        TextView myTextView = (TextView) findViewById(R.id.empty_grocery_list);
-        myTextView.setText(emptyStringMsg);
-        myListView.setEmptyView(myTextView);
+    private void loadDataWithQuery(Boolean reload, String query) {
+        Bundle b = new Bundle();
+        b.putString("query", query);
+        if (reload) {
+            setmQuery(query);
+            b.putBoolean("reload", true);
+            getLoaderManager().restartLoader(0, b, this);
+        } else {
+            b.putBoolean("reload", false);
+            getLoaderManager().initLoader(0, b, this);
+        }
+
     }
 
     @Override
@@ -354,24 +274,28 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
         }
         assert toast != null;
         toast.show();
-        displayEmptyListMessage();
+        displayEmptyListMessage(buildNoNewContentString());
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        String emptyString = args.getBoolean("reload") ? buildNoSearchResultString() : buildNoNewContentString();
+        String query = args.getString("query");
+        displayEmptyListMessage(emptyString);
 
-        CursorLoader returnValue;
+        List<String> selectionArgs = new ArrayList<String>();
+
         String[] projection = {GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_ID,
                 GroceryTable.COLUMN_GROCERY_NAME,
-                GroceryTable.COLUMN_GROCERY_PRICE, StoreTable.COLUMN_STORE_NAME};
+                GroceryTable.COLUMN_GROCERY_PRICE,
+                StoreTable.COLUMN_STORE_NAME};
         String selection = GroceryTable.COLUMN_GROCERY_CATEGORY + "=?";
-        List<String> selectionArgs = new ArrayList<String>();
         selectionArgs.add(categoryId.toString());
 
         // If user entered a search query, filter the results based on grocery name
-        if (!mQuery.isEmpty()) {
+        if (!query.isEmpty()) {
             selection += " AND " + GroceryTable.COLUMN_GROCERY_NAME + " LIKE ?";
-            selectionArgs.add("%" + mQuery + "%");
+            selectionArgs.add("%" + query + "%");
         }
         if (storeId != null) {
             selection += " AND " + GroceryTable.COLUMN_GROCERY_STORE + " = ?";
@@ -388,22 +312,12 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
 
         final String[] selectionArgsArr = new String[selectionArgs.size()];
         selectionArgs.toArray(selectionArgsArr);
-        returnValue = new CursorLoader(this, GroceryotgProvider.CONTENT_URI_GRO_JOINSTORE, projection, selection, selectionArgsArr, null);
-        return returnValue;
+        return new CursorLoader(this, GroceryotgProvider.CONTENT_URI_GRO_JOINSTORE, projection, selection, selectionArgsArr, null);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         adapter.swapCursor(data);
-
-        if (data.getCount() < 1) {
-            // Display message that there are no search results
-            String noSearchResultsMsg = getResources().getString(R.string.no_search_results);
-            ListView myListView = this.getListView();
-            TextView myTextView = (TextView) findViewById(R.id.empty_grocery_list);
-            myTextView.setText(noSearchResultsMsg);
-            myListView.setEmptyView(myTextView);
-        }
     }
 
     @Override
@@ -411,5 +325,25 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
         // Called when a previously created loader is being reset, thus making its
         // data unavailable
         adapter.swapCursor(null);
+    }
+
+    private void displayEmptyListMessage(String emptyStringMsg) {
+        ListView myListView = this.getListView();
+        TextView myTextView = (TextView) findViewById(R.id.empty_grocery_list);
+        myTextView.setText(emptyStringMsg);
+        myListView.setEmptyView(myTextView);
+    }
+
+    private String buildNoNewContentString() {
+        String emptyStringFormat = getResources().getString(R.string.no_new_content);
+        return (ServerURL.getLastRefreshed() == null) ? String.format(emptyStringFormat, " Never") : String.format(emptyStringFormat, ServerURL.getLastRefreshed());
+    }
+
+    private String buildNoSearchResultString() {
+        return getResources().getString(R.string.no_search_results);
+    }
+
+    public void setmQuery(String mQuery) {
+        this.mQuery = mQuery;
     }
 }

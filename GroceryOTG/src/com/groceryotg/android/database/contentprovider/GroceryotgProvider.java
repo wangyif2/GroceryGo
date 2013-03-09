@@ -110,6 +110,9 @@ public class GroceryotgProvider extends ContentProvider {
                 queryBuilder.setTables(CartTable.TABLE_CART);
                 queryBuilder.appendWhere(CartTable.COLUMN_ID + "=" + uri.getLastPathSegment());
                 break;
+            case STORES:
+            	queryBuilder.setTables(StoreTable.TABLE_STORE);
+            	break;
             case GROCERIES_JOINSTORE:
             	queryBuilder.setTables(GroceryTable.TABLE_GROCERY + " INNER JOIN " + StoreTable.TABLE_STORE 
             					+ " ON " + GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_GROCERY_STORE 

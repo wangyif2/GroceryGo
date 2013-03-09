@@ -24,6 +24,8 @@
     <string name="groceryoverview_menu_item_refresh">Refresh</string>
     
     <string name="groceryoverview_row_imagedesc">Subcategory</string>
+    <string name="groceryoverview_filter_title">Filter by store</string>
+    <string name="groceryoverview_filter_updated">Your store preferences have been updated</string>
     
     <string name="search_hint">Search grocery items</string>
     

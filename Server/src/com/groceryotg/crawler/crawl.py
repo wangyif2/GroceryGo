@@ -24,6 +24,7 @@ import re
 #import sqlalchemy
 import sys
 import time
+import traceback
 import urllib
 import urllib2
 from urlparse import urlparse
@@ -379,21 +380,29 @@ def getFlyer():
                                 index_cents = raw_price.find("\xa2")
                                 #logging.info(raw_price)
                                 if index_ratio != -1:
-                                    num_products = float(raw_price[:index_ratio])
-                                    total_price = raw_price[index_ratio+1:]
-                                    if index_dollar != -1:
-                                        the_price = total_price.strip().strip("$").strip()
-                                        if numeric_only.findall(the_price):
-                                            total_price = float(the_price)
-                                            # Default unit_price
-                                            unit_price = total_price / num_products
-                                    else:
-                                        the_price = total_price.strip("\xa2").strip("\xc2")
-                                        if numeric_only.findall(the_price):
-                                            total_price = float(the_price) / 100.0
-                                            # Default unit_price
-                                            unit_price = total_price / num_products
-                                
+                                    if numeric_only.findall(raw_price[:index_ratio]):
+                                        # If the first half is numeric only, e.g. "2 / $5", then it is
+                                        # indeed a ratio
+                                        num_products = float(raw_price[:index_ratio])
+                                        total_price = raw_price[index_ratio+1:]
+                                        if index_dollar != -1:
+                                            the_price = total_price.strip().strip("$").strip()
+                                            if numeric_only.findall(the_price):
+                                                total_price = float(the_price)
+                                                # Default unit_price
+                                                unit_price = total_price / num_products
+                                    
+                                        else:
+                                            the_price = total_price.strip("\xa2").strip("\xc2")
+                                            if numeric_only.findall(the_price):
+                                                total_price = float(the_price) / 100.0
+                                                # Default unit_price
+                                                unit_price = total_price / num_products
+                                    elif numeric_only.findall(raw_price[:index_ratio].strip("$").strip("\xa2").strip("\xc2")):
+                                        # Otherwise, it's a range, e.g. "$33 / $36". Take the first 
+                                        # price.
+                                        total_price = float(raw_price[:index_ratio].strip("$").strip("\xa2").strip("\xc2"))
+                                        unit_price = total_price
                                 elif index_dollar != -1:
                                     the_price = raw_price.strip("$")
                                     if numeric_only.findall(the_price):
@@ -899,8 +908,9 @@ def getFlyer():
                             
                             # Default unit_price
                             unit_price = total_price
-                        else:
-                            total_price = float(raw_price.strip("\xa2").strip("\xc2"))
+                            
+                        elif index_cents != -1:
+                            total_price = float(raw_price.strip("\xa2").strip("\xc2")) / 100.0
                             
                             # Default unit_price
                             unit_price = total_price
@@ -1188,6 +1198,8 @@ except Exception, e:
     exc_type, exc_obj, exc_tb = sys.exc_info()
     fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
     logging.info("Error (%s) occurred in %s, line %s: %s" % (exc_type, fname, exc_tb.tb_lineno, e))
+    logging.info("Traceback:")
+    logging.info(traceback.format_exc())
     sys.exit(1)
 finally:
     if con:

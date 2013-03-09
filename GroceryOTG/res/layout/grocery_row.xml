@@ -36,7 +36,9 @@
             android:fontFamily="sans-serif"
             android:textStyle="bold"
             android:singleLine="true"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:clickable="false"
+            android:focusable="false">
         </TextView>
         
         <TextView
@@ -49,7 +51,9 @@
             android:fontFamily="sans-serif"
             android:textStyle="normal"
             android:singleLine="false"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:clickable="false"
+            android:focusable="false">
         </TextView>
         
         <TextView 

@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.*;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.SearchView.OnCloseListener;
 import android.widget.SearchView.OnQueryTextListener;
 import com.actionbarsherlock.app.SherlockListActivity;
@@ -28,6 +29,7 @@ import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 import com.groceryotg.android.services.NetworkHandler;
 import com.groceryotg.android.services.ServerURL;
 import com.groceryotg.android.utils.RefreshAnimation;
+import com.slidingmenu.lib.SlidingMenu;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +42,7 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
         LoaderManager.LoaderCallbacks<Cursor> {
     private SimpleCursorAdapter adapter;
     private MenuItem refreshItem;
+    private SlidingMenu slidingMenu;
     private Uri groceryUri;
     private String categoryName;
     private Integer categoryId;
@@ -62,6 +65,9 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
         // Enable ancestral navigation ("Up" button in ActionBar) for Android < 4.1
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        // Configure sliding menu
+        configSlidingMenu();
+        
         Bundle extras = getIntent().getExtras();
         groceryUri = (savedInstanceState == null) ? null : (Uri) savedInstanceState.getParcelable(GroceryotgProvider.CONTENT_ITEM_TYPE_CAT);
 
@@ -163,7 +169,7 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
                 launchMapActivity();
                 return true;
             case R.id.shop_cart:
-                ShopCartOverView.launchShopCartActivity(getBaseContext());
+                launchShopCartActivity();
                 return true;
             case android.R.id.home:
                 // This is called when the Home (Up) button is pressed
@@ -224,7 +230,17 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
+    
+    private void launchShopCartActivity() {
+        Intent intent = new Intent(this, ShopCartOverView.class);
+        startActivity(intent);
+    }
 
+    private void launchHomeActivity() {
+        Intent intent = new Intent(this, CategoryOverView.class);
+        startActivity(intent);
+    }
+    
     private void refreshCurrentGrocery() {
         Intent intent = new Intent(this, NetworkHandler.class);
 
@@ -345,5 +361,63 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
 
     public void setmQuery(String mQuery) {
         this.mQuery = mQuery;
+    }
+    
+    private void configSlidingMenu() {
+        slidingMenu = new SlidingMenu(this);
+        slidingMenu.setMode(SlidingMenu.LEFT);
+        slidingMenu.setShadowWidthRes(R.dimen.shadow_width);
+        slidingMenu.setShadowDrawable(R.drawable.shadow);
+        slidingMenu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
+        slidingMenu.setFadeDegree(0.35f);
+        slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
+        slidingMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
+        slidingMenu.setMenu(R.layout.menu_frame);
+
+        // Populate the SlidingMenu
+        String[] slidingMenuItems = new String[]{getString(R.string.slidingmenu_item_cat),
+                getString(R.string.slidingmenu_item_cart),
+                getString(R.string.slidingmenu_item_map),
+                getString(R.string.slidingmenu_item_sync),
+                getString(R.string.slidingmenu_item_settings),
+                getString(R.string.slidingmenu_item_about)};
+        
+        ListView menuView = (ListView) findViewById(R.id.menu_items);
+        ArrayAdapter<String> menuAdapter = new ArrayAdapter<String>(this,
+                R.layout.menu_item, android.R.id.text1, slidingMenuItems);
+        menuView.setAdapter(menuAdapter);
+
+        menuView.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                // Switch activity based on what slidingMenu item the user selected
+                TextView textView = (TextView) view;
+                String selectedItem = textView.getText().toString();
+
+                if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_cat))) {
+                    // Selected Categories
+                	launchHomeActivity();
+                } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_cart))) {
+                    // Selected Shopping Cart
+                    launchShopCartActivity();
+                } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_map))) {
+                    // Selected Map
+                    launchMapActivity();
+                } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_sync))) {
+                    // Selected Sync
+                	refreshCurrentGrocery();
+                } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_settings))) {
+                    // Selected Settings
+                	if (slidingMenu.isMenuShowing())
+                        slidingMenu.showContent();
+                } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_about))) {
+                    // Selected About
+                    //startActivity(new Intent(CategoryOverView.this, About.class));
+                	if (slidingMenu.isMenuShowing())
+                        slidingMenu.showContent();
+                }
+            }
+        });
     }
 }

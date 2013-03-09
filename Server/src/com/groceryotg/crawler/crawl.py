@@ -37,7 +37,7 @@ logname = "./log/" + str(timestamp.year).zfill(4) + "_" + str(timestamp.month).z
           str(timestamp.microsecond) + ".log"
 print("writing log to %s..." % logname)
 
-# Define logging level (if you set this to logging.DEBUG, the debug print messages will be displayed)
+# Define logging level (if you set this to logging.DEBUG, the debug print messages will be displayed) 
 logging.basicConfig(filename=logname, format='%(asctime)s:%(levelname)s: %(message)s', level=logging.INFO)
 
 
@@ -409,10 +409,10 @@ def getFlyer():
                                         total_price = float(the_price)
                                         # Default unit_price
                                         unit_price = total_price
-                                else:
+                                elif index_cents != -1:
                                     the_price = raw_price.strip("\xa2").strip("\xc2")
                                     if numeric_only.findall(the_price):
-                                        total_price = float(the_price)
+                                        total_price = float(the_price) / 100.0
                                         # Default unit_price
                                         unit_price = total_price
                                 
@@ -672,6 +672,9 @@ def getFlyer():
                         unit_type_id = None
                         total_price = None
                         
+                        numeric_pattern = re.compile("[0-9]+")
+                        numeric_only = re.compile("^[0-9.]+$")
+                        
                         raw_price = item['price']
                         orig_price = raw_price
                         if raw_price:
@@ -702,11 +705,13 @@ def getFlyer():
                                 
                                 # Default unit_price
                                 unit_price = total_price
-                            else:
-                                total_price = float(raw_price.strip("\xa2").strip("\xc2"))
+                            elif index_cents != -1:
+                                if numeric_only.findall(raw_price.strip("\xa2").strip("\xc2")):
+                                    
+                                    total_price = float(raw_price.strip("\xa2").strip("\xc2")) / 100.0
                                 
-                                # Default unit_price
-                                unit_price = total_price
+                                    # Default unit_price
+                                    unit_price = total_price
                             
                             # When price units are specified, the unit price is usually given in
                             # the "priceunits" key-value pair

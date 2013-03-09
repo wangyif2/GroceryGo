@@ -30,15 +30,21 @@ public class GroceryViewBinder implements SimpleCursorAdapter.ViewBinder {
                 textView.setText("N/A");
             }
             return true;
-        } else if (columnIndex == cursor.getColumnIndex(GroceryTable.COLUMN_GROCERY_NAME)
+        } 
+        
+        else if (columnIndex == cursor.getColumnIndex(GroceryTable.COLUMN_GROCERY_NAME)
                 && viewId == R.id.grocery_row_label) {
             String itemText = cursor.getString(columnIndex);
-
-            if (itemText.contains(". ")) {
-                String[] itemArray = itemText.split(". ");
+            String delim_period = ". ";
+            String delim_comma = ", ";
+            String regex_period = "\\.\\s";
+            String regex_comma = ",\\s";
+            if (itemText.indexOf(delim_period) != -1) {
+                String[] itemArray = itemText.split(regex_period);
                 itemText = itemArray[0];
-            } else if (itemText.contains(", ")) {
-                String[] itemArray = itemText.split(", ");
+            } 
+            else if (itemText.indexOf(delim_comma) != -1) {
+                String[] itemArray = itemText.split(regex_comma);
                 itemText = itemArray[0];
             }
 
@@ -46,40 +52,54 @@ public class GroceryViewBinder implements SimpleCursorAdapter.ViewBinder {
             textView.setText(itemText);
 
             return true;
-        } else if (columnIndex == cursor.getColumnIndex(GroceryTable.COLUMN_GROCERY_NAME)
+        } 
+        else if (columnIndex == cursor.getColumnIndex(GroceryTable.COLUMN_GROCERY_NAME)
                 && viewId == R.id.grocery_row_details) {
             String itemText = cursor.getString(columnIndex);
             String itemDetails = "";
-
             String delim_period = ". ";
             String delim_comma = ", ";
-            if (itemText.contains(delim_period)) {
-                String[] itemArray = itemText.split(delim_period);
+            String regex_period = "\\.\\s";
+            String regex_comma = ",\\s";
+            
+            if (itemText.indexOf(delim_period) != -1) {
+                String[] itemArray = itemText.split(regex_period);
                 List<String> itemList = Arrays.asList(itemArray);
                 List<String> itemSublist = itemList.subList(1, itemList.size());
                 itemText = itemArray[0];
 
-                StringBuilder sb = new StringBuilder();
-                for (String s : itemSublist) {
-                    sb.append(s).append(delim_period);
+                if (itemSublist.size() < 1) {
+                	itemDetails = "";
                 }
-                sb.deleteCharAt(sb.length() - 1); // delete last delimiter
-                sb.deleteCharAt(sb.length() - 1);
-                itemDetails = sb.toString();
-
-            } else if (itemText.contains(delim_comma)) {
-                String[] itemArray = itemText.split(delim_comma);
+                else {
+	                StringBuilder sb = new StringBuilder();
+	                for (String s : itemSublist) {
+	                    sb.append(s).append(delim_period);
+	                }
+	                sb.deleteCharAt(sb.length() - 1); // delete last delimiter
+	                sb.deleteCharAt(sb.length() - 1);
+	                itemDetails = sb.toString();
+                }
+            } 
+            else if (itemText.indexOf(delim_comma) != -1) {
+                String[] itemArray = itemText.split(regex_comma);
                 List<String> itemList = Arrays.asList(itemArray);
                 List<String> itemSublist = itemList.subList(1, itemList.size());
                 itemText = itemArray[0];
 
-                StringBuilder sb = new StringBuilder();
-                for (String s : itemSublist) {
-                    sb.append(s).append(delim_comma);
+                if (itemSublist.size() < 1) {
+                	itemDetails = "";
                 }
-                sb.deleteCharAt(sb.length() - 1); // delete last delimiter
-                sb.deleteCharAt(sb.length() - 1);
-                itemDetails = sb.toString();
+                else {
+	                StringBuilder sb = new StringBuilder();
+	                for (String s : itemSublist) {
+	                    sb.append(s).append(delim_comma);
+	                }
+	                
+	            	sb.deleteCharAt(sb.length() - 1); // delete last delimiter
+	            	sb.deleteCharAt(sb.length() - 1);
+	            	itemDetails = sb.toString();
+                }
             }
 
             TextView textView = (TextView) view;
@@ -87,6 +107,7 @@ public class GroceryViewBinder implements SimpleCursorAdapter.ViewBinder {
 
             return true;
         }
+        
         return false;
     }
 }

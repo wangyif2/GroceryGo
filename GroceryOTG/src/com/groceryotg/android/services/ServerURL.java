@@ -7,6 +7,7 @@ import android.net.NetworkInfo;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * User: robert
@@ -58,5 +59,11 @@ public class ServerURL {
 
     public static void setLastRefreshed(String lastRefreshed) {
         ServerURL.lastRefreshed = lastRefreshed;
+    }
+
+    public static String getDateNowAsArg(){
+        String date = getDateFormat().format(new Date());
+        setLastRefreshed(date);
+        return "?date=" + date;
     }
 }

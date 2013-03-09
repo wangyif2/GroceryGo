@@ -1,11 +1,12 @@
 package com.groceryotg.android;
 
-import java.util.Locale;
-
 import android.app.AlarmManager;
 import android.app.LoaderManager;
 import android.app.PendingIntent;
-import android.content.*;
+import android.content.Context;
+import android.content.CursorLoader;
+import android.content.Intent;
+import android.content.Loader;
 import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -24,11 +25,14 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.groceryotg.android.database.CategoryTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
+import com.groceryotg.android.groceryoverview.GroceryOverView;
 import com.groceryotg.android.services.Location.LocationMonitor;
 import com.groceryotg.android.services.Location.LocationReceiver;
 import com.groceryotg.android.services.NetworkHandler;
 import com.groceryotg.android.utils.RefreshAnimation;
 import com.slidingmenu.lib.SlidingMenu;
+
+import java.util.Locale;
 
 
 public class CategoryOverView extends SherlockActivity implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -67,7 +71,7 @@ public class CategoryOverView extends SherlockActivity implements LoaderManager.
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getSupportMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
+        inflater.inflate(R.menu.categoryoverview_menu, menu);
         this.menu = menu;
         return true;
     }
@@ -124,7 +128,7 @@ public class CategoryOverView extends SherlockActivity implements LoaderManager.
         slidingMenu.setShadowDrawable(R.drawable.shadow);
         slidingMenu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
         slidingMenu.setFadeDegree(0.35f);
-        slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+        slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
         slidingMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
         slidingMenu.setMenu(R.layout.menu_frame);
 

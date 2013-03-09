@@ -134,7 +134,7 @@ public class NetworkHandler extends IntentService {
 
     private void refreshGrocery() {
         //build request url
-        String date = "?date=" + ServerURL.getDateFormat().format(new Date());
+        String date = ServerURL.getDateNowAsArg();
         String[] requestArgs = new String[]{date};
         String getGrocery = buildGroceryURL(requestArgs);
 

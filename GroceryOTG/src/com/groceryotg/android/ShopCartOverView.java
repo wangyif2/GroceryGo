@@ -1,13 +1,15 @@
 package com.groceryotg.android;
 
 import android.app.LoaderManager;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.*;
+import android.view.ContextMenu;
+import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
@@ -125,5 +127,10 @@ public class ShopCartOverView extends SherlockListActivity implements LoaderMana
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         adapter.swapCursor(null);
+    }
+
+    public static void launchShopCartActivity(Context context) {
+        Intent intent = new Intent(context, ShopCartOverView.class);
+        context.startActivity(intent);
     }
 }

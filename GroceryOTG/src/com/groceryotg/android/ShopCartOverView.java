@@ -1,22 +1,29 @@
 package com.groceryotg.android;
 
 import android.app.LoaderManager;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.*;
+import android.view.ContextMenu;
+import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
+import android.widget.AdapterView.OnItemClickListener;
+
 import com.actionbarsherlock.app.SherlockListActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
+import com.slidingmenu.lib.SlidingMenu;
 
 /**
  * User: robert
@@ -25,6 +32,7 @@ import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 public class ShopCartOverView extends SherlockListActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final int DELETE_ID = 1;
     private SimpleCursorAdapter adapter;
+    private SlidingMenu slidingMenu;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -34,6 +42,9 @@ public class ShopCartOverView extends SherlockListActivity implements LoaderMana
         
         // Enable ancestral navigation ("Up" button in ActionBar) for Android < 4.1
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        
+        // Configure sliding menu
+        configSlidingMenu();
         
         fillData();
         registerForContextMenu(getListView());
@@ -125,5 +136,76 @@ public class ShopCartOverView extends SherlockListActivity implements LoaderMana
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         adapter.swapCursor(null);
+    }
+
+    private void launchHomeActivity() {
+        Intent intent = new Intent(this, CategoryOverView.class);
+        startActivity(intent);
+    }
+    
+    private void launchMapActivity() {
+        Intent intent = new Intent(this, GroceryMapView.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+    }
+    
+    private void configSlidingMenu() {
+        slidingMenu = new SlidingMenu(this);
+        slidingMenu.setMode(SlidingMenu.LEFT);
+        slidingMenu.setShadowWidthRes(R.dimen.shadow_width);
+        slidingMenu.setShadowDrawable(R.drawable.shadow);
+        slidingMenu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
+        slidingMenu.setFadeDegree(0.35f);
+        slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
+        slidingMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
+        slidingMenu.setMenu(R.layout.menu_frame);
+
+        // Populate the SlidingMenu
+        String[] slidingMenuItems = new String[]{getString(R.string.slidingmenu_item_cat),
+                getString(R.string.slidingmenu_item_cart),
+                getString(R.string.slidingmenu_item_map),
+                getString(R.string.slidingmenu_item_sync),
+                getString(R.string.slidingmenu_item_settings),
+                getString(R.string.slidingmenu_item_about)};
+        
+        ListView menuView = (ListView) findViewById(R.id.menu_items);
+        ArrayAdapter<String> menuAdapter = new ArrayAdapter<String>(this,
+                R.layout.menu_item, android.R.id.text1, slidingMenuItems);
+        menuView.setAdapter(menuAdapter);
+
+        menuView.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                // Switch activity based on what slidingMenu item the user selected
+                TextView textView = (TextView) view;
+                String selectedItem = textView.getText().toString();
+
+                if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_cat))) {
+                    // Selected Categories
+                	launchHomeActivity();
+                } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_cart))) {
+                    // Selected Shopping Cart
+                	if (slidingMenu.isMenuShowing())
+                        slidingMenu.showContent();
+                } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_map))) {
+                    // Selected Map
+                    launchMapActivity();
+                } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_sync))) {
+                    // Selected Sync
+                	if (slidingMenu.isMenuShowing())
+                        slidingMenu.showContent();
+                } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_settings))) {
+                    // Selected Settings
+                	if (slidingMenu.isMenuShowing())
+                        slidingMenu.showContent();
+                } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_about))) {
+                    // Selected About
+                    //startActivity(new Intent(CategoryOverView.this, About.class));
+                	if (slidingMenu.isMenuShowing())
+                        slidingMenu.showContent();
+                }
+            }
+        });
     }
 }

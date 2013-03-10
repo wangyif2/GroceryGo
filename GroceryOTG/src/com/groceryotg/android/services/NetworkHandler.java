@@ -19,6 +19,7 @@ import com.groceryotg.android.utils.JSONParser;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -133,7 +134,7 @@ public class NetworkHandler extends IntentService {
 
     private void refreshGrocery() {
         //build request url
-        String date = "?date=" + ServerURL.getDateFormat().format(new Date());
+        String date = ServerURL.getDateNowAsArg();
         String[] requestArgs = new String[]{date};
         String getGrocery = buildGroceryURL(requestArgs);
 
@@ -143,13 +144,19 @@ public class NetworkHandler extends IntentService {
 
         if (groceryArray != null) {
             addNewGroceries(groceryArray, contentValuesArrayList);
-            removeExpiredGroceries(new Date());
+            removeExpiredGroceries();
         }
     }
 
-    private void removeExpiredGroceries(Date date) {
-        String selection = GroceryTable.COLUMN_GROCERY_EXPIRY + " < '" + date.getTime() + "'";
-        getContentResolver().delete(GroceryotgProvider.CONTENT_URI_GRO, selection, null);
+    private void removeExpiredGroceries() {
+//        Get today's date without time
+        try {
+            Date dateWithoutTime = ServerURL.getDateFormat().parse(ServerURL.getDateFormat().format(new Date()));
+            String selection = GroceryTable.COLUMN_GROCERY_EXPIRY + " < '" + dateWithoutTime.getTime() + "'";
+            getContentResolver().delete(GroceryotgProvider.CONTENT_URI_GRO, selection, null);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     private void addNewGroceries(JSONArray groceryArray, ArrayList<ContentValues> contentValuesArrayList) {

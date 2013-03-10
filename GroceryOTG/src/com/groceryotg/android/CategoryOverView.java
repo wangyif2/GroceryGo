@@ -1,11 +1,12 @@
 package com.groceryotg.android;
 
-import java.util.Locale;
-
 import android.app.AlarmManager;
 import android.app.LoaderManager;
 import android.app.PendingIntent;
-import android.content.*;
+import android.content.Context;
+import android.content.CursorLoader;
+import android.content.Intent;
+import android.content.Loader;
 import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -24,11 +25,14 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.groceryotg.android.database.CategoryTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
+import com.groceryotg.android.groceryoverview.GroceryOverView;
 import com.groceryotg.android.services.Location.LocationMonitor;
 import com.groceryotg.android.services.Location.LocationReceiver;
 import com.groceryotg.android.services.NetworkHandler;
 import com.groceryotg.android.utils.RefreshAnimation;
 import com.slidingmenu.lib.SlidingMenu;
+
+import java.util.Locale;
 
 
 public class CategoryOverView extends SherlockActivity implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -63,11 +67,11 @@ public class CategoryOverView extends SherlockActivity implements LoaderManager.
         // Setup alarm for polling of location data
         configLocationPoll();
     }
-
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getSupportMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
+        inflater.inflate(R.menu.categoryoverview_menu, menu);
         this.menu = menu;
         return true;
     }
@@ -124,7 +128,7 @@ public class CategoryOverView extends SherlockActivity implements LoaderManager.
         slidingMenu.setShadowDrawable(R.drawable.shadow);
         slidingMenu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
         slidingMenu.setFadeDegree(0.35f);
-        slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+        slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
         slidingMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
         slidingMenu.setMenu(R.layout.menu_frame);
 
@@ -138,7 +142,7 @@ public class CategoryOverView extends SherlockActivity implements LoaderManager.
         
         ListView menuView = (ListView) findViewById(R.id.menu_items);
         ArrayAdapter<String> menuAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, android.R.id.text1, slidingMenuItems);
+                R.layout.menu_item, android.R.id.text1, slidingMenuItems);
         menuView.setAdapter(menuAdapter);
 
         menuView.setOnItemClickListener(new OnItemClickListener() {
@@ -151,14 +155,8 @@ public class CategoryOverView extends SherlockActivity implements LoaderManager.
 
                 if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_cat))) {
                     // Selected Categories
-                        /* TODO: toggle() only works in a SlidingFragmentActivity, but converting this activity
-                         * to a SlidingFragmentActivity leads to several issues: (1) sliding slidingMenu is sometimes blank
-                         * (2) slidingmenu is sometimes fullscreen (3) Clicking on the home icon of the ActionBar
-                         * causes the app to crash if homeAsUp is enabled.
-                         */
                 	if (slidingMenu.isMenuShowing())
                         slidingMenu.showContent();
-                    //startActivity(new Intent(CategoryOverView.this, CategoryOverView.class));
                 } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_cart))) {
                     // Selected Shopping Cart
                     launchShopCartActivity();
@@ -245,7 +243,7 @@ public class CategoryOverView extends SherlockActivity implements LoaderManager.
     public void onLoaderReset(Loader<Cursor> loader) {
         adapter.swapCursor(null);
     }
-
+    
     public class CategoryGridCursorAdapter extends SimpleCursorAdapter {
         private Context mContext;
         private int mLayout;
@@ -328,8 +326,14 @@ public class CategoryOverView extends SherlockActivity implements LoaderManager.
             }
         }
 
+        // TODO: When should this be called?
+        public void cleanUp() {
+        	// Recycle the obtained type array when done using the adapter
+        	gridIcons.recycle();
+        }
     }
 
+    
     public static Context getContext() {
         return context;
     }

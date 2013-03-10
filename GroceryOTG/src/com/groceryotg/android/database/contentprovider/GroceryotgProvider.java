@@ -28,6 +28,8 @@ public class GroceryotgProvider extends ContentProvider {
     private static final int STORE_ID = 60;
     private static final int CART_ITEMS = 70;
     private static final int CART_ITEM_ID = 80;
+    private static final int GROCERIES_JOINSTORE = 90;
+    private static final int GROCERIES_JOINSTORE_ID = 100;
 
     // Content URI
     private static final String AUTHORITY = "com.groceryotg.android.database.contentprovider";
@@ -35,12 +37,18 @@ public class GroceryotgProvider extends ContentProvider {
     private static final String BASE_PATH_GRO = "groceries";
     private static final String BASE_PATH_STO = "stores";
     private static final String BASE_PATH_CART = "cart_items";
+    // Joins
+    private static final String BASE_PATH_GRO_JOINSTORE = "groceriesWithStore";
 
+    
     public static final Uri CONTENT_URI_CAT = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH_CAT);
     public static final Uri CONTENT_URI_GRO = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH_GRO);
     public static final Uri CONTENT_URI_STO = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH_STO);
     public static final Uri CONTENT_URI_CART_ITEM = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH_CART);
+    // Join URIs
+    public static final Uri CONTENT_URI_GRO_JOINSTORE = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH_GRO_JOINSTORE);
 
+    
     // MIME type for multiple rows
     public static final String CONTENT_TYPE_CAT = ContentResolver.CURSOR_DIR_BASE_TYPE + "/categories";
     public static final String CONTENT_ITEM_TYPE_CAT = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/category";
@@ -50,6 +58,9 @@ public class GroceryotgProvider extends ContentProvider {
     public static final String CONTENT_ITEM_TYPE_STO = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/store";
     public static final String CONTENT_TYPE_CART_ITEM = ContentResolver.CURSOR_DIR_BASE_TYPE + "/cart_items";
     public static final String CONTENT_ITEM_TYPE_CART_ITEM = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/cart_item";
+    // Joins
+    public static final String CONTENT_TYPE_GRO_JOINSTORE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/groceriesWithStore";
+    public static final String CONTENT_ITEM_TYPE_GRO_JOINSTORE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/groceryWithStore";
 
     private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
@@ -62,6 +73,8 @@ public class GroceryotgProvider extends ContentProvider {
         sURIMatcher.addURI(AUTHORITY, BASE_PATH_STO + "/#", STORE_ID);
         sURIMatcher.addURI(AUTHORITY, BASE_PATH_CART, CART_ITEMS);
         sURIMatcher.addURI(AUTHORITY, BASE_PATH_CART + "/#", CART_ITEM_ID);
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH_GRO_JOINSTORE, GROCERIES_JOINSTORE);
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH_GRO_JOINSTORE + "/#", GROCERIES_JOINSTORE_ID);
     }
 
     @Override
@@ -97,6 +110,20 @@ public class GroceryotgProvider extends ContentProvider {
                 queryBuilder.setTables(CartTable.TABLE_CART);
                 queryBuilder.appendWhere(CartTable.COLUMN_ID + "=" + uri.getLastPathSegment());
                 break;
+            case STORES:
+            	queryBuilder.setTables(StoreTable.TABLE_STORE);
+            	break;
+            case GROCERIES_JOINSTORE:
+            	queryBuilder.setTables(GroceryTable.TABLE_GROCERY + " INNER JOIN " + StoreTable.TABLE_STORE 
+            					+ " ON " + GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_GROCERY_STORE 
+            					+ "=" + StoreTable.TABLE_STORE + "." + StoreTable.COLUMN_STORE_ID);
+            	break;
+            case GROCERIES_JOINSTORE_ID:
+            	queryBuilder.setTables(GroceryTable.TABLE_GROCERY + " INNER JOIN " + StoreTable.TABLE_STORE 
+    					+ " ON " + GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_GROCERY_STORE 
+    					+ "=" + StoreTable.TABLE_STORE + "." + StoreTable.COLUMN_STORE_ID);
+            	queryBuilder.appendWhere(GroceryTable.COLUMN_ID + "=" + uri.getLastPathSegment());
+            	break;
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }
@@ -136,6 +163,8 @@ public class GroceryotgProvider extends ContentProvider {
                 id = sqlDB.insert(CartTable.TABLE_CART, null, values);
                 getContext().getContentResolver().notifyChange(uri, null);
                 return Uri.parse(BASE_PATH_CART + "/" + id);
+            case GROCERIES_JOINSTORE:
+            	throw new IllegalArgumentException("Invalid URI, can't insert into join: " + uri);
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }
@@ -162,6 +191,8 @@ public class GroceryotgProvider extends ContentProvider {
                     rowsDeleted = sqlDB.delete(CartTable.TABLE_CART, CartTable.COLUMN_ID + "=" + id + " and " + selection, selectionArgs);
                 }
                 break;
+            case GROCERIES_JOINSTORE_ID:
+            	throw new IllegalArgumentException("Invalid URI, can't delete from join: " + uri);
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }
@@ -187,6 +218,8 @@ public class GroceryotgProvider extends ContentProvider {
                     rowsUpdated = sqlDB.update(CartTable.TABLE_CART, values, CartTable.COLUMN_ID + "=" + id + " and " + selection, selectionArgs);
                 }
                 break;
+            case GROCERIES_JOINSTORE_ID:
+            	throw new IllegalArgumentException("Invalid URI, can't update a join: " + uri);
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }

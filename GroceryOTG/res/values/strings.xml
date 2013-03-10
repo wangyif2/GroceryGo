@@ -1,17 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">GroceryOTG</string>
+    
     <string name="no_content">Currently no content, please refresh</string>
     <string name="no_new_content">There is no new available data. Last checked: %1$s</string>
+    <string name="no_search_results">No results match your search criteria</string>
     <string name="fresh_action">Refreshing...</string>
     <string name="no_cart_item">Your shopping cart is currently empty</string>
     <string name="cart_grocery_edit_name">Grocery item name</string>
     <string name="cart_confirm_button">Confirm</string>
     <string name="cart_item_delete">Delete this item</string>
+    
     <string name="slidingmenu_item_cat">Home</string>
     <string name="slidingmenu_item_cart">Shopping Cart</string>
     <string name="slidingmenu_item_map">Map</string>
     <string name="slidingmenu_item_sync">Sync</string>
     <string name="slidingmenu_item_settings">Settings</string>
     <string name="slidingmenu_item_about">About</string>
+    
+    <string name="groceryoverview_menu_item_search">Search</string>
+    <string name="groceryoverview_menu_item_filter">Filter</string>
+    <string name="groceryoverview_menu_item_select">Select Mode</string>
+    <string name="groceryoverview_menu_item_refresh">Refresh</string>
+    
+    <string name="groceryoverview_row_imagedesc">Subcategory</string>
+    <string name="groceryoverview_filter_title">Filter by store</string>
+    <string name="groceryoverview_filter_updated">Your store preferences have been updated</string>
+    
+    <string name="search_hint">Search grocery items</string>
+    
 </resources>

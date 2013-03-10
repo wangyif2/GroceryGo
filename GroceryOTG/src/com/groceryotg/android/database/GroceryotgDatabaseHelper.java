@@ -15,8 +15,6 @@ import com.groceryotg.android.utils.JSONParser;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import java.util.Date;
-
 /**
  * User: robert
  * Date: 07/02/13
@@ -52,7 +50,7 @@ public class GroceryotgDatabaseHelper extends SQLiteOpenHelper {
 
     private void initGrocery(SQLiteDatabase db) {
         Gson gson = new GsonBuilder().setDateFormat("MMM dd, yyyy").create();
-        String date = "?date=" + ServerURL.getDateFormat().format(new Date());
+        String date = ServerURL.getDateNowAsArg();
 //        this is here for testing purposes
 //        String date = "?date=2012-01-01";
 
@@ -74,6 +72,7 @@ public class GroceryotgDatabaseHelper extends SQLiteOpenHelper {
                         ih.bind(ih.getColumnIndex(GroceryTable.COLUMN_GROCERY_CATEGORY), grocery.getCategoryId());
                     if (grocery.getEndDate() != null)
                         ih.bind(ih.getColumnIndex(GroceryTable.COLUMN_GROCERY_EXPIRY), grocery.getEndDate().getTime());
+                    ih.bind(ih.getColumnIndex(GroceryTable.COLUMN_GROCERY_STORE), grocery.getStore().getStoreId());
                     ih.execute();
                 }
             } catch (JSONException e) {

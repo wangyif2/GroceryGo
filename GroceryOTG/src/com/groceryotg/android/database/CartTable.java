@@ -11,7 +11,7 @@ public class CartTable {
     // database table
     public static final String TABLE_CART = "cart";
     public static final String COLUMN_ID = "_id";
-    public static final String COLUMN_CART_GROCERY_ID = "cart_grocery_id";
+    public static final String COLUMN_CART_GROCERY_ID = "cart_grocery_id"; // this is grocery_id
     public static final String COLUMN_CART_GROCERY_NAME = "cart_grocery_name";
 
     // database creation SQL statement

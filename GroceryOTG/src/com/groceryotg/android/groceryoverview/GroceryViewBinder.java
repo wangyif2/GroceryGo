@@ -2,9 +2,11 @@ package com.groceryotg.android.groceryoverview;
 
 import android.database.Cursor;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import com.groceryotg.android.R;
+import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.GroceryTable;
 import com.groceryotg.android.services.ServerURL;
 
@@ -22,7 +24,8 @@ public class GroceryViewBinder implements SimpleCursorAdapter.ViewBinder {
 
         int viewId = view.getId();
 
-        if (columnIndex == cursor.getColumnIndex(GroceryTable.COLUMN_GROCERY_PRICE)) {
+        if (columnIndex == cursor.getColumnIndex(GroceryTable.COLUMN_GROCERY_PRICE) 
+        		&& viewId == R.id.grocery_row_price) {
             TextView textView = (TextView) view;
             if (cursor.getDouble(columnIndex) != 0) {
                 textView.setText("$" + ServerURL.getGetDecimalFormat().format(cursor.getDouble(columnIndex)));
@@ -107,6 +110,22 @@ public class GroceryViewBinder implements SimpleCursorAdapter.ViewBinder {
 
             return true;
         }
+        
+        else if (columnIndex == cursor.getColumnIndex(CartTable.COLUMN_CART_GROCERY_ID) 
+        		&& viewId == R.id.grocery_row_inshopcart) {
+        	Integer cartGroceryId = cursor.getInt(columnIndex);
+        	ImageView img = (ImageView) view;
+        	
+        	if (cartGroceryId != 0) {
+        		// Change the view to a highlighted star
+        		img.setImageResource(R.drawable.ic_star_highlighted);
+        	}
+        	else {
+        		// Display a non-highlighted star
+        		img.setImageResource(R.drawable.ic_star);
+        	}
+        	return true;
+        }	
         
         return false;
     }

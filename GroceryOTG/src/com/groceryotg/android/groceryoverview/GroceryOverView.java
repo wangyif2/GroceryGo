@@ -242,17 +242,20 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
         // (called on every keystroke)
         return true;
     }
-
+    
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
         TextView textView = (TextView) v.findViewById(R.id.grocery_row_label);
-
+        TextView idView = (TextView) v.findViewById(R.id.grocery_row_id);
+        
         ContentValues values = new ContentValues();
+        values.put(CartTable.COLUMN_CART_GROCERY_ID, idView.getText().toString());
         values.put(CartTable.COLUMN_CART_GROCERY_NAME, textView.getText().toString());
 
         getContentResolver().insert(GroceryotgProvider.CONTENT_URI_CART_ITEM, values);
 
+        loadDataWithQuery(true, mQuery);
         Toast t = Toast.makeText(this, "Item added to Shopping Cart", Toast.LENGTH_SHORT);
         t.show();
     }
@@ -284,10 +287,6 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
                 SparseBooleanArray selectedItems = ((AlertDialog)dialog).getListView().getCheckedItemPositions();
                 for (int i=0; i < selectedItems.size(); i++) {
                 	int key_index = selectedItems.keyAt(i);
-                	//Log.d("FilterDialog", "SelectedItems, i=" + ((Integer)i).toString() 
-            		//		+ ", key=" + ((Integer)selectedItems.keyAt(i)).toString() 
-            		//		+ ", store=" + items[key_index] + ", selected? " 
-                	//		+ (selectedItems.get(i)==true ? "yes" : "no") );
                 	if (selectedItems.get(key_index)) {
                 		storeSelected.put(mapIndexToId.get(key_index), SELECTED);
                 	}
@@ -332,14 +331,24 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
 
         startService(intent);
     }
-
+    
     private void fillData() {
-        String[] from = new String[]{GroceryTable.COLUMN_GROCERY_NAME, GroceryTable.COLUMN_GROCERY_NAME, GroceryTable.COLUMN_GROCERY_PRICE, StoreTable.COLUMN_STORE_NAME};
-        int[] to = new int[]{R.id.grocery_row_label, R.id.grocery_row_details, R.id.grocery_row_price, R.id.grocery_row_store};
-
+        String[] from = new String[]{GroceryTable.COLUMN_GROCERY_ID, 
+        							 GroceryTable.COLUMN_GROCERY_NAME, 
+        							 GroceryTable.COLUMN_GROCERY_NAME, 
+        							 GroceryTable.COLUMN_GROCERY_PRICE, 
+        							 StoreTable.COLUMN_STORE_NAME, 
+        							 CartTable.COLUMN_CART_GROCERY_ID};
+        int[] to = new int[]{R.id.grocery_row_id, 
+        					 R.id.grocery_row_label, 
+        					 R.id.grocery_row_details, 
+        					 R.id.grocery_row_price, 
+        					 R.id.grocery_row_store, 
+        					 R.id.grocery_row_inshopcart};
+        
         adapter = new SimpleCursorAdapter(this, R.layout.grocery_row, null, from, to, 0);
         adapter.setViewBinder(new GroceryViewBinder());
-
+        
         setListAdapter(adapter);
         displayEmptyListMessage(buildNoNewContentString());
 
@@ -384,15 +393,17 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
         List<String> selectionArgs = new ArrayList<String>();
 
         String[] projection = {GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_ID,
+        		GroceryTable.COLUMN_GROCERY_ID,
                 GroceryTable.COLUMN_GROCERY_NAME,
                 GroceryTable.COLUMN_GROCERY_PRICE,
-                StoreTable.COLUMN_STORE_NAME};
-        String selection = GroceryTable.COLUMN_GROCERY_CATEGORY + "=?";
+                StoreTable.COLUMN_STORE_NAME,
+                CartTable.COLUMN_CART_GROCERY_ID};
+        String selection = GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_GROCERY_CATEGORY + "=?";
         selectionArgs.add(categoryId.toString());
-
+        
         // If user entered a search query, filter the results based on grocery name
         if (!query.isEmpty()) {
-            selection += " AND " + GroceryTable.COLUMN_GROCERY_NAME + " LIKE ?";
+            selection += " AND " + GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_GROCERY_NAME + " LIKE ?";
             selectionArgs.add("%" + query + "%");
         }
         if (storeSelected != null && storeSelected.size() > 0) {

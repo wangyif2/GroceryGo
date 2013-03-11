@@ -114,9 +114,12 @@ public class GroceryotgProvider extends ContentProvider {
             	queryBuilder.setTables(StoreTable.TABLE_STORE);
             	break;
             case GROCERIES_JOINSTORE:
-            	queryBuilder.setTables(GroceryTable.TABLE_GROCERY + " INNER JOIN " + StoreTable.TABLE_STORE 
+            	queryBuilder.setTables(GroceryTable.TABLE_GROCERY + " LEFT OUTER JOIN " + StoreTable.TABLE_STORE 
             					+ " ON " + GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_GROCERY_STORE 
-            					+ "=" + StoreTable.TABLE_STORE + "." + StoreTable.COLUMN_STORE_ID);
+            					+ "=" + StoreTable.TABLE_STORE + "." + StoreTable.COLUMN_STORE_ID 
+            					+ " LEFT OUTER JOIN " + CartTable.TABLE_CART + " ON " 
+            					+ CartTable.TABLE_CART + "." + CartTable.COLUMN_CART_GROCERY_ID + "=" 
+            					+ GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_GROCERY_ID);
             	break;
             case GROCERIES_JOINSTORE_ID:
             	queryBuilder.setTables(GroceryTable.TABLE_GROCERY + " INNER JOIN " + StoreTable.TABLE_STORE 

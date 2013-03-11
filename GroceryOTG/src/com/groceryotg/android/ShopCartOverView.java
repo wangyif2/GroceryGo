@@ -1,7 +1,6 @@
 package com.groceryotg.android;
 
 import android.app.LoaderManager;
-import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -113,8 +112,10 @@ public class ShopCartOverView extends SherlockListActivity implements LoaderMana
     }
 
     private void fillData() {
-        String[] from = new String[]{CartTable.COLUMN_CART_GROCERY_NAME};
-        int[] to = new int[]{R.id.cart_grocery_name};
+        String[] from = new String[]{CartTable.COLUMN_CART_GROCERY_NAME,
+        							 CartTable.COLUMN_CART_GROCERY_ID};
+        int[] to = new int[]{R.id.cart_grocery_name,
+        					 R.id.cart_grocery_id};
 
         getLoaderManager().initLoader(0, null, this);
         adapter = new SimpleCursorAdapter(this, R.layout.shopcart_row, null, from, to, 0);
@@ -124,7 +125,7 @@ public class ShopCartOverView extends SherlockListActivity implements LoaderMana
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String[] projection = {CartTable.COLUMN_ID, CartTable.COLUMN_CART_GROCERY_NAME};
+        String[] projection = {CartTable.COLUMN_ID, CartTable.COLUMN_CART_GROCERY_NAME, CartTable.COLUMN_CART_GROCERY_ID};
         return new CursorLoader(this, GroceryotgProvider.CONTENT_URI_CART_ITEM, projection, null, null, null);
     }
 

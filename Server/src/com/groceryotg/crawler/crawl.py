@@ -38,7 +38,7 @@ logname = "./log/" + str(timestamp.year).zfill(4) + "_" + str(timestamp.month).z
 print("writing log to %s..." % logname)
 
 # Define logging level (if you set this to logging.DEBUG, the debug print messages will be displayed) 
-logging.basicConfig(filename=logname, format='%(asctime)s:%(levelname)s: %(message)s', level=logging.INFO)
+logging.basicConfig(filename=logname, format='%(asctime)s:%(levelname)s: %(message)s', level=logging.DEBUG)
 
 
 # Keep these BELOW the logging setup. Otherwise, their loggers get registered as the root.
@@ -95,7 +95,7 @@ def getFlyer():
     cur.execute('SELECT unit_id, unit_type_name FROM Unit;')
     units = cur.fetchall()
     
-    cur.execute('SELECT store_id, store_url FROM Store ORDER BY store_name')
+    cur.execute('SELECT store_id, store_url FROM Store where store_id = ''1'' ORDER BY store_name')
     data = cur.fetchall()
     for record in data:
         store_id, next_url = record[0], record[1]
@@ -103,7 +103,7 @@ def getFlyer():
         if next_url:
             #logging.info("next url: %s" % next_url)
             
-            # Metro
+            # Metrot
             if store_id == 1:
                 try:
                     flyer_url = ""

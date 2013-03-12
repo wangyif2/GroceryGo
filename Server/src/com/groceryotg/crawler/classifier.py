@@ -25,6 +25,25 @@ def classify(noun_list, subcategory):
     subcategory = filter(lambda x: x if x[1]!='miscellaneous' else None, subcategory)
     misc_id, misc_name = subcategory_misc[0], subcategory_misc[1]
     
+    #modify noun_list to merge compound words
+    i = 1
+    while i < len(noun_list):
+        word_pair = noun_list[i-1] + "_" + noun_list[i]
+        synsets = wn.synsets(word_pair, pos=wn.NOUN)
+        #keep word pair if its a valid compound word 
+        if synsets:
+            apple_food = wn.synsets('apple', pos=wn.NOUN)[0]
+            pizza_food = wn.synsets('cheese_pizza', pos=wn.NOUN)[0]
+            food_cat_nutrient = wn.synsets('food', pos=wn.NOUN)[0]
+            food_cat_solid = wn.synsets('food', pos=wn.NOUN)[1]
+            synset = synsets[0]
+            for set in synsets:
+                if food_cat_solid in set.common_hypernyms(apple_food) or food_cat_nutrient in set.common_hypernyms(pizza_food) :
+                    noun_list[i] = word_pair #add compound word
+                    i = i - 1
+                    del noun_list[i] #delete previous word
+        i = i+1
+        
     for word in noun_list:
         # Generate three lists: (1) definition terms, (2) synonyms, (3) hypernyms
         
@@ -34,10 +53,12 @@ def classify(noun_list, subcategory):
             
             # Choose the synset which contains the "food" category as a hypernym
             apple_food = wn.synsets('apple', pos=wn.NOUN)[0]
-            food_cat = wn.synsets('food', pos=wn.NOUN)[1]
+            pizza_food = wn.synsets('cheese_pizza', pos=wn.NOUN)[0]
+            food_cat_nutrient = wn.synsets('food', pos=wn.NOUN)[0]
+            food_cat_solid = wn.synsets('food', pos=wn.NOUN)[1]
             synset = synsets[0]
             for set in synsets:
-                if food_cat in set.common_hypernyms(apple_food):
+                if food_cat_solid in set.common_hypernyms(apple_food) or food_cat_nutrient in set.common_hypernyms(pizza_food) :
                     synset = set
                     break
             logging.debug("For noun '%s', use the sense: %s" % (word, synset.definition))

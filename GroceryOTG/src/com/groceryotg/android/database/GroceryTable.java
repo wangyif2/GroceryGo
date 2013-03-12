@@ -17,7 +17,7 @@ public class GroceryTable {
     public static final String COLUMN_GROCERY_PRICE = "grocery_price";
     public static final String COLUMN_GROCERY_CATEGORY = "grocery_category";
     public static final String COLUMN_GROCERY_EXPIRY = "grocery_expiry";
-    public static final String COLUMN_GROCERY_STORE = "store_id";
+    public static final String COLUMN_GROCERY_FLYER = "flyer_id";
     
     // database creation SQL statement
     public static final String DATABASE_CREATE = "create table "
@@ -28,8 +28,8 @@ public class GroceryTable {
             + COLUMN_GROCERY_PRICE + " real, "
             + COLUMN_GROCERY_CATEGORY + " integer, "
             + COLUMN_GROCERY_EXPIRY + " integer, " 
-            + COLUMN_GROCERY_STORE + " integer, foreign key(" + COLUMN_GROCERY_STORE 
-            + ") references " + StoreTable.TABLE_STORE + "(" + StoreTable.COLUMN_STORE_ID + "));";
+            + COLUMN_GROCERY_FLYER + " integer, foreign key(" + COLUMN_GROCERY_FLYER 
+            + ") references " + FlyerTable.TABLE_FLYER + "(" + FlyerTable.COLUMN_FLYER_ID + "));";
 
     public static void onCreate(SQLiteDatabase database) {
         database.execSQL(DATABASE_CREATE);

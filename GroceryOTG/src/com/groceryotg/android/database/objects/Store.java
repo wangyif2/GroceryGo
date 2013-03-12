@@ -7,23 +7,26 @@ package com.groceryotg.android.database.objects;
 public class Store {
     private Integer storeId;
 
-    private String storeName;
-
     private String storeAddress;
 
-    private Integer storeParent;
+    private Double storeLatitude;
+    
+    private Double storeLongitude;
+    
+    private StoreParent storeParent;
 
-    private String storeUrl;
+    private Flyer storeFlyer;
 
     public Store(){
     }
 
-    public Store(Integer storeId, String storeName, String storeAddress, Integer storeParent, String storeUrl) {
+    public Store(Integer storeId, String storeAddress, Double storeLatitude, Double storeLongitude, StoreParent storeParent, Flyer storeFlyer) {
         this.storeId = storeId;
-        this.storeName = storeName;
         this.storeAddress = storeAddress;
+        this.storeLatitude = storeLatitude;
+        this.storeLongitude = storeLongitude;
         this.storeParent = storeParent;
-        this.storeUrl = storeUrl;
+        this.storeFlyer = storeFlyer;
     }
 
     public Integer getStoreId() {
@@ -34,14 +37,6 @@ public class Store {
         this.storeId = storeId;
     }
 
-    public String getStoreName() {
-        return storeName;
-    }
-
-    public void setStoreName(String storeName) {
-        this.storeName = storeName;
-    }
-
     public String getStoreAddress() {
         return storeAddress;
     }
@@ -50,19 +45,35 @@ public class Store {
         this.storeAddress = storeAddress;
     }
 
-    public Integer getStoreParent() {
+    public Double getStoreLatitude() {
+    	return storeLatitude;
+    }
+    
+    public void setStoreLatitude(Double storeLatitude) {
+    	this.storeLatitude = storeLatitude;
+    }
+    
+    public Double getStoreLongitude() {
+    	return storeLongitude;
+    }
+    
+    public void setStoreLongitude(Double storeLongitude) {
+    	this.storeLongitude = storeLongitude;
+    }
+    
+    public StoreParent getStoreParent() {
         return storeParent;
     }
 
-    public void setStoreParent(Integer storeParent) {
+    public void setStoreParent(StoreParent storeParent) {
         this.storeParent = storeParent;
     }
-
-    public String getStoreUrl() {
-        return storeUrl;
+    
+    public Flyer getStoreFlyer() {
+    	return storeFlyer;
     }
-
-    public void setStoreUrl(String storeUrl) {
-        this.storeUrl = storeUrl;
+    
+    public void setStoreFlyer(Flyer storeFlyer) {
+    	this.storeFlyer = storeFlyer;
     }
 }

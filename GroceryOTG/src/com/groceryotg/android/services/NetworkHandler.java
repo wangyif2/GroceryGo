@@ -115,9 +115,11 @@ public class NetworkHandler extends IntentService {
 
                     ContentValues contentValues = new ContentValues();
                     contentValues.put(StoreTable.COLUMN_STORE_ID, store.getStoreId());
-                    contentValues.put(StoreTable.COLUMN_STORE_NAME, store.getStoreName());
-                    contentValues.put(StoreTable.COLUMN_STORE_PARENT, store.getStoreParent());
                     contentValues.put(StoreTable.COLUMN_STORE_ADDR, store.getStoreAddress());
+                    contentValues.put(StoreTable.COLUMN_STORE_LATITUDE, store.getStoreLatitude());
+                    contentValues.put(StoreTable.COLUMN_STORE_LONGITUDE, store.getStoreLongitude());
+                    contentValues.put(StoreTable.COLUMN_STORE_PARENT, store.getStoreParent().getStoreParentId());
+                    contentValues.put(StoreTable.COLUMN_STORE_FLYER, store.getStoreFlyer().getFlyerId());
 
                     contentValuesArrayList.add(contentValues);
                 }
@@ -187,7 +189,6 @@ public class NetworkHandler extends IntentService {
     }
 
     private String buildGroceryURL(String[] args) {
-        // TODO: Accept a second argument, int categoryId, and append to querystring
         StringBuilder url = new StringBuilder();
         url.append(ServerURL.getGroceryBaseUrl());
         for (String arg : args)

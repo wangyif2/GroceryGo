@@ -30,13 +30,17 @@ public class GroceryotgProvider extends ContentProvider {
     private static final int CART_ITEM_ID = 80;
     private static final int GROCERIES_JOINSTORE = 90;
     private static final int GROCERIES_JOINSTORE_ID = 100;
-
+    private static final int STORE_PARENTS = 110;
+    private static final int STORE_PARENT_ID = 120;
+    
     // Content URI
     private static final String AUTHORITY = "com.groceryotg.android.database.contentprovider";
     private static final String BASE_PATH_CAT = "categories";
     private static final String BASE_PATH_GRO = "groceries";
     private static final String BASE_PATH_STO = "stores";
+    private static final String BASE_PATH_STOPARENT = "storeparents";
     private static final String BASE_PATH_CART = "cart_items";
+    
     // Joins
     private static final String BASE_PATH_GRO_JOINSTORE = "groceriesWithStore";
 
@@ -44,6 +48,7 @@ public class GroceryotgProvider extends ContentProvider {
     public static final Uri CONTENT_URI_CAT = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH_CAT);
     public static final Uri CONTENT_URI_GRO = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH_GRO);
     public static final Uri CONTENT_URI_STO = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH_STO);
+    public static final Uri CONTENT_URI_STOPARENT = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH_STOPARENT);
     public static final Uri CONTENT_URI_CART_ITEM = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH_CART);
     // Join URIs
     public static final Uri CONTENT_URI_GRO_JOINSTORE = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH_GRO_JOINSTORE);
@@ -56,6 +61,8 @@ public class GroceryotgProvider extends ContentProvider {
     public static final String CONTENT_ITEM_TYPE_GRO = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/grocery";
     public static final String CONTENT_TYPE_STO = ContentResolver.CURSOR_DIR_BASE_TYPE + "/stores";
     public static final String CONTENT_ITEM_TYPE_STO = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/store";
+    public static final String CONTENT_TYPE_STOPARENT = ContentResolver.CURSOR_DIR_BASE_TYPE + "/storeparents";
+    public static final String CONTENT_ITEM_TYPE_STOPARENT = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/storeparent";
     public static final String CONTENT_TYPE_CART_ITEM = ContentResolver.CURSOR_DIR_BASE_TYPE + "/cart_items";
     public static final String CONTENT_ITEM_TYPE_CART_ITEM = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/cart_item";
     // Joins
@@ -71,6 +78,8 @@ public class GroceryotgProvider extends ContentProvider {
         sURIMatcher.addURI(AUTHORITY, BASE_PATH_GRO + "/#", GROCERY_ID);
         sURIMatcher.addURI(AUTHORITY, BASE_PATH_STO, STORES);
         sURIMatcher.addURI(AUTHORITY, BASE_PATH_STO + "/#", STORE_ID);
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH_STOPARENT, STORE_PARENTS);
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH_STOPARENT + "/#", STORE_PARENT_ID);
         sURIMatcher.addURI(AUTHORITY, BASE_PATH_CART, CART_ITEMS);
         sURIMatcher.addURI(AUTHORITY, BASE_PATH_CART + "/#", CART_ITEM_ID);
         sURIMatcher.addURI(AUTHORITY, BASE_PATH_GRO_JOINSTORE, GROCERIES_JOINSTORE);
@@ -113,18 +122,27 @@ public class GroceryotgProvider extends ContentProvider {
             case STORES:
             	queryBuilder.setTables(StoreTable.TABLE_STORE);
             	break;
+            case STORE_PARENTS:
+            	queryBuilder.setTables(StoreParentTable.TABLE_STORE_PARENT);
+            	break;
             case GROCERIES_JOINSTORE:
-            	queryBuilder.setTables(GroceryTable.TABLE_GROCERY + " LEFT OUTER JOIN " + StoreTable.TABLE_STORE 
-            					+ " ON " + GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_GROCERY_STORE 
-            					+ "=" + StoreTable.TABLE_STORE + "." + StoreTable.COLUMN_STORE_ID 
+            	// Grocery LEFT OUTER JOIN Flyer ON Flyer.flyer_id=Grocery.flyer_id
+            	//         LEFT OUTER JOIN StoreParent ON StoreParent.storeparent_id=Flyer.storeparent_id
+            	//         LEFT OUTER JOIN ShoppingCart ON ShoppingCart.grocery_id=Grocery.grocery_id
+            	queryBuilder.setTables(GroceryTable.TABLE_GROCERY + " LEFT OUTER JOIN " + FlyerTable.TABLE_FLYER 
+            					+ " ON " + GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_GROCERY_FLYER 
+            					+ "=" + FlyerTable.TABLE_FLYER + "." + FlyerTable.COLUMN_FLYER_ID 
+            					+ " LEFT OUTER JOIN " + StoreParentTable.TABLE_STORE_PARENT 
+            					+ " ON " + FlyerTable.TABLE_FLYER + "." + FlyerTable.COLUMN_FLYER_STOREPARENT
+            					+ "=" + StoreParentTable.TABLE_STORE_PARENT + "." + StoreParentTable.COLUMN_STORE_PARENT_ID
             					+ " LEFT OUTER JOIN " + CartTable.TABLE_CART + " ON " 
             					+ CartTable.TABLE_CART + "." + CartTable.COLUMN_CART_GROCERY_ID + "=" 
             					+ GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_GROCERY_ID);
             	break;
             case GROCERIES_JOINSTORE_ID:
-            	queryBuilder.setTables(GroceryTable.TABLE_GROCERY + " INNER JOIN " + StoreTable.TABLE_STORE 
-    					+ " ON " + GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_GROCERY_STORE 
-    					+ "=" + StoreTable.TABLE_STORE + "." + StoreTable.COLUMN_STORE_ID);
+            	queryBuilder.setTables(GroceryTable.TABLE_GROCERY + " LEFT OUTER JOIN " + FlyerTable.TABLE_FLYER 
+    					+ " ON " + GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_GROCERY_FLYER 
+    					+ "=" + FlyerTable.TABLE_FLYER + "." + FlyerTable.COLUMN_FLYER_ID);
             	queryBuilder.appendWhere(GroceryTable.COLUMN_ID + "=" + uri.getLastPathSegment());
             	break;
             default:
@@ -162,6 +180,10 @@ public class GroceryotgProvider extends ContentProvider {
                 id = sqlDB.insert(StoreTable.TABLE_STORE, null, values);
                 getContext().getContentResolver().notifyChange(uri, null);
                 return Uri.parse(BASE_PATH_STO + "/" + id);
+            case STORE_PARENTS:
+            	id = sqlDB.insert(StoreParentTable.TABLE_STORE_PARENT, null, values);
+            	getContext().getContentResolver().notifyChange(uri, null);
+            	return Uri.parse(BASE_PATH_STOPARENT + "/" + id);
             case CART_ITEMS:
                 id = sqlDB.insert(CartTable.TABLE_CART, null, values);
                 getContext().getContentResolver().notifyChange(uri, null);

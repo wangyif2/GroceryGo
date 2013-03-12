@@ -10,8 +10,8 @@ public class Grocery {
     private Integer groceryId;
 
     private Item item;
-
-    private Store store;
+    
+    private Flyer flyer;
 
     private Double totalPrice;
 
@@ -29,9 +29,9 @@ public class Grocery {
 
     private String rawString;
 
-    public Grocery(Item item, Store store, Double totalPrice, Double unitPrice, Unit unit, Date startDate, Date endDate, Date updateDate, Integer lineNumber, String rawString) {
+    public Grocery(Item item, Flyer flyer, Double totalPrice, Double unitPrice, Unit unit, Date startDate, Date endDate, Date updateDate, Integer lineNumber, String rawString) {
         this.item = item;
-        this.store = store;
+        this.flyer = flyer;
         this.totalPrice = totalPrice;
         this.unitPrice = unitPrice;
         this.unit = unit;
@@ -53,12 +53,12 @@ public class Grocery {
         this.groceryId = groceryId;
     }
 
-    public Store getStore() {
-        return store;
+    public Flyer getFlyer() {
+        return flyer;
     }
 
-    public void setStore(Store store) {
-        this.store = store;
+    public void setFlyer(Flyer flyer) {
+        this.flyer = flyer;
     }
 
     public Double getTotalPrice() {

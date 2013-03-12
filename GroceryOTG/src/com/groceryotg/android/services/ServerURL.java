@@ -17,6 +17,8 @@ public class ServerURL {
     private static final String cateoryUrl = "http://groceryotg.elasticbeanstalk.com/GetGeneralInfo";
     private static final String groceryBaseUrl = "http://groceryotg.elasticbeanstalk.com/UpdateGroceryInfo";
     private static final String storeUrl = "http://groceryotg.elasticbeanstalk.com/GetStoreInfo";
+    private static final String storeParentUrl = "http://groceryotg.elasticbeanstalk.com/GetStoreParentInfo";
+    private static final String flyerUrl = "http://groceryotg.elasticbeanstalk.com/GetFlyerInfo";
 
     private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private static final DecimalFormat getDecimalFormat = new DecimalFormat("0.00");
@@ -41,6 +43,14 @@ public class ServerURL {
 
     public static String getStoreUrl() {
         return storeUrl;
+    }
+    
+    public static String getStoreParentUrl() {
+    	return storeParentUrl;
+    }
+    
+    public static String getFlyerUrl() {
+    	return flyerUrl;
     }
 
     public static boolean checkNetworkStatus(Context context) {

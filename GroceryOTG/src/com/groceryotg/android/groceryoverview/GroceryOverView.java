@@ -28,6 +28,7 @@ import com.groceryotg.android.ShopCartOverView;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.CategoryTable;
 import com.groceryotg.android.database.GroceryTable;
+import com.groceryotg.android.database.StoreParentTable;
 import com.groceryotg.android.database.StoreTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 import com.groceryotg.android.services.NetworkHandler;
@@ -100,15 +101,15 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
         // Initialize the list of stores from database
         storeSelected = new SparseIntArray();
         storeNames = new HashMap<Integer,String>();
-        Uri storeUri = GroceryotgProvider.CONTENT_URI_STO;
-        String[] projection = {StoreTable.COLUMN_STORE_ID, StoreTable.COLUMN_STORE_NAME};
+        Uri storeUri = GroceryotgProvider.CONTENT_URI_STOPARENT;
+        String[] projection = {StoreParentTable.COLUMN_STORE_PARENT_ID, StoreParentTable.COLUMN_STORE_PARENT_NAME};
         Cursor storeCursor = getContentResolver().query(storeUri, projection, null, null, null);
         if (storeCursor != null) {
         	storeCursor.moveToFirst();
 	        while (!storeCursor.isAfterLast()) {
-	        	storeSelected.put(storeCursor.getInt(storeCursor.getColumnIndex(StoreTable.COLUMN_STORE_ID)), SELECTED);
-	        	storeNames.put(storeCursor.getInt(storeCursor.getColumnIndex(StoreTable.COLUMN_STORE_ID)),
-	        				   storeCursor.getString(storeCursor.getColumnIndex(StoreTable.COLUMN_STORE_NAME)));
+	        	storeSelected.put(storeCursor.getInt(storeCursor.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_ID)), SELECTED);
+	        	storeNames.put(storeCursor.getInt(storeCursor.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_ID)),
+	        				   storeCursor.getString(storeCursor.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_NAME)));
 	        	storeCursor.moveToNext();
 	        }
         }
@@ -252,7 +253,7 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
         ContentValues values = new ContentValues();
         values.put(CartTable.COLUMN_CART_GROCERY_ID, idView.getText().toString());
         values.put(CartTable.COLUMN_CART_GROCERY_NAME, textView.getText().toString());
-
+        
         getContentResolver().insert(GroceryotgProvider.CONTENT_URI_CART_ITEM, values);
 
         loadDataWithQuery(true, mQuery);
@@ -337,7 +338,7 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
         							 GroceryTable.COLUMN_GROCERY_NAME, 
         							 GroceryTable.COLUMN_GROCERY_NAME, 
         							 GroceryTable.COLUMN_GROCERY_PRICE, 
-        							 StoreTable.COLUMN_STORE_NAME, 
+        							 StoreParentTable.COLUMN_STORE_PARENT_NAME, 
         							 CartTable.COLUMN_CART_GROCERY_ID};
         int[] to = new int[]{R.id.grocery_row_id, 
         					 R.id.grocery_row_label, 
@@ -396,7 +397,7 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
         		GroceryTable.COLUMN_GROCERY_ID,
                 GroceryTable.COLUMN_GROCERY_NAME,
                 GroceryTable.COLUMN_GROCERY_PRICE,
-                StoreTable.COLUMN_STORE_NAME,
+                StoreParentTable.COLUMN_STORE_PARENT_NAME,
                 CartTable.COLUMN_CART_GROCERY_ID};
         String selection = GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_GROCERY_CATEGORY + "=?";
         selectionArgs.add(categoryId.toString());
@@ -413,10 +414,10 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
         		if (storeSelected.valueAt(i)==SELECTED) {
         			if (storeSelection.isEmpty()) {
         				storeSelection = " AND (";
-        				storeSelection += GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_GROCERY_STORE + " = ?";
+        				storeSelection += StoreParentTable.TABLE_STORE_PARENT + "." + StoreParentTable.COLUMN_STORE_PARENT_ID + " = ?";
         			}
         			else {
-        				storeSelection += " OR " + GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_GROCERY_STORE + " = ?";
+        				storeSelection += " OR " + StoreParentTable.TABLE_STORE_PARENT + "." + StoreParentTable.COLUMN_STORE_PARENT_ID + " = ?";
         			}
         			selectionArgs.add(((Integer)storeSelected.keyAt(i)).toString());
         		}

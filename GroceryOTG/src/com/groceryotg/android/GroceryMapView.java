@@ -19,8 +19,10 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 /**
  * User: robert
@@ -52,8 +54,17 @@ public class GroceryMapView extends SherlockFragmentActivity {
         SupportMapFragment fragment = (SupportMapFragment) getSupportFragmentManager().findFragmentByTag(MAP_FRAGMENT_TAG);
         if (fragment != null) {
 	        GoogleMap map = fragment.getMap();
-	        if (map != null)
-	        	map.moveCamera(CameraUpdateFactory.newLatLngZoom(lastLocation, CAM_ZOOM));
+	        if (map != null) {
+	        	// move the camera to the current location
+	        	map.animateCamera(CameraUpdateFactory.newLatLngZoom(lastLocation, CAM_ZOOM), 2000, null);
+	        	
+	        	// add a marker at the current location
+	        	map.addMarker(new MarkerOptions()
+	            	.position(lastLocation)
+	            	.title("You are here.")
+	            	.draggable(false));
+	            	//.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_sobeys)));
+	        }
         }
 		return null;
     }

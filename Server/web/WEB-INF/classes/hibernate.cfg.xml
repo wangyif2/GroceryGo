@@ -34,11 +34,13 @@
         <property name="hbm2ddl.auto">update</property>
 
         <!--Names the Annotated Entity Class-->
+        <mapping class="com.groceryotg.database.Category"/>
+        <mapping class="com.groceryotg.database.Flyer"/>
         <mapping class="com.groceryotg.database.Grocery"/>
         <mapping class="com.groceryotg.database.Item"/>
-        <mapping class="com.groceryotg.database.Subcategory"/>
-        <mapping class="com.groceryotg.database.Category"/>
         <mapping class="com.groceryotg.database.Store"/>
+        <mapping class="com.groceryotg.database.StoreParent"/>
+        <mapping class="com.groceryotg.database.Subcategory"/>
         <mapping class="com.groceryotg.database.Unit"/>
 
     </session-factory>

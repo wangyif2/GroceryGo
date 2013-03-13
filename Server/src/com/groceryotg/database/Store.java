@@ -26,19 +26,21 @@ public class Store {
     
     @Column(name = "store_longitude")
     private Double storeLongitude;
-    
-    @Column(name = "store_parent_id")
-    private Integer storeParentId;
 
-    @Column(name = "flyer_id")
-    private Integer flyerId;
+    @ManyToOne
+    @JoinColumn(name = "store_parent_id")
+    private StoreParent storeParent;
 
-    public Store(String storeAddress, Double storeLatitude, Double storeLongitude, int storeParentId, int flyerId) {
+    @ManyToOne
+    @JoinColumn(name = "flyer_id")
+    private Flyer flyer;
+
+    public Store(String storeAddress, Double storeLatitude, Double storeLongitude, StoreParent storeParent, Flyer flyer) {
         this.storeAddress = storeAddress;
         this.storeLatitude = storeLatitude;
         this.storeLongitude = storeLongitude;
-        this.storeParentId = storeParentId;
-        this.flyerId = flyerId;
+        this.storeParent = storeParent;
+        this.flyer = flyer;
     }
 
     public Store() {
@@ -68,19 +70,19 @@ public class Store {
     	this.storeLongitude = storeLongitude;
     }
     
-    public int getStoreParentId() {
-        return storeParentId;
+    public StoreParent getStoreParent() {
+        return storeParent;
     }
 
-    public void setStoreParentId(int storeParentId) {
-        this.storeParentId = storeParentId;
+    public void setStoreParent(StoreParent storeParent) {
+        this.storeParent = storeParent;
     }
 
-    public int getFlyerId() {
-        return flyerId;
+    public Flyer getFlyer() {
+        return flyer;
     }
 
-    public void setFlyerId(int flyerId) {
-        this.flyerId = flyerId;
+    public void setFlyer(Flyer flyer) {
+        this.flyer = flyer;
     }
 }

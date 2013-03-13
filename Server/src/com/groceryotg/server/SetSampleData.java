@@ -26,7 +26,9 @@ public class SetSampleData extends HttpServlet {
         double totalPrice = 2.42;
         double unitPrice = 1.42;
 
-        Flyer flyer = new Flyer("asdf", 1);
+        StoreParent storeParent = new StoreParent("Metro");
+        Flyer flyer = new Flyer("asdf", storeParent);
+        Store store = new Store("111 main st", 75.4, 83.2, storeParent, flyer);
         Unit unit = new Unit("kg");
         Category category = new Category("Meat");
         Subcategory subcategory = new Subcategory("top sirloin", "sirloin", category);
@@ -40,6 +42,7 @@ public class SetSampleData extends HttpServlet {
         }
 
         session.save(flyer);
+        session.save(store);
         session.save(unit);
         session.save(category);
         session.save(subcategory);

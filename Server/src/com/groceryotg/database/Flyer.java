@@ -21,12 +21,13 @@ public class Flyer {
     @Column(name = "flyer_url")
     private String flyerUrl;
 
-    @Column(name = "store_parent_id")
-    private Integer storeParentId;
+    @ManyToOne
+    @JoinColumn(name = "store_parent_id")
+    private StoreParent storeParent;
 
-    public Flyer(String flyerUrl, int storeParentId) {
+    public Flyer(String flyerUrl, StoreParent storeParent) {
         this.flyerUrl = flyerUrl;
-        this.storeParentId = storeParentId;
+        this.storeParent = storeParent;
     }
 
     public Flyer() {
@@ -40,12 +41,12 @@ public class Flyer {
         this.flyerUrl = flyerUrl;
     }
     
-    public int getStoreParentId() {
-        return storeParentId;
+    public StoreParent getStoreParent() {
+        return storeParent;
     }
 
-    public void setStoreParentId(int storeParentId) {
-        this.storeParentId = storeParentId;
+    public void setStoreParent(StoreParent storeParent) {
+        this.storeParent = storeParent;
     }
 
 }

@@ -9,7 +9,7 @@ import android.location.Location;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
-import com.groceryotg.android.CategoryOverView;
+import com.groceryotg.android.GroceryMapView;
 import com.groceryotg.android.R;
 
 import java.util.Date;
@@ -49,14 +49,14 @@ public class LocationReceiver extends BroadcastReceiver {
                         .setContentText("An item in your cart is near")
                         .setAutoCancel(true);
         // Creates an explicit intent for the top activity that will be opened
-        Intent resultIntent = new Intent(context, CategoryOverView.class);
+        Intent resultIntent = new Intent(context, GroceryMapView.class);
 
         // The stack builder object will contain an artificial back stack for the
         // started Activity. This ensures that navigating backward from the 
         // Activity leads out of your application to the Home screen.
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
         // Adds the back stack for the Intent (but not the Intent itself)
-        stackBuilder.addParentStack(CategoryOverView.class);
+        stackBuilder.addParentStack(GroceryMapView.class);
         // Adds the Intent that starts the Activity to the top of the stack
         stackBuilder.addNextIntent(resultIntent);
         PendingIntent resultPendingIntent =

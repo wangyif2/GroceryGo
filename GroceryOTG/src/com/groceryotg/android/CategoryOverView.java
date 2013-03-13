@@ -64,8 +64,6 @@ public class CategoryOverView extends SherlockActivity implements LoaderManager.
         // Populate the grid with data
         fillData();
         
-        // Setup alarm for polling of location data
-        configLocationPoll();
     }
     
     @Override
@@ -93,15 +91,6 @@ public class CategoryOverView extends SherlockActivity implements LoaderManager.
             //toggle();
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private void configLocationPoll() {
-    	AlarmManager locationAlarm = (AlarmManager) getSystemService(ALARM_SERVICE);
-        Intent locationIntent = new Intent(this, LocationMonitor.class);
-        locationIntent.putExtra(LocationMonitor.EXTRA_INTENT, new Intent(this, LocationReceiver.class));
-        locationIntent.putExtra(LocationMonitor.EXTRA_PROVIDER, LocationManager.NETWORK_PROVIDER);
-        PendingIntent locationPendingIntent = PendingIntent.getBroadcast(this, 0, locationIntent, 0);
-        locationAlarm.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), LocationReceiver.pollingPeriod, locationPendingIntent);
     }
     
     private void configGridView() {

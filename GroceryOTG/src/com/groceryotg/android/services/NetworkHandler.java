@@ -119,7 +119,7 @@ public class NetworkHandler extends IntentService {
                     contentValues.put(StoreTable.COLUMN_STORE_LATITUDE, store.getStoreLatitude());
                     contentValues.put(StoreTable.COLUMN_STORE_LONGITUDE, store.getStoreLongitude());
                     contentValues.put(StoreTable.COLUMN_STORE_PARENT, store.getStoreParent().getStoreParentId());
-                    contentValues.put(StoreTable.COLUMN_STORE_FLYER, store.getStoreFlyer().getFlyerId());
+                    contentValues.put(StoreTable.COLUMN_STORE_FLYER, store.getFlyer().getFlyerId());
 
                     contentValuesArrayList.add(contentValues);
                 }

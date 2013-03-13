@@ -9,7 +9,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.util.SparseIntArray;
 import android.view.View;
@@ -29,18 +28,13 @@ import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.CategoryTable;
 import com.groceryotg.android.database.GroceryTable;
 import com.groceryotg.android.database.StoreParentTable;
-import com.groceryotg.android.database.StoreTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 import com.groceryotg.android.services.NetworkHandler;
 import com.groceryotg.android.services.ServerURL;
 import com.groceryotg.android.utils.RefreshAnimation;
 import com.slidingmenu.lib.SlidingMenu;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 /**
@@ -55,13 +49,13 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
     private Uri groceryUri;
     private String categoryName;
     private Integer categoryId;
-    
+
     // User search
     private String mQuery;
     private SearchView mSearchView;
 
     // Filters
-    private Map<Integer,String> storeNames;
+    private Map<Integer, String> storeNames;
     private SparseIntArray storeSelected;
     private Integer subcategoryId;
     private Double mPriceRangeMin;
@@ -69,7 +63,7 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
 
     private final Integer SELECTED = 1;
     private final Integer NOT_SELECTED = 0;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,7 +74,7 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
 
         // Configure sliding menu
         configSlidingMenu();
-        
+
         Bundle extras = getIntent().getExtras();
         groceryUri = (savedInstanceState == null) ? null : (Uri) savedInstanceState.getParcelable(GroceryotgProvider.CONTENT_ITEM_TYPE_CAT);
 
@@ -100,18 +94,18 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
 
         // Initialize the list of stores from database
         storeSelected = new SparseIntArray();
-        storeNames = new HashMap<Integer,String>();
+        storeNames = new HashMap<Integer, String>();
         Uri storeUri = GroceryotgProvider.CONTENT_URI_STOPARENT;
         String[] projection = {StoreParentTable.COLUMN_STORE_PARENT_ID, StoreParentTable.COLUMN_STORE_PARENT_NAME};
         Cursor storeCursor = getContentResolver().query(storeUri, projection, null, null, null);
         if (storeCursor != null) {
-        	storeCursor.moveToFirst();
-	        while (!storeCursor.isAfterLast()) {
-	        	storeSelected.put(storeCursor.getInt(storeCursor.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_ID)), SELECTED);
-	        	storeNames.put(storeCursor.getInt(storeCursor.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_ID)),
-	        				   storeCursor.getString(storeCursor.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_NAME)));
-	        	storeCursor.moveToNext();
-	        }
+            storeCursor.moveToFirst();
+            while (!storeCursor.isAfterLast()) {
+                storeSelected.put(storeCursor.getInt(storeCursor.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_ID)), SELECTED);
+                storeNames.put(storeCursor.getInt(storeCursor.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_ID)),
+                        storeCursor.getString(storeCursor.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_NAME)));
+                storeCursor.moveToNext();
+            }
         }
         // Initialize the user query to blank
         setmQuery("");
@@ -194,8 +188,8 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
                 refreshCurrentGrocery();
                 return true;
             case R.id.filter:
-            	launchFilterDialog();
-            	return true;
+                launchFilterDialog();
+                return true;
             /*
             case R.id.map:
                 launchMapActivity();
@@ -243,17 +237,17 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
         // (called on every keystroke)
         return true;
     }
-    
+
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
         TextView textView = (TextView) v.findViewById(R.id.grocery_row_label);
         TextView idView = (TextView) v.findViewById(R.id.grocery_row_id);
-        
+
         ContentValues values = new ContentValues();
         values.put(CartTable.COLUMN_CART_GROCERY_ID, idView.getText().toString());
         values.put(CartTable.COLUMN_CART_GROCERY_NAME, textView.getText().toString());
-        
+
         getContentResolver().insert(GroceryotgProvider.CONTENT_URI_CART_ITEM, values);
 
         loadDataWithQuery(true, mQuery);
@@ -261,39 +255,38 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
         t.show();
     }
 
-    
+
     private void launchFilterDialog() {
-    	final CharSequence[] items = new CharSequence[storeNames.keySet().size()];
-    	final boolean[] states = new boolean[storeNames.keySet().size()];
-    	final SparseIntArray mapIndexToId = new SparseIntArray(); // maps index in the dialog to store_id
-    	
-    	Iterator<Entry<Integer,String>> it = storeNames.entrySet().iterator();
-    	Integer indexer = 0;
-    	while (it.hasNext()) {
-    		Map.Entry<Integer,String> pairs = (Map.Entry<Integer,String>) it.next();
-    		items[indexer] = pairs.getValue();
-    		states[indexer] = (storeSelected.get(pairs.getKey()) == SELECTED ? true : false);
-    		mapIndexToId.put(indexer, pairs.getKey());
-    		indexer++;
-    	}
-    	
+        final CharSequence[] items = new CharSequence[storeNames.keySet().size()];
+        final boolean[] states = new boolean[storeNames.keySet().size()];
+        final SparseIntArray mapIndexToId = new SparseIntArray(); // maps index in the dialog to store_id
+
+        Iterator<Entry<Integer, String>> it = storeNames.entrySet().iterator();
+        Integer indexer = 0;
+        while (it.hasNext()) {
+            Map.Entry<Integer, String> pairs = (Map.Entry<Integer, String>) it.next();
+            items[indexer] = pairs.getValue();
+            states[indexer] = (storeSelected.get(pairs.getKey()) == SELECTED ? true : false);
+            mapIndexToId.put(indexer, pairs.getKey());
+            indexer++;
+        }
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.groceryoverview_filter_title);
-        builder.setMultiChoiceItems(items, states, new DialogInterface.OnMultiChoiceClickListener(){
+        builder.setMultiChoiceItems(items, states, new DialogInterface.OnMultiChoiceClickListener() {
             public void onClick(DialogInterface dialogInterface, int item, boolean state) {
             }
         });
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                SparseBooleanArray selectedItems = ((AlertDialog)dialog).getListView().getCheckedItemPositions();
-                for (int i=0; i < selectedItems.size(); i++) {
-                	int key_index = selectedItems.keyAt(i);
-                	if (selectedItems.get(key_index)) {
-                		storeSelected.put(mapIndexToId.get(key_index), SELECTED);
-                	}
-                	else {
-                		storeSelected.put(mapIndexToId.get(key_index), NOT_SELECTED);
-                	}
+                SparseBooleanArray selectedItems = ((AlertDialog) dialog).getListView().getCheckedItemPositions();
+                for (int i = 0; i < selectedItems.size(); i++) {
+                    int key_index = selectedItems.keyAt(i);
+                    if (selectedItems.get(key_index)) {
+                        storeSelected.put(mapIndexToId.get(key_index), SELECTED);
+                    } else {
+                        storeSelected.put(mapIndexToId.get(key_index), NOT_SELECTED);
+                    }
                 }
                 Toast.makeText(getContext(), getResources().getString(R.string.groceryoverview_filter_updated), Toast.LENGTH_LONG).show();
                 loadDataWithQuery(true, mQuery);
@@ -301,18 +294,18 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                 dialog.cancel();
+                dialog.cancel();
             }
         });
         builder.create().show();
     }
-    
+
     private void launchMapActivity() {
         Intent intent = new Intent(this, GroceryMapView.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
-    
+
     private void launchShopCartActivity() {
         Intent intent = new Intent(this, ShopCartOverView.class);
         startActivity(intent);
@@ -322,7 +315,7 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
         Intent intent = new Intent(this, CategoryOverView.class);
         startActivity(intent);
     }
-    
+
     private void refreshCurrentGrocery() {
         Intent intent = new Intent(this, NetworkHandler.class);
 
@@ -332,31 +325,31 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
 
         startService(intent);
     }
-    
+
     private void fillData() {
-        String[] from = new String[]{GroceryTable.COLUMN_GROCERY_ID, 
-        							 GroceryTable.COLUMN_GROCERY_NAME, 
-        							 GroceryTable.COLUMN_GROCERY_NAME, 
-        							 GroceryTable.COLUMN_GROCERY_PRICE, 
-        							 StoreParentTable.COLUMN_STORE_PARENT_NAME, 
-        							 CartTable.COLUMN_CART_GROCERY_ID};
-        int[] to = new int[]{R.id.grocery_row_id, 
-        					 R.id.grocery_row_label, 
-        					 R.id.grocery_row_details, 
-        					 R.id.grocery_row_price, 
-        					 R.id.grocery_row_store, 
-        					 R.id.grocery_row_inshopcart};
-        
+        String[] from = new String[]{GroceryTable.COLUMN_GROCERY_ID,
+                GroceryTable.COLUMN_GROCERY_NAME,
+                GroceryTable.COLUMN_GROCERY_NAME,
+                GroceryTable.COLUMN_GROCERY_PRICE,
+                StoreParentTable.COLUMN_STORE_PARENT_NAME,
+                CartTable.COLUMN_CART_GROCERY_ID};
+        int[] to = new int[]{R.id.grocery_row_id,
+                R.id.grocery_row_label,
+                R.id.grocery_row_details,
+                R.id.grocery_row_price,
+                R.id.grocery_row_store,
+                R.id.grocery_row_inshopcart};
+
         adapter = new SimpleCursorAdapter(this, R.layout.grocery_row, null, from, to, 0);
         adapter.setViewBinder(new GroceryViewBinder());
-        
+
         setListAdapter(adapter);
         displayEmptyListMessage(buildNoNewContentString());
 
         // Prepare the asynchronous loader.
         loadDataWithQuery(false, "");
     }
-    
+
     private void loadDataWithQuery(Boolean reload, String query) {
         Bundle b = new Bundle();
         b.putString("query", query);
@@ -401,31 +394,30 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
                 CartTable.COLUMN_CART_GROCERY_ID};
         String selection = GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_GROCERY_CATEGORY + "=?";
         selectionArgs.add(categoryId.toString());
-        
+
         // If user entered a search query, filter the results based on grocery name
         if (!query.isEmpty()) {
             selection += " AND " + GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_GROCERY_NAME + " LIKE ?";
             selectionArgs.add("%" + query + "%");
         }
         if (storeSelected != null && storeSelected.size() > 0) {
-        	// Go through selected stores and add them to query
-        	String storeSelection = "";
-        	for (int i=0; i<storeSelected.size(); i++) {
-        		if (storeSelected.valueAt(i)==SELECTED) {
-        			if (storeSelection.isEmpty()) {
-        				storeSelection = " AND (";
-        				storeSelection += StoreParentTable.TABLE_STORE_PARENT + "." + StoreParentTable.COLUMN_STORE_PARENT_ID + " = ?";
-        			}
-        			else {
-        				storeSelection += " OR " + StoreParentTable.TABLE_STORE_PARENT + "." + StoreParentTable.COLUMN_STORE_PARENT_ID + " = ?";
-        			}
-        			selectionArgs.add(((Integer)storeSelected.keyAt(i)).toString());
-        		}
-        	}
-        	if (!storeSelection.isEmpty()) {
-        		storeSelection += ")";
-        		selection += storeSelection;
-        	}
+            // Go through selected stores and add them to query
+            String storeSelection = "";
+            for (int i = 0; i < storeSelected.size(); i++) {
+                if (storeSelected.valueAt(i) == SELECTED) {
+                    if (storeSelection.isEmpty()) {
+                        storeSelection = " AND (";
+                        storeSelection += StoreParentTable.TABLE_STORE_PARENT + "." + StoreParentTable.COLUMN_STORE_PARENT_ID + " = ?";
+                    } else {
+                        storeSelection += " OR " + StoreParentTable.TABLE_STORE_PARENT + "." + StoreParentTable.COLUMN_STORE_PARENT_ID + " = ?";
+                    }
+                    selectionArgs.add(((Integer) storeSelected.keyAt(i)).toString());
+                }
+            }
+            if (!storeSelection.isEmpty()) {
+                storeSelection += ")";
+                selection += storeSelection;
+            }
         }
         if (mPriceRangeMin != null) {
             selection += " AND " + GroceryTable.COLUMN_GROCERY_PRICE + " >= ?";
@@ -472,7 +464,7 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
     public void setmQuery(String mQuery) {
         this.mQuery = mQuery;
     }
-    
+
     private void configSlidingMenu() {
         slidingMenu = new SlidingMenu(this);
         slidingMenu.setMode(SlidingMenu.LEFT);
@@ -491,7 +483,7 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
                 getString(R.string.slidingmenu_item_sync),
                 getString(R.string.slidingmenu_item_settings),
                 getString(R.string.slidingmenu_item_about)};
-        
+
         ListView menuView = (ListView) findViewById(R.id.menu_items);
         ArrayAdapter<String> menuAdapter = new ArrayAdapter<String>(this,
                 R.layout.menu_item, android.R.id.text1, slidingMenuItems);
@@ -507,7 +499,7 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
 
                 if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_cat))) {
                     // Selected Categories
-                	launchHomeActivity();
+                    launchHomeActivity();
                 } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_cart))) {
                     // Selected Shopping Cart
                     launchShopCartActivity();
@@ -516,21 +508,21 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
                     launchMapActivity();
                 } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_sync))) {
                     // Selected Sync
-                	refreshCurrentGrocery();
+                    refreshCurrentGrocery();
                 } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_settings))) {
                     // Selected Settings
-                	if (slidingMenu.isMenuShowing())
+                    if (slidingMenu.isMenuShowing())
                         slidingMenu.showContent();
                 } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_about))) {
                     // Selected About
                     //startActivity(new Intent(CategoryOverView.this, About.class));
-                	if (slidingMenu.isMenuShowing())
+                    if (slidingMenu.isMenuShowing())
                         slidingMenu.showContent();
                 }
             }
         });
     }
-    
+
     private Context getContext() {
         return this.getBaseContext();
     }

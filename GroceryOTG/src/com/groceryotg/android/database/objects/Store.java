@@ -15,18 +15,18 @@ public class Store {
     
     private StoreParent storeParent;
 
-    private Flyer storeFlyer;
+    private Flyer flyer;
 
     public Store(){
     }
 
-    public Store(Integer storeId, String storeAddress, Double storeLatitude, Double storeLongitude, StoreParent storeParent, Flyer storeFlyer) {
+    public Store(Integer storeId, String storeAddress, Double storeLatitude, Double storeLongitude, StoreParent storeParent, Flyer flyer) {
         this.storeId = storeId;
         this.storeAddress = storeAddress;
         this.storeLatitude = storeLatitude;
         this.storeLongitude = storeLongitude;
         this.storeParent = storeParent;
-        this.storeFlyer = storeFlyer;
+        this.flyer = flyer;
     }
 
     public Integer getStoreId() {
@@ -69,11 +69,11 @@ public class Store {
         this.storeParent = storeParent;
     }
     
-    public Flyer getStoreFlyer() {
-    	return storeFlyer;
+    public Flyer getFlyer() {
+    	return flyer;
     }
     
-    public void setStoreFlyer(Flyer storeFlyer) {
-    	this.storeFlyer = storeFlyer;
+    public void setFlyer(Flyer flyer) {
+    	this.flyer = flyer;
     }
 }

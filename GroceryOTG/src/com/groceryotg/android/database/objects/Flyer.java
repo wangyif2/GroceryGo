@@ -5,11 +5,11 @@ public class Flyer {
 
     private String flyerUrl;
     
-    private StoreParent flyerStoreParent;
+    private StoreParent storeParent;
 
     public Flyer(String flyerUrl, StoreParent flyerStoreParent) {
         this.flyerUrl = flyerUrl;
-        this.flyerStoreParent = flyerStoreParent;
+        this.storeParent = flyerStoreParent;
     }
 
     public Flyer() {
@@ -32,11 +32,11 @@ public class Flyer {
     }
     
     public StoreParent getStoreParent() {
-    	return flyerStoreParent;
+    	return storeParent;
     }
     
     public void setStoreParent(StoreParent flyerStoreParent) {
-    	this.flyerStoreParent = flyerStoreParent;
+    	this.storeParent = flyerStoreParent;
     }
 
 }

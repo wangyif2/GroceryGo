@@ -21,7 +21,8 @@ public class FlyerTable {
             + "(" + COLUMN_ID + " integer primary key autoincrement, "
             + COLUMN_FLYER_ID + " integer unique not null, "
             + COLUMN_FLYER_URL + " text not null, "
-            + COLUMN_FLYER_STOREPARENT + " integer not null);";
+            + COLUMN_FLYER_STOREPARENT + " integer, foreign key(" + COLUMN_FLYER_STOREPARENT
+            + ") references " + StoreParentTable.TABLE_STORE_PARENT + "(" + StoreParentTable.COLUMN_STORE_PARENT_ID + "));";
 
     public static void onCreate(SQLiteDatabase database) {
         database.execSQL(DATABASE_CREATE);

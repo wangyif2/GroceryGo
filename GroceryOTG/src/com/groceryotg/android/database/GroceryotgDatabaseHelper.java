@@ -127,6 +127,7 @@ public class GroceryotgDatabaseHelper extends SQLiteOpenHelper {
                     ih.prepareForInsert();
                     ih.bind(ih.getColumnIndex(FlyerTable.COLUMN_FLYER_ID), flyer.getFlyerId());
                     ih.bind(ih.getColumnIndex(FlyerTable.COLUMN_FLYER_URL), flyer.getUrl());
+                    ih.bind(ih.getColumnIndex(FlyerTable.COLUMN_FLYER_STOREPARENT), flyer.getStoreParent().getStoreParentId());
                     ih.execute();
                 }
     		} catch (JSONException e) {
@@ -151,7 +152,7 @@ public class GroceryotgDatabaseHelper extends SQLiteOpenHelper {
                     ih.prepareForInsert();
                     ih.bind(ih.getColumnIndex(StoreTable.COLUMN_STORE_ID), store.getStoreId());
                     ih.bind(ih.getColumnIndex(StoreTable.COLUMN_STORE_PARENT), store.getStoreParent().getStoreParentId());
-                    ih.bind(ih.getColumnIndex(StoreTable.COLUMN_STORE_FLYER), store.getStoreFlyer().getFlyerId());
+                    ih.bind(ih.getColumnIndex(StoreTable.COLUMN_STORE_FLYER), store.getFlyer().getFlyerId());
                     if (store.getStoreAddress() != null)
                         ih.bind(ih.getColumnIndex(StoreTable.COLUMN_STORE_ADDR), store.getStoreAddress());
                     if (store.getStoreLatitude() != null)

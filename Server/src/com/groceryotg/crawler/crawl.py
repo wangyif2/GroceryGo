@@ -57,7 +57,7 @@ mysql_db = "groceryotg"
 
 # TODO:
 # Done. 1) Pass in only the item part of the line string to getNouns, so it doesn't get confused with the price 
-#       2) Build a language model of bigram probabilities to detect compound nouns (e.g. "potato chips" vs just "chips")
+# Done. 2) Build a language model of bigram probabilities to detect compound nouns (e.g. "potato chips" vs just "chips")
 #          If a probability of word B to occur after word A is > 0.5, then it's a compound. 
 # Done. 3) Add a "Misc" subcategory in database, in case no subcategories match the line.
 # Done. 4) Add a "tags" column in Subcategory table in database (use that list of tags instead of the subcategory name)
@@ -82,7 +82,7 @@ def getFlyer():
     '''No input parameters, accesses the database directly. 
        Finds this week's URL of the accessible plain-text flyer web pages for each grocery_table store
        in the database. Parses the accessible plain-text only flyer webpages to identify items. 
-       Return a dictionary of {store_id : item} pairs, where "items" is a list of 
+       Return a dictionary of {flyer_id : item} pairs, where "items" is a list of 
        [item_raw_string, unit_price, unit_type_id, total_price, start_date, end_date, page_number, 
        update_date].'''
     flyers = {}
@@ -95,10 +95,10 @@ def getFlyer():
     cur.execute('SELECT unit_id, unit_type_name FROM Unit;')
     units = cur.fetchall()
     
-    cur.execute('SELECT store_id, store_url FROM Store ORDER BY store_name')
+    cur.execute('SELECT StoreParent.store_parent_id, Flyer.flyer_url, Store.flyer_id FROM ((Store INNER JOIN Flyer ON Flyer.flyer_id=Store.flyer_id) INNER JOIN StoreParent ON StoreParent.store_parent_id=Store.store_parent_id) ORDER BY StoreParent.store_parent_name')
     data = cur.fetchall()
     for record in data:
-        store_id, next_url = record[0], record[1]
+        store_id, next_url, flyer_id = record[0], record[1], record[2]
         flyer_url = ""
         if next_url:
             #logging.info("next url: %s" % next_url)
@@ -179,12 +179,12 @@ def getFlyer():
                                     raw_item = line[:index_price].strip()
                                 
                                 item_details = [raw_item, raw_price, unit_price, unit_type_id, total_price, \
-                                                start_date, end_date, line_number, store_id, update_date]
+                                                start_date, end_date, line_number, flyer_id, update_date]
                                 
                                 #logging.info(item_details)
                                 store_items += [item_details]
                         
-                        items[store_id] = store_items
+                        items[flyer_id] = store_items
                 except urllib2.URLError as e:
                     logging.info("Could not connect to store %d due to Error %d (%s)" % (store_id, e.errno, e.strerror))
             # Loblaws
@@ -436,11 +436,11 @@ def getFlyer():
                                             unit_type_id = filter(lambda x: x if x[1]=='kg' else None,units)[0][0]
                             
                             item_details = [raw_item, orig_price, unit_price, unit_type_id, total_price, \
-                                            start_date, end_date, line_number, store_id, update_date]
+                                            start_date, end_date, line_number, flyer_id, update_date]
                             
                             store_items += [item_details]
                             
-                        items[store_id] = store_items
+                        items[flyer_id] = store_items
                 except urllib2.URLError as e:
                     logging.info("Could not connect to store %d due to Error %d (%s)" % (store_id, e.errno, e.strerror))
             # Food Basics
@@ -517,12 +517,12 @@ def getFlyer():
                                 raw_item = line[:index_price].strip()
                             
                             item_details = [raw_item, raw_price, unit_price, unit_type_id, total_price, \
-                                            start_date, end_date, line_number, store_id, update_date]
+                                            start_date, end_date, line_number, flyer_id, update_date]
                             
                             #logging.info(item_details)
                             store_items += [item_details]
                     
-                    items[store_id] = store_items
+                    items[flyer_id] = store_items
                 except urllib2.URLError as e:
                     logging.info("Could not connect to store %d due to Error %d (%s)" % (store_id, e.errno, e.strerror))
             # No Frills
@@ -733,11 +733,11 @@ def getFlyer():
                                         unit_type_id = filter(lambda x: x if x[1]=='kg' else None,units)[0][0]
                         
                         item_details = [raw_item, orig_price, unit_price, unit_type_id, total_price, \
-                                        start_date, end_date, line_number, store_id, update_date]
+                                        start_date, end_date, line_number, flyer_id, update_date]
                         
                         store_items += [item_details]
                         
-                    items[store_id] = store_items
+                    items[flyer_id] = store_items
                 except urllib2.URLError as e:
                     logging.info("Could not connect to store %d due to Error %d (%s)" % (store_id, e.errno, e.strerror))
                 
@@ -940,11 +940,11 @@ def getFlyer():
                                     unit_type_id = filter(lambda x: x if x[1]=='kg' else None,units)[0][0]
                     
                     item_details = [raw_item, orig_price, unit_price, unit_type_id, total_price, \
-                                    start_date, end_date, line_number, store_id, update_date]
+                                    start_date, end_date, line_number, flyer_id, update_date]
                     
                     store_items += [item_details]
                     
-                items[store_id] = store_items
+                items[flyer_id] = store_items
                 
                 
             logging.info('\n')

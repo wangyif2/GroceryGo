@@ -9,11 +9,10 @@ import android.location.Location;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
+import com.groceryotg.android.CategoryOverView;
+import com.groceryotg.android.R;
 
 import java.util.Date;
-
-import com.groceryotg.android.R;
-import com.groceryotg.android.CategoryOverView;
 
 /**
  * User: John
@@ -22,7 +21,7 @@ import com.groceryotg.android.CategoryOverView;
 public class LocationReceiver extends BroadcastReceiver {
     //currently polling time is every 5 minutes
     public static final int pollingPeriod = 3600000;
-    
+
     public static final int NOTIFICATION_LOCATION_ID = 0;
 
     @Override
@@ -41,14 +40,14 @@ public class LocationReceiver extends BroadcastReceiver {
         }
 
         Log.i("GroceryOTG", msg + " Time now is: " + new Date().getTime());
-        
+
         // Now make a notification if there are nearby items in the cart
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
-                .setSmallIcon(R.drawable.icon_drinks)
-                .setContentTitle("GroceryOTG")
-                .setContentText("An item in your cart is near")
-                .setAutoCancel(true);
+                        .setSmallIcon(R.drawable.icon_drinks)
+                        .setContentTitle("GroceryOTG")
+                        .setContentText("An item in your cart is near")
+                        .setAutoCancel(true);
         // Creates an explicit intent for the top activity that will be opened
         Intent resultIntent = new Intent(context, CategoryOverView.class);
 
@@ -62,12 +61,12 @@ public class LocationReceiver extends BroadcastReceiver {
         stackBuilder.addNextIntent(resultIntent);
         PendingIntent resultPendingIntent =
                 stackBuilder.getPendingIntent(
-                    0,
-                    PendingIntent.FLAG_UPDATE_CURRENT
+                        0,
+                        PendingIntent.FLAG_UPDATE_CURRENT
                 );
         mBuilder.setContentIntent(resultPendingIntent);
         NotificationManager mNotificationManager =
-            (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         // the ID allows for updating the notification later on
         mNotificationManager.notify(NOTIFICATION_LOCATION_ID, mBuilder.build());
     }

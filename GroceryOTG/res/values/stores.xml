@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="store_names">
+        <item>foodbasics</item>
+        <item>nofrills</item>
+        <item>metro</item>
+        <item>loblaws</item>
+        <item>sobeys</item>
+    </string-array>
+</resources>

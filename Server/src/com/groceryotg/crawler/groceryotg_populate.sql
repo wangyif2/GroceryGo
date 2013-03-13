@@ -112,7 +112,7 @@ VALUES
 	(11,'Vegetables and Vegetable Products','vegetable',3),
 	(12,'Nuts and Seeds','nuts,seeds',7),
 	(13,'Beef Products','beef,veal,steak',2),
-	(14,'Beverages','beverages,drinks,cola',6),
+	(14,'Beverages','beverages,drinks,cola,coffe',6),
 	(15,'Fish','fish,fillet,shrimp',4),
 	(17,'Lamb','lamb',2),
 	(18,'Baked Products','bakery,baked,bread',5),
@@ -121,7 +121,7 @@ VALUES
 	(22,'Fast Food','fast,frozen',7),
 	(23,'Snacks','snacks,chips',7),
 	(24,'Frozen Food','frozen',7),
-	(25,'Household','clean,spray,washing,wiping,detergent',7),
+	(25,'Household','clean,spray,washing,wiping,detergent,remover,bleach,fabric',7),
 	(26,'Dressing and Sauces','sauces,dip,dressing',7),
 	(32,'Miscellaneous','miscellaneous',7);
 /*!40000 ALTER TABLE `Subcategory` ENABLE KEYS */;

@@ -26,7 +26,7 @@ public class SetSampleData extends HttpServlet {
         double totalPrice = 2.42;
         double unitPrice = 1.42;
 
-        Store store = new Store("Metro", "downtown kinda", 1, "metro.com");
+        Store store = new Store("Metro", 1.0, 1.0, 1, 1);
         Unit unit = new Unit("kg");
         Category category = new Category("Meat");
         Subcategory subcategory = new Subcategory("top sirloin", "sirloin", category);

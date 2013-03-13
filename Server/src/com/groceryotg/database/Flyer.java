@@ -41,7 +41,7 @@ public class Flyer {
     }
     
     public int getStoreParentId() {
-        return storeParent;
+        return storeParentId;
     }
 
     public void setStoreParentId(int storeParentId) {

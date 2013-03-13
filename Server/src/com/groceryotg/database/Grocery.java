@@ -24,12 +24,12 @@ public class Grocery {
     @JoinColumn(name = "item_id")
     private Item item;
 
-    @ManyToOne
-    @JoinColumn(name = "flyer_id")
-    private Flyer flyer;
+    @Column(name = "raw_string")
+    @Lob
+    private String rawString;
 
-    @Column(name = "total_price", precision = 10, length = 2)
-    private Double totalPrice;
+    @Column(name = "raw_price", precision = 10, length = 2)
+    private Double rawPrice;
 
     @Column(name = "unit_price", precision = 10,length = 2)
     private Double unitPrice;
@@ -37,6 +37,9 @@ public class Grocery {
     @ManyToOne
     @JoinColumn(name = "unit_id")
     private Unit unit;
+
+    @Column(name = "total_price", precision = 10, length = 2)
+    private Double totalPrice;
 
     @Column(name = "start_date")
     @Temporal(TemporalType.DATE)
@@ -46,31 +49,40 @@ public class Grocery {
     @Temporal(TemporalType.DATE)
     private Date endDate;
 
-    @Column(name = "update_date")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date updateDate;
+    @ManyToOne
+    @JoinColumn(name = "flyer_id")
+    private Flyer flyer;
 
     @Column(name = "line_number")
     private Integer lineNumber;
 
-    @Column(name = "raw_string")
-    @Lob
-    private String rawString;
+    @Column(name = "update_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updateDate;
 
-    public Grocery(Item item, Flyer flyer, double totalPrice, double unitPrice, Unit unit, Date startDate, Date endDate, Date updateDate, int lineNumber, String rawString) {
+    public Grocery(Item item, String rawString, Double rawPrice, Double unitPrice, Unit unit, Double totalPrice, Date startDate, Date endDate, Flyer flyer, Integer lineNumber, Date updateDate) {
         this.item = item;
-        this.flyer = flyer;
-        this.totalPrice = totalPrice;
+        this.rawString = rawString;
+        this.rawPrice = rawPrice;
         this.unitPrice = unitPrice;
         this.unit = unit;
+        this.totalPrice = totalPrice;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.updateDate = updateDate;
+        this.flyer = flyer;
         this.lineNumber = lineNumber;
-        this.rawString = rawString;
+        this.updateDate = updateDate;
     }
 
     public Grocery() {
+    }
+
+    public Double getRawPrice() {
+        return rawPrice;
+    }
+
+    public void setRawPrice(Double rawPrice) {
+        this.rawPrice = rawPrice;
     }
 
     public int getGroceryId() {

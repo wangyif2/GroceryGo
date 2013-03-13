@@ -26,20 +26,20 @@ public class SetSampleData extends HttpServlet {
         double totalPrice = 2.42;
         double unitPrice = 1.42;
 
-        Store store = new Store("Metro", 1.0, 1.0, 1, 1);
+        Flyer flyer = new Flyer("asdf", 1);
         Unit unit = new Unit("kg");
         Category category = new Category("Meat");
         Subcategory subcategory = new Subcategory("top sirloin", "sirloin", category);
         Item item = new Item("top sirloin steak", subcategory);
         Grocery grocery = null;
         try {
-            grocery = new Grocery(item, store, totalPrice, unitPrice, unit, UpdateGroceryInfo.format.parse("2013-01-27"), UpdateGroceryInfo.format.parse("2013-02-02"),
+            grocery = new Grocery(item, flyer, totalPrice, unitPrice, unit, UpdateGroceryInfo.format.parse("2013-01-27"), UpdateGroceryInfo.format.parse("2013-02-02"),
                     UpdateGroceryInfo.format.parse("2013-01-31"), 12, "top sirloin steak at metro with 1.42/kg and 2.42");
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
-        session.save(store);
+        session.save(flyer);
         session.save(unit);
         session.save(category);
         session.save(subcategory);

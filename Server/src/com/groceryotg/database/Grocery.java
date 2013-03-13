@@ -25,8 +25,8 @@ public class Grocery {
     private Item item;
 
     @ManyToOne
-    @JoinColumn(name = "store_id")
-    private Store store;
+    @JoinColumn(name = "flyer_id")
+    private Flyer flyer;
 
     @Column(name = "total_price", precision = 10, length = 2)
     private Double totalPrice;
@@ -57,9 +57,9 @@ public class Grocery {
     @Lob
     private String rawString;
 
-    public Grocery(Item item, Store store, double totalPrice, double unitPrice, Unit unit, Date startDate, Date endDate, Date updateDate, int lineNumber, String rawString) {
+    public Grocery(Item item, Flyer flyer, double totalPrice, double unitPrice, Unit unit, Date startDate, Date endDate, Date updateDate, int lineNumber, String rawString) {
         this.item = item;
-        this.store = store;
+        this.flyer = flyer;
         this.totalPrice = totalPrice;
         this.unitPrice = unitPrice;
         this.unit = unit;
@@ -81,12 +81,12 @@ public class Grocery {
         this.groceryId = groceryId;
     }
 
-    public Store getStore() {
-        return store;
+    public Flyer getFlyer() {
+        return flyer;
     }
 
-    public void setStore(Store store) {
-        this.store = store;
+    public void setFlyer(Flyer flyer) {
+        this.flyer = flyer;
     }
 
     public double getTotalPrice() {

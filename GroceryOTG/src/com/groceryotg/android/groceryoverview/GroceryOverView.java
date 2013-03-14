@@ -69,16 +69,19 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
         super.onCreate(savedInstanceState);
         setContentView(R.layout.grocery_list);
 
+        Bundle extras = getIntent().getExtras();
+        
         // Enable ancestral navigation ("Up" button in ActionBar) for Android < 4.1
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Configure sliding menu
         configSlidingMenu();
-
-        Bundle extras = getIntent().getExtras();
+        
+        // Initialize list of stores as selected all
+        initStores();
+        
         groceryUri = (savedInstanceState == null) ? null : (Uri) savedInstanceState.getParcelable(GroceryotgProvider.CONTENT_ITEM_TYPE_CAT);
-
-        if (extras != null) {
+        if (extras != null && extras.containsKey(GroceryotgProvider.CONTENT_ITEM_TYPE_CAT)) {
             groceryUri = extras.getParcelable(GroceryotgProvider.CONTENT_ITEM_TYPE_CAT);
             String[] projection = {CategoryTable.COLUMN_CATEGORY_NAME, CategoryTable.COLUMN_CATEGORY_ID};
             Cursor cursor = getContentResolver().query(groceryUri, projection, null, null, null);
@@ -92,7 +95,32 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
             }
         }
 
-        // Initialize the list of stores from database
+        // Initialize the user query to blank
+        setmQuery("");
+
+        this.getListView().setDividerHeight(2);
+        fillData();
+    }
+
+    @Override
+    public void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);      
+        setIntent(intent);
+        handleIntent(intent);
+    }
+    
+    private void handleIntent(Intent intent) {
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            // Gets the search query from the voice recognizer intent
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            
+            // Set the search box text to the received query and submit the search
+            mSearchView.setQuery(query, true);
+        }
+    }
+    
+    private void initStores() {
+    	// Initialize the list of stores from database
         storeSelected = new SparseIntArray();
         storeNames = new HashMap<Integer, String>();
         Uri storeUri = GroceryotgProvider.CONTENT_URI_STOPARENT;
@@ -107,13 +135,8 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
                 storeCursor.moveToNext();
             }
         }
-        // Initialize the user query to blank
-        setmQuery("");
-
-        this.getListView().setDividerHeight(2);
-        fillData();
     }
-
+    
     @Override
     public boolean onClose() {
         /*
@@ -149,10 +172,11 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
 
         // If set to "true" the icon is displayed within the EditText, if set to "false" it is displayed outside
         mSearchView.setIconifiedByDefault(true);
-
+        
         // Instead of invoking activity again, use onQueryTextListener when a search is performed
         mSearchView.setOnQueryTextListener(this);
         mSearchView.setOnCloseListener(this);
+        
 
         // Add callbacks to the menu item that contains the SearchView in order to capture
         // the event of pressing the 'back' button
@@ -190,14 +214,6 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
             case R.id.filter:
                 launchFilterDialog();
                 return true;
-            /*
-            case R.id.map:
-                launchMapActivity();
-                return true;
-            case R.id.shop_cart:
-                launchShopCartActivity();
-                return true;
-            */
             case android.R.id.home:
                 // This is called when the Home (Up) button is pressed
                 // in the Action Bar. This handles Android < 4.1.
@@ -230,7 +246,7 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
 
         return true;
     }
-
+    
     @Override
     public boolean onQueryTextChange(String newText) {
         // This is called when you click the search icon or type characters in the search widget

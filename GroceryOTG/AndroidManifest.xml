@@ -33,11 +33,11 @@
         <!--android:theme can be one of the following: Theme.Sherlock, Theme.Sherlock.Light, or 
          Theme.Sherlock.Light.DarkActionBar, or your custom theme must use one of the 
          aforementioned as its parent. -->
-         
-         <!--android:value="AIzaSyDzLfi42UpxNSCITqOSlUURhMXj3i6N4BQ" />-->
+        
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-        	android:value="AIzaSyC7c-p21lKScqO8KfLZ_ro1SvD0v-I7bX4" />
+            android:value="AIzaSyDzLfi42UpxNSCITqOSlUURhMXj3i6N4BQ" />
+        <!--android:value="AIzaSyC7c-p21lKScqO8KfLZ_ro1SvD0v-I7bX4" />-->
         <!--use this if you are using debug.keystore-->
 
         <activity

@@ -1,10 +1,10 @@
 package com.groceryotg.android.services;
 
 import android.app.IntentService;
-import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -28,13 +28,16 @@ import java.util.Date;
  * Date: 06/02/13
  */
 public class NetworkHandler extends IntentService {
+    public static final String REFRESH_COMPLETED_ACTION = "com.groceryotg.android.service.REFRESH_COMPLETE";
+
+    public static final String CONNECTION_STATE = "connectionStatus";
+    public static final int CONNECTION = 10;
+    public static final int NO_CONNECTION = 11;
+
     public static final String REFRESH_CONTENT = "content";
     public static final int CAT = 10;
     public static final int GRO = 20;
     public static final int STO = 30;
-
-    public static final int CONNECTION = 10;
-    public static final int NO_CONNECTION = 11;
 
     JSONParser jsonParser = new JSONParser();
 
@@ -45,7 +48,6 @@ public class NetworkHandler extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         Bundle extras = intent.getExtras();
-        PendingIntent pendingIntent = (PendingIntent) extras.get("pendingIntent");
         int connectionState = NO_CONNECTION;
 
         if (ServerURL.checkNetworkStatus(this.getBaseContext()) && extras != null) {
@@ -69,11 +71,8 @@ public class NetworkHandler extends IntentService {
             connectionState = NO_CONNECTION;
         }
 
-        try {
-            pendingIntent.send(connectionState);
-        } catch (PendingIntent.CanceledException e) {
-            e.printStackTrace();
-        }
+        Intent localIntent = new Intent(REFRESH_COMPLETED_ACTION).putExtra(CONNECTION_STATE,connectionState);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(localIntent);
     }
 
     private void refreshCategory() {
@@ -195,4 +194,6 @@ public class NetworkHandler extends IntentService {
             url.append(arg);
         return url.toString();
     }
+
+
 }

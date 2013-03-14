@@ -2,12 +2,12 @@ package com.groceryotg.android.groceryoverview;
 
 import android.app.AlertDialog;
 import android.app.LoaderManager;
-import android.app.PendingIntent;
 import android.app.SearchManager;
 import android.content.*;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.SparseBooleanArray;
 import android.util.SparseIntArray;
@@ -50,6 +50,8 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
     private String categoryName;
     private Integer categoryId;
 
+    RefreshStatusReceiver mRefreshStatusReceiver;
+
     // User search
     private String mQuery;
     private SearchView mSearchView;
@@ -69,17 +71,19 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
         super.onCreate(savedInstanceState);
         setContentView(R.layout.grocery_list);
 
+        mRefreshStatusReceiver = new RefreshStatusReceiver();
+
         Bundle extras = getIntent().getExtras();
-        
+
         // Enable ancestral navigation ("Up" button in ActionBar) for Android < 4.1
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Configure sliding menu
         configSlidingMenu();
-        
+
         // Initialize list of stores as selected all
         initStores();
-        
+
         groceryUri = (savedInstanceState == null) ? null : (Uri) savedInstanceState.getParcelable(GroceryotgProvider.CONTENT_ITEM_TYPE_CAT);
         if (extras != null && extras.containsKey(GroceryotgProvider.CONTENT_ITEM_TYPE_CAT)) {
             groceryUri = extras.getParcelable(GroceryotgProvider.CONTENT_ITEM_TYPE_CAT);
@@ -104,23 +108,23 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
 
     @Override
     public void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);      
+        super.onNewIntent(intent);
         setIntent(intent);
         handleIntent(intent);
     }
-    
+
     private void handleIntent(Intent intent) {
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             // Gets the search query from the voice recognizer intent
             String query = intent.getStringExtra(SearchManager.QUERY);
-            
+
             // Set the search box text to the received query and submit the search
             mSearchView.setQuery(query, true);
         }
     }
-    
+
     private void initStores() {
-    	// Initialize the list of stores from database
+        // Initialize the list of stores from database
         storeSelected = new SparseIntArray();
         storeNames = new HashMap<Integer, String>();
         Uri storeUri = GroceryotgProvider.CONTENT_URI_STOPARENT;
@@ -136,7 +140,7 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
             }
         }
     }
-    
+
     @Override
     public boolean onClose() {
         /*
@@ -161,6 +165,20 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        IntentFilter mStatusIntentFilter = new IntentFilter(NetworkHandler.REFRESH_COMPLETED_ACTION);
+        mStatusIntentFilter.addCategory(Intent.CATEGORY_DEFAULT);
+        LocalBroadcastManager.getInstance(this).registerReceiver(mRefreshStatusReceiver, mStatusIntentFilter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mRefreshStatusReceiver);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getSupportMenuInflater();
         inflater.inflate(R.menu.groceryoverview_menu, menu);
@@ -172,11 +190,11 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
 
         // If set to "true" the icon is displayed within the EditText, if set to "false" it is displayed outside
         mSearchView.setIconifiedByDefault(true);
-        
+
         // Instead of invoking activity again, use onQueryTextListener when a search is performed
         mSearchView.setOnQueryTextListener(this);
         mSearchView.setOnCloseListener(this);
-        
+
 
         // Add callbacks to the menu item that contains the SearchView in order to capture
         // the event of pressing the 'back' button
@@ -246,7 +264,7 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
 
         return true;
     }
-    
+
     @Override
     public boolean onQueryTextChange(String newText) {
         // This is called when you click the search icon or type characters in the search widget
@@ -334,10 +352,7 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
 
     private void refreshCurrentGrocery() {
         Intent intent = new Intent(this, NetworkHandler.class);
-
-        PendingIntent pendingIntent = createPendingResult(1, intent, PendingIntent.FLAG_ONE_SHOT);
         intent.putExtra(NetworkHandler.REFRESH_CONTENT, NetworkHandler.GRO);
-        intent.putExtra("pendingIntent", pendingIntent);
 
         startService(intent);
     }
@@ -381,20 +396,6 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Toast toast = null;
-        RefreshAnimation.refreshIcon(this, false, refreshItem);
-        if (resultCode == NetworkHandler.CONNECTION) {
-            toast = Toast.makeText(this, "Groceries Updated", Toast.LENGTH_LONG);
-        } else if (resultCode == NetworkHandler.NO_CONNECTION) {
-            toast = Toast.makeText(this, "No Internet Connection", Toast.LENGTH_LONG);
-        }
-        assert toast != null;
-        toast.show();
-        displayEmptyListMessage(buildNoNewContentString());
-    }
-
-    @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String emptyString = args.getBoolean("reload") ? buildNoSearchResultString() : buildNoNewContentString();
         String query = args.getString("query");
@@ -403,7 +404,7 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
         List<String> selectionArgs = new ArrayList<String>();
 
         String[] projection = {GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_ID,
-        		GroceryTable.COLUMN_GROCERY_ID,
+                GroceryTable.COLUMN_GROCERY_ID,
                 GroceryTable.COLUMN_GROCERY_NAME,
                 GroceryTable.COLUMN_GROCERY_PRICE,
                 StoreParentTable.COLUMN_STORE_PARENT_NAME,
@@ -541,5 +542,28 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
 
     private Context getContext() {
         return this.getBaseContext();
+    }
+
+    private class RefreshStatusReceiver extends BroadcastReceiver {
+        private RefreshStatusReceiver() {
+
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Bundle bundle = intent.getExtras();
+            int resultCode = bundle.getInt(NetworkHandler.CONNECTION_STATE);
+
+            Toast toast = null;
+            RefreshAnimation.refreshIcon(context, false, refreshItem);
+            if (resultCode == NetworkHandler.CONNECTION) {
+                toast = Toast.makeText(context, "Groceries Updated", Toast.LENGTH_LONG);
+            } else if (resultCode == NetworkHandler.NO_CONNECTION) {
+                toast = Toast.makeText(context, "No Internet Connection", Toast.LENGTH_LONG);
+            }
+            assert toast != null;
+            toast.show();
+            displayEmptyListMessage(buildNoNewContentString());
+        }
     }
 }

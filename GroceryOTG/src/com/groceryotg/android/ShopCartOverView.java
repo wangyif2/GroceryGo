@@ -22,6 +22,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
+import com.groceryotg.android.groceryoverview.GroceryFragmentActivity;
 import com.slidingmenu.lib.SlidingMenu;
 
 /**
@@ -67,7 +68,7 @@ public class ShopCartOverView extends SherlockListActivity implements LoaderMana
                 // in the Action Bar. This handles Android < 4.1.
             	
             	// Specify the parent activity
-            	Intent parentActivityIntent = new Intent(this, CategoryOverView.class);
+            	Intent parentActivityIntent = new Intent(this, GroceryFragmentActivity.class);
             	parentActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | 
             								Intent.FLAG_ACTIVITY_NEW_TASK);
             	startActivity(parentActivityIntent);

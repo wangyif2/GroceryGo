@@ -1,5 +1,6 @@
 package com.groceryotg.android.groceryoverview;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,7 +14,12 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
+import com.groceryotg.android.GroceryMapView;
 import com.groceryotg.android.R;
+import com.groceryotg.android.ShopCartOverView;
 import com.groceryotg.android.database.CategoryTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 import com.slidingmenu.lib.SlidingMenu;
@@ -30,6 +36,7 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
     GroceryAdapter mAdapter;
     ViewPager mPager;
     SlidingMenu slidingMenu;
+    Menu menu;
 
     private Uri groceryUri;
 
@@ -39,16 +46,40 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
         setContentView(R.layout.grocery_pager);
 
         Bundle extras = getIntent().getExtras();
-
         categories = getCategoryInfo();
 
+        configActionBar();
 
-        mAdapter = new GroceryAdapter(getSupportFragmentManager());
-
-        mPager = (ViewPager) findViewById(R.id.pager);
-        mPager.setAdapter(mAdapter);
+        configViewPager();
 
         configSlidingMenu();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getSupportMenuInflater();
+        inflater.inflate(R.menu.categoryoverview_menu, menu);
+        this.menu = menu;
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.refresh:
+//                refreshCurrentCategory();
+                return true;
+            case R.id.map:
+                launchMapActivity();
+                return true;
+            case R.id.shop_cart:
+                launchShopCartActivity();
+                return true;
+//            case R.id.homeAsUp:
+            // Toggle the sliding slidingMenu
+            //toggle();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private HashMap<Integer, String> getCategoryInfo() {
@@ -63,6 +94,17 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
             c.moveToNext();
         }
         return categories;
+    }
+
+    private void configActionBar() {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+    }
+
+    private void configViewPager() {
+        mAdapter = new GroceryAdapter(getSupportFragmentManager());
+
+        mPager = (ViewPager) findViewById(R.id.pager);
+        mPager.setAdapter(mAdapter);
     }
 
     private void configSlidingMenu() {
@@ -103,10 +145,10 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
                         slidingMenu.showContent();
                 } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_cart))) {
                     // Selected Shopping Cart
-//                    launchShopCartActivity();
+                    launchShopCartActivity();
                 } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_map))) {
                     // Selected Map
-//                    launchMapActivity();
+                    launchMapActivity();
                 } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_sync))) {
                     // Selected Sync
 //                    refreshCurrentCategory();
@@ -124,6 +166,17 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
         });
     }
 
+    private void launchShopCartActivity() {
+        Intent intent = new Intent(this, ShopCartOverView.class);
+        startActivity(intent);
+    }
+
+    private void launchMapActivity() {
+        Intent intent = new Intent(this, GroceryMapView.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+    }
+
     public static class GroceryAdapter extends FragmentStatePagerAdapter {
 
         public GroceryAdapter(FragmentManager fm) {
@@ -133,7 +186,7 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
         @Override
         public CharSequence getPageTitle(int position) {
             if (position == 0) {
-                return "categories";
+                return "categories overview";
             } else
                 return categories.get(position);
         }

@@ -19,6 +19,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.groceryotg.android.database.StoreParentTable;
 import com.groceryotg.android.database.StoreTable;
+import com.groceryotg.android.groceryoverview.GroceryFragmentActivity;
 import com.groceryotg.android.services.Location.LocationUtils;
 
 //import android.support.v4.app.FragmentActivity;
@@ -129,7 +130,7 @@ public class GroceryMapView extends SherlockFragmentActivity {
                 // in the Action Bar. This handles Android < 4.1.
 
                 // Specify the parent activity
-                Intent parentActivityIntent = new Intent(this, CategoryOverView.class);
+                Intent parentActivityIntent = new Intent(this, GroceryFragmentActivity.class);
                 parentActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
                         Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(parentActivityIntent);

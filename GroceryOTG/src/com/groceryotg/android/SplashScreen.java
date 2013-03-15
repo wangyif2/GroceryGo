@@ -1,5 +1,6 @@
 package com.groceryotg.android;
 
+import com.groceryotg.android.groceryoverview.GroceryFragmentActivity;
 import com.groceryotg.android.services.Location.LocationMonitor;
 import com.groceryotg.android.services.Location.LocationReceiver;
 
@@ -42,7 +43,7 @@ public class SplashScreen extends Activity
 				{
 					// start the home screen if the back button wasn't pressed
 					// already
-					Intent intent = new Intent(SplashScreen.this, CategoryOverView.class);
+					Intent intent = new Intent(SplashScreen.this, GroceryFragmentActivity.class);
 					SplashScreen.this.startActivity(intent);
 				}
 			}

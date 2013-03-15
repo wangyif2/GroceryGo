@@ -57,6 +57,8 @@ public class GroceryotgDatabaseHelper extends SQLiteOpenHelper {
     private void initGrocery(SQLiteDatabase db) {
         Gson gson = new GsonBuilder().setDateFormat("MMM dd, yyyy").create();
         String date = ServerURL.getDateNowAsArg();
+//        this is here for testing purposes
+//        String date = "?date=2013-03-13";
 
         JSONArray groceryArray = jsonParser.getJSONFromUrl(ServerURL.getGroceryBaseUrl() + date);
         DatabaseUtils.InsertHelper ih = new DatabaseUtils.InsertHelper(db, GroceryTable.TABLE_GROCERY);

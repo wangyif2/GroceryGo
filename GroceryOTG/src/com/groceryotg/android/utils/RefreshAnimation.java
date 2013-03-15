@@ -25,8 +25,10 @@ public class RefreshAnimation {
 
             refreshItem.setActionView(iv);
         } else if (!start) {
-            refreshItem.getActionView().clearAnimation();
-            refreshItem.setActionView(null);
+            if (refreshItem != null) {
+                refreshItem.getActionView().clearAnimation();
+                refreshItem.setActionView(null);
+            }
         }
     }
 }

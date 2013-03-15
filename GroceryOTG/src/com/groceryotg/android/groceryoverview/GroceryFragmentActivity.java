@@ -7,10 +7,16 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.groceryotg.android.R;
 import com.groceryotg.android.database.CategoryTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
+import com.slidingmenu.lib.SlidingMenu;
 
 import java.util.HashMap;
 
@@ -22,8 +28,8 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
     static HashMap<Integer, String> categories;
 
     GroceryAdapter mAdapter;
-
     ViewPager mPager;
+    SlidingMenu slidingMenu;
 
     private Uri groceryUri;
 
@@ -41,6 +47,8 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
 
         mPager = (ViewPager) findViewById(R.id.pager);
         mPager.setAdapter(mAdapter);
+
+        configSlidingMenu();
     }
 
     private HashMap<Integer, String> getCategoryInfo() {
@@ -55,6 +63,65 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
             c.moveToNext();
         }
         return categories;
+    }
+
+    private void configSlidingMenu() {
+        slidingMenu = new SlidingMenu(this);
+        slidingMenu.setMode(SlidingMenu.LEFT);
+        slidingMenu.setShadowWidthRes(R.dimen.shadow_width);
+        slidingMenu.setShadowDrawable(R.drawable.shadow);
+        slidingMenu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
+        slidingMenu.setFadeDegree(0.35f);
+        slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
+        slidingMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
+        slidingMenu.setMenu(R.layout.menu_frame);
+
+        // Populate the SlidingMenu
+        String[] slidingMenuItems = new String[]{getString(R.string.slidingmenu_item_cat),
+                getString(R.string.slidingmenu_item_cart),
+                getString(R.string.slidingmenu_item_map),
+                getString(R.string.slidingmenu_item_sync),
+                getString(R.string.slidingmenu_item_settings),
+                getString(R.string.slidingmenu_item_about)};
+
+        ListView menuView = (ListView) findViewById(R.id.menu_items);
+        ArrayAdapter<String> menuAdapter = new ArrayAdapter<String>(this,
+                R.layout.menu_item, android.R.id.text1, slidingMenuItems);
+        menuView.setAdapter(menuAdapter);
+
+        menuView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                // Switch activity based on what slidingMenu item the user selected
+                TextView textView = (TextView) view;
+                String selectedItem = textView.getText().toString();
+
+                if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_cat))) {
+                    // Selected Categories
+                    if (slidingMenu.isMenuShowing())
+                        slidingMenu.showContent();
+                } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_cart))) {
+                    // Selected Shopping Cart
+//                    launchShopCartActivity();
+                } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_map))) {
+                    // Selected Map
+//                    launchMapActivity();
+                } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_sync))) {
+                    // Selected Sync
+//                    refreshCurrentCategory();
+                } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_settings))) {
+                    // Selected Settings
+                    if (slidingMenu.isMenuShowing())
+                        slidingMenu.showContent();
+                } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_about))) {
+                    // Selected About
+                    //startActivity(new Intent(CategoryOverView.this, About.class));
+                    if (slidingMenu.isMenuShowing())
+                        slidingMenu.showContent();
+                }
+            }
+        });
     }
 
     public static class GroceryAdapter extends FragmentStatePagerAdapter {

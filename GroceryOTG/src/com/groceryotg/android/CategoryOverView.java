@@ -41,7 +41,7 @@ public class CategoryOverView extends SherlockActivity implements LoaderManager.
         super.onCreate(savedInstanceState);
         context = this.getBaseContext();
 
-        setContentView(R.layout.category_list);
+        setContentView(R.layout.category_fragment_list);
 
         // By default, the Home button in the ActionBar is interactive. Since this
         // is the home screen (and it doesn't make sense to navigate up from the home screen)
@@ -78,7 +78,7 @@ public class CategoryOverView extends SherlockActivity implements LoaderManager.
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getSupportMenuInflater();
-        inflater.inflate(R.menu.categoryoverview_menu, menu);
+        inflater.inflate(R.menu.grocery_activity_menu, menu);
         this.menu = menu;
         return true;
     }

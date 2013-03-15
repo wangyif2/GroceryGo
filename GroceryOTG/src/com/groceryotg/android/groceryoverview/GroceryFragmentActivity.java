@@ -1,18 +1,18 @@
 package com.groceryotg.android.groceryoverview;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.*;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -22,6 +22,8 @@ import com.groceryotg.android.R;
 import com.groceryotg.android.ShopCartOverView;
 import com.groceryotg.android.database.CategoryTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
+import com.groceryotg.android.services.NetworkHandler;
+import com.groceryotg.android.utils.RefreshAnimation;
 import com.slidingmenu.lib.SlidingMenu;
 
 import java.util.HashMap;
@@ -33,20 +35,22 @@ import java.util.HashMap;
 public class GroceryFragmentActivity extends SherlockFragmentActivity {
     static HashMap<Integer, String> categories;
 
+    public static Context mContext;
+    public static ViewPager mPager;
     GroceryAdapter mAdapter;
-    ViewPager mPager;
     SlidingMenu slidingMenu;
+    RefreshStatusReceiver mRefreshStatusReceiver;
+    MenuItem refreshItem;
     Menu menu;
-
-    private Uri groceryUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.grocery_pager);
+        setContentView(R.layout.grocery_activity_pager);
 
         Bundle extras = getIntent().getExtras();
         categories = getCategoryInfo();
+        mContext = getBaseContext();
 
         configActionBar();
 
@@ -56,9 +60,24 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        mRefreshStatusReceiver = new RefreshStatusReceiver();
+        IntentFilter mStatusIntentFilter = new IntentFilter(NetworkHandler.REFRESH_COMPLETED_ACTION);
+        mStatusIntentFilter.addCategory(Intent.CATEGORY_DEFAULT);
+        LocalBroadcastManager.getInstance(this).registerReceiver(mRefreshStatusReceiver, mStatusIntentFilter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mRefreshStatusReceiver);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getSupportMenuInflater();
-        inflater.inflate(R.menu.categoryoverview_menu, menu);
+        inflater.inflate(R.menu.grocery_activity_menu, menu);
         this.menu = menu;
         return true;
     }
@@ -67,7 +86,7 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.refresh:
-//                refreshCurrentCategory();
+                refreshCurrentPager();
                 return true;
             case R.id.map:
                 launchMapActivity();
@@ -143,6 +162,7 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
                     // Selected Categories
                     if (slidingMenu.isMenuShowing())
                         slidingMenu.showContent();
+                    mPager.setCurrentItem(0);
                 } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_cart))) {
                     // Selected Shopping Cart
                     launchShopCartActivity();
@@ -151,7 +171,7 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
                     launchMapActivity();
                 } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_sync))) {
                     // Selected Sync
-//                    refreshCurrentCategory();
+                    refreshCurrentPager();
                 } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_settings))) {
                     // Selected Settings
                     if (slidingMenu.isMenuShowing())
@@ -175,6 +195,43 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
         Intent intent = new Intent(this, GroceryMapView.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
+    }
+
+    private void refreshCurrentPager() {
+        if (slidingMenu.isMenuShowing())
+            slidingMenu.showContent();
+
+        refreshItem = menu.findItem(R.id.refresh);
+        RefreshAnimation.refreshIcon(mContext, true, refreshItem);
+
+        Intent intent = new Intent(mContext, NetworkHandler.class);
+        if (mPager.getCurrentItem() == 0)
+            intent.putExtra(NetworkHandler.REFRESH_CONTENT, NetworkHandler.CAT);
+        else
+            intent.putExtra(NetworkHandler.REFRESH_CONTENT, NetworkHandler.GRO);
+        startService(intent);
+    }
+
+    private class RefreshStatusReceiver extends BroadcastReceiver {
+        private RefreshStatusReceiver() {
+
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Bundle bundle = intent.getExtras();
+            int resultCode = bundle.getInt(NetworkHandler.CONNECTION_STATE);
+
+            Toast toast = null;
+            RefreshAnimation.refreshIcon(context, false, refreshItem);
+            if (resultCode == NetworkHandler.CONNECTION) {
+                toast = Toast.makeText(mContext, "Groceries Updated", Toast.LENGTH_LONG);
+            } else if (resultCode == NetworkHandler.NO_CONNECTION) {
+                toast = Toast.makeText(mContext, "No Internet Connection", Toast.LENGTH_LONG);
+            }
+            assert toast != null;
+            toast.show();
+        }
     }
 
     public static class GroceryAdapter extends FragmentStatePagerAdapter {

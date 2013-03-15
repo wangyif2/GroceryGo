@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,11 +31,11 @@ public class CategoryGridFragment extends SherlockFragment implements LoaderMana
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.category_list, container, false);
+        View v = inflater.inflate(R.layout.category_fragment_list, container, false);
         gridview = (GridView) v.findViewById(R.id.gridview);
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                Log.i("GroceryOTG", "clicked");
+                GroceryFragmentActivity.mPager.setCurrentItem(position + 1, true);
             }
         });
         gridview.setEmptyView(v.findViewById(R.id.empty_category_list));

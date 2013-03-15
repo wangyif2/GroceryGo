@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <ListView
+        android:id="@android:id/list"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+    </ListView>
+
+    <TextView
+        android:id="@+id/empty_grocery_list"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:textSize="18sp"
+        android:fontFamily="sans-serif-light"
+        android:gravity="center_vertical|left"
+        android:text="@string/no_new_content"
+        android:drawableLeft="@drawable/warning"
+        android:drawablePadding="2dip"
+        android:paddingLeft="10dip"
+        android:paddingRight="10dip"
+        android:paddingTop="10dip"
+        android:singleLine="false"/>
+</LinearLayout>

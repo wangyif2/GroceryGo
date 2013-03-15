@@ -19,7 +19,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.groceryotg.android.database.CategoryTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
-import com.groceryotg.android.groceryoverview.GroceryOverView;
+import com.groceryotg.android.groceryoverview.GroceryFragmentActivity;
 import com.groceryotg.android.services.NetworkHandler;
 import com.groceryotg.android.utils.RefreshAnimation;
 import com.slidingmenu.lib.SlidingMenu;
@@ -108,7 +108,7 @@ public class CategoryOverView extends SherlockActivity implements LoaderManager.
 
         gridview.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                Intent intent = new Intent(CategoryOverView.this, GroceryOverView.class);
+                Intent intent = new Intent(CategoryOverView.this, GroceryFragmentActivity.class);
                 Uri uri = Uri.parse(GroceryotgProvider.CONTENT_URI_CAT + "/" + id);
                 intent.putExtra(GroceryotgProvider.CONTENT_ITEM_TYPE_CAT, uri);
                 startActivity(intent);

@@ -1,26 +1,22 @@
 package com.groceryotg.android.services;
 
 import android.app.IntentService;
-import android.content.ContentValues;
 import android.content.Intent;
+import android.database.DatabaseUtils;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.groceryotg.android.database.CategoryTable;
-import com.groceryotg.android.database.GroceryTable;
-import com.groceryotg.android.database.StoreTable;
+import com.groceryotg.android.database.*;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
-import com.groceryotg.android.database.objects.Category;
-import com.groceryotg.android.database.objects.Grocery;
-import com.groceryotg.android.database.objects.Store;
+import com.groceryotg.android.database.objects.*;
 import com.groceryotg.android.utils.JSONParser;
 import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -37,7 +33,11 @@ public class NetworkHandler extends IntentService {
     public static final String REFRESH_CONTENT = "content";
     public static final int CAT = 10;
     public static final int GRO = 20;
-    public static final int STO = 30;
+    public static final int STO_PAR = 30;
+    public static final int STO = 40;
+    public static final int FLY = 50;
+
+    public static final String REQUEST_TYPE = "refresh_type";
 
     JSONParser jsonParser = new JSONParser();
 
@@ -47,20 +47,28 @@ public class NetworkHandler extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        SQLiteDatabase db = GroceryotgProvider.database.getWritableDatabase();
         Bundle extras = intent.getExtras();
+        Integer requestType = null;
         int connectionState = NO_CONNECTION;
 
         if (ServerURL.checkNetworkStatus(this.getBaseContext()) && extras != null) {
-            Integer requestType = (Integer) extras.get(REFRESH_CONTENT);
+            requestType = (Integer) extras.get(REFRESH_CONTENT);
             switch (requestType) {
                 case CAT:
-                    refreshCategory();
+                    refreshCategory(db);
                     break;
                 case GRO:
-                    refreshGrocery();
+                    refreshGrocery(db);
+                    break;
+                case STO_PAR:
+                    refreshStoreParent(db);
                     break;
                 case STO:
-                    refreshStore();
+                    refreshStore(db);
+                    break;
+                case FLY:
+                    refreshFlyer(db);
                     break;
                 default:
                     Log.e("GroceryOTG", "unknown request received by NetworkHandler");
@@ -71,81 +79,159 @@ public class NetworkHandler extends IntentService {
             connectionState = NO_CONNECTION;
         }
 
-        Intent localIntent = new Intent(REFRESH_COMPLETED_ACTION).putExtra(CONNECTION_STATE,connectionState);
+        Bundle bundle = new Bundle();
+        bundle.putInt(CONNECTION_STATE, connectionState);
+        bundle.putInt(REQUEST_TYPE, requestType);
+        Intent localIntent = new Intent(REFRESH_COMPLETED_ACTION).putExtra("bundle",bundle);
         LocalBroadcastManager.getInstance(this).sendBroadcast(localIntent);
     }
 
-    private void refreshCategory() {
+    private void refreshCategory(SQLiteDatabase db) {
         Gson gson = new Gson();
         JSONArray categoryArray = jsonParser.getJSONFromUrl(ServerURL.getCateoryUrl());
-        ArrayList<ContentValues> contentValuesArrayList = new ArrayList<ContentValues>();
+        DatabaseUtils.InsertHelper ih = new DatabaseUtils.InsertHelper(db, CategoryTable.TABLE_CATEGORY);
+        Category category;
 
         if (categoryArray != null) {
             try {
                 for (int i = 0; i < categoryArray.length(); i++) {
-                    Category category = gson.fromJson(categoryArray.getJSONObject(i).toString(), Category.class);
+                    category = gson.fromJson(categoryArray.getJSONObject(i).toString(), Category.class);
 
-                    ContentValues contentValues = new ContentValues();
-                    contentValues.put(CategoryTable.COLUMN_CATEGORY_ID, category.getCategoryId());
-                    contentValues.put(CategoryTable.COLUMN_CATEGORY_NAME, category.getCategoryName());
+                    ih.prepareForInsert();
+                    ih.bind(ih.getColumnIndex(CategoryTable.COLUMN_CATEGORY_ID), category.getCategoryId());
+                    ih.bind(ih.getColumnIndex(CategoryTable.COLUMN_CATEGORY_NAME), category.getCategoryName());
 
-                    contentValuesArrayList.add(contentValues);
+                    ih.execute();
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
+            } finally {
+                ih.close();
             }
-
-            ContentValues[] categories = new ContentValues[contentValuesArrayList.size()];
-            contentValuesArrayList.toArray(categories);
-
-            getContentResolver().bulkInsert(GroceryotgProvider.CONTENT_URI_CAT, categories);
         }
     }
 
-    private void refreshStore() {
+    private void refreshGrocery(SQLiteDatabase db) {
+//        String date = ServerURL.getDateNowAsArg();
+//        this is here for testing purposes
+        String date = "?date=2013-03-13";
+        String[] requestArgs = new String[]{date};
+        String getGrocery = buildGroceryURL(requestArgs);
+
+        JSONArray groceryArray = jsonParser.getJSONFromUrl(ServerURL.getGroceryBaseUrl() + date);
+
+        if (groceryArray != null) {
+            addNewGroceries(groceryArray, db);
+//            removeExpiredGroceries();
+        }
+    }
+
+    private void refreshStoreParent(SQLiteDatabase db) {
+        Gson gson = new Gson();
+        JSONArray storeParentArray = jsonParser.getJSONFromUrl(ServerURL.getStoreParentUrl());
+        DatabaseUtils.InsertHelper ih = new DatabaseUtils.InsertHelper(db, StoreParentTable.TABLE_STORE_PARENT);
+        StoreParent storeParent;
+
+        if (storeParentArray != null) {
+            try {
+                for (int i = 0; i < storeParentArray.length(); i++) {
+                    storeParent = gson.fromJson(storeParentArray.getJSONObject(i).toString(), StoreParent.class);
+
+                    ih.prepareForInsert();
+                    ih.bind(ih.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_ID), storeParent.getStoreParentId());
+                    ih.bind(ih.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_NAME), storeParent.getName());
+                    ih.execute();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } finally {
+                ih.close();
+            }
+        }
+    }
+
+    private void refreshStore(SQLiteDatabase db) {
         Gson gson = new Gson();
         JSONArray storeArray = jsonParser.getJSONFromUrl(ServerURL.getStoreUrl());
-        ArrayList<ContentValues> contentValuesArrayList = new ArrayList<ContentValues>();
+        DatabaseUtils.InsertHelper ih = new DatabaseUtils.InsertHelper(db, StoreTable.TABLE_STORE);
+        Store store;
 
         if (storeArray != null) {
             try {
                 for (int i = 0; i < storeArray.length(); i++) {
-                    Store store = gson.fromJson(storeArray.getJSONObject(i).toString(), Store.class);
+                    store = gson.fromJson(storeArray.getJSONObject(i).toString(), Store.class);
 
-                    ContentValues contentValues = new ContentValues();
-                    contentValues.put(StoreTable.COLUMN_STORE_ID, store.getStoreId());
-                    contentValues.put(StoreTable.COLUMN_STORE_ADDR, store.getStoreAddress());
-                    contentValues.put(StoreTable.COLUMN_STORE_LATITUDE, store.getStoreLatitude());
-                    contentValues.put(StoreTable.COLUMN_STORE_LONGITUDE, store.getStoreLongitude());
-                    contentValues.put(StoreTable.COLUMN_STORE_PARENT, store.getStoreParent().getStoreParentId());
-                    contentValues.put(StoreTable.COLUMN_STORE_FLYER, store.getFlyer().getFlyerId());
+                    ih.prepareForInsert();
+                    ih.bind(ih.getColumnIndex(StoreTable.COLUMN_STORE_ID), store.getStoreId());
+                    ih.bind(ih.getColumnIndex(StoreTable.COLUMN_STORE_PARENT), store.getStoreParent().getStoreParentId());
+                    ih.bind(ih.getColumnIndex(StoreTable.COLUMN_STORE_FLYER), store.getFlyer().getFlyerId());
+                    if (store.getStoreAddress() != null)
+                        ih.bind(ih.getColumnIndex(StoreTable.COLUMN_STORE_ADDR), store.getStoreAddress());
+                    if (store.getStoreLatitude() != null)
+                        ih.bind(ih.getColumnIndex(StoreTable.COLUMN_STORE_LATITUDE), store.getStoreLatitude());
+                    if (store.getStoreLongitude() != null)
+                        ih.bind(ih.getColumnIndex(StoreTable.COLUMN_STORE_LONGITUDE), store.getStoreLongitude());
 
-                    contentValuesArrayList.add(contentValues);
+                    ih.execute();
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
+            } finally {
+                ih.close();
             }
-
-            ContentValues[] stores = new ContentValues[contentValuesArrayList.size()];
-            contentValuesArrayList.toArray(stores);
-
-            getContentResolver().bulkInsert(GroceryotgProvider.CONTENT_URI_STO, stores);
         }
     }
 
-    private void refreshGrocery() {
-        //build request url
-        String date = ServerURL.getDateNowAsArg();
-        String[] requestArgs = new String[]{date};
-        String getGrocery = buildGroceryURL(requestArgs);
+    private void refreshFlyer(SQLiteDatabase db) {
+        Gson gson = new Gson();
+        JSONArray flyerArray = jsonParser.getJSONFromUrl(ServerURL.getFlyerUrl());
+        DatabaseUtils.InsertHelper ih = new DatabaseUtils.InsertHelper(db, FlyerTable.TABLE_FLYER);
+        Flyer flyer;
 
-        //network request
-        JSONArray groceryArray = jsonParser.getJSONFromUrl(getGrocery);
-        ArrayList<ContentValues> contentValuesArrayList = new ArrayList<ContentValues>();
+        if (flyerArray != null) {
+            try {
+                for (int i = 0; i < flyerArray.length(); i++) {
+                    flyer = gson.fromJson(flyerArray.getJSONObject(i).toString(), Flyer.class);
 
-        if (groceryArray != null) {
-            addNewGroceries(groceryArray, contentValuesArrayList);
-            removeExpiredGroceries();
+                    ih.prepareForInsert();
+                    ih.bind(ih.getColumnIndex(FlyerTable.COLUMN_FLYER_ID), flyer.getFlyerId());
+                    ih.bind(ih.getColumnIndex(FlyerTable.COLUMN_FLYER_URL), flyer.getUrl());
+                    ih.bind(ih.getColumnIndex(FlyerTable.COLUMN_FLYER_STOREPARENT), flyer.getStoreParent().getStoreParentId());
+                    ih.execute();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } finally {
+                ih.close();
+            }
+        }
+    }
+
+    private void addNewGroceries(JSONArray groceryArray, SQLiteDatabase db) {
+        //TODO: hard coded date format!! not good...
+        Gson gson = new GsonBuilder().setDateFormat("MMM dd, yyyy").create();
+        DatabaseUtils.InsertHelper ih = new DatabaseUtils.InsertHelper(db, GroceryTable.TABLE_GROCERY);
+        Grocery grocery;
+        try {
+            for (int i = 0; i < groceryArray.length(); i++) {
+                grocery = gson.fromJson(groceryArray.getJSONObject(i).toString(), Grocery.class);
+
+                ih.prepareForInsert();
+                ih.bind(ih.getColumnIndex(GroceryTable.COLUMN_GROCERY_ID), grocery.getGroceryId());
+                ih.bind(ih.getColumnIndex(GroceryTable.COLUMN_GROCERY_NAME), grocery.getRawString());
+                if (grocery.getTotalPrice() != null)
+                    ih.bind(ih.getColumnIndex(GroceryTable.COLUMN_GROCERY_PRICE), grocery.getTotalPrice());
+                if (grocery.getCategoryId() != null)
+                    ih.bind(ih.getColumnIndex(GroceryTable.COLUMN_GROCERY_CATEGORY), grocery.getCategoryId());
+                if (grocery.getEndDate() != null)
+                    ih.bind(ih.getColumnIndex(GroceryTable.COLUMN_GROCERY_EXPIRY), grocery.getEndDate().getTime());
+                ih.bind(ih.getColumnIndex(GroceryTable.COLUMN_GROCERY_FLYER), grocery.getFlyer().getFlyerId());
+                ih.execute();
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } finally {
+            ih.close();
         }
     }
 
@@ -158,32 +244,6 @@ public class NetworkHandler extends IntentService {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-    }
-
-    private void addNewGroceries(JSONArray groceryArray, ArrayList<ContentValues> contentValuesArrayList) {
-        //TODO: hard coded date format!! not good...
-        Gson gson = new GsonBuilder().setDateFormat("MMM dd, yyyy").create();
-        try {
-            for (int i = 0; i < groceryArray.length(); i++) {
-                Grocery grocery = gson.fromJson(groceryArray.getJSONObject(i).toString(), Grocery.class);
-
-                ContentValues contentValues = new ContentValues();
-                contentValues.put(GroceryTable.COLUMN_GROCERY_ID, grocery.getGroceryId());
-                contentValues.put(GroceryTable.COLUMN_GROCERY_NAME, grocery.getRawString());
-                contentValues.put(GroceryTable.COLUMN_GROCERY_PRICE, grocery.getTotalPrice());
-                contentValues.put(GroceryTable.COLUMN_GROCERY_CATEGORY, grocery.getCategoryId());
-                contentValues.put(GroceryTable.COLUMN_GROCERY_EXPIRY, grocery.getEndDate().getTime());
-
-                contentValuesArrayList.add(contentValues);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        ContentValues[] groceries = new ContentValues[contentValuesArrayList.size()];
-        contentValuesArrayList.toArray(groceries);
-
-        getContentResolver().bulkInsert(GroceryotgProvider.CONTENT_URI_GRO, groceries);
     }
 
     private String buildGroceryURL(String[] args) {

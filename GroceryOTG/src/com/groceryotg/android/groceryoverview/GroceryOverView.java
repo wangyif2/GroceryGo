@@ -70,7 +70,7 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.grocery_list);
+        setContentView(R.layout.grocery_fragment_list);
 
         mRefreshStatusReceiver = new RefreshStatusReceiver();
 
@@ -182,7 +182,7 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getSupportMenuInflater();
-        inflater.inflate(R.menu.groceryoverview_menu, menu);
+        inflater.inflate(R.menu.grocery_pager_menu1, menu);
 
         // Get the SearchView and set the searchable configuration
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
@@ -372,7 +372,7 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
                 R.id.grocery_row_store,
                 R.id.grocery_row_inshopcart};
 
-        adapter = new SimpleCursorAdapter(this, R.layout.grocery_row, null, from, to, 0);
+        adapter = new SimpleCursorAdapter(this, R.layout.grocery_fragment_row, null, from, to, 0);
         adapter.setViewBinder(new GroceryViewBinder());
 
         setListAdapter(adapter);
@@ -511,7 +511,7 @@ public class GroceryOverView extends SherlockListActivity implements OnQueryText
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                // Switch activity based on what slidingMenu item the user selected
+                // Switch activity based on what mSlidingMenu item the user selected
                 TextView textView = (TextView) view;
                 String selectedItem = textView.getText().toString();
 

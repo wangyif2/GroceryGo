@@ -17,7 +17,7 @@ import com.groceryotg.android.database.*;
  */
 public class GroceryotgProvider extends ContentProvider {
     // database
-    private GroceryotgDatabaseHelper database;
+    public static GroceryotgDatabaseHelper database;
 
     // Used for the UriMacher
     private static final int CATEGORIES = 10;

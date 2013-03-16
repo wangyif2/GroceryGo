@@ -1,18 +1,22 @@
 package com.groceryotg.android.groceryoverview;
 
+import android.content.ContentValues;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.support.v4.content.CursorLoader;
-import android.util.SparseIntArray;
+import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
+import android.widget.Toast;
 import com.actionbarsherlock.app.SherlockListFragment;
-import com.groceryotg.android.Cheeses;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.groceryotg.android.R;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.GroceryTable;
@@ -22,7 +26,6 @@ import com.groceryotg.android.services.ServerURL;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -31,27 +34,11 @@ import java.util.Map;
  */
 public class GroceryListFragment extends SherlockListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final String CATEGORY_POSITION = "position";
-    int mNum;
     SimpleCursorAdapter adapter;
+    TextView emptyTextView;
+    Menu menu;
 
-    private Uri groceryUri;
-    private String categoryName;
     private Integer categoryId;
-
-
-    // User search
-    private String mQuery;
-    private SearchView mSearchView;
-
-    // Filters
-    private Map<Integer, String> storeNames;
-    private SparseIntArray storeSelected;
-    private Integer subcategoryId;
-    private Double mPriceRangeMin;
-    private Double mPriceRangeMax;
-
-    private final Integer SELECTED = 1;
-    private final Integer NOT_SELECTED = 0;
 
     static GroceryListFragment newInstance(int pos) {
         GroceryListFragment f = new GroceryListFragment();
@@ -67,21 +54,96 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mNum = getArguments() != null ? getArguments().getInt(CATEGORY_POSITION) : 1;
+        setHasOptionsMenu(true);
+        categoryId = getArguments() != null ? getArguments().getInt(CATEGORY_POSITION) : 1;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.grocery_pager_menu, menu);
+        this.menu = menu;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.refresh:
+//                refreshCurrentPager();
+                return true;
+            case R.id.map:
+//                launchMapActivity();
+                return true;
+            case R.id.shop_cart:
+//                launchShopCartActivity();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
+        View v = inflater.inflate(R.layout.grocery_fragment_list, container, false);
+        emptyTextView = (TextView) v.findViewById(R.id.empty_grocery_list);
+        return v;
+    }
 
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        displayEmptyListMessage(buildNoNewContentString());
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        setListAdapter(new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_list_item_1, Cheeses.sCheeseStrings));
+        fillData();
+    }
 
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+        TextView textView = (TextView) v.findViewById(R.id.grocery_row_label);
+        TextView idView = (TextView) v.findViewById(R.id.grocery_row_id);
+
+        ContentValues values = new ContentValues();
+        values.put(CartTable.COLUMN_CART_GROCERY_ID, idView.getText().toString());
+        values.put(CartTable.COLUMN_CART_GROCERY_NAME, textView.getText().toString());
+
+        getActivity().getContentResolver().insert(GroceryotgProvider.CONTENT_URI_CART_ITEM, values);
+
+        Bundle b = new Bundle();
+        b.putString("query", GroceryFragmentActivity.mQuery);
+        b.putBoolean("reload", true);
+        getLoaderManager().restartLoader(0, b, this);
+        Toast t = Toast.makeText(getActivity(), "Item added to Shopping Cart", Toast.LENGTH_SHORT);
+        t.show();
+    }
+
+    private void fillData() {
+        String[] from = new String[]{GroceryTable.COLUMN_GROCERY_ID,
+                GroceryTable.COLUMN_GROCERY_NAME,
+                GroceryTable.COLUMN_GROCERY_NAME,
+                GroceryTable.COLUMN_GROCERY_PRICE,
+                StoreParentTable.COLUMN_STORE_PARENT_NAME,
+                CartTable.COLUMN_CART_GROCERY_ID};
+        int[] to = new int[]{R.id.grocery_row_id,
+                R.id.grocery_row_label,
+                R.id.grocery_row_details,
+                R.id.grocery_row_price,
+                R.id.grocery_row_store,
+                R.id.grocery_row_inshopcart};
+
+        adapter = new SimpleCursorAdapter(getActivity(), R.layout.grocery_fragment_row, null, from, to, 0);
+        adapter.setViewBinder(new GroceryViewBinder());
+
+        setListAdapter(adapter);
+
+        // Prepare the asynchronous loader.
+        Bundle b = new Bundle();
+        b.putString("query", "");
+        b.putBoolean("reload", false);
+        getLoaderManager().initLoader(0, b, this);
     }
 
     @Override
@@ -106,18 +168,18 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
             selection += " AND " + GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_GROCERY_NAME + " LIKE ?";
             selectionArgs.add("%" + query + "%");
         }
-        if (storeSelected != null && storeSelected.size() > 0) {
+        if (GroceryFragmentActivity.storeSelected != null && GroceryFragmentActivity.storeSelected.size() > 0) {
             // Go through selected stores and add them to query
             String storeSelection = "";
-            for (int storeNum = 0; storeNum < storeSelected.size(); storeNum++) {
-                if (storeSelected.valueAt(storeNum) == SELECTED) {
+            for (int storeNum = 0; storeNum < GroceryFragmentActivity.storeSelected.size(); storeNum++) {
+                if (GroceryFragmentActivity.storeSelected.valueAt(storeNum) == GroceryFragmentActivity.SELECTED) {
                     if (storeSelection.isEmpty()) {
                         storeSelection = " AND (";
                         storeSelection += StoreParentTable.TABLE_STORE_PARENT + "." + StoreParentTable.COLUMN_STORE_PARENT_ID + " = ?";
                     } else {
                         storeSelection += " OR " + StoreParentTable.TABLE_STORE_PARENT + "." + StoreParentTable.COLUMN_STORE_PARENT_ID + " = ?";
                     }
-                    selectionArgs.add(((Integer) storeSelected.keyAt(storeNum)).toString());
+                    selectionArgs.add(((Integer) GroceryFragmentActivity.storeSelected.keyAt(storeNum)).toString());
                 }
             }
             if (!storeSelection.isEmpty()) {
@@ -125,13 +187,13 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
                 selection += storeSelection;
             }
         }
-        if (mPriceRangeMin != null) {
+        if (GroceryFragmentActivity.mPriceRangeMin != null) {
             selection += " AND " + GroceryTable.COLUMN_GROCERY_PRICE + " >= ?";
-            selectionArgs.add(mPriceRangeMin.toString());
+            selectionArgs.add(GroceryFragmentActivity.mPriceRangeMin.toString());
         }
-        if (mPriceRangeMax != null) {
+        if (GroceryFragmentActivity.mPriceRangeMax != null) {
             selection += " AND " + GroceryTable.COLUMN_GROCERY_PRICE + " <= ?";
-            selectionArgs.add(mPriceRangeMax.toString());
+            selectionArgs.add(GroceryFragmentActivity.mPriceRangeMax.toString());
         }
 
         final String[] selectionArgsArr = new String[selectionArgs.size()];
@@ -151,9 +213,8 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
 
     private void displayEmptyListMessage(String emptyStringMsg) {
         ListView myListView = this.getListView();
-        TextView myTextView = (TextView) myListView.findViewById(R.id.empty_grocery_list);
-        myTextView.setText(emptyStringMsg);
-        myListView.setEmptyView(myTextView);
+        emptyTextView.setText(emptyStringMsg);
+        myListView.setEmptyView(emptyTextView);
     }
 
     private String buildNoNewContentString() {

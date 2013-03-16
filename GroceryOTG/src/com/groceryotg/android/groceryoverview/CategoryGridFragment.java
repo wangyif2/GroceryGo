@@ -53,7 +53,7 @@ public class CategoryGridFragment extends SherlockFragment implements LoaderMana
         int[] to = new int[]{R.id.category_row_label};
 
         getLoaderManager().initLoader(0, null, this);
-        adapter = new CategoryGridCursorAdapter(getActivity(), R.layout.category_row, null, from, to);
+        adapter = new CategoryGridCursorAdapter(getActivity(), R.layout.category_fragment_row, null, from, to);
 
         gridview.setAdapter(adapter);
     }

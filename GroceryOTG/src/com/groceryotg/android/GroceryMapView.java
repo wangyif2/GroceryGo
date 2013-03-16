@@ -19,8 +19,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.groceryotg.android.database.StoreParentTable;
 import com.groceryotg.android.database.StoreTable;
-import com.groceryotg.android.groceryoverview.GroceryFragmentActivity;
-import com.groceryotg.android.services.Location.GroceryOTGUtils;
+import com.groceryotg.android.GroceryFragmentActivity;
+import com.groceryotg.android.utils.GroceryOTGUtils;
 
 //import android.support.v4.app.FragmentActivity;
 

@@ -9,20 +9,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
-import android.widget.TextView;
+import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
-
 import com.actionbarsherlock.app.SherlockListActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
-import com.groceryotg.android.groceryoverview.GroceryFragmentActivity;
 import com.slidingmenu.lib.SlidingMenu;
 
 /**
@@ -141,7 +135,7 @@ public class ShopCartOverView extends SherlockListActivity implements LoaderMana
     }
 
     private void launchHomeActivity() {
-        Intent intent = new Intent(this, CategoryOverView.class);
+        Intent intent = new Intent(this, GroceryFragmentActivity.class);
         startActivity(intent);
     }
     

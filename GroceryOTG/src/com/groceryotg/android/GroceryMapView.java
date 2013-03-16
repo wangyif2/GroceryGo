@@ -20,7 +20,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.groceryotg.android.database.StoreParentTable;
 import com.groceryotg.android.database.StoreTable;
 import com.groceryotg.android.groceryoverview.GroceryFragmentActivity;
-import com.groceryotg.android.services.Location.LocationUtils;
+import com.groceryotg.android.services.Location.GroceryOTGUtils;
 
 //import android.support.v4.app.FragmentActivity;
 
@@ -49,7 +49,7 @@ public class GroceryMapView extends SherlockFragmentActivity {
         super.onCreateView(name, context, attrs);
 
         LatLng lastKnownLocation = getLastKnownLocation();
-        Cursor storeLocations = LocationUtils.getStoreLocations(context);
+        Cursor storeLocations = GroceryOTGUtils.getStoreLocations(context);
         SupportMapFragment fragment = (SupportMapFragment) getSupportFragmentManager().findFragmentByTag(MAP_FRAGMENT_TAG);
         if (fragment != null) {
             GoogleMap map = fragment.getMap();

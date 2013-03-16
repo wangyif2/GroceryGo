@@ -78,7 +78,7 @@ public class CategoryOverView extends SherlockActivity implements LoaderManager.
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getSupportMenuInflater();
-        inflater.inflate(R.menu.grocery_activity_menu, menu);
+        inflater.inflate(R.menu.grocery_pager_menu, menu);
         this.menu = menu;
         return true;
     }
@@ -181,7 +181,7 @@ public class CategoryOverView extends SherlockActivity implements LoaderManager.
         int[] to = new int[]{R.id.category_row_label};
 
         getLoaderManager().initLoader(0, null, this);
-        adapter = new CategoryGridCursorAdapter(this, R.layout.category_row, null, from, to);
+        adapter = new CategoryGridCursorAdapter(this, R.layout.category_fragment_row, null, from, to);
 
         gridview.setAdapter(adapter);
     }

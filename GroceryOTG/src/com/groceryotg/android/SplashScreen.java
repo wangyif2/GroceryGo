@@ -14,7 +14,6 @@ import android.os.Handler;
 import android.os.SystemClock;
 import android.support.v4.content.LocalBroadcastManager;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
-import com.groceryotg.android.GroceryFragmentActivity;
 import com.groceryotg.android.services.Location.LocationMonitor;
 import com.groceryotg.android.services.Location.LocationReceiver;
 import com.groceryotg.android.services.NetworkHandler;
@@ -67,6 +66,8 @@ public class SplashScreen extends Activity {
             initStoreParent();
             initStore();
             initFlyer();
+        } else {
+            configHandler();
         }
     }
 

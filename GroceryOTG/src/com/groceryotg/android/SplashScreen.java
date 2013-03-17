@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.support.v4.content.LocalBroadcastManager;
+import android.widget.ProgressBar;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 import com.groceryotg.android.services.Location.LocationMonitor;
 import com.groceryotg.android.services.Location.LocationReceiver;
@@ -24,15 +25,20 @@ public class SplashScreen extends Activity {
     // used to know if the back button was pressed in the splash screen activity
     // and avoid opening the next activity
     private boolean mIsBackButtonPressed;
-    private static final int SPLASH_DURATION = 10; // 2 seconds
+    private static final int SPLASH_DURATION = 10; // 10 milliseconds
     JSONParser jsonParser = new JSONParser();
     RefreshStatusReceiver mRefreshStatusReceiver;
-
+    
+    private static final int PROGRESS = 0x1;
+    private ProgressBar mProgress;
+    private int mProgressStatus = 0;
+    
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.splash_screen);
 
+        // Initialize the database tables if they aren't created
         Cursor c = getContentResolver().query(GroceryotgProvider.CONTENT_URI_CAT, null, null, null, null);
 
         init();
@@ -61,41 +67,41 @@ public class SplashScreen extends Activity {
 
     private void configDatabase() {
         if (ServerURL.checkNetworkStatus(getBaseContext())) {
-            initCategory();
-            initGrocery();
-            initStoreParent();
-            initStore();
-            initFlyer();
+            populateCategory();
+            populateGrocery();
+            populateStoreParent();
+            populateStore();
+            populateFlyer();
         } else {
             configHandler();
         }
     }
 
-    private void initCategory() {
+    private void populateCategory() {
         Intent intent = new Intent(getBaseContext(), NetworkHandler.class);
         intent.putExtra(NetworkHandler.REFRESH_CONTENT, NetworkHandler.CAT);
         startService(intent);
     }
 
-    private void initGrocery() {
+    private void populateGrocery() {
         Intent intent = new Intent(getBaseContext(), NetworkHandler.class);
         intent.putExtra(NetworkHandler.REFRESH_CONTENT, NetworkHandler.GRO);
         startService(intent);
     }
 
-    private void initStoreParent() {
+    private void populateStoreParent() {
         Intent intent = new Intent(getBaseContext(), NetworkHandler.class);
         intent.putExtra(NetworkHandler.REFRESH_CONTENT, NetworkHandler.STO_PAR);
         startService(intent);
     }
 
-    private void initStore() {
+    private void populateStore() {
         Intent intent = new Intent(getBaseContext(), NetworkHandler.class);
         intent.putExtra(NetworkHandler.REFRESH_CONTENT, NetworkHandler.STO);
         startService(intent);
     }
 
-    private void initFlyer() {
+    private void populateFlyer() {
         Intent intent = new Intent(getBaseContext(), NetworkHandler.class);
         intent.putExtra(NetworkHandler.REFRESH_CONTENT, NetworkHandler.FLY);
         startService(intent);
@@ -103,7 +109,7 @@ public class SplashScreen extends Activity {
 
     private void configHandler() {
         Handler handler = new Handler();
-        // run a thread after 2 seconds to start the home screen
+        // wait a bit, then start the home screen
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -145,6 +151,7 @@ public class SplashScreen extends Activity {
         public void onReceive(Context context, Intent intent) {
             int requestType = intent.getBundleExtra("bundle").getInt(NetworkHandler.REQUEST_TYPE);
 
+            // Network handler services are processed in the order they are called in
             if (requestType == NetworkHandler.FLY) {
                 configHandler();
             }

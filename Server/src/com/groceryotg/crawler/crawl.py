@@ -179,7 +179,7 @@ def getFlyer():
                                     raw_item = line[:index_price].strip()
                                 
                                 item_details = [raw_item, raw_price, unit_price, unit_type_id, total_price, \
-                                                start_date, end_date, line_number, flyer_id, update_date]
+                                                start_date, end_date, line_number, flyer_id, update_date, line_number]
                                 
                                 #logging.info(item_details)
                                 store_items += [item_details]
@@ -436,7 +436,7 @@ def getFlyer():
                                             unit_type_id = filter(lambda x: x if x[1]=='kg' else None,units)[0][0]
                             
                             item_details = [raw_item, orig_price, unit_price, unit_type_id, total_price, \
-                                            start_date, end_date, line_number, flyer_id, update_date]
+                                            start_date, end_date, line_number, flyer_id, update_date, line_number]
                             
                             store_items += [item_details]
                             
@@ -517,7 +517,7 @@ def getFlyer():
                                 raw_item = line[:index_price].strip()
                             
                             item_details = [raw_item, raw_price, unit_price, unit_type_id, total_price, \
-                                            start_date, end_date, line_number, flyer_id, update_date]
+                                            start_date, end_date, line_number, flyer_id, update_date, line_number]
                             
                             #logging.info(item_details)
                             store_items += [item_details]
@@ -733,7 +733,7 @@ def getFlyer():
                                         unit_type_id = filter(lambda x: x if x[1]=='kg' else None,units)[0][0]
                         
                         item_details = [raw_item, orig_price, unit_price, unit_type_id, total_price, \
-                                        start_date, end_date, line_number, flyer_id, update_date]
+                                        start_date, end_date, line_number, flyer_id, update_date, line_number]
                         
                         store_items += [item_details]
                         
@@ -940,7 +940,7 @@ def getFlyer():
                                     unit_type_id = filter(lambda x: x if x[1]=='kg' else None,units)[0][0]
                     
                     item_details = [raw_item, orig_price, unit_price, unit_type_id, total_price, \
-                                    start_date, end_date, line_number, flyer_id, update_date]
+                                    start_date, end_date, line_number, flyer_id, update_date, line_number]
                     
                     store_items += [item_details]
                     

@@ -19,14 +19,13 @@ import com.groceryotg.android.services.Location.LocationMonitor;
 import com.groceryotg.android.services.Location.LocationReceiver;
 import com.groceryotg.android.services.NetworkHandler;
 import com.groceryotg.android.services.ServerURL;
-import com.groceryotg.android.utils.JSONParser;
 
 public class SplashScreen extends Activity {
     // used to know if the back button was pressed in the splash screen activity
     // and avoid opening the next activity
     private boolean mIsBackButtonPressed;
     private static final int SPLASH_DURATION = 10; // 10 milliseconds
-    JSONParser jsonParser = new JSONParser();
+
     RefreshStatusReceiver mRefreshStatusReceiver;
     
     private static final int PROGRESS = 0x1;

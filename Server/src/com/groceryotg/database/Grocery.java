@@ -60,7 +60,10 @@ public class Grocery {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updateDate;
 
-    public Grocery(Item item, String rawString, Double rawPrice, Double unitPrice, Unit unit, Double totalPrice, Date startDate, Date endDate, Flyer flyer, Integer lineNumber, Date updateDate) {
+    @Column(name = "score")
+    private Double score;
+
+    public Grocery(Item item, String rawString, Double rawPrice, Double unitPrice, Unit unit, Double totalPrice, Date startDate, Date endDate, Flyer flyer, Integer lineNumber, Date updateDate, Double score) {
         this.item = item;
         this.rawString = rawString;
         this.rawPrice = rawPrice;
@@ -72,6 +75,7 @@ public class Grocery {
         this.flyer = flyer;
         this.lineNumber = lineNumber;
         this.updateDate = updateDate;
+        this.score = score;
     }
 
     public Grocery() {
@@ -171,5 +175,13 @@ public class Grocery {
 
     public void setItem(Item item) {
         this.item = item;
+    }
+
+    public Double getScore() {
+        return score;
+    }
+
+    public void setScore(Double score) {
+        this.score = score;
     }
 }

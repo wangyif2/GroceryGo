@@ -141,7 +141,7 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
             while (!storeCursor.isAfterLast()) {
                 storeSelected.put(storeCursor.getInt(storeCursor.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_ID)), SELECTED);
                 storeNames.put(storeCursor.getInt(storeCursor.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_ID)),
-                                storeCursor.getString(storeCursor.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_NAME)));
+                        storeCursor.getString(storeCursor.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_NAME)));
                 storeCursor.moveToNext();
             }
         }
@@ -291,9 +291,14 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
             if (i == 0) {
                 return new CategoryGridFragment();
             } else {
-                GroceryListFragment myFragment = GroceryListFragment.newInstance(i);
-                mPageReferenceMap.put(i, myFragment);
-                return myFragment;
+                GroceryListFragment myFragment;
+                if (mPageReferenceMap.get(i) == null) {
+                    myFragment = GroceryListFragment.newInstance(i);
+                    mPageReferenceMap.put(i, myFragment);
+                    return myFragment;
+                } else {
+                    return mPageReferenceMap.get(i);
+                }
             }
         }
 

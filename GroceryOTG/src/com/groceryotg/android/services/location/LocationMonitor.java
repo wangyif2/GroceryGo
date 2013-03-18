@@ -1,4 +1,4 @@
-package com.groceryotg.android.services.Location;
+package com.groceryotg.android.services.location;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

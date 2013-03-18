@@ -16,8 +16,8 @@ import android.os.SystemClock;
 import android.support.v4.content.LocalBroadcastManager;
 import android.widget.ProgressBar;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
-import com.groceryotg.android.services.Location.LocationMonitor;
-import com.groceryotg.android.services.Location.LocationReceiver;
+import com.groceryotg.android.services.location.LocationMonitor;
+import com.groceryotg.android.services.location.LocationReceiver;
 import com.groceryotg.android.services.NetworkHandler;
 import com.groceryotg.android.services.ServerURL;
 

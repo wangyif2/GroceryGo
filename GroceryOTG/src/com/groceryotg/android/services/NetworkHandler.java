@@ -112,9 +112,9 @@ public class NetworkHandler extends IntentService {
     }
 
     private void refreshGrocery(SQLiteDatabase db) {
-//        String date = ServerURL.getDateNowAsArg();
 //        this is here for testing purposes
-        String date = "?date=2013-03-13";
+//        String date = "?date=2013-03-13";
+        String date = ServerURL.getDateNowAsArg();
         String[] requestArgs = new String[]{date};
         String getGrocery = buildGroceryURL(requestArgs);
 

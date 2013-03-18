@@ -28,8 +28,8 @@ public class Grocery {
     @Lob
     private String rawString;
 
-    @Column(name = "raw_price", precision = 10, length = 2)
-    private Double rawPrice;
+    @Column(name = "raw_price")
+    private String rawPrice;
 
     @Column(name = "unit_price", precision = 10,length = 2)
     private Double unitPrice;
@@ -60,7 +60,10 @@ public class Grocery {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updateDate;
 
-    public Grocery(Item item, String rawString, Double rawPrice, Double unitPrice, Unit unit, Double totalPrice, Date startDate, Date endDate, Flyer flyer, Integer lineNumber, Date updateDate) {
+    @Column(name = "score")
+    private Double score;
+
+    public Grocery(Item item, String rawString, String rawPrice, Double unitPrice, Unit unit, Double totalPrice, Date startDate, Date endDate, Flyer flyer, Integer lineNumber, Date updateDate, Double score) {
         this.item = item;
         this.rawString = rawString;
         this.rawPrice = rawPrice;
@@ -72,16 +75,17 @@ public class Grocery {
         this.flyer = flyer;
         this.lineNumber = lineNumber;
         this.updateDate = updateDate;
+        this.score = score;
     }
 
     public Grocery() {
     }
 
-    public Double getRawPrice() {
+    public String getRawPrice() {
         return rawPrice;
     }
 
-    public void setRawPrice(Double rawPrice) {
+    public void setRawPrice(String rawPrice) {
         this.rawPrice = rawPrice;
     }
 
@@ -171,5 +175,13 @@ public class Grocery {
 
     public void setItem(Item item) {
         this.item = item;
+    }
+
+    public Double getScore() {
+        return score;
+    }
+
+    public void setScore(Double score) {
+        this.score = score;
     }
 }

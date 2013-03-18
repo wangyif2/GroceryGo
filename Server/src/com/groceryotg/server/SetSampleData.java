@@ -35,8 +35,8 @@ public class SetSampleData extends HttpServlet {
         Item item = new Item("top sirloin steak", subcategory);
         Grocery grocery = null;
         try {
-            grocery = new Grocery(item, "top sirloin steak at metro with 1.42/kg and 2.42", 12.1, 12.1, unit, 12.1, UpdateGroceryInfo.format.parse("2013-01-27"), UpdateGroceryInfo.format.parse("2013-02-02"),
-                    flyer, 12, UpdateGroceryInfo.format.parse("2013-01-31"));
+            grocery = new Grocery(item, "top sirloin steak at metro with 1.42/kg and 2.42", "12.1", 12.1, unit, 12.1, UpdateGroceryInfo.format.parse("2013-01-27"), UpdateGroceryInfo.format.parse("2013-02-02"),
+                    flyer, 12, UpdateGroceryInfo.format.parse("2013-01-31"), 1.0);
         } catch (ParseException e) {
             e.printStackTrace();
         }

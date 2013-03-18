@@ -69,7 +69,11 @@ mysql_db = "groceryotg"
 # When getting a table's primary key from MySQL, this is the index of the primary key column name
 SQL_INDEX_PRIMARY_KEY = 4
 
-
+def db_escape(s):
+    if type(s) == str:
+        return mdb.escape_string(s)
+    return s
+    
 def unescape(s):
     '''Takes a string with escaped HTML special characters, e.g. "param1=value1&amp;param2=value2". 
        Returns an unescaped version of the string, e.g. "param1=value1&param2=value2". '''
@@ -95,7 +99,10 @@ def getFlyer():
     cur.execute('SELECT unit_id, unit_type_name FROM Unit;')
     units = cur.fetchall()
     
-    cur.execute('SELECT StoreParent.store_parent_id, Flyer.flyer_url, Store.flyer_id FROM ((Store INNER JOIN Flyer ON Flyer.flyer_id=Store.flyer_id) INNER JOIN StoreParent ON StoreParent.store_parent_id=Store.store_parent_id) ORDER BY StoreParent.store_parent_name')
+    # TODO: Remove Store from this SQL query - only need to fetch Flyer and StoreParent to avoid crawling the same flyer multiple times
+    # when we add multiple store locations in Store
+    #cur.execute('SELECT StoreParent.store_parent_id, Flyer.flyer_url, Store.flyer_id FROM ((Store INNER JOIN Flyer ON Flyer.flyer_id=Store.flyer_id) INNER JOIN StoreParent ON StoreParent.store_parent_id=Store.store_parent_id) ORDER BY StoreParent.store_parent_name')
+    cur.execute('SELECT StoreParent.store_parent_id, Flyer.flyer_url, Flyer.flyer_id FROM (Flyer INNER JOIN StoreParent ON StoreParent.store_parent_id=Flyer.store_parent_id) ORDER BY StoreParent.store_parent_name')
     data = cur.fetchall()
     for record in data:
         store_id, next_url, flyer_id = record[0], record[1], record[2]
@@ -149,10 +156,10 @@ def getFlyer():
                         logging.info("update date: %s" % update_date)
                         
                         for page in div_pages:
-                            
                             page_lines = re.sub('<[bB][rR]\s*?>', '', page.text).split('\n')
                             page_lines = filter(None, map(lambda x: x.strip('\t').strip('\r').strip('\n').strip(), page_lines))
                             for line in page_lines:
+                                #line = line.decode('utf-8')
                                 line_number += 1
                                 unit_price = None
                                 unit_type_id = None
@@ -328,6 +335,12 @@ def getFlyer():
                         
                         # Find the start and end dates
                         months = {'Jan':1,'Feb':2,'Mar':3,'Apr':4,'May':5,'Jun':6,'Jul':7,'Aug':8,'Sep':9,'Oct':10,'Nov':11,'Dec':12}
+                        
+                        # Try finding the tag with "Prices effective from" content, then do the regex
+                        pattern = re.compile('Prices effective from[a-zA-Z0-9., ]*["]')
+                        datePattern = pattern.findall(response)
+                        if datePattern:
+                            response = datePattern[0]
                         
                         pattern = re.compile('(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-zA-Z.]*\s([0-9]{1,2})(?=[^0-9])')
                         matches = pattern.findall(response)
@@ -1046,6 +1059,9 @@ class TableInterface:
         if len(data_list) != len(self.columns):
             return False
         
+        # Escape all the data for special characters
+        data_list = map(db_escape, data_list)
+        
         # NB: For blank values, you should pass in None, not NULL
         self.data += [data_list]
         return True
@@ -1060,6 +1076,8 @@ class TableInterface:
             return False
         
         for row in data_matrix:
+            row = map(db_escape, row)
+            logging.debug(row)
             self.data += [row]
             
         return True

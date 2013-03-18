@@ -118,7 +118,7 @@ public class NetworkHandler extends IntentService {
         String[] requestArgs = new String[]{date};
         String getGrocery = buildGroceryURL(requestArgs);
 
-        JSONArray groceryArray = jsonParser.getJSONFromUrl(ServerURL.getGroceryBaseUrl() + date);
+        JSONArray groceryArray = jsonParser.getJSONFromUrl(getGrocery);
 
         if (groceryArray != null) {
             addNewGroceries(groceryArray, db);

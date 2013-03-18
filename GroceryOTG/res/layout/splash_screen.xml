@@ -13,7 +13,7 @@
 	        android:id="@+id/loading_progress_bar"
 	        style="@android:style/Widget.ProgressBar.Horizontal"
 	        android:layout_width="match_parent"
-	        android:layout_height="6dip"
+	        android:layout_height="5dip"
 	        android:progressDrawable="@drawable/progress_bar"
 	        android:layout_alignParentBottom="true" />
     </RelativeLayout>

@@ -77,6 +77,11 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
+        if (RefreshAnimation.isInProgress()) {
+            RefreshAnimation.setInProgress(false);
+            RefreshAnimation.getRefresh().getActionView().clearAnimation();
+            RefreshAnimation.getRefresh().setActionView(null);
+        }
         menu.clear();
         inflater.inflate(R.menu.grocery_pager_menu1, menu);
         this.menu = menu;

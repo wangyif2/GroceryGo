@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import com.groceryotg.android.services.NetworkHandler;
 import com.groceryotg.android.services.ServerURL;
 
 public class SplashScreen extends Activity {
+	private static final String SETTINGS_IS_DB_POPULATED = "isDBPopulated";
     // used to know if the back button was pressed in the splash screen activity
     // and avoid opening the next activity
     private boolean mIsBackButtonPressed;
@@ -73,7 +75,10 @@ public class SplashScreen extends Activity {
     }
 
     private void configDatabase() {
-        if (ServerURL.checkNetworkStatus(getBaseContext())) {
+    	SharedPreferences settings = getPreferences(0);
+        boolean isDBPopulated = settings.getBoolean(SETTINGS_IS_DB_POPULATED, false);
+        
+        if (ServerURL.checkNetworkStatus(getBaseContext()) && !isDBPopulated) {
             populateCategory();
             populateGrocery();
             populateStoreParent();
@@ -163,6 +168,11 @@ public class SplashScreen extends Activity {
 
             // Network handler services are processed in the order they are called in
             if (requestType == NetworkHandler.FLY) {
+            	SharedPreferences settings = getPreferences(0);
+            	SharedPreferences.Editor settingsEditor = settings.edit();
+            	settingsEditor.putBoolean(SETTINGS_IS_DB_POPULATED, true);
+            	settingsEditor.commit();
+                
                 configHandler();
             }
         }

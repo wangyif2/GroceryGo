@@ -4,5 +4,18 @@
               android:layout_width="fill_parent"
               android:layout_height="fill_parent"
               android:orientation="vertical"
-              android:background="@drawable/splash_screen_grey">
+              android:background="@drawable/splash_screen_grey" >
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+	    <ProgressBar xmlns:android="http://schemas.android.com/apk/res/android"
+	        android:id="@+id/loading_progress_bar"
+	        style="@android:style/Widget.ProgressBar.Horizontal"
+	        android:layout_width="match_parent"
+	        android:layout_height="4dip"
+	        android:progressDrawable="@drawable/progress_bar"
+	        android:layout_alignParentBottom="true" />
+    </RelativeLayout>
+
 </LinearLayout>

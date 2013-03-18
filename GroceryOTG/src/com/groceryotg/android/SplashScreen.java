@@ -26,11 +26,10 @@ public class SplashScreen extends Activity {
     private boolean mIsBackButtonPressed;
     private static final int SPLASH_DURATION = 10; // 10 milliseconds
 
-    RefreshStatusReceiver mRefreshStatusReceiver;
+    private RefreshStatusReceiver mRefreshStatusReceiver;
+    private static final int PROGRESS_MAX = 100;
     
-    private static final int PROGRESS = 0x1;
-    private ProgressBar mProgress;
-    private int mProgressStatus = 0;
+    private ProgressBar mProgressBar;
     
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,9 +58,18 @@ public class SplashScreen extends Activity {
     }
 
     private void init() {
+    	configProgressBar();
+    	
         configLocationPoll();
 
         configDatabase();
+    }
+    
+    private void configProgressBar() {
+    	// creates a progress bar from 0-100
+    	mProgressBar = (ProgressBar)findViewById(R.id.loading_progress_bar);
+    	mProgressBar.setProgress(0);
+    	mProgressBar.setMax(PROGRESS_MAX);
     }
 
     private void configDatabase() {
@@ -107,6 +115,7 @@ public class SplashScreen extends Activity {
     }
 
     private void configHandler() {
+    	mProgressBar.setProgress(PROGRESS_MAX);
         Handler handler = new Handler();
         // wait a bit, then start the home screen
         handler.postDelayed(new Runnable() {
@@ -139,6 +148,8 @@ public class SplashScreen extends Activity {
         locationIntent.putExtra(LocationMonitor.EXTRA_PROVIDER, LocationManager.NETWORK_PROVIDER);
         PendingIntent locationPendingIntent = PendingIntent.getBroadcast(this, 0, locationIntent, 0);
         locationAlarm.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), LocationReceiver.pollingPeriod, locationPendingIntent);
+        
+        mProgressBar.incrementProgressBy(10);
     }
 
     private class RefreshStatusReceiver extends BroadcastReceiver {
@@ -151,6 +162,7 @@ public class SplashScreen extends Activity {
             int requestType = intent.getBundleExtra("bundle").getInt(NetworkHandler.REQUEST_TYPE);
 
             // Network handler services are processed in the order they are called in
+            mProgressBar.incrementProgressBy(10);
             if (requestType == NetworkHandler.FLY) {
                 configHandler();
             }

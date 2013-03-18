@@ -1,5 +1,6 @@
 package com.groceryotg.android;
 
+import android.app.SearchManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -78,6 +79,24 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
     }
 
     @Override
+    public void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        handleIntent(intent);
+    }
+    
+    private void handleIntent(Intent intent) {
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            // Gets the search query from the voice recognizer intent
+            String query = intent.getStringExtra(SearchManager.QUERY);
+
+            // Set the search box text to the received query and submit the search
+            // from within the fragment
+            mAdapter.getFragment(mPager.getCurrentItem()).handleVoiceSearch(query);
+        }
+    }
+    
+    @Override
     protected void onResume() {
         super.onResume();
         mRefreshStatusReceiver = new RefreshStatusReceiver();
@@ -132,8 +151,8 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
 
     private void setStoreInformation() {
         // Initialize the list of stores from database
-        storeSelected = new SparseIntArray();
-        storeNames = new HashMap<Integer, String>();
+        storeSelected = new SparseIntArray();  // {storeParentId, selectedFlag}
+        storeNames = new HashMap<Integer, String>(); // {storeParentId, storeParentName}
 
         Cursor storeCursor = GroceryOTGUtils.getStoreParentNames(this);
         if (storeCursor != null) {
@@ -147,8 +166,8 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
         }
     }
 
-    public void setMyQuery(String mQuery) {
-        this.myQuery = mQuery;
+    public static void setMyQuery(String mQuery) {
+        GroceryFragmentActivity.myQuery = mQuery;
     }
 
     private void configActionBar() {

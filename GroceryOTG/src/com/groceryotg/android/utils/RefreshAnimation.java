@@ -13,9 +13,13 @@ import com.actionbarsherlock.view.MenuItem;
  * Date: 23/02/13
  */
 public class RefreshAnimation {
+    private static boolean inProgress = false;
+    private static MenuItem refresh = null;
 
     public static void refreshIcon(Context context, boolean start, MenuItem refreshItem) {
         if (start) {
+            inProgress = true;
+            refresh = refreshItem;
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             ImageView iv = (ImageView) inflater.inflate(R.layout.refresh_action_view, null);
 
@@ -25,10 +29,24 @@ public class RefreshAnimation {
 
             refreshItem.setActionView(iv);
         } else if (!start) {
-            if (refreshItem != null) {
+            if (refreshItem != null && inProgress) {
                 refreshItem.getActionView().clearAnimation();
                 refreshItem.setActionView(null);
+                inProgress = false;
             }
+            refresh = null;
         }
+    }
+
+    public static boolean isInProgress() {
+        return inProgress;
+    }
+
+    public static void setInProgress(boolean inProgress) {
+        RefreshAnimation.inProgress = inProgress;
+    }
+
+    public static MenuItem getRefresh() {
+        return refresh;
     }
 }

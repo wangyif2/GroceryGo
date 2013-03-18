@@ -190,6 +190,11 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
 
         return true;
     }
+    
+    public boolean handleVoiceSearch(String query) {
+    	mSearchView.setQuery(query, true);
+    	return true;
+    }
 
     @Override
     public boolean onQueryTextChange(String newText) {
@@ -318,6 +323,7 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
         Bundle b = new Bundle();
         b.putString("query", query);
         if (reload) {
+        	GroceryFragmentActivity.setMyQuery(query);
             b.putBoolean("reload", true);
             getLoaderManager().restartLoader(0, b, this);
         } else {

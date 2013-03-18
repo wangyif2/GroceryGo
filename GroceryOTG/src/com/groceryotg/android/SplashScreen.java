@@ -29,7 +29,7 @@ public class SplashScreen extends Activity {
     private RefreshStatusReceiver mRefreshStatusReceiver;
     private static final int PROGRESS_MAX = 100;
     
-    private ProgressBar mProgressBar;
+    public static ProgressBar mProgressBar = null;
     
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -162,11 +162,15 @@ public class SplashScreen extends Activity {
             int requestType = intent.getBundleExtra("bundle").getInt(NetworkHandler.REQUEST_TYPE);
 
             // Network handler services are processed in the order they are called in
-            mProgressBar.incrementProgressBy(10);
             if (requestType == NetworkHandler.FLY) {
                 configHandler();
             }
         }
+    }
+    
+    public static void incrementProgressBar(int inc) {    	
+    	if (inc > 0 && mProgressBar != null)
+    		mProgressBar.incrementProgressBy(inc);
     }
 
 }

@@ -9,6 +9,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.groceryotg.android.SplashScreen;
 import com.groceryotg.android.database.*;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 import com.groceryotg.android.database.objects.*;
@@ -94,6 +95,10 @@ public class NetworkHandler extends IntentService {
 
         if (categoryArray != null) {
             try {
+            	int previousIncrement = 0;
+            	int windowLength = categoryArray.length()/10;
+            	if (windowLength == 0)
+            		windowLength = 1;
                 for (int i = 0; i < categoryArray.length(); i++) {
                     category = gson.fromJson(categoryArray.getJSONObject(i).toString(), Category.class);
 
@@ -102,6 +107,11 @@ public class NetworkHandler extends IntentService {
                     ih.bind(ih.getColumnIndex(CategoryTable.COLUMN_CATEGORY_NAME), category.getCategoryName());
 
                     ih.execute();
+                    
+                    if (++previousIncrement == windowLength) {
+                    	previousIncrement = 0;
+                    	SplashScreen.incrementProgressBar(1);
+                    }
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -134,6 +144,10 @@ public class NetworkHandler extends IntentService {
 
         if (storeParentArray != null) {
             try {
+            	int previousIncrement = 0;
+            	int windowLength = storeParentArray.length()/10;
+            	if (windowLength == 0)
+            		windowLength = 1;
                 for (int i = 0; i < storeParentArray.length(); i++) {
                     storeParent = gson.fromJson(storeParentArray.getJSONObject(i).toString(), StoreParent.class);
 
@@ -141,6 +155,11 @@ public class NetworkHandler extends IntentService {
                     ih.bind(ih.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_ID), storeParent.getStoreParentId());
                     ih.bind(ih.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_NAME), storeParent.getName());
                     ih.execute();
+                    
+                    if (++previousIncrement == windowLength) {
+                    	previousIncrement = 0;
+                    	SplashScreen.incrementProgressBar(1);
+                    }
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -158,6 +177,10 @@ public class NetworkHandler extends IntentService {
 
         if (storeArray != null) {
             try {
+            	int previousIncrement = 0;
+            	int windowLength = storeArray.length()/10;
+            	if (windowLength == 0)
+            		windowLength = 1;
                 for (int i = 0; i < storeArray.length(); i++) {
                     store = gson.fromJson(storeArray.getJSONObject(i).toString(), Store.class);
 
@@ -173,6 +196,11 @@ public class NetworkHandler extends IntentService {
                         ih.bind(ih.getColumnIndex(StoreTable.COLUMN_STORE_LONGITUDE), store.getStoreLongitude());
 
                     ih.execute();
+                    
+                    if (++previousIncrement == windowLength) {
+                    	previousIncrement = 0;
+                    	SplashScreen.incrementProgressBar(1);
+                    }
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -190,6 +218,10 @@ public class NetworkHandler extends IntentService {
 
         if (flyerArray != null) {
             try {
+            	int previousIncrement = 0;
+            	int windowLength = flyerArray.length()/10;
+            	if (windowLength == 0)
+            		windowLength = 1;
                 for (int i = 0; i < flyerArray.length(); i++) {
                     flyer = gson.fromJson(flyerArray.getJSONObject(i).toString(), Flyer.class);
 
@@ -198,6 +230,11 @@ public class NetworkHandler extends IntentService {
                     ih.bind(ih.getColumnIndex(FlyerTable.COLUMN_FLYER_URL), flyer.getUrl());
                     ih.bind(ih.getColumnIndex(FlyerTable.COLUMN_FLYER_STOREPARENT), flyer.getStoreParent().getStoreParentId());
                     ih.execute();
+                    
+                    if (++previousIncrement == windowLength) {
+                    	previousIncrement = 0;
+                    	SplashScreen.incrementProgressBar(1);
+                    }
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -213,6 +250,10 @@ public class NetworkHandler extends IntentService {
         DatabaseUtils.InsertHelper ih = new DatabaseUtils.InsertHelper(db, GroceryTable.TABLE_GROCERY);
         Grocery grocery;
         try {
+        	int previousIncrement = 0;
+        	int windowLength = groceryArray.length()/50;
+        	if (windowLength == 0)
+        		windowLength = 1;
             for (int i = 0; i < groceryArray.length(); i++) {
                 grocery = gson.fromJson(groceryArray.getJSONObject(i).toString(), Grocery.class);
 
@@ -227,6 +268,11 @@ public class NetworkHandler extends IntentService {
                     ih.bind(ih.getColumnIndex(GroceryTable.COLUMN_GROCERY_EXPIRY), grocery.getEndDate().getTime());
                 ih.bind(ih.getColumnIndex(GroceryTable.COLUMN_GROCERY_FLYER), grocery.getFlyer().getFlyerId());
                 ih.execute();
+                
+                if (++previousIncrement == windowLength) {
+                	previousIncrement = 0;
+                	SplashScreen.incrementProgressBar(1);
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();

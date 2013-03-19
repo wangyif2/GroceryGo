@@ -1,13 +1,13 @@
 package com.groceryotg.android.utils;
 
 import android.util.Log;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonParser;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONArray;
-import org.json.JSONException;
 
 import java.io.*;
 
@@ -19,7 +19,7 @@ import java.io.*;
 public class JSONParser {
 
     static InputStream is = null;
-    static JSONArray jObj = null;
+    static JsonArray jObj = null;
     static String json = "";
 
     // constructor
@@ -27,7 +27,7 @@ public class JSONParser {
 
     }
 
-    public JSONArray getJSONFromUrl(String url) {
+    public JsonArray getJSONFromUrl(String url) {
 
         // Making HTTP request
         try {
@@ -61,14 +61,10 @@ public class JSONParser {
             Log.e("Buffer Error", "Error converting result " + e.toString());
         }
 
-        // try parse the string to a JSON object
-        try {
-            jObj = new JSONArray(json);
-        } catch (JSONException e) {
-            Log.e("JSON Parser", "Error parsing data " + e.toString());
-        }
+        // try parse the string to a JsonArray
+        JsonParser jsonParser = new JsonParser();
+        jObj = jsonParser.parse(json).getAsJsonArray();
 
-        // return JSON String
         return jObj;
 
     }

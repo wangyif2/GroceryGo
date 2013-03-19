@@ -61,10 +61,10 @@ public class SplashScreen extends Activity {
 
     private void init() {
     	configProgressBar();
-    	
-        configLocationPoll();
 
         configDatabase();
+
+        configLocationPoll();
     }
     
     private void configProgressBar() {

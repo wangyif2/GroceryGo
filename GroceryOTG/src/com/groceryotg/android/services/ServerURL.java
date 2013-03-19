@@ -14,11 +14,12 @@ import java.util.Date;
  * Date: 23/02/13
  */
 public class ServerURL {
-    private static final String cateoryUrl = "http://groceryotg.elasticbeanstalk.com/GetGeneralInfo";
-    private static final String groceryBaseUrl = "http://groceryotg.elasticbeanstalk.com/UpdateGroceryInfo";
-    private static final String storeUrl = "http://groceryotg.elasticbeanstalk.com/GetStoreInfo";
-    private static final String storeParentUrl = "http://groceryotg.elasticbeanstalk.com/GetStoreParentInfo";
-    private static final String flyerUrl = "http://groceryotg.elasticbeanstalk.com/GetFlyerInfo";
+    private static final String baseUrl = "http://groceryotg.elasticbeanstalk.com/";
+    private static final String cateoryUrl = baseUrl + "/GetGeneralInfo";
+    private static final String groceryBaseUrl = baseUrl + "/UpdateGroceryInfo";
+    private static final String storeUrl = baseUrl + "/GetStoreInfo";
+    private static final String storeParentUrl = baseUrl + "/GetStoreParentInfo";
+    private static final String flyerUrl = baseUrl + "/GetFlyerInfo";
 
     private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private static final DecimalFormat getDecimalFormat = new DecimalFormat("0.00");
@@ -44,13 +45,13 @@ public class ServerURL {
     public static String getStoreUrl() {
         return storeUrl;
     }
-    
+
     public static String getStoreParentUrl() {
-    	return storeParentUrl;
+        return storeParentUrl;
     }
-    
+
     public static String getFlyerUrl() {
-    	return flyerUrl;
+        return flyerUrl;
     }
 
     public static boolean checkNetworkStatus(Context context) {
@@ -68,7 +69,7 @@ public class ServerURL {
         ServerURL.lastRefreshed = lastRefreshed;
     }
 
-    public static String getDateNowAsArg(){
+    public static String getDateNowAsArg() {
         String date = getDateFormat().format(new Date());
         setLastRefreshed(date);
         return "?date=" + date;

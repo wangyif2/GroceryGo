@@ -9,13 +9,13 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.groceryotg.android.SplashScreen;
 import com.groceryotg.android.database.*;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 import com.groceryotg.android.database.objects.*;
 import com.groceryotg.android.utils.JSONParser;
-import org.json.JSONArray;
-import org.json.JSONException;
 
 import java.text.ParseException;
 import java.util.Date;
@@ -83,38 +83,40 @@ public class NetworkHandler extends IntentService {
         Bundle bundle = new Bundle();
         bundle.putInt(CONNECTION_STATE, connectionState);
         bundle.putInt(REQUEST_TYPE, requestType);
-        Intent localIntent = new Intent(REFRESH_COMPLETED_ACTION).putExtra("bundle",bundle);
+        Intent localIntent = new Intent(REFRESH_COMPLETED_ACTION).putExtra("bundle", bundle);
         LocalBroadcastManager.getInstance(this).sendBroadcast(localIntent);
     }
 
     private void refreshCategory(SQLiteDatabase db) {
         Gson gson = new Gson();
-        JSONArray categoryArray = jsonParser.getJSONFromUrl(ServerURL.getCateoryUrl());
+        JsonArray categoryArray = jsonParser.getJSONFromUrl(ServerURL.getCateoryUrl());
         DatabaseUtils.InsertHelper ih = new DatabaseUtils.InsertHelper(db, CategoryTable.TABLE_CATEGORY);
         Category category;
 
         if (categoryArray != null) {
             try {
-            	int previousIncrement = 0;
-            	int windowLength = categoryArray.length()/10;
-            	if (windowLength == 0)
-            		windowLength = 1;
-                for (int i = 0; i < categoryArray.length(); i++) {
-                    category = gson.fromJson(categoryArray.getJSONObject(i).toString(), Category.class);
+                int previousIncrement = 0;
+                int windowLength = categoryArray.size() / 10;
+                if (windowLength == 0)
+                    windowLength = 1;
+
+                int category_id = ih.getColumnIndex(CategoryTable.COLUMN_CATEGORY_ID);
+                int category_name = ih.getColumnIndex(CategoryTable.COLUMN_CATEGORY_NAME);
+
+                for (JsonElement jsonElement : categoryArray) {
+                    category = gson.fromJson(jsonElement, Category.class);
 
                     ih.prepareForInsert();
-                    ih.bind(ih.getColumnIndex(CategoryTable.COLUMN_CATEGORY_ID), category.getCategoryId());
-                    ih.bind(ih.getColumnIndex(CategoryTable.COLUMN_CATEGORY_NAME), category.getCategoryName());
+                    ih.bind(category_id, category.getCategoryId());
+                    ih.bind(category_name, category.getCategoryName());
 
                     ih.execute();
-                    
+
                     if (++previousIncrement == windowLength) {
-                    	previousIncrement = 0;
-                    	SplashScreen.incrementProgressBar(1);
+                        previousIncrement = 0;
+                        SplashScreen.incrementProgressBar(1);
                     }
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
             } finally {
                 ih.close();
             }
@@ -128,7 +130,8 @@ public class NetworkHandler extends IntentService {
         String[] requestArgs = new String[]{date};
         String getGrocery = buildGroceryURL(requestArgs);
 
-        JSONArray groceryArray = jsonParser.getJSONFromUrl(getGrocery);
+//        JSONArray groceryArray = jsonParser.getJSONFromUrl(getGrocery);
+        JsonArray groceryArray = jsonParser.getJSONFromUrl(getGrocery);
 
         if (groceryArray != null) {
             addNewGroceries(groceryArray, db);
@@ -138,31 +141,33 @@ public class NetworkHandler extends IntentService {
 
     private void refreshStoreParent(SQLiteDatabase db) {
         Gson gson = new Gson();
-        JSONArray storeParentArray = jsonParser.getJSONFromUrl(ServerURL.getStoreParentUrl());
+        JsonArray storeParentArray = jsonParser.getJSONFromUrl(ServerURL.getStoreParentUrl());
         DatabaseUtils.InsertHelper ih = new DatabaseUtils.InsertHelper(db, StoreParentTable.TABLE_STORE_PARENT);
         StoreParent storeParent;
 
         if (storeParentArray != null) {
             try {
-            	int previousIncrement = 0;
-            	int windowLength = storeParentArray.length()/10;
-            	if (windowLength == 0)
-            		windowLength = 1;
-                for (int i = 0; i < storeParentArray.length(); i++) {
-                    storeParent = gson.fromJson(storeParentArray.getJSONObject(i).toString(), StoreParent.class);
+                int previousIncrement = 0;
+                int windowLength = storeParentArray.size() / 10;
+                if (windowLength == 0)
+                    windowLength = 1;
+
+                int store_parent_id = ih.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_ID);
+                int store_parent_name = ih.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_NAME);
+
+                for (JsonElement jsonElement : storeParentArray) {
+                    storeParent = gson.fromJson(jsonElement, StoreParent.class);
 
                     ih.prepareForInsert();
-                    ih.bind(ih.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_ID), storeParent.getStoreParentId());
-                    ih.bind(ih.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_NAME), storeParent.getName());
+                    ih.bind(store_parent_id, storeParent.getStoreParentId());
+                    ih.bind(store_parent_name, storeParent.getName());
                     ih.execute();
-                    
+
                     if (++previousIncrement == windowLength) {
-                    	previousIncrement = 0;
-                    	SplashScreen.incrementProgressBar(1);
+                        previousIncrement = 0;
+                        SplashScreen.incrementProgressBar(1);
                     }
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
             } finally {
                 ih.close();
             }
@@ -171,39 +176,45 @@ public class NetworkHandler extends IntentService {
 
     private void refreshStore(SQLiteDatabase db) {
         Gson gson = new Gson();
-        JSONArray storeArray = jsonParser.getJSONFromUrl(ServerURL.getStoreUrl());
+        JsonArray storeArray = jsonParser.getJSONFromUrl(ServerURL.getStoreUrl());
         DatabaseUtils.InsertHelper ih = new DatabaseUtils.InsertHelper(db, StoreTable.TABLE_STORE);
         Store store;
 
         if (storeArray != null) {
             try {
-            	int previousIncrement = 0;
-            	int windowLength = storeArray.length()/10;
-            	if (windowLength == 0)
-            		windowLength = 1;
-                for (int i = 0; i < storeArray.length(); i++) {
-                    store = gson.fromJson(storeArray.getJSONObject(i).toString(), Store.class);
+                int previousIncrement = 0;
+                int windowLength = storeArray.size() / 10;
+                if (windowLength == 0)
+                    windowLength = 1;
+
+                int store_id = ih.getColumnIndex(StoreTable.COLUMN_STORE_ID);
+                int store_parent = ih.getColumnIndex(StoreTable.COLUMN_STORE_PARENT);
+                int store_flyer = ih.getColumnIndex(StoreTable.COLUMN_STORE_FLYER);
+                int store_addr = ih.getColumnIndex(StoreTable.COLUMN_STORE_ADDR);
+                int store_lat = ih.getColumnIndex(StoreTable.COLUMN_STORE_LATITUDE);
+                int store_lng = ih.getColumnIndex(StoreTable.COLUMN_STORE_LONGITUDE);
+
+                for (JsonElement jsonElement : storeArray) {
+                    store = gson.fromJson(jsonElement, Store.class);
 
                     ih.prepareForInsert();
-                    ih.bind(ih.getColumnIndex(StoreTable.COLUMN_STORE_ID), store.getStoreId());
-                    ih.bind(ih.getColumnIndex(StoreTable.COLUMN_STORE_PARENT), store.getStoreParent().getStoreParentId());
-                    ih.bind(ih.getColumnIndex(StoreTable.COLUMN_STORE_FLYER), store.getFlyer().getFlyerId());
+                    ih.bind(store_id, store.getStoreId());
+                    ih.bind(store_parent, store.getStoreParent().getStoreParentId());
+                    ih.bind(store_flyer, store.getFlyer().getFlyerId());
                     if (store.getStoreAddress() != null)
-                        ih.bind(ih.getColumnIndex(StoreTable.COLUMN_STORE_ADDR), store.getStoreAddress());
+                        ih.bind(store_addr, store.getStoreAddress());
                     if (store.getStoreLatitude() != null)
-                        ih.bind(ih.getColumnIndex(StoreTable.COLUMN_STORE_LATITUDE), store.getStoreLatitude());
+                        ih.bind(store_lat, store.getStoreLatitude());
                     if (store.getStoreLongitude() != null)
-                        ih.bind(ih.getColumnIndex(StoreTable.COLUMN_STORE_LONGITUDE), store.getStoreLongitude());
+                        ih.bind(store_lng, store.getStoreLongitude());
 
                     ih.execute();
-                    
+
                     if (++previousIncrement == windowLength) {
-                    	previousIncrement = 0;
-                    	SplashScreen.incrementProgressBar(1);
+                        previousIncrement = 0;
+                        SplashScreen.incrementProgressBar(1);
                     }
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
             } finally {
                 ih.close();
             }
@@ -212,70 +223,81 @@ public class NetworkHandler extends IntentService {
 
     private void refreshFlyer(SQLiteDatabase db) {
         Gson gson = new Gson();
-        JSONArray flyerArray = jsonParser.getJSONFromUrl(ServerURL.getFlyerUrl());
+        JsonArray flyerArray = jsonParser.getJSONFromUrl(ServerURL.getFlyerUrl());
         DatabaseUtils.InsertHelper ih = new DatabaseUtils.InsertHelper(db, FlyerTable.TABLE_FLYER);
         Flyer flyer;
 
         if (flyerArray != null) {
             try {
-            	int previousIncrement = 0;
-            	int windowLength = flyerArray.length()/10;
-            	if (windowLength == 0)
-            		windowLength = 1;
-                for (int i = 0; i < flyerArray.length(); i++) {
-                    flyer = gson.fromJson(flyerArray.getJSONObject(i).toString(), Flyer.class);
+                int previousIncrement = 0;
+                int windowLength = flyerArray.size() / 10;
+                if (windowLength == 0)
+                    windowLength = 1;
+
+                int flyer_id = ih.getColumnIndex(FlyerTable.COLUMN_FLYER_ID);
+                int flyer_url = ih.getColumnIndex(FlyerTable.COLUMN_FLYER_URL);
+                int flyer_store_parent = ih.getColumnIndex(FlyerTable.COLUMN_FLYER_STOREPARENT);
+
+                for (JsonElement jsonElement : flyerArray) {
+                    flyer = gson.fromJson(jsonElement, Flyer.class);
 
                     ih.prepareForInsert();
-                    ih.bind(ih.getColumnIndex(FlyerTable.COLUMN_FLYER_ID), flyer.getFlyerId());
-                    ih.bind(ih.getColumnIndex(FlyerTable.COLUMN_FLYER_URL), flyer.getUrl());
-                    ih.bind(ih.getColumnIndex(FlyerTable.COLUMN_FLYER_STOREPARENT), flyer.getStoreParent().getStoreParentId());
+                    ih.bind(flyer_id, flyer.getFlyerId());
+                    ih.bind(flyer_url, flyer.getUrl());
+                    ih.bind(flyer_store_parent, flyer.getStoreParent().getStoreParentId());
                     ih.execute();
-                    
+
                     if (++previousIncrement == windowLength) {
-                    	previousIncrement = 0;
-                    	SplashScreen.incrementProgressBar(1);
+                        previousIncrement = 0;
+                        SplashScreen.incrementProgressBar(1);
                     }
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
             } finally {
                 ih.close();
             }
         }
     }
 
-    private void addNewGroceries(JSONArray groceryArray, SQLiteDatabase db) {
+    private void addNewGroceries(JsonArray groceryArray, SQLiteDatabase db) {
         //TODO: hard coded date format!! not good...
         Gson gson = new GsonBuilder().setDateFormat("MMM dd, yyyy").create();
         DatabaseUtils.InsertHelper ih = new DatabaseUtils.InsertHelper(db, GroceryTable.TABLE_GROCERY);
         Grocery grocery;
         try {
-        	int previousIncrement = 0;
-        	int windowLength = groceryArray.length()/50;
-        	if (windowLength == 0)
-        		windowLength = 1;
-            for (int i = 0; i < groceryArray.length(); i++) {
-                grocery = gson.fromJson(groceryArray.getJSONObject(i).toString(), Grocery.class);
+            int previousIncrement = 0;
+            int windowLength = groceryArray.size() / 50;
+            if (windowLength == 0)
+                windowLength = 1;
+
+            Log.i("GroceryOTG", "Number of grocery available: " + groceryArray.size());
+
+            int grocery_id = ih.getColumnIndex(GroceryTable.COLUMN_GROCERY_ID);
+            int grocery_name = ih.getColumnIndex(GroceryTable.COLUMN_GROCERY_NAME);
+            int grocery_price = ih.getColumnIndex(GroceryTable.COLUMN_GROCERY_PRICE);
+            int grocery_category = ih.getColumnIndex(GroceryTable.COLUMN_GROCERY_CATEGORY);
+            int grocery_expiry = ih.getColumnIndex(GroceryTable.COLUMN_GROCERY_EXPIRY);
+            int grocery_flyer = ih.getColumnIndex(GroceryTable.COLUMN_GROCERY_FLYER);
+
+            for (JsonElement jsonElement : groceryArray) {
+                grocery = gson.fromJson(jsonElement, Grocery.class);
 
                 ih.prepareForInsert();
-                ih.bind(ih.getColumnIndex(GroceryTable.COLUMN_GROCERY_ID), grocery.getGroceryId());
-                ih.bind(ih.getColumnIndex(GroceryTable.COLUMN_GROCERY_NAME), grocery.getRawString());
+                ih.bind(grocery_id, grocery.getGroceryId());
+                ih.bind(grocery_name, grocery.getRawString());
                 if (grocery.getTotalPrice() != null)
-                    ih.bind(ih.getColumnIndex(GroceryTable.COLUMN_GROCERY_PRICE), grocery.getTotalPrice());
+                    ih.bind(grocery_price, grocery.getTotalPrice());
                 if (grocery.getCategoryId() != null)
-                    ih.bind(ih.getColumnIndex(GroceryTable.COLUMN_GROCERY_CATEGORY), grocery.getCategoryId());
+                    ih.bind(grocery_category, grocery.getCategoryId());
                 if (grocery.getEndDate() != null)
-                    ih.bind(ih.getColumnIndex(GroceryTable.COLUMN_GROCERY_EXPIRY), grocery.getEndDate().getTime());
-                ih.bind(ih.getColumnIndex(GroceryTable.COLUMN_GROCERY_FLYER), grocery.getFlyer().getFlyerId());
+                    ih.bind(grocery_expiry, grocery.getEndDate().getTime());
+                ih.bind(grocery_flyer, grocery.getFlyer().getFlyerId());
                 ih.execute();
-                
+
                 if (++previousIncrement == windowLength) {
-                	previousIncrement = 0;
-                	SplashScreen.incrementProgressBar(1);
+                    previousIncrement = 0;
+                    SplashScreen.incrementProgressBar(1);
                 }
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
         } finally {
             ih.close();
         }

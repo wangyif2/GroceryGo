@@ -59,13 +59,17 @@ public class UpdateGroceryInfo extends HttpServlet {
         List<Grocery> gro = null;
         Session session = HibernateUtils.getSessionFactory().openSession();
         session.beginTransaction();
+        Date lastestDate = (Date) session.createCriteria(Grocery.class).setProjection(Projections.max("updateDate")).uniqueResult();
 
         if (requestDate == null) {
-            Date lastestDate = (Date) session.createCriteria(Grocery.class).setProjection(Projections.max("updateDate")).uniqueResult();
-            logger.info("date is null, lastestDate is: " + lastestDate.toString());
-            gro = (List<Grocery>) session.createCriteria(Grocery.class).add(Restrictions.ge("updateDate", lastestDate)).list();
+            gro = (List<Grocery>) session.createCriteria(Grocery.class)
+                    .add(Restrictions.eq("updateDate", lastestDate))
+                    .list();
         } else {
-            gro = (List<Grocery>) session.createCriteria(Grocery.class).add(Restrictions.ge("endDate", requestDate)).list();
+            gro = (List<Grocery>) session.createCriteria(Grocery.class)
+                    .add(Restrictions.ge("endDate", requestDate))
+                    .add(Restrictions.eq("updateDate",lastestDate))
+                    .list();
         }
 
         session.getTransaction().commit();

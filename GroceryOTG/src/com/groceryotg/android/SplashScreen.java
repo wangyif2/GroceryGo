@@ -16,13 +16,14 @@ import android.os.SystemClock;
 import android.support.v4.content.LocalBroadcastManager;
 import android.widget.ProgressBar;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
+import com.groceryotg.android.services.NetworkHandlerStartup;
 import com.groceryotg.android.services.location.LocationMonitor;
 import com.groceryotg.android.services.location.LocationReceiver;
 import com.groceryotg.android.services.NetworkHandler;
 import com.groceryotg.android.services.ServerURL;
 
 public class SplashScreen extends Activity {
-	private static final String SETTINGS_IS_DB_POPULATED = "isDBPopulated";
+    private static final String SETTINGS_IS_DB_POPULATED = "isDBPopulated";
     // used to know if the back button was pressed in the splash screen activity
     // and avoid opening the next activity
     private boolean mIsBackButtonPressed;
@@ -30,9 +31,9 @@ public class SplashScreen extends Activity {
 
     private RefreshStatusReceiver mRefreshStatusReceiver;
     private static final int PROGRESS_MAX = 100;
-    
+
     public static ProgressBar mProgressBar = null;
-    
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -60,30 +61,27 @@ public class SplashScreen extends Activity {
     }
 
     private void init() {
-    	configProgressBar();
+        configProgressBar();
 
         configDatabase();
 
         configLocationPoll();
     }
-    
+
     private void configProgressBar() {
-    	// creates a progress bar from 0-100
-    	mProgressBar = (ProgressBar)findViewById(R.id.loading_progress_bar);
-    	mProgressBar.setProgress(0);
-    	mProgressBar.setMax(PROGRESS_MAX);
+        // creates a progress bar from 0-100
+        mProgressBar = (ProgressBar) findViewById(R.id.loading_progress_bar);
+        mProgressBar.setProgress(0);
+        mProgressBar.setMax(PROGRESS_MAX);
     }
 
     private void configDatabase() {
-    	SharedPreferences settings = getPreferences(0);
+        SharedPreferences settings = getPreferences(0);
         boolean isDBPopulated = settings.getBoolean(SETTINGS_IS_DB_POPULATED, false);
-        
+
         if (ServerURL.checkNetworkStatus(getBaseContext()) && !isDBPopulated) {
             populateCategory();
-            populateGrocery();
-            populateStoreParent();
-            populateStore();
-            populateFlyer();
+
         } else {
             configHandler();
         }
@@ -96,6 +94,12 @@ public class SplashScreen extends Activity {
     }
 
     private void populateGrocery() {
+        Intent intent = new Intent(getBaseContext(), NetworkHandlerStartup.class);
+        intent.putExtra(NetworkHandlerStartup.REFRESH_CONTENT, NetworkHandlerStartup.GRO);
+        startService(intent);
+    }
+
+    private void populateGroceryFull() {
         Intent intent = new Intent(getBaseContext(), NetworkHandler.class);
         intent.putExtra(NetworkHandler.REFRESH_CONTENT, NetworkHandler.GRO);
         startService(intent);
@@ -120,7 +124,7 @@ public class SplashScreen extends Activity {
     }
 
     private void configHandler() {
-    	mProgressBar.setProgress(PROGRESS_MAX);
+        mProgressBar.setProgress(PROGRESS_MAX);
         Handler handler = new Handler();
         // wait a bit, then start the home screen
         handler.postDelayed(new Runnable() {
@@ -153,7 +157,7 @@ public class SplashScreen extends Activity {
         locationIntent.putExtra(LocationMonitor.EXTRA_PROVIDER, LocationManager.NETWORK_PROVIDER);
         PendingIntent locationPendingIntent = PendingIntent.getBroadcast(this, 0, locationIntent, 0);
         locationAlarm.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), LocationReceiver.pollingPeriod, locationPendingIntent);
-        
+
         mProgressBar.incrementProgressBy(10);
     }
 
@@ -166,21 +170,33 @@ public class SplashScreen extends Activity {
         public void onReceive(Context context, Intent intent) {
             int requestType = intent.getBundleExtra("bundle").getInt(NetworkHandler.REQUEST_TYPE);
 
+            if (requestType == NetworkHandler.CAT) {
+                populateGrocery();
+            }
+
+            if (requestType == NetworkHandlerStartup.GRO){
+                populateStoreParent();
+                populateStore();
+                populateFlyer();
+            }
+
             // Network handler services are processed in the order they are called in
             if (requestType == NetworkHandler.FLY) {
-            	SharedPreferences settings = getPreferences(0);
-            	SharedPreferences.Editor settingsEditor = settings.edit();
-            	settingsEditor.putBoolean(SETTINGS_IS_DB_POPULATED, true);
-            	settingsEditor.commit();
-                
+                SharedPreferences settings = getPreferences(0);
+                SharedPreferences.Editor settingsEditor = settings.edit();
+                settingsEditor.putBoolean(SETTINGS_IS_DB_POPULATED, true);
+                settingsEditor.commit();
+
+                populateGroceryFull();
+
                 configHandler();
             }
         }
     }
-    
-    public static void incrementProgressBar(int inc) {    	
-    	if (inc > 0 && mProgressBar != null)
-    		mProgressBar.incrementProgressBy(inc);
+
+    public static void incrementProgressBar(int inc) {
+        if (inc > 0 && mProgressBar != null)
+            mProgressBar.incrementProgressBy(inc);
     }
 
 }

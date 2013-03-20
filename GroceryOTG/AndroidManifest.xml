@@ -83,6 +83,7 @@
         </activity>
 
         <service android:name=".services.NetworkHandler"/>
+        <service android:name=".services.NetworkHandlerStartup"/>
         <service android:name="com.groceryotg.android.services.location.LocationMonitorService"/>
 
         <receiver android:name="com.groceryotg.android.services.location.LocationMonitor"/>

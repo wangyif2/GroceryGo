@@ -25,8 +25,9 @@ public class GetFlyerInfo extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         List<Flyer> flyers = getFlyers();
 
-        PrintWriter out = resp.getWriter();
         resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
+        PrintWriter out = resp.getWriter();
         out.print(gson.toJson(flyers));
     }
 

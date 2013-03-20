@@ -25,8 +25,9 @@ public class GetStoreParentInfo extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         List<StoreParent> storeParents = getStoreParents();
 
-        PrintWriter out = resp.getWriter();
         resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
+        PrintWriter out = resp.getWriter();
         out.print(gson.toJson(storeParents));
     }
 

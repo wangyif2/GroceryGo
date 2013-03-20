@@ -56,8 +56,9 @@ public class UpdateGroceryInfo extends HttpServlet {
 
         groceries = getGroceries(requestDate, categoryId);
 
-        PrintWriter out = resp.getWriter();
         resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
+        PrintWriter out = resp.getWriter();
         out.print(gson.toJson(groceries));
     }
 

@@ -24,6 +24,8 @@ public class GroceryotgDatabaseHelper extends SQLiteOpenHelper {
         FlyerTable.onCreate(db);
         StoreTable.onCreate(db);
         CartTable.onCreate(db);
+        WatchlistTable.onCreate(db);
+        WatchlistItemTable.onCreate(db);
     }
 
     @Override

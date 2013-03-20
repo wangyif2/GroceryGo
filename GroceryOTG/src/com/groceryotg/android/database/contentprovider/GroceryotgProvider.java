@@ -35,6 +35,10 @@ public class GroceryotgProvider extends ContentProvider {
     private static final int FLYERS = 130;
     private static final int FLYER_ID = 140;
     private static final int STORE_JOIN_STOREPARENT = 150;
+    private static final int WATCHLISTS = 160;
+    private static final int WATCHLIST_ID = 170;
+    private static final int WATCHLIST_ITEMS = 180;
+    private static final int WATCHLIST_ITEM_ID = 190;
 
     // Content URI
     private static final String AUTHORITY = "com.groceryotg.android.database.contentprovider";
@@ -44,11 +48,13 @@ public class GroceryotgProvider extends ContentProvider {
     private static final String BASE_PATH_STOPARENT = "storeparents";
     private static final String BASE_PATH_FLYER = "flyers";
     private static final String BASE_PATH_CART = "cart_items";
+    private static final String BASE_PATH_WATCHLIST = "watchlists";
 
     // Joins
     private static final String BASE_PATH_GRO_JOINSTORE = "groceriesWithStore";
     private static final String BASE_PATH_STO_JOIN_STOREPARENT = "storeWithStoreParent";
-
+    private static final String BASE_PATH_WATCHLIST_ITEMS = "watchlistWithWatchlistItems";
+    
 
     public static final Uri CONTENT_URI_CAT = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH_CAT);
     public static final Uri CONTENT_URI_GRO = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH_GRO);
@@ -56,11 +62,13 @@ public class GroceryotgProvider extends ContentProvider {
     public static final Uri CONTENT_URI_STOPARENT = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH_STOPARENT);
     public static final Uri CONTENT_URI_CART_ITEM = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH_CART);
     public static final Uri CONTENT_URI_FLYER = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH_FLYER);
+    public static final Uri CONTENT_URI_WATCHLIST = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH_WATCHLIST);
     // Join URIs
     public static final Uri CONTENT_URI_GRO_JOINSTORE = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH_GRO_JOINSTORE);
     public static final Uri CONTENT_URI_STO_JOIN_STOREPARENT = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH_STO_JOIN_STOREPARENT);
-
-
+    public static final Uri CONTENT_URI_WATCHLIST_ITEMS = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH_WATCHLIST_ITEMS);
+    
+    
     // MIME type for multiple rows
     public static final String CONTENT_TYPE_CAT = ContentResolver.CURSOR_DIR_BASE_TYPE + "/categories";
     public static final String CONTENT_ITEM_TYPE_CAT = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/category";
@@ -74,11 +82,16 @@ public class GroceryotgProvider extends ContentProvider {
     public static final String CONTENT_ITEM_TYPE_FLYER = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/flyer";
     public static final String CONTENT_TYPE_CART_ITEM = ContentResolver.CURSOR_DIR_BASE_TYPE + "/cart_items";
     public static final String CONTENT_ITEM_TYPE_CART_ITEM = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/cart_item";
+    public static final String CONTENT_TYPE_WATCHLIST = ContentResolver.CURSOR_DIR_BASE_TYPE + "/watchlists";
+    public static final String CONTENT_ITEM_TYPE_WATCHLIST = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/watchlist";
     // Joins
     public static final String CONTENT_TYPE_GRO_JOINSTORE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/groceriesWithStore";
     public static final String CONTENT_ITEM_TYPE_GRO_JOINSTORE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/groceryWithStore";
     public static final String CONTENT_TYPE_STO_JOIN_STOREPARENT = ContentResolver.CURSOR_DIR_BASE_TYPE + "/storeWithStoreParent";
-
+    public static final String CONTENT_TYPE_WATCHLIST_ITEMS = ContentResolver.CURSOR_DIR_BASE_TYPE + "/watchlistWithWatchlistItems";
+    public static final String CONTENT_ITEM_TYPE_WATCHLIST_ITEM = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/watchlistWithWatchlistItem";
+    
+    
     private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
     static {
@@ -97,6 +110,10 @@ public class GroceryotgProvider extends ContentProvider {
         sURIMatcher.addURI(AUTHORITY, BASE_PATH_GRO_JOINSTORE, GROCERIES_JOINSTORE);
         sURIMatcher.addURI(AUTHORITY, BASE_PATH_GRO_JOINSTORE + "/#", GROCERIES_JOINSTORE_ID);
         sURIMatcher.addURI(AUTHORITY, BASE_PATH_STO_JOIN_STOREPARENT, STORE_JOIN_STOREPARENT);
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH_WATCHLIST, WATCHLISTS);
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH_WATCHLIST + "/#", WATCHLIST_ID);
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH_WATCHLIST_ITEMS, WATCHLIST_ITEMS);
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH_WATCHLIST_ITEMS + "/#", WATCHLIST_ITEM_ID);
     }
 
     @Override
@@ -166,6 +183,20 @@ public class GroceryotgProvider extends ContentProvider {
                         + " ON " + StoreTable.TABLE_STORE + "." + StoreTable.COLUMN_STORE_PARENT
                         + "=" + StoreParentTable.TABLE_STORE_PARENT + "." + StoreParentTable.COLUMN_STORE_PARENT_ID);
                 break;
+            case WATCHLISTS:
+            	queryBuilder.setTables(WatchlistTable.TABLE_WATCHLIST);
+            	break;
+            case WATCHLIST_ID:
+            	queryBuilder.setTables(WatchlistTable.TABLE_WATCHLIST);
+                queryBuilder.appendWhere(WatchlistTable.COLUMN_ID + "=" + uri.getLastPathSegment());
+            	break;
+            case WATCHLIST_ITEMS:
+            	queryBuilder.setTables(WatchlistItemTable.TABLE_WATCHLISTITEM);
+            	break;
+            case WATCHLIST_ITEM_ID:
+            	queryBuilder.setTables(WatchlistItemTable.TABLE_WATCHLISTITEM);
+            	queryBuilder.appendWhere(WatchlistItemTable.COLUMN_ID + "=" + uri.getLastPathSegment());
+            	break;
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }
@@ -209,6 +240,14 @@ public class GroceryotgProvider extends ContentProvider {
                 id = sqlDB.insert(CartTable.TABLE_CART, null, values);
                 getContext().getContentResolver().notifyChange(uri, null);
                 return Uri.parse(BASE_PATH_CART + "/" + id);
+            case WATCHLISTS:
+            	id = sqlDB.insert(WatchlistTable.TABLE_WATCHLIST, null, values);
+            	getContext().getContentResolver().notifyChange(uri, null);
+            	return Uri.parse(BASE_PATH_WATCHLIST + "/" + id);
+            case WATCHLIST_ITEMS:
+            	id = sqlDB.insert(WatchlistItemTable.TABLE_WATCHLISTITEM, null, values);
+            	getContext().getContentResolver().notifyChange(uri, null);
+            	return Uri.parse(BASE_PATH_WATCHLIST_ITEMS + "/" + id);
             case GROCERIES_JOINSTORE:
                 throw new IllegalArgumentException("Invalid URI, can't insert into join: " + uri);
             default:
@@ -237,6 +276,12 @@ public class GroceryotgProvider extends ContentProvider {
                     rowsDeleted = sqlDB.delete(CartTable.TABLE_CART, CartTable.COLUMN_ID + "=" + id + " and " + selection, selectionArgs);
                 }
                 break;
+            case WATCHLISTS:
+            	rowsDeleted = sqlDB.delete(WatchlistTable.TABLE_WATCHLIST, selection, selectionArgs);
+            	break;
+            case WATCHLIST_ITEMS:
+            	rowsDeleted = sqlDB.delete(WatchlistItemTable.TABLE_WATCHLISTITEM, selection, selectionArgs);
+            	break;
             case GROCERIES_JOINSTORE_ID:
                 throw new IllegalArgumentException("Invalid URI, can't delete from join: " + uri);
             default:
@@ -264,6 +309,12 @@ public class GroceryotgProvider extends ContentProvider {
                     rowsUpdated = sqlDB.update(CartTable.TABLE_CART, values, CartTable.COLUMN_ID + "=" + id + " and " + selection, selectionArgs);
                 }
                 break;
+            case WATCHLISTS:
+            	rowsUpdated = sqlDB.update(WatchlistTable.TABLE_WATCHLIST, values, selection, selectionArgs);
+            	break;
+            case WATCHLIST_ITEMS:
+            	rowsUpdated = sqlDB.update(WatchlistItemTable.TABLE_WATCHLISTITEM, values, selection, selectionArgs);
+            	break;
             case GROCERIES_JOINSTORE_ID:
                 throw new IllegalArgumentException("Invalid URI, can't update a join: " + uri);
             default:

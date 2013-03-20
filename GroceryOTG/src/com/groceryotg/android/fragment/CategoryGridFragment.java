@@ -15,6 +15,7 @@ import com.actionbarsherlock.app.SherlockFragment;
 import com.groceryotg.android.GroceryFragmentActivity;
 import com.groceryotg.android.R;
 import com.groceryotg.android.database.CategoryTable;
+import com.groceryotg.android.database.WatchlistTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 
 /**
@@ -23,7 +24,12 @@ import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
  */
 public class CategoryGridFragment extends SherlockFragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private GridView gridview;
+    private GridView gridview_watchlist;
     private SimpleCursorAdapter adapter;
+    private SimpleCursorAdapter adapter_watchlist;
+    
+    private final int INDEX_LOADER_CAT = 0;
+    private final int INDEX_LOADER_WATCHLIST = 1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -41,6 +47,10 @@ public class CategoryGridFragment extends SherlockFragment implements LoaderMana
             }
         });
         gridview.setEmptyView(v.findViewById(R.id.empty_category_list));
+        
+        gridview_watchlist = (GridView) v.findViewById(R.id.grid_watchlists);
+        gridview_watchlist.setEmptyView(v.findViewById(R.id.empty_watchlist));
+        
         return v;
     }
 
@@ -54,25 +64,52 @@ public class CategoryGridFragment extends SherlockFragment implements LoaderMana
         String[] from = new String[]{CategoryTable.COLUMN_CATEGORY_NAME};
         int[] to = new int[]{R.id.category_row_label};
 
-        getLoaderManager().initLoader(0, null, this);
+        getLoaderManager().initLoader(INDEX_LOADER_CAT, null, this);
         adapter = new CategoryGridCursorAdapter(getActivity(), R.layout.category_fragment_row, null, from, to);
 
         gridview.setAdapter(adapter);
+        
+        // Get watchlists
+        getLoaderManager().initLoader(INDEX_LOADER_WATCHLIST, null, this);
+        String[] watchlist_from = new String[]{WatchlistTable.COLUMN_WATCHLIST_NAME, WatchlistTable.COLUMN_WATCHLIST_COLOUR};
+        int[] watchlist_to = new int[]{R.id.category_watchlist_row_label};
+        adapter_watchlist = new CategoryGridCursorAdapter(getActivity(), R.layout.category_watchlist_row, null, 
+        													watchlist_from, watchlist_to);
+        gridview_watchlist.setAdapter(adapter_watchlist);
     }
 
     @Override
-    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        String[] projection = {CategoryTable.COLUMN_ID, CategoryTable.COLUMN_CATEGORY_NAME};
-        return new CursorLoader(getActivity(), GroceryotgProvider.CONTENT_URI_CAT, projection, null, null, null);
+    public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
+    	if (id == INDEX_LOADER_CAT) {
+	        String[] projection = {CategoryTable.COLUMN_ID, CategoryTable.COLUMN_CATEGORY_NAME};
+	        return new CursorLoader(getActivity(), GroceryotgProvider.CONTENT_URI_CAT, projection, null, null, null);
+    	}
+    	else {
+    		String[] projection = {WatchlistTable.COLUMN_ID, 
+    							   WatchlistTable.COLUMN_WATCHLIST_NAME, 
+    							   WatchlistTable.COLUMN_WATCHLIST_COLOUR,
+    							   WatchlistTable.COLUMN_WATCHLIST_LASTUPDATED};
+	        return new CursorLoader(getActivity(), GroceryotgProvider.CONTENT_URI_WATCHLIST, projection, null, null, null);
+    	}
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        adapter.swapCursor(cursor);
+    	if (cursorLoader.getId() == INDEX_LOADER_CAT) {
+    		adapter.swapCursor(cursor);
+    	}
+    	else {
+    		adapter_watchlist.swapCursor(cursor);
+    	}
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
-        adapter.swapCursor(null);
+    	if (cursorLoader.getId() == INDEX_LOADER_CAT) {
+    		adapter.swapCursor(null);
+    	}
+    	else {
+    		adapter_watchlist.swapCursor(null);
+    	}
     }
 }

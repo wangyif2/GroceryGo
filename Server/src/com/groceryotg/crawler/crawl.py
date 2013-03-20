@@ -69,6 +69,13 @@ mysql_db = "groceryotg"
 # When getting a table's primary key from MySQL, this is the index of the primary key column name
 SQL_INDEX_PRIMARY_KEY = 4
 
+# Column indices in the Item and Grocery tables (used when building the data to insert into the tables)
+ITEM_INDEX_RAW_ITEM = 0
+GROCERY_INDEX_ITEM_ID = 0
+GROCERY_INDEX_RAW_ITEM = 1
+GROCERY_INDEX_ORIG_PRICE = 2
+
+
 def db_escape(s):
     if type(s) == str:
         return mdb.escape_string(s)
@@ -1139,7 +1146,7 @@ class TableInterface:
 con = None
 
 try:
-    con = mdb.connect('localhost', mysql_user, mysql_password, mysql_db)
+    con = mdb.connect('localhost', mysql_user, mysql_password, mysql_db, use_unicode=True, charset="utf8")
     cur = con.cursor()
     logging.info("Connected to database")
     
@@ -1176,7 +1183,7 @@ try:
         for item in item_list:
             
             # Only pass in the raw_item string, without the price
-            noun_list = getNouns.getNouns(item[0])
+            noun_list = getNouns.getNouns(item[ITEM_INDEX_RAW_ITEM])
             noun_table += [noun_list]
             
             # Step 3: Pass the list of nouns to the "classifier" module to classify the item into one subcategory
@@ -1184,11 +1191,12 @@ try:
             predictions += [subcategory_id]
             
             # Add to output buffer
-            try:
-                item_data = [item[0].encode('utf-8')] + [subcategory_id]
-            except:
-                item_data = [item[0]] + [subcategory_id]
-                
+            # If input from web is a <str>, convert to <unicode> for writing to database
+            if type(item[ITEM_INDEX_RAW_ITEM]) == str:
+                item_data = [item[ITEM_INDEX_RAW_ITEM].decode('utf-8')] + [subcategory_id]
+            else:
+                item_data = [item[ITEM_INDEX_RAW_ITEM]] + [subcategory_id]
+            
             res_flag = item_table.add_data(item_data)
             if not res_flag:
                 raise RuntimeError("item data could not be added to the item table handler")
@@ -1197,18 +1205,19 @@ try:
         classification_rates = evaluateAccuracy(store_id, predictions, category_map, item_list, noun_table)
         if classification_rates:
             logging.info("CATEGORY CLASSIFICATION RATE = %.2f for store %d" % (classification_rates[1],store_id))
-        # Step 4: Write to Item`
+        # Step 4: Write to Item
         item_ids = item_table.write_data()
         grocery_data = [tuple(item_ids)] + zip(*item_list)
         grocery_data = map(lambda x: list(x), zip(*grocery_data))
         
-        # Encode the raw strings as UTF-8 before adding to database, so all special 
+        # Encode the raw strings as UTF-8 <unicode> before adding to database, so all special 
         # characters are preserved.
-        try:
-            grocery_data = map(lambda x: [x[0]] + [x[1].encode('utf-8')] + [x[2].encode('utf-8')] + x[3:], grocery_data)
-        except:
-            grocery_data = map(lambda x: [x[0]] + [x[1]] + [x[2]] + x[3:], grocery_data)
-            
+        #print("GROCERY: ", type(grocery_data[0][GROCERY_INDEX_RAW_ITEM]), type(grocery_data[0][GROCERY_INDEX_ORIG_PRICE]))
+        if type(grocery_data[0][GROCERY_INDEX_RAW_ITEM]) == str:
+            grocery_data = map(lambda x: [x[GROCERY_INDEX_ITEM_ID]] + [x[GROCERY_INDEX_RAW_ITEM].decode('utf-8')] + [x[GROCERY_INDEX_ORIG_PRICE].decode('utf-8')] + x[GROCERY_INDEX_ORIG_PRICE+1:], grocery_data)
+        else:
+            grocery_data = map(lambda x: [x[GROCERY_INDEX_ITEM_ID]] + [x[GROCERY_INDEX_RAW_ITEM]] + [x[GROCERY_INDEX_ORIG_PRICE]] + x[GROCERY_INDEX_ORIG_PRICE+1:], grocery_data)
+        
         res_flag = grocery_table.add_batch(grocery_data)
         if not res_flag:
             raise RuntimeError("grocery data could not be added to the Grocery table handler")

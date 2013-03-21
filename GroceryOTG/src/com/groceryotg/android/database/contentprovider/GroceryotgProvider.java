@@ -35,6 +35,7 @@ public class GroceryotgProvider extends ContentProvider {
     private static final int FLYERS = 130;
     private static final int FLYER_ID = 140;
     private static final int STORE_JOIN_STOREPARENT = 150;
+    private static final int ITEM_JOIN_STORE = 160;
 
     // Content URI
     private static final String AUTHORITY = "com.groceryotg.android.database.contentprovider";
@@ -48,6 +49,7 @@ public class GroceryotgProvider extends ContentProvider {
     // Joins
     private static final String BASE_PATH_GRO_JOINSTORE = "groceriesWithStore";
     private static final String BASE_PATH_STO_JOIN_STOREPARENT = "storeWithStoreParent";
+    private static final String BASE_PATH_CART_JOIN_STORE = "itemWithStore";
 
 
     public static final Uri CONTENT_URI_CAT = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH_CAT);
@@ -59,6 +61,7 @@ public class GroceryotgProvider extends ContentProvider {
     // Join URIs
     public static final Uri CONTENT_URI_GRO_JOINSTORE = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH_GRO_JOINSTORE);
     public static final Uri CONTENT_URI_STO_JOIN_STOREPARENT = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH_STO_JOIN_STOREPARENT);
+    public static final Uri CONTENT_URI_CART_JOIN_STORE = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH_CART_JOIN_STORE);
 
 
     // MIME type for multiple rows
@@ -78,6 +81,7 @@ public class GroceryotgProvider extends ContentProvider {
     public static final String CONTENT_TYPE_GRO_JOINSTORE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/groceriesWithStore";
     public static final String CONTENT_ITEM_TYPE_GRO_JOINSTORE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/groceryWithStore";
     public static final String CONTENT_TYPE_STO_JOIN_STOREPARENT = ContentResolver.CURSOR_DIR_BASE_TYPE + "/storeWithStoreParent";
+    public static final String CONTENT_TYPE_CART_JOIN_STORE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/itemWithStore";
 
     private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
@@ -97,6 +101,7 @@ public class GroceryotgProvider extends ContentProvider {
         sURIMatcher.addURI(AUTHORITY, BASE_PATH_GRO_JOINSTORE, GROCERIES_JOINSTORE);
         sURIMatcher.addURI(AUTHORITY, BASE_PATH_GRO_JOINSTORE + "/#", GROCERIES_JOINSTORE_ID);
         sURIMatcher.addURI(AUTHORITY, BASE_PATH_STO_JOIN_STOREPARENT, STORE_JOIN_STOREPARENT);
+        sURIMatcher.addURI(AUTHORITY, BASE_PATH_CART_JOIN_STORE, ITEM_JOIN_STORE);
     }
 
     @Override
@@ -165,6 +170,21 @@ public class GroceryotgProvider extends ContentProvider {
                 queryBuilder.setTables(StoreTable.TABLE_STORE + " LEFT OUTER JOIN " + StoreParentTable.TABLE_STORE_PARENT
                         + " ON " + StoreTable.TABLE_STORE + "." + StoreTable.COLUMN_STORE_PARENT
                         + "=" + StoreParentTable.TABLE_STORE_PARENT + "." + StoreParentTable.COLUMN_STORE_PARENT_ID);
+                break;
+            case ITEM_JOIN_STORE:
+            	queryBuilder.setTables(StoreTable.TABLE_STORE
+            			+ " INNER JOIN " + FlyerTable.TABLE_FLYER
+            				+ " ON " + StoreTable.TABLE_STORE + "." + StoreTable.COLUMN_STORE_FLYER
+            				+ " = " + FlyerTable.TABLE_FLYER + "." + FlyerTable.COLUMN_FLYER_ID
+            			+ " INNER JOIN " + GroceryTable.TABLE_GROCERY
+            				+ " ON " + FlyerTable.TABLE_FLYER + "." + FlyerTable.COLUMN_FLYER_ID
+            				+ " = " + GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_GROCERY_FLYER
+            			+ " INNER JOIN " + CartTable.TABLE_CART
+            				+ " ON " + GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_GROCERY_ID
+            				+ " = " + CartTable.TABLE_CART + "." + CartTable.COLUMN_CART_GROCERY_ID
+            			+ " INNER JOIN " + StoreParentTable.TABLE_STORE_PARENT
+            				+ " ON " + StoreTable.TABLE_STORE + "." + StoreTable.COLUMN_STORE_PARENT
+            				+ " = " + StoreParentTable.TABLE_STORE_PARENT + "." + StoreParentTable.COLUMN_STORE_PARENT_ID);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);

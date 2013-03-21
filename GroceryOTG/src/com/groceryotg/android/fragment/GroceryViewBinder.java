@@ -1,6 +1,7 @@
 package com.groceryotg.android.fragment;
 
 import android.database.Cursor;
+import android.support.v4.widget.SimpleCursorAdapter.ViewBinder;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.SimpleCursorAdapter;
@@ -18,7 +19,7 @@ import java.util.List;
  * User: robert
  * Date: 08/03/13
  */
-public class GroceryViewBinder implements SimpleCursorAdapter.ViewBinder {
+public class GroceryViewBinder implements SimpleCursorAdapter.ViewBinder, ViewBinder {
 
     @Override
     public boolean setViewValue(View view, Cursor cursor, int columnIndex) {

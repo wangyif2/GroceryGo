@@ -116,7 +116,14 @@
             android:layout_gravity="right"
             android:gravity="right" >
 	        
-	        <ImageView
+            <TextView
+	            android:id="@+id/grocery_row_inshopcart_flag"
+	            android:layout_width="fill_parent"
+	            android:layout_height="wrap_content"
+	            android:visibility="gone"
+	            android:text="false"
+	            />
+	        <ImageButton
 	            android:id="@+id/grocery_row_inshopcart"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
@@ -124,10 +131,16 @@
 	            android:contentDescription="@string/groceryoverview_row_imagedesc"
 	            android:paddingRight="8dp"
 	            android:src="@drawable/ic_star" >
-
-			</ImageView>
+			</ImageButton>
 			
-			<ImageView
+	        <TextView
+	            android:id="@+id/grocery_row_inwatchlist_flag"
+	            android:layout_width="fill_parent"
+	            android:layout_height="wrap_content"
+	            android:visibility="gone"
+	            android:text="false"
+	            />
+			<ImageButton
 			    android:id="@+id/grocery_row_inwatchlist"
 			    android:layout_width="wrap_content"
 			    android:layout_height="wrap_content"
@@ -136,7 +149,7 @@
 			    android:paddingRight="8dp"
 			    android:src="@drawable/ic_star" >
 
-			</ImageView>
+			</ImageButton>
 			
 		</LinearLayout>
 		

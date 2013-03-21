@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.widget.SimpleCursorAdapter.ViewBinder;
 import android.text.TextUtils;
 import android.util.SparseBooleanArray;
 import android.util.SparseIntArray;
@@ -18,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+
 import com.actionbarsherlock.app.SherlockListFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -42,9 +44,9 @@ import java.util.Map;
  * User: robert
  * Date: 16/03/13
  */
-public class GroceryListFragment extends SherlockListFragment implements View.OnClickListener, SearchView.OnQueryTextListener, SearchView.OnCloseListener, LoaderManager.LoaderCallbacks<Cursor> {
+public class GroceryListFragment extends SherlockListFragment implements SearchView.OnQueryTextListener, SearchView.OnCloseListener, LoaderManager.LoaderCallbacks<Cursor> {
     private static final String CATEGORY_POSITION = "position";
-    SimpleCursorAdapter adapter;
+    GroceryListCursorAdapter adapter;
     TextView emptyTextView;
     Menu menu;
     MenuItem refreshItem;
@@ -139,35 +141,6 @@ public class GroceryListFragment extends SherlockListFragment implements View.On
     }
     
     @Override
-	public void onClick(View v) {
-    	if (v.equals(mInShopcart)) {
-    		/*
-	    	TextView textView = (TextView) v.findViewById(R.id.grocery_row_label);
-			TextView idView = (TextView) v.findViewById(R.id.grocery_row_id);
-			
-			ContentValues values = new ContentValues();
-			values.put(CartTable.COLUMN_CART_GROCERY_ID, idView.getText().toString());
-			values.put(CartTable.COLUMN_CART_GROCERY_NAME, textView.getText().toString());
-			values.put(CartTable.COLUMN_CART_FLAG_SHOPLIST, CartTable.FLAG_TRUE);
-			values.put(CartTable.COLUMN_CART_FLAG_WATCHLIST, CartTable.FLAG_FALSE);
-			
-			getActivity().getContentResolver().insert(GroceryotgProvider.CONTENT_URI_CART_ITEM, values);
-			
-			Bundle b = new Bundle();
-			b.putString("query", GroceryFragmentActivity.myQuery);
-			b.putBoolean("reload", true);
-			getLoaderManager().restartLoader(0, b, this);
-			*/
-			Toast t = Toast.makeText(getActivity(), "You clicked the InShoplist img", Toast.LENGTH_SHORT);
-			t.show();
-    	}
-    	else if (v.equals(mInWatchlist)) {
-    		Toast t = Toast.makeText(getActivity(), "You clicked the InWatchlist img", Toast.LENGTH_SHORT);
-			t.show();
-    	}
-	}
-
-    @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         displayEmptyListMessage(buildNoNewContentString());
@@ -181,7 +154,7 @@ public class GroceryListFragment extends SherlockListFragment implements View.On
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
+    	super.onListItemClick(l, v, position, id);
         TextView textView = (TextView) v.findViewById(R.id.grocery_row_label);
         TextView idView = (TextView) v.findViewById(R.id.grocery_row_id);
 
@@ -375,7 +348,7 @@ public class GroceryListFragment extends SherlockListFragment implements View.On
                 R.id.grocery_row_store,
                 R.id.grocery_row_inshopcart};
 
-        adapter = new SimpleCursorAdapter(getActivity(), R.layout.grocery_fragment_row, null, from, to, 0);
+        adapter = new GroceryListCursorAdapter(getActivity(), R.layout.grocery_fragment_row, null, from, to);
         adapter.setViewBinder(new GroceryViewBinder());
 
         setListAdapter(adapter);

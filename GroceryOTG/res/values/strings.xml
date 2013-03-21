@@ -10,6 +10,10 @@
     <string name="cart_grocery_edit_name">Grocery item name</string>
     <string name="cart_confirm_button">Confirm</string>
     <string name="cart_item_delete">Delete this item</string>
+    <string name="cart_shoplist_added">Item added to Shopping List</string>
+    <string name="cart_watchlist_added">Item added to Watch List</string>
+    <string name="cart_shoplist_removed">Item removed from Shopping List</string>
+    <string name="cart_watchlist_removed">Item removed from Watch List</string>
     
     <string name="slidingmenu_item_cat">Home</string>
     <string name="slidingmenu_item_cart">Shopping Cart</string>

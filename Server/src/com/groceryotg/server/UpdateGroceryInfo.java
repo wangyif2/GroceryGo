@@ -2,6 +2,7 @@ package com.groceryotg.server;
 
 import com.google.gson.Gson;
 import com.groceryotg.database.Grocery;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -37,36 +38,51 @@ public class UpdateGroceryInfo extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         Date requestDate = null;
+        Integer categoryId = null;
         try {
-            if (req.getParameterMap().containsKey("date"))
-                requestDate = (req.getParameter("date").isEmpty()) ? null : format.parse(req.getParameter("date"));
-            else
-                requestDate = null;
+            requestDate = (req.getParameterMap().containsKey("date"))
+                    ? ((req.getParameter("date").isEmpty()) ? null : format.parse(req.getParameter("date")))
+                    : null;
+
+            categoryId = (req.getParameterMap().containsKey("categoryId"))
+                    ? ((req.getParameter("categoryId").isEmpty()) ? null : Integer.parseInt(req.getParameter("categoryId")))
+                    : null;
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
         logger.info("requestDate = " + ((requestDate == null) ? "null" : requestDate.toString()));
+        logger.info("categoryId = " + ((categoryId == null) ? "null" : categoryId));
 
-        groceries = getGroceries(requestDate);
+        groceries = getGroceries(requestDate, categoryId);
 
-        PrintWriter out = resp.getWriter();
         resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
+        PrintWriter out = resp.getWriter();
         out.print(gson.toJson(groceries));
     }
 
-    public List<Grocery> getGroceries(Date requestDate) {
+    public List<Grocery> getGroceries(Date requestDate, Integer categoryId) {
         List<Grocery> gro = null;
         Session session = HibernateUtils.getSessionFactory().openSession();
         session.beginTransaction();
+        Date lastestDate = (Date) session.createCriteria(Grocery.class).setProjection(Projections.max("updateDate")).uniqueResult();
+
+        Criteria criteria = session.createCriteria(Grocery.class, "grocery");
 
         if (requestDate == null) {
-            Date lastestDate = (Date) session.createCriteria(Grocery.class).setProjection(Projections.max("updateDate")).uniqueResult();
-            logger.info("date is null, lastestDate is: " + lastestDate.toString());
-            gro = (List<Grocery>) session.createCriteria(Grocery.class).add(Restrictions.ge("updateDate", lastestDate)).list();
+            criteria.add(Restrictions.eq("updateDate", lastestDate));
         } else {
-            gro = (List<Grocery>) session.createCriteria(Grocery.class).add(Restrictions.ge("endDate", requestDate)).list();
+            criteria.add(Restrictions.ge("endDate", requestDate)).add(Restrictions.eq("updateDate", lastestDate));
         }
+
+        if (categoryId != null)
+            criteria.createAlias("item", "myItem")
+                    .createAlias("myItem.subcategory", "mySubcategory")
+                    .createAlias("mySubcategory.categoryId", "myCategory")
+                    .add(Restrictions.eq("myCategory.categoryId", categoryId));
+
+        gro = (List<Grocery>) criteria.list();
 
         session.getTransaction().commit();
 

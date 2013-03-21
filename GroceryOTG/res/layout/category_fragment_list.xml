@@ -5,7 +5,7 @@
               android:layout_height="fill_parent"
         >
     
-    <GridView xmlns:android="http://schemas.android.com/apk/res/android"
+    <GridView 
         android:id="@+id/gridview"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
@@ -19,7 +19,7 @@
         android:id="@+id/empty_category_list"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:textSize="20dp"
+        android:textSize="20sp"
         android:gravity="center"
         android:text="@string/no_content"
         android:drawableLeft="@drawable/warning"

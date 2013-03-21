@@ -25,8 +25,9 @@ public class GetStoreInfo extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         List<Store> stores = getStores();
 
-        PrintWriter out = resp.getWriter();
         resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
+        PrintWriter out = resp.getWriter();
         out.print(gson.toJson(stores));
     }
 

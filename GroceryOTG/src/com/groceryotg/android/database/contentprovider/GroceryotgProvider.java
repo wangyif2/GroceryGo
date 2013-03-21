@@ -51,7 +51,6 @@ public class GroceryotgProvider extends ContentProvider {
     private static final String BASE_PATH_STO_JOIN_STOREPARENT = "storeWithStoreParent";
     private static final String BASE_PATH_CART_JOIN_STORE = "itemWithStore";
 
-
     public static final Uri CONTENT_URI_CAT = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH_CAT);
     public static final Uri CONTENT_URI_GRO = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH_GRO);
     public static final Uri CONTENT_URI_STO = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH_STO);
@@ -62,7 +61,6 @@ public class GroceryotgProvider extends ContentProvider {
     public static final Uri CONTENT_URI_GRO_JOINSTORE = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH_GRO_JOINSTORE);
     public static final Uri CONTENT_URI_STO_JOIN_STOREPARENT = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH_STO_JOIN_STOREPARENT);
     public static final Uri CONTENT_URI_CART_JOIN_STORE = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH_CART_JOIN_STORE);
-
 
     // MIME type for multiple rows
     public static final String CONTENT_TYPE_CAT = ContentResolver.CURSOR_DIR_BASE_TYPE + "/categories";

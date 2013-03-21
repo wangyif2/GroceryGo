@@ -24,6 +24,8 @@ import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 public class CategoryGridFragment extends SherlockFragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private GridView gridview;
     private SimpleCursorAdapter adapter;
+    
+    private final int INDEX_LOADER_CAT = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -41,6 +43,7 @@ public class CategoryGridFragment extends SherlockFragment implements LoaderMana
             }
         });
         gridview.setEmptyView(v.findViewById(R.id.empty_category_list));
+        
         return v;
     }
 
@@ -54,25 +57,26 @@ public class CategoryGridFragment extends SherlockFragment implements LoaderMana
         String[] from = new String[]{CategoryTable.COLUMN_CATEGORY_NAME};
         int[] to = new int[]{R.id.category_row_label};
 
-        getLoaderManager().initLoader(0, null, this);
+        getLoaderManager().initLoader(INDEX_LOADER_CAT, null, this);
         adapter = new CategoryGridCursorAdapter(getActivity(), R.layout.category_fragment_row, null, from, to);
 
         gridview.setAdapter(adapter);
+        
     }
 
     @Override
-    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+    public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
         String[] projection = {CategoryTable.COLUMN_ID, CategoryTable.COLUMN_CATEGORY_NAME};
-        return new CursorLoader(getActivity(), GroceryotgProvider.CONTENT_URI_CAT, projection, null, null, null);
+        return new CursorLoader(getActivity(), GroceryotgProvider.CONTENT_URI_CAT, projection, null, null, null);	
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        adapter.swapCursor(cursor);
+    	adapter.swapCursor(cursor);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
-        adapter.swapCursor(null);
+    	adapter.swapCursor(null);
     }
 }

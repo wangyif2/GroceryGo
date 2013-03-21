@@ -5,17 +5,6 @@
               android:layout_height="fill_parent"
         >
     
-    <GridView android:id="@+id/grid_watchlists" 
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:numColumns="3"
-        android:verticalSpacing="5dp"
-        android:horizontalSpacing="5dp"
-        android:gravity="center"
-        android:padding="10dp"
-        android:background="#dddddd"
-        />
-    
     <GridView 
         android:id="@+id/gridview"
         android:layout_width="fill_parent"
@@ -38,15 +27,6 @@
         android:paddingLeft="30dip"
         android:paddingRight="26dip"
         android:singleLine="false"/>
-    
-    <TextView
-        android:id="@+id/empty_watchlist"
-        android:layout_width="fill_parent"
-        android:layout_height="80dp"
-        android:textSize="20sp"
-        android:text="@string/no_watchlists"
-        android:textColor="#ff0000"
-        />
     
 </LinearLayout>
 

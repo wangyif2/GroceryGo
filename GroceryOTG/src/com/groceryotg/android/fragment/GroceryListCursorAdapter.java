@@ -55,19 +55,19 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
             	int newImage, shopListFlag, watchListFlag;
             	String displayMessage;
             	
-            	if (tv_selected_shoplist.getText().toString().equalsIgnoreCase("false")) {
+            	if (tv_selected_shoplist.getText().toString().equalsIgnoreCase(((Integer)CartTable.FLAG_FALSE).toString())) {
             		newImage = R.drawable.ic_star_highlighted;
             		shopListFlag = CartTable.FLAG_TRUE;
-            		tv_selected_shoplist.setText("true");
+            		tv_selected_shoplist.setText(((Integer)CartTable.FLAG_TRUE).toString());
             		displayMessage = context.getResources().getString(R.string.cart_shoplist_added);
             	}
             	else {
             		newImage = R.drawable.ic_star;
             		shopListFlag = CartTable.FLAG_FALSE;
-            		tv_selected_shoplist.setText("false");
+            		tv_selected_shoplist.setText(((Integer)CartTable.FLAG_FALSE).toString());
             		displayMessage = context.getResources().getString(R.string.cart_shoplist_removed);
             	}
-            	watchListFlag = (tv_selected_watchlist.getText().toString().equalsIgnoreCase("false") ? CartTable.FLAG_FALSE : CartTable.FLAG_TRUE);
+            	watchListFlag = (tv_selected_watchlist.getText().toString().equalsIgnoreCase(((Integer)CartTable.FLAG_FALSE).toString()) ? CartTable.FLAG_FALSE : CartTable.FLAG_TRUE);
             	icon.setImageResource(newImage);
             	
             	ContentValues values = new ContentValues();

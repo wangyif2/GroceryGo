@@ -8,6 +8,7 @@ import android.widget.TextView;
 import com.groceryotg.android.R;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.GroceryTable;
+import com.groceryotg.android.database.StoreParentTable;
 import com.groceryotg.android.services.ServerURL;
 
 import java.util.Arrays;
@@ -126,6 +127,24 @@ public class GroceryViewBinder implements SimpleCursorAdapter.ViewBinder {
         	}
         	return true;
         }	
+        else if (columnIndex == cursor.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_NAME) 
+        		&& viewId == R.id.grocery_row_store) {
+        	String storeParentName = cursor.getString(columnIndex);
+        	ImageView img = (ImageView) view;
+        	
+        	if (storeParentName.equalsIgnoreCase("metro")) {
+        		img.setImageResource(R.drawable.ic_store_metro);
+        	} else if (storeParentName.equalsIgnoreCase("loblaws")) {
+        		img.setImageResource(R.drawable.ic_store_loblaws);
+        	} else if (storeParentName.equalsIgnoreCase("foodbasics")) {
+        		img.setImageResource(R.drawable.ic_store_foodbasics);
+        	} else if (storeParentName.equalsIgnoreCase("nofrills")) {
+        		img.setImageResource(R.drawable.ic_store_nofrills);
+        	} else if (storeParentName.equalsIgnoreCase("sobeys")) {
+        		img.setImageResource(R.drawable.ic_store_sobeys);
+        	}
+        	return true;
+        }
         
         return false;
     }

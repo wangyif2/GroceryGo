@@ -104,6 +104,8 @@ public class ShopCartDetailView extends SherlockActivity {
         if (!name.isEmpty()) {
             ContentValues values = new ContentValues();
             values.put(CartTable.COLUMN_CART_GROCERY_NAME, name);
+            values.put(CartTable.COLUMN_CART_FLAG_SHOPLIST, CartTable.FLAG_TRUE);
+            values.put(CartTable.COLUMN_CART_FLAG_WATCHLIST, CartTable.FLAG_FALSE);
 
             if (cartGroceryItemUri == null) {
                 cartGroceryItemUri = getContentResolver().insert(GroceryotgProvider.CONTENT_URI_CART_ITEM, values);

@@ -161,6 +161,8 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
         ContentValues values = new ContentValues();
         values.put(CartTable.COLUMN_CART_GROCERY_ID, idView.getText().toString());
         values.put(CartTable.COLUMN_CART_GROCERY_NAME, textView.getText().toString());
+        values.put(CartTable.COLUMN_CART_FLAG_SHOPLIST, CartTable.FLAG_TRUE);
+        values.put(CartTable.COLUMN_CART_FLAG_WATCHLIST, CartTable.FLAG_FALSE);
 
         getActivity().getContentResolver().insert(GroceryotgProvider.CONTENT_URI_CART_ITEM, values);
 

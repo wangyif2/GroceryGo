@@ -42,19 +42,17 @@ import java.util.Map;
  * User: robert
  * Date: 16/03/13
  */
-public class GroceryListFragment extends SherlockListFragment implements SearchView.OnQueryTextListener, SearchView.OnCloseListener, LoaderManager.LoaderCallbacks<Cursor> {
+public class GroceryListFragment extends SherlockListFragment implements View.OnClickListener, SearchView.OnQueryTextListener, SearchView.OnCloseListener, LoaderManager.LoaderCallbacks<Cursor> {
     private static final String CATEGORY_POSITION = "position";
     SimpleCursorAdapter adapter;
     TextView emptyTextView;
     Menu menu;
     MenuItem refreshItem;
-
     private Integer categoryId;
 
-    // Filters
-    private Integer subcategoryId;
-
     private SearchView mSearchView;
+    private ImageView mInShopcart;
+    private ImageView mInWatchlist;
 
     public static GroceryListFragment newInstance(int pos) {
         GroceryListFragment f = new GroceryListFragment();
@@ -139,6 +137,35 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
         emptyTextView = (TextView) v.findViewById(R.id.empty_grocery_list);
         return v;
     }
+    
+    @Override
+	public void onClick(View v) {
+    	if (v.equals(mInShopcart)) {
+    		/*
+	    	TextView textView = (TextView) v.findViewById(R.id.grocery_row_label);
+			TextView idView = (TextView) v.findViewById(R.id.grocery_row_id);
+			
+			ContentValues values = new ContentValues();
+			values.put(CartTable.COLUMN_CART_GROCERY_ID, idView.getText().toString());
+			values.put(CartTable.COLUMN_CART_GROCERY_NAME, textView.getText().toString());
+			values.put(CartTable.COLUMN_CART_FLAG_SHOPLIST, CartTable.FLAG_TRUE);
+			values.put(CartTable.COLUMN_CART_FLAG_WATCHLIST, CartTable.FLAG_FALSE);
+			
+			getActivity().getContentResolver().insert(GroceryotgProvider.CONTENT_URI_CART_ITEM, values);
+			
+			Bundle b = new Bundle();
+			b.putString("query", GroceryFragmentActivity.myQuery);
+			b.putBoolean("reload", true);
+			getLoaderManager().restartLoader(0, b, this);
+			*/
+			Toast t = Toast.makeText(getActivity(), "You clicked the InShoplist img", Toast.LENGTH_SHORT);
+			t.show();
+    	}
+    	else if (v.equals(mInWatchlist)) {
+    		Toast t = Toast.makeText(getActivity(), "You clicked the InWatchlist img", Toast.LENGTH_SHORT);
+			t.show();
+    	}
+	}
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {

@@ -1,98 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tableLayout1"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_weight="1.0"
+    android:paddingBottom="8dp"
+    android:paddingLeft="12dp" >
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal"
-    android:weightSum="1.0"
-    android:paddingLeft="8dp"
-    android:paddingRight="4dp">
-   
-    <LinearLayout android:id="@+id/linearLayoutStacked"
-        android:layout_width="0dip"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.7"
-        android:orientation="vertical"
-        android:focusable="false"
-        android:clickable="false"
-        android:padding="4dp">
+	<!-- 2 columns={0,1}, 2 rows -->
+
+    <TableRow
+        android:id="@+id/tableRow1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
         
-        <TextView
-            android:id="@+id/grocery_row_id"
-            android:layout_width="fill_parent"
+        <LinearLayout
+            android:id="@+id/linearLayoutStacked"
+            android:layout_width="0dip"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:text="@+id/grocery_row_id_text"
-            />
-        
-        <TextView
-            android:id="@+id/grocery_row_label"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:text="@+id/grocery_row_label_text"
-            android:textSize="16sp"
-            android:fontFamily="sans-serif"
-            android:textStyle="bold"
-            android:singleLine="false"
-            android:gravity="center_vertical"
+            android:layout_column="0"
+            android:layout_weight="0.75"
             android:clickable="false"
-            android:focusable="false">
-        </TextView>
+            android:focusable="false"
+            android:orientation="vertical"
+            android:paddingRight="12dp" >
+        	
+	        <TextView
+	            android:id="@+id/grocery_row_id"
+	            android:layout_width="fill_parent"
+	            android:layout_height="wrap_content"
+	            android:visibility="gone"
+	            android:text="@+id/grocery_row_id_text"
+	            />
+	        
+	        <TextView
+	            android:id="@+id/grocery_row_label"
+	            android:layout_width="fill_parent"
+	            android:layout_height="wrap_content"
+	            android:layout_marginTop="6dp"
+	            android:text="@+id/grocery_row_label_text"
+	            android:textSize="16sp"
+	            android:fontFamily="sans-serif"
+	            android:textStyle="bold"
+	            android:singleLine="false"
+	            android:gravity="center_vertical"
+	            android:clickable="false"
+	            android:focusable="false">
+	        </TextView>
+	        
+	        <TextView
+	            android:id="@+id/grocery_row_details"
+	            android:layout_width="fill_parent"
+	            android:layout_height="wrap_content"
+	            android:layout_marginTop="6dp"
+	            android:text="@+id/grocery_row_details_text"
+	            android:textSize="12sp"
+	            android:fontFamily="sans-serif"
+	            android:textStyle="normal"
+	            android:singleLine="false"
+	            android:gravity="center_vertical"
+	            android:clickable="false"
+	            android:focusable="false">
+        	</TextView>  
+        </LinearLayout>
         
         <TextView
-            android:id="@+id/grocery_row_details"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:text="@+id/grocery_row_details_text"
-            android:textSize="12sp"
-            android:fontFamily="sans-serif"
-            android:textStyle="normal"
-            android:singleLine="false"
-            android:gravity="center_vertical"
-            android:clickable="false"
-            android:focusable="false">
-        </TextView>  
-        
-        <!-- 
-        <TextView 
-	    android:id="@+id/grocery_row_store"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    android:textColor="@android:color/holo_red_dark"
-        android:textSize="18sp"
-        android:text="@+id/grocery_row_store_text"
-        android:fontFamily="sans-serif"
-        android:gravity="center_vertical|left" />
-        -->
-        
-        <ImageView
-	        android:id="@+id/grocery_row_store"
-	        android:src="@drawable/ic_store_metro"
-			android:contentDescription="@string/groceryoverview_row_imagedesc"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:gravity="left|center_vertical"
-			android:paddingTop="8dp"
-			android:paddingBottom="4dp">
-		</ImageView>
-        
-   </LinearLayout>
-    
-   <LinearLayout android:id="@+id/linearLayoutRight"
-        android:layout_width="0dip"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.3"
-        android:orientation="vertical"
-        android:padding="4dp"
-        android:focusable="false"
-        android:clickable="false">
-        
-	    <TextView
 	        android:id="@+id/grocery_row_price"
-	        android:layout_width="fill_parent"
+	        android:layout_column="1"
+	        android:layout_width="0dip"
 	        android:layout_height="wrap_content"
+	        android:layout_weight="0.25"
 	        android:layout_marginTop="6dp"
 	        android:text="@+id/grocery_row_price_text"
 	        android:textColor="@android:color/holo_red_dark"
@@ -103,16 +80,66 @@
 	        android:paddingRight="10dp"
 	        android:background="#dddddd">
 	    </TextView>
-	    
-	    <ImageView
-	        android:id="@+id/grocery_row_inshopcart"
-	        android:src="@drawable/ic_star"
-			android:padding="10dip"
-			android:contentDescription="@string/groceryoverview_row_imagedesc"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content">
-		</ImageView>
-	
-    </LinearLayout>
+    </TableRow>
     
-</LinearLayout>
+    <TableRow
+        android:id="@+id/tableRow2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        
+        <LinearLayout
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_column="0"
+            android:layout_gravity="left"
+            android:layout_weight="0.75"
+            android:orientation="horizontal" >
+
+	        <ImageView
+	            android:id="@+id/grocery_row_store"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:contentDescription="@string/groceryoverview_row_imagedesc"
+	            android:gravity="left"
+	            android:paddingBottom="4dp"
+	            android:paddingTop="8dp"
+	            android:src="@drawable/ic_store_metro">
+			</ImageView>
+        </LinearLayout>
+        
+        <LinearLayout
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_column="1"
+            android:layout_weight="0.25"
+            android:orientation="horizontal"
+            android:layout_gravity="right"
+            android:gravity="right" >
+	        
+	        <ImageView
+	            android:id="@+id/grocery_row_inshopcart"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:clickable="true"
+	            android:contentDescription="@string/groceryoverview_row_imagedesc"
+	            android:paddingRight="8dp"
+	            android:src="@drawable/ic_star" >
+
+			</ImageView>
+			
+			<ImageView
+			    android:id="@+id/grocery_row_inwatchlist"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:clickable="true"
+			    android:contentDescription="@string/groceryoverview_row_imagedesc"
+			    android:paddingRight="8dp"
+			    android:src="@drawable/ic_star" >
+
+			</ImageView>
+			
+		</LinearLayout>
+		
+    </TableRow>
+    
+</TableLayout>

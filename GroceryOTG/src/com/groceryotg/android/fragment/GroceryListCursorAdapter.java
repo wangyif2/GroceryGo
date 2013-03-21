@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
 import android.view.View;
@@ -42,9 +43,13 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
             @Override
             public void onClick(View v) 
             {
+            	// the "v" parameter represents the just-clicked button/image
             	ImageView icon = (ImageView) v.findViewById(R.id.grocery_row_inshopcart);
             	TextView tv_selected_shoplist = (TextView) ((LinearLayout)v.getParent()).getChildAt(0);
             	TextView tv_selected_watchlist = (TextView) ((LinearLayout)v.getParent()).getChildAt(2);
+            	int shopListFlagBefore = tv_selected_shoplist.getText().toString().equalsIgnoreCase(((Integer)CartTable.FLAG_TRUE).toString()) ? 1 : 0;
+            	int watchListFlagBefore = tv_selected_watchlist.getText().toString().equalsIgnoreCase(((Integer)CartTable.FLAG_TRUE).toString()) ? 1 : 0;
+            	
             	
             	// Get parent view
             	TableLayout tableParent = (TableLayout) v.getParent().getParent().getParent();
@@ -55,7 +60,7 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
             	int newImage, shopListFlag, watchListFlag;
             	String displayMessage;
             	
-            	if (tv_selected_shoplist.getText().toString().equalsIgnoreCase(((Integer)CartTable.FLAG_FALSE).toString())) {
+            	if (shopListFlagBefore == CartTable.FLAG_FALSE) {
             		newImage = R.drawable.ic_star_highlighted;
             		shopListFlag = CartTable.FLAG_TRUE;
             		tv_selected_shoplist.setText(((Integer)CartTable.FLAG_TRUE).toString());
@@ -76,11 +81,28 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
                 values.put(CartTable.COLUMN_CART_FLAG_SHOPLIST, shopListFlag);
                 values.put(CartTable.COLUMN_CART_FLAG_WATCHLIST, watchListFlag);
                 
-                activity.getContentResolver().insert(GroceryotgProvider.CONTENT_URI_CART_ITEM, values);
+                int existsInDatabase = CartTable.FLAG_FALSE;
+                if ( shopListFlagBefore == CartTable.FLAG_TRUE || watchListFlagBefore == CartTable.FLAG_TRUE) {
+                	existsInDatabase = CartTable.FLAG_TRUE;
+                }
+                
+                // Determine whether to insert, update, or delete the CartTable entry
+                if (existsInDatabase==CartTable.FLAG_FALSE && shopListFlag==CartTable.FLAG_TRUE) {
+                	activity.getContentResolver().insert(GroceryotgProvider.CONTENT_URI_CART_ITEM, values);
+                }
+                else if (existsInDatabase==CartTable.FLAG_TRUE && shopListFlag==CartTable.FLAG_TRUE) {
+                	String whereClause = CartTable.TABLE_CART + "." + CartTable.COLUMN_CART_GROCERY_ID + "=?";
+                	String[] selectionArgs = { tv_id.getText().toString() };
+                	activity.getContentResolver().update(GroceryotgProvider.CONTENT_URI_CART_ITEM, values, whereClause, selectionArgs);
+                }
+                else if (existsInDatabase==CartTable.FLAG_TRUE && shopListFlag==CartTable.FLAG_FALSE) {
+                	String whereClause = CartTable.TABLE_CART + "." + CartTable.COLUMN_CART_GROCERY_ID + "=?";
+                	String[] selectionArgs = { tv_id.getText().toString() };
+                	activity.getContentResolver().delete(GroceryotgProvider.CONTENT_URI_CART_ITEM, whereClause, selectionArgs);
+                }
+                	
                 Toast t = Toast.makeText(activity, displayMessage, Toast.LENGTH_SHORT);
                 t.show();
-                
-            	//Log.d("CUSTOMADAPTER", "Clicked on shopcart icon, row_id=" + tv_id.getText().toString());
             }
         });
         

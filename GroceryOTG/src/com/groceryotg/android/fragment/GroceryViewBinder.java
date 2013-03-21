@@ -128,18 +128,44 @@ public class GroceryViewBinder implements SimpleCursorAdapter.ViewBinder, ViewBi
         	}
         	return true;
         }	
+        else if (columnIndex == cursor.getColumnIndex(CartTable.COLUMN_CART_FLAG_SHOPLIST) 
+        		&& viewId == R.id.grocery_row_inshopcart_flag) {
+        	Integer inShoplist = cursor.getInt(columnIndex);
+        	TextView flag = (TextView) view;
+        	
+        	if (inShoplist != 0) {
+        		// Change the view to a highlighted star
+        		flag.setText("1");
+        	}
+        	else {
+        		// Display a non-highlighted star
+        		flag.setText("0");
+        	}
+        	return true;
+        }	
         else if (columnIndex == cursor.getColumnIndex(CartTable.COLUMN_CART_FLAG_WATCHLIST) 
         		&& viewId == R.id.grocery_row_inwatchlist) {
         	Integer inWatchlist = cursor.getInt(columnIndex);
         	ImageView img = (ImageView) view;
         	
         	if (inWatchlist != 0) {
-        		// Change the view to a highlighted star
         		img.setImageResource(R.drawable.ic_star_highlighted);
         	}
         	else {
-        		// Display a non-highlighted star
         		img.setImageResource(R.drawable.ic_star);
+        	}
+        	return true;
+        }	
+        else if (columnIndex == cursor.getColumnIndex(CartTable.COLUMN_CART_FLAG_WATCHLIST) 
+        		&& viewId == R.id.grocery_row_inwatchlist_flag) {
+        	Integer inWatchlist = cursor.getInt(columnIndex);
+        	TextView flag = (TextView) view;
+        	
+        	if (inWatchlist != 0) {
+        		flag.setText("1");
+        	}
+        	else {
+        		flag.setText("0");
         	}
         	return true;
         }	

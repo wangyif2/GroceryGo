@@ -123,14 +123,17 @@
 	            android:visibility="gone"
 	            android:text="0"
 	            />
+
 	        <ImageButton
 	            android:id="@+id/grocery_row_inshopcart"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
 	            android:clickable="true"
 	            android:contentDescription="@string/groceryoverview_row_imagedesc"
+	            android:paddingBottom="4dp"
 	            android:paddingRight="8dp"
-	            android:src="@drawable/ic_star" >
+	            android:paddingTop="8dp"
+	            android:src="@drawable/ic_star">
 			</ImageButton>
 			
 	        <TextView
@@ -140,15 +143,17 @@
 	            android:visibility="gone"
 	            android:text="0"
 	            />
+
 			<ImageButton
 			    android:id="@+id/grocery_row_inwatchlist"
 			    android:layout_width="wrap_content"
 			    android:layout_height="wrap_content"
 			    android:clickable="true"
 			    android:contentDescription="@string/groceryoverview_row_imagedesc"
+			    android:paddingBottom="4dp"
 			    android:paddingRight="8dp"
+			    android:paddingTop="8dp"
 			    android:src="@drawable/ic_star" >
-
 			</ImageButton>
 			
 		</LinearLayout>

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -16,6 +17,8 @@ import android.util.AttributeSet;
 import android.view.View;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
@@ -53,17 +56,33 @@ public class GroceryMapView extends SherlockFragmentActivity {
         // Enable ancestral navigation ("Up" button in ActionBar) for Android < 4.1
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         
-        // Set map options
-        GoogleMapOptions options = new GoogleMapOptions();
-        options.mapType(GoogleMap.MAP_TYPE_NORMAL)
-        	.compassEnabled(true)
-        	.zoomControlsEnabled(false)
-        	.rotateGesturesEnabled(false)
-        	.tiltGesturesEnabled(false);
+        boolean isGooglePlaySuccess = checkGooglePlayService();
         
-        SupportMapFragment fragment = SupportMapFragment.newInstance(options);
-        getSupportFragmentManager().beginTransaction().add(android.R.id.content, fragment, MAP_FRAGMENT_TAG).commit();
-        getSupportFragmentManager().executePendingTransactions();
+        if (isGooglePlaySuccess) {
+	        // Set map options
+	        GoogleMapOptions options = new GoogleMapOptions();
+	        options.mapType(GoogleMap.MAP_TYPE_NORMAL)
+	        	.compassEnabled(true)
+	        	.zoomControlsEnabled(false)
+	        	.rotateGesturesEnabled(false)
+	        	.tiltGesturesEnabled(false);
+	        
+	        SupportMapFragment fragment = SupportMapFragment.newInstance(options);
+	        getSupportFragmentManager().beginTransaction().add(android.R.id.content, fragment, MAP_FRAGMENT_TAG).commit();
+	        getSupportFragmentManager().executePendingTransactions();
+        }
+    }
+    
+    private boolean checkGooglePlayService() {
+    	int errorCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this.getApplicationContext());
+        if (errorCode != ConnectionResult.SUCCESS) {
+        	Dialog errorDialog = GooglePlayServicesUtil.getErrorDialog(errorCode, this, -1);
+        	if (errorDialog != null) {
+        		errorDialog.show();
+        		return false;
+        	}
+        }
+        return true;
     }
 
     @Override

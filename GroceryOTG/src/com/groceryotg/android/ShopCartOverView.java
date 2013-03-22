@@ -17,6 +17,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
+import com.groceryotg.android.fragment.GroceryViewBinder;
 import com.slidingmenu.lib.SlidingMenu;
 
 /**
@@ -25,9 +26,9 @@ import com.slidingmenu.lib.SlidingMenu;
  */
 public class ShopCartOverView extends SherlockListActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final int DELETE_ID = 1;
-    private SimpleCursorAdapter adapter;
+    private ShopCartCursorAdapter adapter;
     private SlidingMenu slidingMenu;
-
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,25 +108,35 @@ public class ShopCartOverView extends SherlockListActivity implements LoaderMana
     }
 
     private void fillData() {
-        String[] from = new String[]{CartTable.COLUMN_CART_GROCERY_NAME,
+        String[] from = new String[]{CartTable.COLUMN_ID,
+        							 CartTable.COLUMN_CART_GROCERY_NAME,
         							 CartTable.COLUMN_CART_GROCERY_ID,
         							 CartTable.COLUMN_CART_FLAG_SHOPLIST,
+        							 CartTable.COLUMN_CART_FLAG_WATCHLIST,
+        							 CartTable.COLUMN_CART_FLAG_SHOPLIST,
         							 CartTable.COLUMN_CART_FLAG_WATCHLIST};
-        int[] to = new int[]{R.id.cart_grocery_name,
+        int[] to = new int[]{R.id.cart_item_id,
+        					 R.id.cart_grocery_name,
         					 R.id.cart_grocery_id,
         					 R.id.cart_flag_shoplist,
-        					 R.id.cart_flag_watchlist};
+        					 R.id.cart_flag_watchlist,
+        					 R.id.cart_row_inshoplist,
+        					 R.id.cart_row_inwatchlist};
 
         getLoaderManager().initLoader(0, null, this);
-        adapter = new SimpleCursorAdapter(this, R.layout.shopcart_row, null, from, to, 0);
-
+        //adapter = new SimpleCursorAdapter(this, R.layout.shopcart_row, null, from, to, 0);
+        adapter = new ShopCartCursorAdapter(this, R.layout.shopcart_row, null, from, to);
+        adapter.setViewBinder(new ShopCartViewBinder());
         setListAdapter(adapter);
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String[] projection = {CartTable.COLUMN_ID, CartTable.COLUMN_CART_GROCERY_NAME, CartTable.COLUMN_CART_GROCERY_ID, 
-        					   CartTable.COLUMN_CART_FLAG_SHOPLIST, CartTable.COLUMN_CART_FLAG_WATCHLIST};
+        String[] projection = {CartTable.COLUMN_ID, 
+        					   CartTable.COLUMN_CART_GROCERY_NAME, 
+        					   CartTable.COLUMN_CART_GROCERY_ID, 
+        					   CartTable.COLUMN_CART_FLAG_SHOPLIST, 
+        					   CartTable.COLUMN_CART_FLAG_WATCHLIST};
         return new CursorLoader(this, GroceryotgProvider.CONTENT_URI_CART_ITEM, projection, null, null, null);
     }
 

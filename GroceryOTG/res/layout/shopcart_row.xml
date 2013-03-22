@@ -13,6 +13,19 @@
         android:orientation="vertical"
         android:focusable="false"
         android:clickable="false">
+        
+        <TextView
+	        android:id="@+id/cart_item_id"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:visibility="gone"
+	        />
+        <TextView
+	        android:id="@+id/cart_grocery_id"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:visibility="gone"
+	        />
 	    <TextView
 	        android:id="@+id/cart_grocery_name"
 	        android:layout_width="fill_parent"
@@ -26,29 +39,55 @@
 	        android:paddingLeft="14dp"
 	        android:paddingRight="14dp"
 	        android:paddingTop="18dp"
-	        android:paddingBottom="18dp">
+	        android:paddingBottom="18dp"
+	        android:text="@+id/cart_grocery_name_text">
 	    </TextView>
-	    <TextView
-	        android:id="@+id/cart_grocery_id"
-	        android:layout_width="fill_parent"
-	        android:layout_height="wrap_content"
-	        android:visibility="gone"
-	        />
 	</LinearLayout>
 	
-    <TextView 
-        android:id="@+id/cart_flag_shoplist"
+    <LinearLayout
         android:layout_width="0dip"
         android:layout_height="wrap_content"
-        android:layout_weight="0.15"
-        android:padding="20dp"
-        />
-    <TextView 
-        android:id="@+id/cart_flag_watchlist"
-        android:layout_width="0dip"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.15"
-        android:padding="20dp"
-        />
+        android:layout_gravity="right"
+        android:layout_weight="0.3"
+        android:gravity="right"
+        android:orientation="horizontal"
+        android:paddingTop="14dp" >
+	    
+		    <TextView 
+		        android:id="@+id/cart_flag_shoplist"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:visibility="gone"
+		        android:text="0"
+		        />
+		    
+		    <ImageButton
+		        android:id="@+id/cart_row_inshoplist"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:background="@null"
+		        android:clickable="true"
+		        android:paddingRight="8dp"
+		        android:paddingTop="8dp"
+		        android:src="@drawable/ic_flag_shoplist" />
+			    
+		    <TextView 
+		        android:id="@+id/cart_flag_watchlist"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:visibility="gone"
+		        android:text="0" />
+		    
+		    <ImageButton
+	            android:id="@+id/cart_row_inwatchlist"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:background="@null"
+	            android:clickable="true"
+	            android:paddingRight="8dp"
+	            android:paddingTop="8dp"
+	            android:src="@drawable/ic_flag_watchlist" />
+		    
+	</LinearLayout>
     
 </LinearLayout>

@@ -1,5 +1,8 @@
 package com.groceryotg.android;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -13,7 +16,6 @@ import com.actionbarsherlock.view.MenuItem;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -22,8 +24,6 @@ import com.groceryotg.android.database.StoreTable;
 import com.groceryotg.android.GroceryFragmentActivity;
 import com.groceryotg.android.utils.GroceryOTGUtils;
 
-//import android.support.v4.app.FragmentActivity;
-
 /**
  * User: robert
  * Date: 06/02/13
@@ -31,6 +31,8 @@ import com.groceryotg.android.utils.GroceryOTGUtils;
 public class GroceryMapView extends SherlockFragmentActivity {
     public static final int CAM_ZOOM = 14;
     public static final String MAP_FRAGMENT_TAG = "map_fragment_tag";
+    
+    private Map<String, Integer> mIconMap = new HashMap<String, Integer>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +49,8 @@ public class GroceryMapView extends SherlockFragmentActivity {
     @Override
     public View onCreateView(String name, Context context, AttributeSet attrs) {
         super.onCreateView(name, context, attrs);
+        
+        buildIconMap(context);
 
         LatLng lastKnownLocation = getLastKnownLocation();
         Cursor storeLocations = GroceryOTGUtils.getStoreLocations(context);
@@ -55,18 +59,32 @@ public class GroceryMapView extends SherlockFragmentActivity {
             GoogleMap map = fragment.getMap();
             if (map != null) {
                 // move the camera to the current location
-                map.animateCamera(CameraUpdateFactory.newLatLngZoom(lastKnownLocation, CAM_ZOOM), 2000, null);
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(lastKnownLocation, CAM_ZOOM));
 
                 // add a marker at the current location
-                buildMarker(map, getString(R.string.map_usermarker), lastKnownLocation);
+                buildMarker(context, map, getString(R.string.map_usermarker), lastKnownLocation);
 
-                buildStoreMarkers(storeLocations, map);
+                buildStoreMarkers(context, storeLocations, map);
             }
         }
         return null;
     }
+    
+    private void buildIconMap(Context context) {
+    	Cursor parents = GroceryOTGUtils.getStoreParentNames(context);
+    	parents.moveToFirst();
+    	while (!parents.isAfterLast()) {
+    		String name = parents.getString(parents.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_NAME));
+    		int markerImageID = context.getResources().getIdentifier("ic_mapmarker_" + name, "drawable", getPackageName());
+    		if (markerImageID != 0) {
+    			mIconMap.put(name, markerImageID);
+    		}
+    		parents.moveToNext();
+    	}
+    	
+    }
 
-    private void buildStoreMarkers(Cursor storeLocations, GoogleMap map) {
+    private void buildStoreMarkers(Context context, Cursor storeLocations, GoogleMap map) {
         storeLocations.moveToFirst();
         int storeNum = storeLocations.getColumnCount();
         while (!storeLocations.isAfterLast()) {
@@ -76,33 +94,14 @@ public class GroceryMapView extends SherlockFragmentActivity {
                 double storeLng = storeLocations.getDouble(storeLocations.getColumnIndex(StoreTable.COLUMN_STORE_LONGITUDE));
                 LatLng storeLatLng = new LatLng(storeLat, storeLng);
 
-                buildMarker(map, storeName, storeLatLng);
+                buildMarker(context, map, storeName, storeLatLng);
             }
             storeLocations.moveToNext();
         }
     }
 
-    private void buildMarker(GoogleMap map, String storeName, LatLng storeLatLng) {
-        BitmapDescriptor markerImage;
-
-        //TODO: needs refactor
-//        TypedArray storeArray = getResources().obtainTypedArray(R.array.store_names);
-//        int markerImageName;
-        if (storeName.equals("foodbasics")) {
-            markerImage = BitmapDescriptorFactory.fromResource(R.drawable.ic_mapmarker_foodbasics);
-        } else if (storeName.equals("nofrills")) {
-            markerImage = BitmapDescriptorFactory.fromResource(R.drawable.ic_mapmarker_nofrills);
-        } else if (storeName.equals("metro")) {
-            markerImage = BitmapDescriptorFactory.fromResource(R.drawable.ic_mapmarker_metro);
-        } else if (storeName.equals("loblaws")) {
-            markerImage = BitmapDescriptorFactory.fromResource(R.drawable.ic_mapmarker_loblaws);
-        } else if (storeName.equals("sobeys")) {
-            markerImage = BitmapDescriptorFactory.fromResource(R.drawable.ic_mapmarker_sobeys);
-        } else {
-            markerImage = null;
-        }
-
-        if (markerImage == null) {
+    private void buildMarker(Context context, GoogleMap map, String storeName, LatLng storeLatLng) {
+        if (!mIconMap.containsKey(storeName)) {
             map.addMarker(new MarkerOptions()
                     .position(storeLatLng)
                     .title(storeName)
@@ -112,7 +111,7 @@ public class GroceryMapView extends SherlockFragmentActivity {
                     .position(storeLatLng)
                     .title(storeName)
                     .draggable(false)
-                    .icon(markerImage));
+                    .icon(BitmapDescriptorFactory.fromResource(mIconMap.get(storeName))));
         }
     }
 

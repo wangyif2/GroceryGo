@@ -4,9 +4,7 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.drawable.Drawable;
 import android.support.v4.widget.SimpleCursorAdapter;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -62,13 +60,13 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
             	String displayMessage;
             	
             	if (shopListFlagBefore == CartTable.FLAG_FALSE) {
-            		newImage = R.drawable.ic_star_highlighted;
+            		newImage = R.drawable.ic_flag_shoplist_highlight;
             		shopListFlag = CartTable.FLAG_TRUE;
             		tv_selected_shoplist.setText(((Integer)CartTable.FLAG_TRUE).toString());
             		displayMessage = context.getResources().getString(R.string.cart_shoplist_added);
             	}
             	else {
-            		newImage = R.drawable.ic_star;
+            		newImage = R.drawable.ic_flag_shoplist;
             		shopListFlag = CartTable.FLAG_FALSE;
             		tv_selected_shoplist.setText(((Integer)CartTable.FLAG_FALSE).toString());
             		displayMessage = context.getResources().getString(R.string.cart_shoplist_removed);
@@ -131,13 +129,13 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
             	String displayMessage;
             	
             	if (watchListFlagBefore == CartTable.FLAG_FALSE) {
-            		newImage = R.drawable.ic_star_highlighted;
+            		newImage = R.drawable.ic_flag_watchlist_highlight;
             		watchListFlag = CartTable.FLAG_TRUE;
             		tv_selected_watchlist.setText(((Integer)CartTable.FLAG_TRUE).toString());
             		displayMessage = context.getResources().getString(R.string.cart_watchlist_added);
             	}
             	else {
-            		newImage = R.drawable.ic_star;
+            		newImage = R.drawable.ic_flag_watchlist;
             		watchListFlag = CartTable.FLAG_FALSE;
             		tv_selected_watchlist.setText(((Integer)CartTable.FLAG_FALSE).toString());
             		displayMessage = context.getResources().getString(R.string.cart_watchlist_removed);

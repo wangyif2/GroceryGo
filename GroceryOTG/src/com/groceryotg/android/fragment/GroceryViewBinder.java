@@ -120,11 +120,11 @@ public class GroceryViewBinder implements SimpleCursorAdapter.ViewBinder, ViewBi
         	
         	if (inShoplist != 0) {
         		// Change the view to a highlighted star
-        		img.setImageResource(R.drawable.ic_star_highlighted);
+        		img.setImageResource(R.drawable.ic_flag_shoplist_highlight);
         	}
         	else {
         		// Display a non-highlighted star
-        		img.setImageResource(R.drawable.ic_star);
+        		img.setImageResource(R.drawable.ic_flag_shoplist);
         	}
         	return true;
         }	
@@ -149,10 +149,10 @@ public class GroceryViewBinder implements SimpleCursorAdapter.ViewBinder, ViewBi
         	ImageView img = (ImageView) view;
         	
         	if (inWatchlist != 0) {
-        		img.setImageResource(R.drawable.ic_star_highlighted);
+        		img.setImageResource(R.drawable.ic_flag_watchlist_highlight);
         	}
         	else {
-        		img.setImageResource(R.drawable.ic_star);
+        		img.setImageResource(R.drawable.ic_flag_watchlist);
         	}
         	return true;
         }	

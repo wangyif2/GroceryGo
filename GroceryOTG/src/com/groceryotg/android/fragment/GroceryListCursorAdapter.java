@@ -91,7 +91,7 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
                 if (existsInDatabase==CartTable.FLAG_FALSE && shopListFlag==CartTable.FLAG_TRUE) {
                 	activity.getContentResolver().insert(GroceryotgProvider.CONTENT_URI_CART_ITEM, values);
                 }
-                else if (existsInDatabase==CartTable.FLAG_TRUE && shopListFlag==CartTable.FLAG_TRUE) {
+                else if (existsInDatabase==CartTable.FLAG_TRUE && watchListFlag==CartTable.FLAG_TRUE) {
                 	String whereClause = CartTable.TABLE_CART + "." + CartTable.COLUMN_CART_GROCERY_ID + "=?";
                 	String[] selectionArgs = { tv_id.getText().toString() };
                 	activity.getContentResolver().update(GroceryotgProvider.CONTENT_URI_CART_ITEM, values, whereClause, selectionArgs);
@@ -160,7 +160,7 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
                 if (existsInDatabase==CartTable.FLAG_FALSE && watchListFlag==CartTable.FLAG_TRUE) {
                 	activity.getContentResolver().insert(GroceryotgProvider.CONTENT_URI_CART_ITEM, values);
                 }
-                else if (existsInDatabase==CartTable.FLAG_TRUE && watchListFlag==CartTable.FLAG_TRUE) {
+                else if (existsInDatabase==CartTable.FLAG_TRUE && shopListFlag==CartTable.FLAG_TRUE) {
                 	String whereClause = CartTable.TABLE_CART + "." + CartTable.COLUMN_CART_GROCERY_ID + "=?";
                 	String[] selectionArgs = { tv_id.getText().toString() };
                 	activity.getContentResolver().update(GroceryotgProvider.CONTENT_URI_CART_ITEM, values, whereClause, selectionArgs);

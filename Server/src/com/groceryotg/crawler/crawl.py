@@ -192,7 +192,7 @@ def getFlyer():
                                     raw_price = line[index_price+len(tag_price):].strip().strip(":").strip()
                                     raw_item = line[:index_price].strip()
                                 
-                                item_details = [raw_item, raw_price, unit_price, unit_type_id, total_price, \
+                                item_details = [stripAllTags(raw_item), stripAllTags(raw_price), unit_price, unit_type_id, total_price, \
                                                 start_date, end_date, line_number, flyer_id, update_date, line_number]
                                 
                                 #logging.info(item_details)
@@ -455,7 +455,7 @@ def getFlyer():
                                             unit_price = float(price_matches.group(0))
                                             unit_type_id = filter(lambda x: x if x[1]=='kg' else None,units)[0][0]
                             
-                            item_details = [raw_item, orig_price, unit_price, unit_type_id, total_price, \
+                            item_details = [stripAllTags(raw_item), stripAllTags(orig_price), unit_price, unit_type_id, total_price, \
                                             start_date, end_date, line_number, flyer_id, update_date, line_number]
                             
                             store_items += [item_details]
@@ -536,7 +536,7 @@ def getFlyer():
                                 raw_price = line[index_price+len(tag_price):].strip().strip(":").strip()
                                 raw_item = line[:index_price].strip()
                             
-                            item_details = [raw_item, raw_price, unit_price, unit_type_id, total_price, \
+                            item_details = [stripAllTags(raw_item), stripAllTags(raw_price), unit_price, unit_type_id, total_price, \
                                             start_date, end_date, line_number, flyer_id, update_date, line_number]
                             
                             #logging.info(item_details)
@@ -752,7 +752,7 @@ def getFlyer():
                                         unit_price = float(price_matches.group(0))
                                         unit_type_id = filter(lambda x: x if x[1]=='kg' else None,units)[0][0]
                         
-                        item_details = [raw_item, orig_price, unit_price, unit_type_id, total_price, \
+                        item_details = [stripAllTags(raw_item), stripAllTags(orig_price), unit_price, unit_type_id, total_price, \
                                         start_date, end_date, line_number, flyer_id, update_date, line_number]
                         
                         store_items += [item_details]
@@ -959,7 +959,7 @@ def getFlyer():
                                     unit_price = float(price_matches.group(0))
                                     unit_type_id = filter(lambda x: x if x[1]=='kg' else None,units)[0][0]
                     
-                    item_details = [raw_item, orig_price, unit_price, unit_type_id, total_price, \
+                    item_details = [stripAllTags(raw_item), stripAllTags(orig_price), unit_price, unit_type_id, total_price, \
                                     start_date, end_date, line_number, flyer_id, update_date, line_number]
                     
                     store_items += [item_details]
@@ -1012,6 +1012,11 @@ def evaluateAccuracy(store_id, labels,  category_map, item_list = None, noun_lis
     
     return [float(correctly_classified) / float(len(targets)), float(correctly_classified_category) / float(len(targets))]            
 
+def stripAllTags(html):
+    if html is None:
+        return None
+    html = html.replace('<br />', '. ')
+    return ''.join(BeautifulSoup(html).findAll(text=True)) 
 
 
 #******************************************************************************

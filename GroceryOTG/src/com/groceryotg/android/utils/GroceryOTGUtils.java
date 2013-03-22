@@ -1,11 +1,15 @@
 package com.groceryotg.android.utils;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.util.Log;
 import com.groceryotg.android.database.CartTable;
-import com.groceryotg.android.database.GroceryTable;
 import com.groceryotg.android.database.StoreParentTable;
 import com.groceryotg.android.database.StoreTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
@@ -37,6 +41,21 @@ public class GroceryOTGUtils {
         Cursor c = context.getContentResolver().query(GroceryotgProvider.CONTENT_URI_CART_JOIN_STORE, projection, null, null, null);
         return c;
     }
+    
+    /**
+	 * Method copies the intent extras from the received intent to the intent
+	 * that will be dispatched.
+	 *
+	 * @param aReceived
+	 * @param aDispatch
+	 */
+	public static void copyIntentData(Intent aReceived, Intent aDispatch) {
+		Set<String> lKeys = aReceived.getExtras().keySet();
+		
+		for (String lKey : lKeys) {
+			aDispatch.putExtra(lKey, aReceived.getStringExtra(lKey));
+		}
+	}
 
     public static int getMaxUpdateDate(Context context) {
         String[] projection = {"Max(" + GroceryTable.COLUMN_GROCERY_UPDATE + ")"};

@@ -1015,6 +1015,7 @@ def evaluateAccuracy(store_id, labels,  category_map, item_list = None, noun_lis
 def stripAllTags(html):
     if html is None:
         return None
+    html = html.replace('<br />', '. ')
     return ''.join(BeautifulSoup(html).findAll(text=True)) 
 
 

@@ -124,7 +124,6 @@ public class ShopCartOverView extends SherlockListActivity implements LoaderMana
         					 R.id.cart_row_inwatchlist};
 
         getLoaderManager().initLoader(0, null, this);
-        //adapter = new SimpleCursorAdapter(this, R.layout.shopcart_row, null, from, to, 0);
         adapter = new ShopCartCursorAdapter(this, R.layout.shopcart_row, null, from, to);
         adapter.setViewBinder(new ShopCartViewBinder());
         setListAdapter(adapter);

@@ -25,7 +25,9 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.groceryotg.android.GroceryFragmentActivity;
+import com.groceryotg.android.GroceryMapView;
 import com.groceryotg.android.R;
+import com.groceryotg.android.ShopCartOverView;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.GroceryTable;
 import com.groceryotg.android.database.StoreParentTable;
@@ -127,6 +129,12 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
             case R.id.filter:
                 launchFilterDialog();
                 return true;
+            case R.id.map:
+                launchMapActivity();
+                return true;
+            case R.id.shop_cart:
+                launchShopCartActivity();
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -199,6 +207,17 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
     @Override
     public boolean onQueryTextChange(String newText) {
         return false;
+    }
+    
+    private void launchShopCartActivity() {
+        Intent intent = new Intent(getActivity(), ShopCartOverView.class);
+        startActivity(intent);
+    }
+
+    private void launchMapActivity() {
+        Intent intent = new Intent(getActivity(), GroceryMapView.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 
     @Override

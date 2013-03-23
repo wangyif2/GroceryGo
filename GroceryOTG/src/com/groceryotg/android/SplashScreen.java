@@ -3,11 +3,7 @@ package com.groceryotg.android;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
+import android.content.*;
 import android.database.Cursor;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -16,10 +12,10 @@ import android.os.SystemClock;
 import android.support.v4.content.LocalBroadcastManager;
 import android.widget.ProgressBar;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
-import com.groceryotg.android.services.location.LocationMonitor;
-import com.groceryotg.android.services.location.LocationReceiver;
 import com.groceryotg.android.services.NetworkHandler;
 import com.groceryotg.android.services.ServerURL;
+import com.groceryotg.android.services.location.LocationMonitor;
+import com.groceryotg.android.services.location.LocationReceiver;
 
 public class SplashScreen extends Activity {
 	private static final String SETTINGS_IS_DB_POPULATED = "isDBPopulated";

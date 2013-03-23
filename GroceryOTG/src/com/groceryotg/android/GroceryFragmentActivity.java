@@ -85,28 +85,27 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
         setIntent(intent);
         handleIntent(intent);
     }
-    
+
     private void handleIntent(Intent intent) {
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             // Gets the search query from the voice recognizer intent
             String query = intent.getStringExtra(SearchManager.QUERY);
 
             if (mPager.getCurrentItem() > 0) {
-	            // Set the search box text to the received query and submit the search
-	            // from within the fragment if not on the category overview page:
-	            mAdapter.getFragment(mPager.getCurrentItem()).handleVoiceSearch(query);
-            }
-            else {
-            	// If on the home page and doing a global search, send the intent
-            	// to the GlobalSearchActivity
-            	Intent globalSearchIntent = new Intent(this, GlobalSearchActivity.class);
-            	GroceryOTGUtils.copyIntentData(intent, globalSearchIntent);
-            	globalSearchIntent.putExtra(GlobalSearchActivity.GLOBAL_SEARCH,	true);
+                // Set the search box text to the received query and submit the search
+                // from within the fragment if not on the category overview page:
+                mAdapter.getFragment(mPager.getCurrentItem()).handleVoiceSearch(query);
+            } else {
+                // If on the home page and doing a global search, send the intent
+                // to the GlobalSearchActivity
+                Intent globalSearchIntent = new Intent(this, GlobalSearchActivity.class);
+                GroceryOTGUtils.copyIntentData(intent, globalSearchIntent);
+                globalSearchIntent.putExtra(GlobalSearchActivity.GLOBAL_SEARCH, true);
                 startActivity(globalSearchIntent);
             }
         }
     }
-    
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -127,13 +126,13 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
         MenuInflater inflater = getSupportMenuInflater();
         inflater.inflate(R.menu.grocery_pager_menu, menu);
         this.menu = menu;
-        
+
         // Get the SearchView and set the searchable configuration
-	    SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-	    SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
-	    searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-	    searchView.setIconifiedByDefault(true);
-        
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setIconifiedByDefault(true);
+
         return true;
     }
 
@@ -269,18 +268,18 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
-    
+
     private void refreshCurrentPager() {
         if (mSlidingMenu.isMenuShowing())
             mSlidingMenu.showContent();
 
-        refreshItem = menu.findItem(R.id.refresh);
-        RefreshAnimation.refreshIcon(mContext, true, refreshItem);
 
         Intent intent = new Intent(mContext, NetworkHandler.class);
-        if (mPager.getCurrentItem() == 0)
+        if (mPager.getCurrentItem() == 0) {
+            refreshItem = menu.findItem(R.id.refresh);
+            RefreshAnimation.refreshIcon(mContext, true, refreshItem);
             intent.putExtra(NetworkHandler.REFRESH_CONTENT, NetworkHandler.CAT);
-        else
+        } else
             intent.putExtra(NetworkHandler.REFRESH_CONTENT, NetworkHandler.GRO);
         startService(intent);
     }
@@ -293,9 +292,12 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             int resultCode = intent.getBundleExtra("bundle").getInt(NetworkHandler.CONNECTION_STATE);
+            int requestType = intent.getBundleExtra("bundle").getInt(NetworkHandler.REQUEST_TYPE);
 
             Toast toast = null;
-            RefreshAnimation.refreshIcon(context, false, refreshItem);
+            if (requestType == NetworkHandler.CAT) {
+                RefreshAnimation.refreshIcon(context, false, refreshItem);
+            }
             if (resultCode == NetworkHandler.CONNECTION) {
                 toast = Toast.makeText(mContext, "Groceries Updated", Toast.LENGTH_LONG);
             } else if (resultCode == NetworkHandler.NO_CONNECTION) {

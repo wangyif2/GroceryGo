@@ -15,10 +15,8 @@ import com.groceryotg.android.SplashScreen;
 import com.groceryotg.android.database.*;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 import com.groceryotg.android.database.objects.*;
+import com.groceryotg.android.utils.GroceryOTGUtils;
 import com.groceryotg.android.utils.JSONParser;
-
-import java.text.ParseException;
-import java.util.Date;
 
 /**
  * User: robert
@@ -130,12 +128,14 @@ public class NetworkHandler extends IntentService {
         String[] requestArgs = new String[]{date};
         String getGrocery = buildGroceryURL(requestArgs);
 
-//        JSONArray groceryArray = jsonParser.getJSONFromUrl(getGrocery);
         JsonArray groceryArray = jsonParser.getJSONFromUrl(getGrocery);
 
         if (groceryArray != null) {
-            addNewGroceries(groceryArray, db);
-//            removeExpiredGroceries();
+            int maxGroceryIdBefore = addNewGroceries(groceryArray, db);
+            int maxGroceryIdAfter = GroceryOTGUtils.getMaxGroceryId(this);
+
+            if (maxGroceryIdAfter > maxGroceryIdBefore)
+                removeExpiredGroceries(maxGroceryIdBefore);
         }
     }
 
@@ -258,11 +258,13 @@ public class NetworkHandler extends IntentService {
         }
     }
 
-    private void addNewGroceries(JsonArray groceryArray, SQLiteDatabase db) {
+    private int addNewGroceries(JsonArray groceryArray, SQLiteDatabase db) {
         //TODO: hard coded date format!! not good...
         Gson gson = new GsonBuilder().setDateFormat("MMM dd, yyyy").create();
         DatabaseUtils.InsertHelper ih = new DatabaseUtils.InsertHelper(db, GroceryTable.TABLE_GROCERY);
         Grocery grocery;
+
+        int maxGroceryIdBefore = GroceryOTGUtils.getMaxGroceryId(this);
         try {
             int previousIncrement = 0;
             int windowLength = groceryArray.size() / 50;
@@ -301,17 +303,13 @@ public class NetworkHandler extends IntentService {
         } finally {
             ih.close();
         }
+
+        return maxGroceryIdBefore;
     }
 
-    private void removeExpiredGroceries() {
-//        Get today's date without time
-        try {
-            Date dateWithoutTime = ServerURL.getDateFormat().parse(ServerURL.getDateFormat().format(new Date()));
-            String selection = GroceryTable.COLUMN_GROCERY_EXPIRY + " < '" + dateWithoutTime.getTime() + "'";
-            getContentResolver().delete(GroceryotgProvider.CONTENT_URI_GRO, selection, null);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+    private void removeExpiredGroceries(int maxGroceryIdBefore) {
+        String selection = GroceryTable.COLUMN_GROCERY_ID + " <= '" + maxGroceryIdBefore + "'";
+        getContentResolver().delete(GroceryotgProvider.CONTENT_URI_GRO, selection, null);
     }
 
     private String buildGroceryURL(String[] args) {

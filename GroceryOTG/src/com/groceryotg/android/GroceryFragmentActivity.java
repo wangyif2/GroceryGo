@@ -148,6 +148,9 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
             case R.id.shop_cart:
                 launchShopCartActivity();
                 return true;
+            case android.R.id.home:
+                launchSlidingMenu();
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -188,7 +191,7 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
     }
 
     private void configActionBar() {
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void configViewPager() {
@@ -256,6 +259,13 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
                 }
             }
         });
+    }
+
+    private void launchSlidingMenu() {
+        if (!mSlidingMenu.isMenuShowing())
+            mSlidingMenu.showMenu();
+        else
+            mSlidingMenu.showContent();
     }
 
     private void launchShopCartActivity() {

@@ -1,26 +1,32 @@
 package com.groceryotg.android.fragment;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.SimpleCursorAdapter.ViewBinder;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import com.groceryotg.android.R;
+import com.groceryotg.android.R.drawable;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.GroceryTable;
 import com.groceryotg.android.database.StoreParentTable;
 import com.groceryotg.android.services.ServerURL;
+import com.groceryotg.android.utils.GroceryOTGUtils;
 
+import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * User: robert
  * Date: 08/03/13
  */
 public class GroceryViewBinder implements SimpleCursorAdapter.ViewBinder, ViewBinder {
-
     @Override
     public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
 
@@ -174,17 +180,14 @@ public class GroceryViewBinder implements SimpleCursorAdapter.ViewBinder, ViewBi
         	String storeParentName = cursor.getString(columnIndex);
         	ImageView img = (ImageView) view;
         	
-        	if (storeParentName.equalsIgnoreCase("metro")) {
-        		img.setImageResource(R.drawable.ic_store_metro);
-        	} else if (storeParentName.equalsIgnoreCase("loblaws")) {
-        		img.setImageResource(R.drawable.ic_store_loblaws);
-        	} else if (storeParentName.equalsIgnoreCase("foodbasics")) {
-        		img.setImageResource(R.drawable.ic_store_foodbasics);
-        	} else if (storeParentName.equalsIgnoreCase("nofrills")) {
-        		img.setImageResource(R.drawable.ic_store_nofrills);
-        	} else if (storeParentName.equalsIgnoreCase("sobeys")) {
-        		img.setImageResource(R.drawable.ic_store_sobeys);
+        	try {
+        		Class<drawable> res = R.drawable.class;
+        		Field field = res.getField("ic_store_" + storeParentName.toLowerCase());
+        		img.setImageResource(field.getInt(null));
+        	} catch (Exception e) {
+        	    Log.e("GroceryOTG", "Could not get drawable id for row.", e);
         	}
+        	
         	return true;
         }
         

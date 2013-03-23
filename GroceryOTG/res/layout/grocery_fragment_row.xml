@@ -95,16 +95,15 @@
             android:layout_weight="0.75"
             android:orientation="horizontal" >
 
-	        <ImageView
+	        <ImageButton
 	            android:id="@+id/grocery_row_store"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
 	            android:contentDescription="@string/groceryoverview_row_imagedesc"
-	            android:gravity="left"
-	            android:paddingBottom="4dp"
-	            android:paddingTop="8dp"
-	            android:src="@drawable/ic_store_metro">
-			</ImageView>
+	            android:background="@drawable/ic_store_metro"
+	            android:paddingBottom="0dp"
+	            android:paddingTop="0dp">
+			</ImageButton>
         </LinearLayout>
         
         <LinearLayout

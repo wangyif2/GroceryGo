@@ -11,15 +11,16 @@ import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v4.widget.SimpleCursorAdapter.ViewBinder;
 import android.text.TextUtils;
 import android.util.SparseBooleanArray;
 import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
-
+import android.widget.ListView;
+import android.widget.SearchView;
+import android.widget.TextView;
+import android.widget.Toast;
 import com.actionbarsherlock.app.SherlockListFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -71,7 +72,7 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        categoryId = getArguments() != null ? getArguments().getInt(CATEGORY_POSITION) : 1;
+        categoryId = getArguments() != null ? getArguments().getInt(CATEGORY_POSITION) - 1 : 1;
     }
 
     @Override
@@ -145,7 +146,7 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
         emptyTextView = (TextView) v.findViewById(R.id.empty_grocery_list);
         return v;
     }
-    
+
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -160,7 +161,7 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-    	super.onListItemClick(l, v, position, id);
+        super.onListItemClick(l, v, position, id);
         TextView textView = (TextView) v.findViewById(R.id.grocery_row_label);
         TextView idView = (TextView) v.findViewById(R.id.grocery_row_id);
 
@@ -198,17 +199,17 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
 
         return true;
     }
-    
+
     public boolean handleVoiceSearch(String query) {
-    	mSearchView.setQuery(query, true);
-    	return true;
+        mSearchView.setQuery(query, true);
+        return true;
     }
 
     @Override
     public boolean onQueryTextChange(String newText) {
         return false;
     }
-    
+
     private void launchShopCartActivity() {
         Intent intent = new Intent(getActivity(), ShopCartOverView.class);
         startActivity(intent);
@@ -344,7 +345,7 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
         Bundle b = new Bundle();
         b.putString("query", query);
         if (reload) {
-        	GroceryFragmentActivity.setMyQuery(query);
+            GroceryFragmentActivity.setMyQuery(query);
             b.putBoolean("reload", true);
             getLoaderManager().restartLoader(0, b, this);
         } else {
@@ -385,18 +386,18 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
         getLoaderManager().initLoader(0, b, this);
     }
 
-    private void displayEmptyListMessage(String emptyStringMsg) {
+    public void displayEmptyListMessage(String emptyStringMsg) {
         ListView myListView = this.getListView();
         emptyTextView.setText(emptyStringMsg);
         myListView.setEmptyView(emptyTextView);
     }
 
-    private String buildNoNewContentString() {
+    public String buildNoNewContentString() {
         String emptyStringFormat = getResources().getString(R.string.no_new_content);
         return (ServerURL.getLastRefreshed() == null) ? String.format(emptyStringFormat, " Never") : String.format(emptyStringFormat, ServerURL.getLastRefreshed());
     }
 
-    private String buildNoSearchResultString() {
+    public String buildNoSearchResultString() {
         return getResources().getString(R.string.no_search_results);
     }
 }

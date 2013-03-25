@@ -26,6 +26,7 @@ import com.groceryotg.android.database.StoreParentTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 import com.groceryotg.android.fragment.CategoryGridFragment;
 import com.groceryotg.android.fragment.GroceryListFragment;
+import com.groceryotg.android.fragment.MyFlyerFragment;
 import com.groceryotg.android.utils.GroceryOTGUtils;
 import com.groceryotg.android.services.NetworkHandler;
 import com.groceryotg.android.utils.RefreshAnimation;
@@ -320,6 +321,11 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
 
     public static class GroceryAdapter extends FragmentStatePagerAdapter {
 
+        private static final int POSITION_CATEGORY = 0;
+        private static final int POSITION_MYFLYER_PAGER = 1;
+        private static final String TITLE_PAGER_CATEGORY = "categories overview";
+        private static final String TITLE_PAGER_MYFLYER_PAGER = "my flyers";
+
         private HashMap<Integer, GroceryListFragment> mPageReferenceMap;
 
         public GroceryAdapter(FragmentManager fm) {
@@ -329,17 +335,22 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            if (position == 0) {
-                return "categories overview";
-            } else
-                return categories.get(position);
+            if (position == POSITION_CATEGORY) {
+                return TITLE_PAGER_CATEGORY;
+            } else if (position == POSITION_MYFLYER_PAGER)
+                return TITLE_PAGER_MYFLYER_PAGER;
+            else
+                // The hashmap is offset by the position of myflyer pager
+                return categories.get(position - POSITION_MYFLYER_PAGER);
         }
 
         @Override
         public Fragment getItem(int i) {
-            if (i == 0) {
+            if (i == POSITION_CATEGORY) {
                 return new CategoryGridFragment();
-            } else {
+            } else if (i == POSITION_MYFLYER_PAGER)
+                return new MyFlyerFragment();
+            else {
                 GroceryListFragment myFragment;
                 if (mPageReferenceMap.get(i) == null) {
                     myFragment = GroceryListFragment.newInstance(i);
@@ -360,7 +371,7 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
         @Override
         public int getCount() {
             //the plus 1 here is for the overview front page
-            return categories.size() + 1;
+            return categories.size() + 2;
         }
 
         public GroceryListFragment getFragment(int key) {

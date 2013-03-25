@@ -39,7 +39,7 @@ public class CategoryGridFragment extends SherlockFragment implements LoaderMana
         gridview = (GridView) v.findViewById(R.id.gridview);
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                GroceryFragmentActivity.mPager.setCurrentItem(position + 1, true);
+                GroceryFragmentActivity.mPager.setCurrentItem(position + 2, true);
             }
         });
         gridview.setEmptyView(v.findViewById(R.id.empty_category_list));

@@ -16,7 +16,6 @@ import android.util.SparseIntArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
-
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -27,8 +26,9 @@ import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 import com.groceryotg.android.fragment.CategoryGridFragment;
 import com.groceryotg.android.fragment.GroceryListFragment;
 import com.groceryotg.android.fragment.MyFlyerFragment;
-import com.groceryotg.android.utils.GroceryOTGUtils;
 import com.groceryotg.android.services.NetworkHandler;
+import com.groceryotg.android.settings.SettingsActivity;
+import com.groceryotg.android.utils.GroceryOTGUtils;
 import com.groceryotg.android.utils.RefreshAnimation;
 import com.slidingmenu.lib.SlidingMenu;
 
@@ -234,10 +234,11 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
                 TextView textView = (TextView) view;
                 String selectedItem = textView.getText().toString();
 
+                if (mSlidingMenu.isMenuShowing())
+                    mSlidingMenu.showContent();
+
                 if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_cat))) {
                     // Selected Categories
-                    if (mSlidingMenu.isMenuShowing())
-                        mSlidingMenu.showContent();
                     mPager.setCurrentItem(0);
                 } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_cart))) {
                     // Selected Shopping Cart
@@ -250,16 +251,18 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
                     refreshCurrentPager();
                 } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_settings))) {
                     // Selected Settings
-                    if (mSlidingMenu.isMenuShowing())
-                        mSlidingMenu.showContent();
+                    launchSettingsActivity();
                 } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_about))) {
                     // Selected About
                     //startActivity(new Intent(CategoryOverView.this, About.class));
-                    if (mSlidingMenu.isMenuShowing())
-                        mSlidingMenu.showContent();
                 }
             }
         });
+    }
+
+    private void launchSettingsActivity() {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
     }
 
     private void launchSlidingMenu() {
@@ -281,9 +284,6 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
     }
 
     private void refreshCurrentPager() {
-        if (mSlidingMenu.isMenuShowing())
-            mSlidingMenu.showContent();
-
         Toast t = Toast.makeText(this, "Starting fetching new items...", Toast.LENGTH_LONG);
         t.show();
 

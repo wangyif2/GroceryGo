@@ -275,7 +275,7 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
 
         final String[] selectionArgsArr = new String[selectionArgs.size()];
         selectionArgs.toArray(selectionArgsArr);
-        return new CursorLoader(getActivity(), GroceryotgProvider.CONTENT_URI_GRO_JOINSTORE, projection, selection, selectionArgsArr, null);
+        return new CursorLoader(getActivity(), GroceryotgProvider.CONTENT_URI_GRO_JOINSTORE, projection, selection, selectionArgsArr, GroceryTable.COLUMN_GROCERY_SCORE);
     }
 
     @Override

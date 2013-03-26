@@ -9,6 +9,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.widget.ProgressBar;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
@@ -33,6 +34,9 @@ public class SplashScreen extends Activity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.splash_screen);
+        
+        // Load the default preferences
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
         // Initialize the database tables if they aren't created
         Cursor c = getContentResolver().query(GroceryotgProvider.CONTENT_URI_CAT, null, null, null, null);

@@ -53,13 +53,9 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
     public static String myQuery;
 
     public static Map<Integer, String> storeNames;
-    public static SparseIntArray storeSelected;
 
     public static Double mPriceRangeMin;
     public static Double mPriceRangeMax;
-
-    public static final Integer SELECTED = 1;
-    public static final Integer NOT_SELECTED = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -172,14 +168,12 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
 
     private void setStoreInformation() {
         // Initialize the list of stores from database
-        storeSelected = new SparseIntArray();  // {storeParentId, selectedFlag}
         storeNames = new HashMap<Integer, String>(); // {storeParentId, storeParentName}
 
         Cursor storeCursor = GroceryOTGUtils.getStoreParentNamesCursor(this);
         if (storeCursor != null) {
             storeCursor.moveToFirst();
             while (!storeCursor.isAfterLast()) {
-                storeSelected.put(storeCursor.getInt(storeCursor.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_ID)), SELECTED);
                 storeNames.put(storeCursor.getInt(storeCursor.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_ID)),
                         storeCursor.getString(storeCursor.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_NAME)));
                 storeCursor.moveToNext();

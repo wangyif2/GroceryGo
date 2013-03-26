@@ -1,11 +1,13 @@
 package com.groceryotg.android.fragment;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
@@ -35,6 +37,7 @@ import com.groceryotg.android.database.StoreParentTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 import com.groceryotg.android.services.NetworkHandler;
 import com.groceryotg.android.services.ServerURL;
+import com.groceryotg.android.settings.SettingsManager;
 import com.groceryotg.android.utils.RefreshAnimation;
 
 import java.util.ArrayList;
@@ -49,13 +52,20 @@ import java.util.Map;
  */
 public class GroceryListFragment extends SherlockListFragment implements SearchView.OnQueryTextListener, SearchView.OnCloseListener, LoaderManager.LoaderCallbacks<Cursor> {
     private static final String CATEGORY_POSITION = "position";
+    Activity activity;
     GroceryListCursorAdapter adapter;
     TextView emptyTextView;
     Menu menu;
     MenuItem refreshItem;
     private Integer categoryId;
+    
+    private CharSequence[] items;
+    private boolean[] states;
+	private SparseIntArray mapIndexToId; // maps index in the dialog to store_id
 
     private SearchView mSearchView;
+    
+    SharedPreferences.OnSharedPreferenceChangeListener mSettingsListener;
 
     public static GroceryListFragment newInstance(int pos) {
         GroceryListFragment f = new GroceryListFragment();
@@ -69,10 +79,17 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
     }
 
     @Override
+    public void onAttach(Activity activity) {
+    	super.onAttach(activity);
+    	this.activity = activity;
+    }
+    
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         categoryId = getArguments() != null ? getArguments().getInt(CATEGORY_POSITION) - 1 : 1;
+        watchSettings();
     }
 
     @Override
@@ -245,18 +262,19 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
             selection += " AND " + GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_GROCERY_NAME + " LIKE ?";
             selectionArgs.add("%" + query + "%");
         }
-        if (GroceryFragmentActivity.storeSelected != null && GroceryFragmentActivity.storeSelected.size() > 0) {
+        SparseBooleanArray selectedStores = SettingsManager.getStoreFilter(activity);
+        if (selectedStores != null && selectedStores.size() > 0) {
             // Go through selected stores and add them to query
             String storeSelection = "";
-            for (int storeNum = 0; storeNum < GroceryFragmentActivity.storeSelected.size(); storeNum++) {
-                if (GroceryFragmentActivity.storeSelected.valueAt(storeNum) == GroceryFragmentActivity.SELECTED) {
+            for (int storeNum = 0; storeNum < selectedStores.size(); storeNum++) {
+                if (selectedStores.valueAt(storeNum) == true) {
                     if (storeSelection.isEmpty()) {
                         storeSelection = " AND (";
                         storeSelection += StoreParentTable.TABLE_STORE_PARENT + "." + StoreParentTable.COLUMN_STORE_PARENT_ID + " = ?";
                     } else {
                         storeSelection += " OR " + StoreParentTable.TABLE_STORE_PARENT + "." + StoreParentTable.COLUMN_STORE_PARENT_ID + " = ?";
                     }
-                    selectionArgs.add(((Integer) GroceryFragmentActivity.storeSelected.keyAt(storeNum)).toString());
+                    selectionArgs.add(((Integer) selectedStores.keyAt(storeNum)).toString());
                 }
             }
             if (!storeSelection.isEmpty()) {
@@ -298,22 +316,9 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
     }
 
     private void launchFilterDialog() {
-        final CharSequence[] items = new CharSequence[GroceryFragmentActivity.storeNames.keySet().size()];
-        final boolean[] states = new boolean[GroceryFragmentActivity.storeNames.keySet().size()];
-        final SparseIntArray mapIndexToId = new SparseIntArray(); // maps index in the dialog to store_id
-
-        Iterator<Map.Entry<Integer, String>> it = GroceryFragmentActivity.storeNames.entrySet().iterator();
-        Integer indexer = 0;
-        while (it.hasNext()) {
-            Map.Entry<Integer, String> pairs = (Map.Entry<Integer, String>) it.next();
-            items[indexer] = pairs.getValue();
-            states[indexer] = (GroceryFragmentActivity.storeSelected.get(pairs.getKey()) == GroceryFragmentActivity.SELECTED ? true : false);
-            mapIndexToId.put(indexer, pairs.getKey());
-            indexer++;
-        }
-
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.groceryoverview_filter_title);
+        initFilter();
         builder.setMultiChoiceItems(items, states, new DialogInterface.OnMultiChoiceClickListener() {
             public void onClick(DialogInterface dialogInterface, int item, boolean state) {
             }
@@ -321,16 +326,14 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 SparseBooleanArray selectedItems = ((AlertDialog) dialog).getListView().getCheckedItemPositions();
+                SparseBooleanArray selectedStores = new SparseBooleanArray();
                 for (int i = 0; i < selectedItems.size(); i++) {
-                    int key_index = selectedItems.keyAt(i);
-                    if (selectedItems.get(key_index)) {
-                        GroceryFragmentActivity.storeSelected.put(mapIndexToId.get(key_index), GroceryFragmentActivity.SELECTED);
-                    } else {
-                        GroceryFragmentActivity.storeSelected.put(mapIndexToId.get(key_index), GroceryFragmentActivity.NOT_SELECTED);
-                    }
+                	int key_index = selectedItems.keyAt(i);
+                	selectedStores.append(mapIndexToId.get(key_index), selectedItems.valueAt(i));
                 }
-                Toast.makeText(getActivity(), getResources().getString(R.string.groceryoverview_filter_updated), Toast.LENGTH_LONG).show();
+                SettingsManager.setStoreFilter(activity, selectedStores);
                 loadDataWithQuery(true, GroceryFragmentActivity.myQuery);
+                Toast.makeText(getActivity(), getResources().getString(R.string.groceryoverview_filter_updated), Toast.LENGTH_LONG).show();
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -399,5 +402,37 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
 
     public String buildNoSearchResultString() {
         return getResources().getString(R.string.no_search_results);
+    }
+    
+    private void initFilter() {
+        this.items = new CharSequence[GroceryFragmentActivity.storeNames.keySet().size()];
+        this.states = new boolean[GroceryFragmentActivity.storeNames.keySet().size()];
+    	this.mapIndexToId = new SparseIntArray(); // maps index in the dialog to store_id
+
+        Iterator<Map.Entry<Integer, String>> it = GroceryFragmentActivity.storeNames.entrySet().iterator();
+        Integer indexer = 0;
+        SparseBooleanArray selectedStores = SettingsManager.getStoreFilter(activity);
+        while (it.hasNext()) {
+            Map.Entry<Integer, String> pairs = (Map.Entry<Integer, String>) it.next();
+            this.items[indexer] = pairs.getValue();
+            this.states[indexer] = selectedStores.get(pairs.getKey(), false);
+            this.mapIndexToId.put(indexer, pairs.getKey());
+            indexer++;
+        }
+    }
+    
+    private void watchSettings() {
+		mSettingsListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+			public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+				loadDataWithQuery(true, GroceryFragmentActivity.myQuery);
+			}
+		};
+		SettingsManager.getPrefs(activity).registerOnSharedPreferenceChangeListener(mSettingsListener);
+    }
+    
+    @Override
+    public void onDestroy() {
+    	super.onDestroy();
+    	SettingsManager.getPrefs(activity).unregisterOnSharedPreferenceChangeListener(mSettingsListener);
     }
 }

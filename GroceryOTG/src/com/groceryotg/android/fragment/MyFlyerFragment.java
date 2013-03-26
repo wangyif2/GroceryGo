@@ -4,11 +4,14 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.SparseBooleanArray;
+
 import com.groceryotg.android.GroceryFragmentActivity;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.GroceryTable;
 import com.groceryotg.android.database.StoreParentTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
+import com.groceryotg.android.settings.SettingsManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,18 +51,19 @@ public class MyFlyerFragment extends GroceryListFragment {
             selectionArgs.add("%" + query + "%");
         }
         //Store filter
-        if (GroceryFragmentActivity.storeSelected != null && GroceryFragmentActivity.storeSelected.size() > 0) {
+        SparseBooleanArray selectedStores = SettingsManager.getStoreFilter(activity);
+        if (selectedStores != null && selectedStores.size() > 0) {
             // Go through selected stores and add them to query
             String storeSelection = "";
-            for (int storeNum = 0; storeNum < GroceryFragmentActivity.storeSelected.size(); storeNum++) {
-                if (GroceryFragmentActivity.storeSelected.valueAt(storeNum) == GroceryFragmentActivity.SELECTED) {
+            for (int storeNum = 0; storeNum < selectedStores.size(); storeNum++) {
+                if (selectedStores.valueAt(storeNum) == true) {
                     if (storeSelection.isEmpty()) {
                         storeSelection = " AND (";
                         storeSelection += StoreParentTable.TABLE_STORE_PARENT + "." + StoreParentTable.COLUMN_STORE_PARENT_ID + " = ?";
                     } else {
                         storeSelection += " OR " + StoreParentTable.TABLE_STORE_PARENT + "." + StoreParentTable.COLUMN_STORE_PARENT_ID + " = ?";
                     }
-                    selectionArgs.add(((Integer) GroceryFragmentActivity.storeSelected.keyAt(storeNum)).toString());
+                    selectionArgs.add(((Integer) selectedStores.keyAt(storeNum)).toString());
                 }
             }
             if (!storeSelection.isEmpty()) {

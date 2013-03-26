@@ -10,7 +10,7 @@ public class Grocery {
     private Integer groceryId;
 
     private Item item;
-    
+
     private Flyer flyer;
 
     private Double totalPrice;
@@ -27,9 +27,12 @@ public class Grocery {
 
     private Integer lineNumber;
 
+    private Double score;
+
     private String rawString;
 
-    public Grocery(Item item, Flyer flyer, Double totalPrice, Double unitPrice, Unit unit, Date startDate, Date endDate, Date updateDate, Integer lineNumber, String rawString) {
+    public Grocery(Item item, Flyer flyer, Double totalPrice, Double unitPrice, Unit unit, Date startDate, Date endDate, Date updateDate, Integer lineNumber, Double sc
+            , String rawString) {
         this.item = item;
         this.flyer = flyer;
         this.totalPrice = totalPrice;
@@ -39,6 +42,7 @@ public class Grocery {
         this.endDate = endDate;
         this.updateDate = updateDate;
         this.lineNumber = lineNumber;
+        this.score = score;
         this.rawString = rawString;
     }
 
@@ -133,8 +137,16 @@ public class Grocery {
         this.item = item;
     }
 
+    public Double getScore() {
+        return score;
+    }
+
+    public void setScore(Double score) {
+        this.score = score;
+    }
+
     public Integer getCategoryId() {
         return this.getItem().getSubcategory().getCategoryId().getCategoryId();
     }
-    
+
 }

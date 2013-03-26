@@ -278,6 +278,7 @@ public class NetworkHandler extends IntentService {
             int grocery_price = ih.getColumnIndex(GroceryTable.COLUMN_GROCERY_PRICE);
             int grocery_category = ih.getColumnIndex(GroceryTable.COLUMN_GROCERY_CATEGORY);
             int grocery_expiry = ih.getColumnIndex(GroceryTable.COLUMN_GROCERY_EXPIRY);
+            int grocery_score = ih.getColumnIndex(GroceryTable.COLUMN_GROCERY_SCORE);
             int grocery_flyer = ih.getColumnIndex(GroceryTable.COLUMN_GROCERY_FLYER);
 
             for (JsonElement jsonElement : groceryArray) {
@@ -292,6 +293,8 @@ public class NetworkHandler extends IntentService {
                     ih.bind(grocery_category, grocery.getCategoryId());
                 if (grocery.getEndDate() != null)
                     ih.bind(grocery_expiry, grocery.getEndDate().getTime());
+                if (grocery.getScore() != null)
+                    ih.bind(grocery_score, grocery.getScore());
                 ih.bind(grocery_flyer, grocery.getFlyer().getFlyerId());
                 ih.execute();
 

@@ -19,6 +19,8 @@ import java.util.List;
  */
 public class MyFlyerFragment extends GroceryListFragment {
 
+    private static final String MY_FLYER_NO_CONTENT = "Currently no recommendation for you, keep looking!";
+
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         String emptyString = bundle.getBoolean("reload") ? buildNoSearchResultString() : buildNoNewContentString();
@@ -80,5 +82,10 @@ public class MyFlyerFragment extends GroceryListFragment {
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
         super.onLoaderReset(null);
+    }
+
+    @Override
+    public String buildNoNewContentString() {
+        return MY_FLYER_NO_CONTENT;
     }
 }

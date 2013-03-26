@@ -284,6 +284,8 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
         if (mSlidingMenu.isMenuShowing())
             mSlidingMenu.showContent();
 
+        Toast t = Toast.makeText(this, "Starting fetching new items...", Toast.LENGTH_LONG);
+        t.show();
 
         Intent intent = new Intent(mContext, NetworkHandler.class);
         if (mPager.getCurrentItem() == 0) {

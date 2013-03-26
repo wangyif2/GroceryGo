@@ -1,6 +1,7 @@
 package com.groceryotg.android.fragment;
 
 import android.database.Cursor;
+import android.database.MatrixCursor;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -12,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.SimpleCursorAdapter;
 import com.actionbarsherlock.app.SherlockFragment;
+import com.commonsware.cwac.merge.MergeAdapter;
 import com.groceryotg.android.GroceryFragmentActivity;
 import com.groceryotg.android.R;
 import com.groceryotg.android.database.CategoryTable;
@@ -23,8 +25,8 @@ import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
  */
 public class CategoryGridFragment extends SherlockFragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private GridView gridview;
-    private SimpleCursorAdapter adapter;
-    
+    private MergeAdapter adapter;
+
     private final int INDEX_LOADER_CAT = 0;
 
     @Override
@@ -39,11 +41,11 @@ public class CategoryGridFragment extends SherlockFragment implements LoaderMana
         gridview = (GridView) v.findViewById(R.id.gridview);
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                GroceryFragmentActivity.mPager.setCurrentItem(position + 2, true);
+                GroceryFragmentActivity.mPager.setCurrentItem(position + 1, true);
             }
         });
         gridview.setEmptyView(v.findViewById(R.id.empty_category_list));
-        
+
         return v;
     }
 
@@ -58,25 +60,40 @@ public class CategoryGridFragment extends SherlockFragment implements LoaderMana
         int[] to = new int[]{R.id.category_row_label};
 
         getLoaderManager().initLoader(INDEX_LOADER_CAT, null, this);
-        adapter = new CategoryGridCursorAdapter(getActivity(), R.layout.category_fragment_row, null, from, to);
+        adapter = new MergeAdapter();
+
+        /*TODO: This is so much hack... need refactor as soon as possible*/
+        String[] col = {CategoryTable.COLUMN_ID, CategoryTable.COLUMN_CATEGORY_NAME};
+        MatrixCursor mc = new MatrixCursor(col);
+        Object[] obj = {"0", "my flyer"};
+        mc.addRow(obj);
+        SimpleCursorAdapter sa1 = new CategoryGridCursorAdapter(getActivity(), R.layout.category_fragment_row, null, from, to);
+        sa1.swapCursor(mc);
+        adapter.addAdapter(sa1);
+
+        SimpleCursorAdapter sa = new CategoryGridCursorAdapter(getActivity(), R.layout.category_fragment_row, null, from, to);
+        adapter.addAdapter(sa);
 
         gridview.setAdapter(adapter);
-        
+
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
         String[] projection = {CategoryTable.COLUMN_ID, CategoryTable.COLUMN_CATEGORY_NAME};
-        return new CursorLoader(getActivity(), GroceryotgProvider.CONTENT_URI_CAT, projection, null, null, null);	
+        return new CursorLoader(getActivity(), GroceryotgProvider.CONTENT_URI_CAT, projection, null, null, null);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-    	adapter.swapCursor(cursor);
+        SimpleCursorAdapter sa = (SimpleCursorAdapter) adapter.getPieces().get(1);
+        if (sa != null)
+            sa.swapCursor(cursor);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
-    	adapter.swapCursor(null);
+        SimpleCursorAdapter sa = (SimpleCursorAdapter) adapter.getAdapter(1);
+        sa.swapCursor(null);
     }
 }

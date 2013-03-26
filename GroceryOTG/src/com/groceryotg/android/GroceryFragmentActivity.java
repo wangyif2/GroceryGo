@@ -326,7 +326,7 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
         private static final int POSITION_CATEGORY = 0;
         private static final int POSITION_MYFLYER_PAGER = 1;
         private static final String TITLE_PAGER_CATEGORY = "categories overview";
-        private static final String TITLE_PAGER_MYFLYER_PAGER = "my flyers";
+        private static final String TITLE_PAGER_MYFLYER_PAGER = "my flyer";
 
         private HashMap<Integer, GroceryListFragment> mPageReferenceMap;
 

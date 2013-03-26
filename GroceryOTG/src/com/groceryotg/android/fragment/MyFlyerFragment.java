@@ -36,7 +36,8 @@ public class MyFlyerFragment extends GroceryListFragment {
                 CartTable.COLUMN_CART_FLAG_WATCHLIST};
 
         //Select items that has watch ON and groceryId exist in GroceryId
-        String selection = "";
+        String selection = CartTable.TABLE_CART + "." + CartTable.COLUMN_CART_FLAG_WATCHLIST + "=?";
+        selectionArgs.add(String.valueOf(1));
         final String[] selectionArgsArr = new String[selectionArgs.size()];
         selectionArgs.toArray(selectionArgsArr);
 

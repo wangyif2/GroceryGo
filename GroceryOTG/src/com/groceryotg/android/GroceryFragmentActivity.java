@@ -175,7 +175,7 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
         storeSelected = new SparseIntArray();  // {storeParentId, selectedFlag}
         storeNames = new HashMap<Integer, String>(); // {storeParentId, storeParentName}
 
-        Cursor storeCursor = GroceryOTGUtils.getStoreParentNames(this);
+        Cursor storeCursor = GroceryOTGUtils.getStoreParentNamesCursor(this);
         if (storeCursor != null) {
             storeCursor.moveToFirst();
             while (!storeCursor.isAfterLast()) {

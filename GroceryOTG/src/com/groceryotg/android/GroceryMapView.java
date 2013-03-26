@@ -1,18 +1,12 @@
 package com.groceryotg.android;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.View;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -24,18 +18,14 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
 import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.Circle;
-import com.google.android.gms.maps.model.CircleOptions;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.*;
 import com.groceryotg.android.database.StoreParentTable;
 import com.groceryotg.android.database.StoreTable;
-import com.groceryotg.android.GroceryFragmentActivity;
 import com.groceryotg.android.utils.GroceryOTGUtils;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * User: robert
@@ -112,7 +102,7 @@ public class GroceryMapView extends SherlockFragmentActivity {
     }
     
     private void buildIconMap(Context context) {
-    	Cursor parents = GroceryOTGUtils.getStoreParentNames(context);
+    	Cursor parents = GroceryOTGUtils.getStoreParentNamesCursor(context);
     	parents.moveToFirst();
     	while (!parents.isAfterLast()) {
     		String name = parents.getString(parents.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_NAME));

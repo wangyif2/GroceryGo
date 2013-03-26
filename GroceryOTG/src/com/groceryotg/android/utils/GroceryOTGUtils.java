@@ -23,7 +23,7 @@ public class GroceryOTGUtils {
         return c;
     }
 
-    public static Cursor getStoreParentNames(Context context) {
+    public static Cursor getStoreParentNamesCursor(Context context) {
         String[] projection = {StoreParentTable.COLUMN_STORE_PARENT_ID, StoreParentTable.COLUMN_STORE_PARENT_NAME};
         Cursor c = context.getContentResolver().query(GroceryotgProvider.CONTENT_URI_STOPARENT, projection, null, null, null);
         return c;

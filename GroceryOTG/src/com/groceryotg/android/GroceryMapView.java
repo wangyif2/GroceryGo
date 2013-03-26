@@ -7,7 +7,10 @@ import android.database.Cursor;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.util.AttributeSet;
+import android.util.SparseBooleanArray;
 import android.view.View;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
@@ -19,12 +22,17 @@ import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
 import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.*;
+import com.groceryotg.android.database.CartTable;
+import com.groceryotg.android.database.GroceryTable;
 import com.groceryotg.android.database.StoreParentTable;
 import com.groceryotg.android.database.StoreTable;
+import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
+import com.groceryotg.android.settings.SettingsManager;
 import com.groceryotg.android.utils.GroceryOTGUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -82,7 +90,9 @@ public class GroceryMapView extends SherlockFragmentActivity {
         buildIconMap(context);
 
         Location lastKnownLocation = getLastKnownLocation();
-        Cursor storeLocations = GroceryOTGUtils.getStoreLocations(context);
+        
+        Cursor storeLocations = getFilteredStores(context).loadInBackground();
+        
         SupportMapFragment fragment = (SupportMapFragment) getSupportFragmentManager().findFragmentByTag(MAP_FRAGMENT_TAG);
         if (fragment != null) {
             mMap = fragment.getMap();
@@ -213,4 +223,35 @@ public class GroceryMapView extends SherlockFragmentActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+    
+    private CursorLoader getFilteredStores(Context context) {
+    	List<String> selectionArgs = new ArrayList<String>();
+    	String[] projection = {StoreParentTable.COLUMN_STORE_PARENT_NAME, StoreTable.COLUMN_STORE_LATITUDE, StoreTable.COLUMN_STORE_LONGITUDE};
+        String selection = "";
+        
+	    SparseBooleanArray selectedStores = SettingsManager.getStoreFilter(context);
+	    if (selectedStores != null && selectedStores.size() > 0) {
+	        // Go through selected stores and add them to query
+	        String storeSelection = "";
+	        for (int storeNum = 0; storeNum < selectedStores.size(); storeNum++) {
+	            if (selectedStores.valueAt(storeNum) == true) {
+	                if (storeSelection.isEmpty()) {
+	                    storeSelection += StoreParentTable.TABLE_STORE_PARENT + "." + StoreParentTable.COLUMN_STORE_PARENT_ID + " = ?";
+	                } else {
+	                    storeSelection += " OR " + StoreParentTable.TABLE_STORE_PARENT + "." + StoreParentTable.COLUMN_STORE_PARENT_ID + " = ?";
+	                }
+	                selectionArgs.add(((Integer) selectedStores.keyAt(storeNum)).toString());
+	            }
+	        }
+	        if (!storeSelection.isEmpty()) {
+	            selection += storeSelection;
+	        }
+	    }
+	
+	    final String[] selectionArgsArr = new String[selectionArgs.size()];
+	    selectionArgs.toArray(selectionArgsArr);
+	
+	    return new CursorLoader(context, GroceryotgProvider.CONTENT_URI_STO_JOIN_STOREPARENT, projection, selection, selectionArgsArr, null);
+	}
+    
 }

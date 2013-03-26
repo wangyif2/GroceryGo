@@ -12,7 +12,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
-import android.util.SparseIntArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
@@ -194,6 +193,22 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
 
         mPager = (ViewPager) findViewById(R.id.pager);
         mPager.setAdapter(mAdapter);
+        mPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i2) {
+            }
+
+            @Override
+            public void onPageSelected(int i) {
+                GroceryAdapter mAdapter = (GroceryAdapter) mPager.getAdapter();
+                if (mAdapter.getFragment(i) != null)
+                    mAdapter.getFragment(i).loadDataWithQuery(true, "");
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {
+            }
+        });
     }
 
     private void configSlidingMenu() {
@@ -344,17 +359,21 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
         public Fragment getItem(int i) {
             if (i == POSITION_CATEGORY) {
                 return new CategoryGridFragment();
-            } else if (i == POSITION_MYFLYER_PAGER)
-                return new MyFlyerFragment();
-            else {
+            } else if (i == POSITION_MYFLYER_PAGER) {
+                if (mPageReferenceMap.get(POSITION_MYFLYER_PAGER) == null) {
+                    MyFlyerFragment myFragment = new MyFlyerFragment();
+                    mPageReferenceMap.put(POSITION_MYFLYER_PAGER, myFragment);
+                    return myFragment;
+                } else
+                    return mPageReferenceMap.get(POSITION_MYFLYER_PAGER);
+            } else {
                 GroceryListFragment myFragment;
                 if (mPageReferenceMap.get(i) == null) {
                     myFragment = GroceryListFragment.newInstance(i);
                     mPageReferenceMap.put(i, myFragment);
                     return myFragment;
-                } else {
+                } else
                     return mPageReferenceMap.get(i);
-                }
             }
         }
 

@@ -344,7 +344,7 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
         builder.create().show();
     }
 
-    private void loadDataWithQuery(Boolean reload, String query) {
+    public void loadDataWithQuery(Boolean reload, String query) {
         Bundle b = new Bundle();
         b.putString("query", query);
         if (reload) {

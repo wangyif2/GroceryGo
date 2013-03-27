@@ -47,15 +47,16 @@ def classify(noun_list, subcategory):
     for word in noun_list:
         # Generate three lists: (1) definition terms, (2) synonyms, (3) hypernyms
         
+        #food synset references
+        apple_food = wn.synsets('apple', pos=wn.NOUN)[0]
+        pizza_food = wn.synsets('cheese_pizza', pos=wn.NOUN)[0]
+        food_cat_nutrient = wn.synsets('food', pos=wn.NOUN)[0]
+        food_cat_solid = wn.synsets('food', pos=wn.NOUN)[1]
+            
         # Select the first synset of the word (this may need to be modified to select the most relevant synset)
         synsets = wn.synsets(word, pos=wn.NOUN)
         if synsets:
-            
             # Choose the synset which contains the "food" category as a hypernym
-            apple_food = wn.synsets('apple', pos=wn.NOUN)[0]
-            pizza_food = wn.synsets('cheese_pizza', pos=wn.NOUN)[0]
-            food_cat_nutrient = wn.synsets('food', pos=wn.NOUN)[0]
-            food_cat_solid = wn.synsets('food', pos=wn.NOUN)[1]
             synset = synsets[0]
             for set in synsets:
                 if food_cat_solid in set.common_hypernyms(apple_food) or food_cat_nutrient in set.common_hypernyms(pizza_food) :
@@ -65,8 +66,11 @@ def classify(noun_list, subcategory):
             
             definition = synset.definition
             synonyms = synset.lemma_names
+            
+            #TODO: this only returns first level of hypernyms
             hypernym_set = synset.hypernyms()
             hypernyms = [x.name for x in hypernym_set]
+            
             #hypernyms = [x.definition for x in hypernym_set]
             
             #lower case

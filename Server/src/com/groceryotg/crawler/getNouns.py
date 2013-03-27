@@ -5,11 +5,15 @@ import nltk
 
 tagger = None
 
+#list of tags for words we want to keep 
+tag_keys = ["NN", "NNS", "NNP", "NNPS", "FW", "VB"]
+
 def init():
     '''Initialize POS tagger.'''
     global tagger
     tagger = NLPlib.NLPlib()
 
+#old code
 def getNounsNLTK(rawStr):
     text = nltk.word_tokenize(rawStr.lower())
     tags = nltk.pos_tag(text)
@@ -19,7 +23,7 @@ def getNounsNLTK(rawStr):
 def getNouns(rawStr):
     '''Takes a string representing 1 item, and returns a list of the nouns in the string.'''
     # Tokenize the raw string
-    tokens = re.split(r"\s+|[.]", rawStr)
+    tokens = re.split(r"\s+|[.,]", rawStr)
     
     # Lemmatize the strings to get the base form (e.g. 'cars' -> 'car')
     # NB: the lemmatizer is case-sensitive and only works with lower-case nouns
@@ -34,7 +38,7 @@ def getNouns(rawStr):
     # Store all nouns
     nouns = []
     for i in range(len(tags)):
-        if tags[i] == "NN" or tags[i][:2] == "VB":
+        if tags[i] in tag_keys:
             nouns.append(tokens[i])
 
     #filter out numbers, empty tokens

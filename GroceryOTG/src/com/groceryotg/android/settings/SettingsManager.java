@@ -23,7 +23,7 @@ public class SettingsManager {
 	}
 	
 	public static SparseBooleanArray getStoreFilter(Context context) {
-		Set<String> strs = getPrefs(context).getStringSet("store_select", null);
+		Set<String> strs = getPrefs(context).getStringSet("store_select", new HashSet<String>());
 		SparseBooleanArray a = new SparseBooleanArray();
 		for (String s : strs) {
 			a.append(Integer.valueOf(s), true);

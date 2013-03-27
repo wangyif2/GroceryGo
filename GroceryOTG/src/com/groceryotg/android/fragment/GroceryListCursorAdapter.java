@@ -1,11 +1,15 @@
 package com.groceryotg.android.fragment;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.Bundle;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -180,8 +184,17 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
         icon_store.setOnClickListener(new OnClickListener() {
         	@Override
             public void onClick(View v) {
+            	TextView text = (TextView) ((LinearLayout)v.getParent()).getChildAt(0);
+            	ArrayList<Integer> id = new ArrayList<Integer>();
+            	id.add(Integer.parseInt(text.getText().toString()));
+            	Log.i("GroceryOTG", "Filtering by store id " + id.get(0));
+            	
+            	Bundle extras = new Bundle();
+            	extras.putIntegerArrayList(GroceryMapView.EXTRA_FILTER_STORE_PARENT, id);
+            	
         		Intent intent = new Intent(activity, GroceryMapView.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.putExtras(extras);
                 activity.startActivity(intent);
         	}
         });

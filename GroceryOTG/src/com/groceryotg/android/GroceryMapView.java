@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.View;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -32,20 +33,23 @@ import com.groceryotg.android.utils.GroceryOTGUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-/**
- * User: robert
- * Date: 06/02/13
- */
 public class GroceryMapView extends SherlockFragmentActivity {
-    public static final int CAM_ZOOM = 14;
+    public static final int CAM_ZOOM = 13;
     public static final String MAP_FRAGMENT_TAG = "map_fragment_tag";
+    public static final String EXTRA_FILTER_STORE_PARENT = "extra_filter_store_parent";
+    public static final String EXTRA_FILTER_STORE = "extra_filter_store";
     
     private GoogleMap mMap = null;
     private Map<String, Integer> mIconMap = new HashMap<String, Integer>();
     private ArrayList<Marker> mMapMarkers = new ArrayList<Marker>();
+    
+    private ArrayList<Integer> filterStoreParents = null;
+    private ArrayList<Integer> filterStores = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +72,12 @@ public class GroceryMapView extends SherlockFragmentActivity {
 	        SupportMapFragment fragment = SupportMapFragment.newInstance(options);
 	        getSupportFragmentManager().beginTransaction().add(android.R.id.content, fragment, MAP_FRAGMENT_TAG).commit();
 	        getSupportFragmentManager().executePendingTransactions();
+	        
+	        Bundle extras = getIntent().getExtras();
+	        if (extras != null) {
+		        this.filterStoreParents = extras.getIntegerArrayList(GroceryMapView.EXTRA_FILTER_STORE_PARENT);
+		        this.filterStores = extras.getIntegerArrayList(GroceryMapView.EXTRA_FILTER_STORE);
+	        }
         }
     }
     
@@ -147,12 +157,30 @@ public class GroceryMapView extends SherlockFragmentActivity {
         int storeNum = storeLocations.getColumnCount();
         while (!storeLocations.isAfterLast()) {
             for (int i = 0; i < storeNum; i++) {
+            	int storeID = storeLocations.getInt(storeLocations.getColumnIndex(StoreTable.COLUMN_STORE_ID));
+            	int storeParentID = storeLocations.getInt(storeLocations.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_ID));
                 String storeName = storeLocations.getString(storeLocations.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_NAME));
                 double storeLat = storeLocations.getDouble(storeLocations.getColumnIndex(StoreTable.COLUMN_STORE_LATITUDE));
                 double storeLng = storeLocations.getDouble(storeLocations.getColumnIndex(StoreTable.COLUMN_STORE_LONGITUDE));
+                
                 LatLng storeLatLng = new LatLng(storeLat, storeLng);
-
-                buildStoreMarker(context, map, storeName, storeLatLng);
+                
+                // Now do filtering
+                boolean isIncluded = true;
+                if (this.filterStoreParents != null) {
+                	isIncluded = false;
+                	if (this.filterStoreParents.contains(storeParentID))
+                		isIncluded = true;
+                }
+                if (this.filterStores != null) {
+                	isIncluded = false;
+                	if (this.filterStores.contains(storeID))
+                		isIncluded = true;
+                }
+                
+                if (isIncluded) {
+                	buildStoreMarker(context, map, storeName, storeLatLng);
+                }
             }
             storeLocations.moveToNext();
         }
@@ -226,7 +254,11 @@ public class GroceryMapView extends SherlockFragmentActivity {
     
     private CursorLoader getFilteredStores(Context context) {
     	List<String> selectionArgs = new ArrayList<String>();
-    	String[] projection = {StoreParentTable.COLUMN_STORE_PARENT_NAME, StoreTable.COLUMN_STORE_LATITUDE, StoreTable.COLUMN_STORE_LONGITUDE};
+        String[] projection = {StoreTable.TABLE_STORE+"."+StoreTable.COLUMN_STORE_ID,
+        		StoreParentTable.TABLE_STORE_PARENT+"."+StoreParentTable.COLUMN_STORE_PARENT_ID,
+        		StoreParentTable.TABLE_STORE_PARENT+"."+StoreParentTable.COLUMN_STORE_PARENT_NAME,
+        		StoreTable.TABLE_STORE+"."+StoreTable.COLUMN_STORE_LATITUDE,
+        		StoreTable.TABLE_STORE+"."+StoreTable.COLUMN_STORE_LONGITUDE};
         String selection = "";
         
 	    SparseBooleanArray selectedStores = SettingsManager.getStoreFilter(context);

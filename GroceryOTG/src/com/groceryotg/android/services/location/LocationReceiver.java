@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.location.Location;
+import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
@@ -21,7 +22,9 @@ import com.groceryotg.android.utils.GroceryOTGUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * User: John
@@ -31,7 +34,8 @@ public class LocationReceiver extends BroadcastReceiver {
     //currently polling time is every 1 hour
     public static final int pollingPeriod = 60*60*1000;
     // a near location is 500m
-    public static int LOCATION_NEAR = 500;
+    //public static int LOCATION_NEAR = 500;
+    public static int LOCATION_NEAR = 50000000;
 
     public static final int NOTIFICATION_LOCATION_ID = 0;
 
@@ -46,6 +50,9 @@ public class LocationReceiver extends BroadcastReceiver {
     }
     
     private void constructNotification(Context context, Location loc) {
+    	Bundle extras = new Bundle();
+    	ArrayList<Integer> storeIDs = new ArrayList<Integer>();
+    	
     	ArrayList<String> events = new ArrayList<String>();
     	boolean displayNotification = false;
     	
@@ -63,6 +70,8 @@ public class LocationReceiver extends BroadcastReceiver {
             
             if (distance <= LOCATION_NEAR) {
             	events.add(name);
+            	if (!storeIDs.contains(id))
+            		storeIDs.add(id);
             	displayNotification = true;
             }
             
@@ -71,11 +80,13 @@ public class LocationReceiver extends BroadcastReceiver {
     	
     	if (!displayNotification)
     		return;
+    	
+    	extras.putIntegerArrayList(GroceryMapView.EXTRA_FILTER_STORE, storeIDs);
         
     	// Now make a notification if there are nearby items in the cart
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
-                        .setSmallIcon(R.drawable.icon_drinks)
+                        .setSmallIcon(R.drawable.ic_launcher)
                         .setContentTitle("GroceryOTG")
                         .setContentText("An item in your cart is near")
                         .setAutoCancel(true);
@@ -94,6 +105,7 @@ public class LocationReceiver extends BroadcastReceiver {
         
         // Creates an explicit intent for the top activity that will be opened (the map)
         Intent resultIntent = new Intent(context, GroceryMapView.class);
+        resultIntent.putExtras(extras);
 
         // The stack builder object will contain an artificial back stack for the
         // started Activity. This ensures that navigating backward from the 

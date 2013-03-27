@@ -251,6 +251,7 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
                 GroceryTable.COLUMN_GROCERY_NAME,
                 GroceryTable.COLUMN_GROCERY_PRICE,
                 StoreParentTable.COLUMN_STORE_PARENT_NAME,
+                StoreParentTable.TABLE_STORE_PARENT + "." + StoreParentTable.COLUMN_STORE_PARENT_ID,
                 CartTable.COLUMN_CART_GROCERY_ID,
                 CartTable.COLUMN_CART_FLAG_SHOPLIST,
                 CartTable.COLUMN_CART_FLAG_WATCHLIST};
@@ -363,6 +364,7 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
                 GroceryTable.COLUMN_GROCERY_NAME,
                 GroceryTable.COLUMN_GROCERY_PRICE,
                 StoreParentTable.COLUMN_STORE_PARENT_NAME,
+                StoreParentTable.COLUMN_STORE_PARENT_ID,
                 CartTable.COLUMN_CART_FLAG_SHOPLIST,
                 CartTable.COLUMN_CART_FLAG_WATCHLIST,
                 CartTable.COLUMN_CART_FLAG_SHOPLIST,
@@ -372,6 +374,7 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
                 R.id.grocery_row_details,
                 R.id.grocery_row_price,
                 R.id.grocery_row_store,
+                R.id.grocery_row_store_id,
                 R.id.grocery_row_inshopcart,
                 R.id.grocery_row_inwatchlist,
                 R.id.grocery_row_inshopcart_flag,

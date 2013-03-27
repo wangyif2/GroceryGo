@@ -13,6 +13,7 @@ import com.groceryotg.android.R.drawable;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.GroceryTable;
 import com.groceryotg.android.database.StoreParentTable;
+import com.groceryotg.android.database.StoreTable;
 import com.groceryotg.android.services.ServerURL;
 import com.groceryotg.android.utils.GroceryOTGUtils;
 
@@ -187,6 +188,14 @@ public class GroceryViewBinder implements SimpleCursorAdapter.ViewBinder, ViewBi
         	} catch (Exception e) {
         	    Log.e("GroceryOTG", "Could not get drawable id for row.", e);
         	}
+        	
+        	return true;
+        }
+        else if (columnIndex == cursor.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_ID) 
+        		&& viewId == R.id.grocery_row_store_id) {
+        	Integer id = cursor.getInt(columnIndex);
+        	TextView text = (TextView) view;
+        	text.setText(Integer.toString(id));
         	
         	return true;
         }

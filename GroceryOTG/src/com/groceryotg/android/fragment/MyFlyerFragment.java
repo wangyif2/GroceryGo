@@ -37,6 +37,7 @@ public class MyFlyerFragment extends GroceryListFragment {
                 GroceryTable.COLUMN_GROCERY_NAME,
                 GroceryTable.COLUMN_GROCERY_PRICE,
                 StoreParentTable.COLUMN_STORE_PARENT_NAME,
+                StoreParentTable.TABLE_STORE_PARENT + "." + StoreParentTable.COLUMN_STORE_PARENT_ID,
                 CartTable.COLUMN_CART_GROCERY_ID,
                 CartTable.COLUMN_CART_FLAG_SHOPLIST,
                 CartTable.COLUMN_CART_FLAG_WATCHLIST};

@@ -26,6 +26,13 @@ public class GroceryOTGUtils {
         Cursor c = context.getContentResolver().query(GroceryotgProvider.CONTENT_URI_STO_JOIN_STOREPARENT, projection, null, null, null);
         return c;
     }
+    
+    public static Cursor getStoreFlyerIDs(Context context) {
+    	String[] projection = {StoreTable.TABLE_STORE+"."+StoreTable.COLUMN_STORE_ID,
+    			StoreTable.TABLE_STORE+"."+StoreTable.COLUMN_STORE_FLYER};
+        Cursor c = context.getContentResolver().query(GroceryotgProvider.CONTENT_URI_STO, projection, null, null, null);
+        return c;
+    }
 
     public static Cursor getStoreParentNamesCursor(Context context) {
         String[] projection = {StoreParentTable.COLUMN_STORE_PARENT_ID, StoreParentTable.COLUMN_STORE_PARENT_NAME};

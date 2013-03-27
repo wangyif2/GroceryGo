@@ -1,4 +1,5 @@
 import logging
+from itertools import islice
 from nltk.corpus import wordnet as wn
 import nltk
 import re
@@ -67,8 +68,8 @@ def classify(noun_list, subcategory):
             definition = synset.definition
             synonyms = synset.lemma_names
             
-            #TODO: this only returns first level of hypernyms
-            hypernym_set = synset.hypernyms()
+            hyp = lambda s:s.hypernyms()
+            hypernym_set = list(synset.closure(hyp))
             hypernyms = [x.name for x in hypernym_set]
             
             #hypernyms = [x.definition for x in hypernym_set]

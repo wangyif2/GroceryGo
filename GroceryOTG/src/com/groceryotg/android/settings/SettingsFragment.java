@@ -59,7 +59,7 @@ public class SettingsFragment extends PreferenceFragment {
         storeListPref.setDialogTitle(getResources().getString(R.string.setting_store_dialog_title));
         storeListPref.setEntries(entries);
         storeListPref.setEntryValues(entryValues);
-        storeListPref.setDefaultValue("1");
+        storeListPref.setDefaultValue(entryValues);
     }
 
 }

@@ -1,5 +1,8 @@
 package com.groceryotg.android;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -16,6 +19,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.groceryotg.android.database.CartTable;
+import com.groceryotg.android.database.GroceryTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 import com.groceryotg.android.fragment.GroceryViewBinder;
 import com.slidingmenu.lib.SlidingMenu;
@@ -28,6 +32,9 @@ public class ShopCartOverView extends SherlockListActivity implements LoaderMana
     private static final int DELETE_ID = 1;
     private ShopCartCursorAdapter adapter;
     private SlidingMenu slidingMenu;
+    private Menu actionBarMenu;
+    private boolean filterShoplist;
+    private boolean filterWatchlist;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -35,10 +42,10 @@ public class ShopCartOverView extends SherlockListActivity implements LoaderMana
         setContentView(R.layout.shopcart_list);
         this.getListView().setDividerHeight(2);
         
-        // Enable ancestral navigation ("Up" button in ActionBar) for Android < 4.1
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        initFilter();
         
-        // Configure sliding menu
+        configActionBar();
+        
         configSlidingMenu();
         
         fillData();
@@ -49,6 +56,7 @@ public class ShopCartOverView extends SherlockListActivity implements LoaderMana
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getSupportMenuInflater();
         inflater.inflate(R.menu.shopcart_menu, menu);
+        actionBarMenu = menu;
         return true;
     }
 
@@ -58,6 +66,19 @@ public class ShopCartOverView extends SherlockListActivity implements LoaderMana
             case R.id.cart_add:
                 createCartGroceryItem();
                 return true;
+            case R.id.cart_filter_shoplist:
+            	//MenuItem itemShoplist = ;
+            	int newIconShoplist = (filterShoplist ? R.drawable.ic_menu_cart : R.drawable.ic_menu_cart_highlight);
+            	actionBarMenu.findItem(R.id.cart_filter_shoplist).setIcon(newIconShoplist);
+            	filterShoplist = (filterShoplist ? false : true);
+            	refreshData();
+            	return true;
+            case R.id.cart_filter_watchlist:
+            	int newIconWatchlist = (filterWatchlist ? R.drawable.ic_menu_watch : R.drawable.ic_menu_watch_highlight);
+            	actionBarMenu.findItem(R.id.cart_filter_watchlist).setIcon(newIconWatchlist);
+            	filterWatchlist = (filterWatchlist ? false : true);
+            	refreshData();
+            	return true;
             case android.R.id.home:
             	// This is called when the Home (Up) button is pressed
                 // in the Action Bar. This handles Android < 4.1.
@@ -136,7 +157,28 @@ public class ShopCartOverView extends SherlockListActivity implements LoaderMana
         					   CartTable.COLUMN_CART_GROCERY_ID, 
         					   CartTable.COLUMN_CART_FLAG_SHOPLIST, 
         					   CartTable.COLUMN_CART_FLAG_WATCHLIST};
-        return new CursorLoader(this, GroceryotgProvider.CONTENT_URI_CART_ITEM, projection, null, null, null);
+        
+        List<String> selectionArgs = new ArrayList<String>();
+        String selection = "";
+        
+        // If user clicked on a filter, filter the results based on flags
+        if (filterShoplist) {
+        	selection += (selection.isEmpty() ? "" : " AND "); 
+            selection += CartTable.TABLE_CART + "." + CartTable.COLUMN_CART_FLAG_SHOPLIST + "=?";
+            selectionArgs.add("1");
+        }
+        if (filterWatchlist) {
+        	selection += (selection.isEmpty() ? "" : " AND ");
+        	selection += CartTable.TABLE_CART + "." + CartTable.COLUMN_CART_FLAG_WATCHLIST + "=?";
+            selectionArgs.add("1");
+        }
+        
+        final String[] selectionArgsArr = new String[selectionArgs.size()];
+        selectionArgs.toArray(selectionArgsArr);
+        
+        String sortOrder = CartTable.TABLE_CART + "." + CartTable.COLUMN_CART_GROCERY_NAME;
+        
+        return new CursorLoader(this, GroceryotgProvider.CONTENT_URI_CART_ITEM, projection, selection, selectionArgsArr, sortOrder);
     }
 
     @Override
@@ -218,5 +260,18 @@ public class ShopCartOverView extends SherlockListActivity implements LoaderMana
                 }
             }
         });
+    }
+    
+    private void configActionBar() {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+    
+    private void initFilter() {
+    	filterShoplist = false;
+        filterWatchlist = false;
+    }
+    
+    private void refreshData() {
+    	getLoaderManager().restartLoader(0, null, this);
     }
 }

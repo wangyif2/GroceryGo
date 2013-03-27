@@ -1,5 +1,6 @@
 package com.groceryotg.android.services.location;
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -7,6 +8,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.location.Location;
+import android.media.AudioManager;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
@@ -69,7 +73,8 @@ public class LocationReceiver extends BroadcastReceiver {
             float distance = loc.distanceTo(storeLoc);
             
             if (distance <= LOCATION_NEAR) {
-            	events.add(name);
+            	if (!events.contains(name))
+            		events.add(name);
             	if (!storeIDs.contains(id))
             		storeIDs.add(id);
             	displayNotification = true;
@@ -123,6 +128,13 @@ public class LocationReceiver extends BroadcastReceiver {
         mBuilder.setContentIntent(resultPendingIntent);
         NotificationManager mNotificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        
+        // Now set sounds and vibrations
+        mBuilder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
+        AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        if (audioManager.getRingerMode() != AudioManager.RINGER_MODE_SILENT)
+        	mBuilder.setDefaults(Notification.DEFAULT_VIBRATE);
+        
         // the ID allows for updating the notification later on
         mNotificationManager.notify(NOTIFICATION_LOCATION_ID, mBuilder.build());
     }

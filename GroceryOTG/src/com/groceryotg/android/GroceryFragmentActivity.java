@@ -202,7 +202,7 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
             public void onPageSelected(int i) {
                 GroceryAdapter mAdapter = (GroceryAdapter) mPager.getAdapter();
                 if (mAdapter.getFragment(i) != null)
-                    mAdapter.getFragment(i).loadDataWithQuery(true, "");
+                    mAdapter.getFragment(i).loadDataWithQuery(false, "");
             }
 
             @Override

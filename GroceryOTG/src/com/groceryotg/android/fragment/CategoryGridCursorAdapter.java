@@ -19,7 +19,7 @@ import java.util.Locale;
  * Date: 16/03/13
  */
 public class CategoryGridCursorAdapter extends SimpleCursorAdapter {
-    private Context mContext;
+    protected Context mContext;
     private int mLayout;
     private int[] gridColours;
     private TypedArray gridIcons;

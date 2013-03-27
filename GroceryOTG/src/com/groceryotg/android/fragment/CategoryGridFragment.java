@@ -67,7 +67,7 @@ public class CategoryGridFragment extends SherlockFragment implements LoaderMana
         MatrixCursor mc = new MatrixCursor(col);
         Object[] obj = {"0", "my flyer"};
         mc.addRow(obj);
-        SimpleCursorAdapter sa1 = new CategoryGridCursorAdapter(getActivity(), R.layout.category_fragment_row, null, from, to);
+        SimpleCursorAdapter sa1 = new MyFlyerGridCursorAdapter(getActivity(), R.layout.category_fragment_row, null, from, to);
         sa1.swapCursor(mc);
         adapter.addAdapter(sa1);
 

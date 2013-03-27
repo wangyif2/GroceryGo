@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.groceryotg.android.R;
 import com.groceryotg.android.R.drawable;
 import com.groceryotg.android.database.CartTable;
+import com.groceryotg.android.database.FlyerTable;
 import com.groceryotg.android.database.GroceryTable;
 import com.groceryotg.android.database.StoreParentTable;
 import com.groceryotg.android.database.StoreTable;
@@ -18,6 +19,7 @@ import com.groceryotg.android.services.ServerURL;
 import com.groceryotg.android.utils.GroceryOTGUtils;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -191,11 +193,30 @@ public class GroceryViewBinder implements SimpleCursorAdapter.ViewBinder, ViewBi
         	
         	return true;
         }
-        else if (columnIndex == cursor.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_ID) 
+        else if (columnIndex == cursor.getColumnIndex(FlyerTable.COLUMN_FLYER_ID) 
         		&& viewId == R.id.grocery_row_store_id) {
         	Integer id = cursor.getInt(columnIndex);
         	TextView text = (TextView) view;
-        	text.setText(Integer.toString(id));
+        	Cursor flyerIDs = GroceryOTGUtils.getStoreFlyerIDs(view.getContext());
+        	ArrayList<Integer> list = new ArrayList<Integer>();
+        	
+        	flyerIDs.moveToFirst();
+        	while (!flyerIDs.isAfterLast()) {
+        		if (flyerIDs.getInt(flyerIDs.getColumnIndex(StoreTable.COLUMN_STORE_FLYER)) == id) {
+        			list.add(flyerIDs.getInt(flyerIDs.getColumnIndex(StoreTable.COLUMN_STORE_ID)));
+        		}
+        		flyerIDs.moveToNext();
+        	}
+        	
+        	// Pack the list for store IDs into a string
+        	StringBuilder sb = new StringBuilder();
+        	for (Integer i : list) {
+        		sb.append("," + Integer.toString(i));
+        	}
+        	if (list.size() > 0)
+        		sb.replace(0, 1, "");
+        	
+        	text.setText(sb.toString());
         	
         	return true;
         }

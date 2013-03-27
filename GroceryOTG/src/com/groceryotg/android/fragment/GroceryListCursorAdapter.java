@@ -185,12 +185,16 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
         	@Override
             public void onClick(View v) {
             	TextView text = (TextView) ((LinearLayout)v.getParent()).getChildAt(0);
-            	ArrayList<Integer> id = new ArrayList<Integer>();
-            	id.add(Integer.parseInt(text.getText().toString()));
-            	Log.i("GroceryOTG", "Filtering by store id " + id.get(0));
-            	
+            	ArrayList<Integer> ids = new ArrayList<Integer>();
+            	String list = text.getText().toString();
+            	if (!list.equals("")) {
+	        		for (String s : list.split(",")) {
+	        			ids.add(Integer.parseInt(s));
+	        		}
+        		}
+        		
             	Bundle extras = new Bundle();
-            	extras.putIntegerArrayList(GroceryMapView.EXTRA_FILTER_STORE_PARENT, id);
+            	extras.putIntegerArrayList(GroceryMapView.EXTRA_FILTER_STORE, ids);
             	
         		Intent intent = new Intent(activity, GroceryMapView.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

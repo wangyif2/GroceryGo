@@ -8,6 +8,7 @@ import android.util.SparseBooleanArray;
 
 import com.groceryotg.android.GroceryFragmentActivity;
 import com.groceryotg.android.database.CartTable;
+import com.groceryotg.android.database.FlyerTable;
 import com.groceryotg.android.database.GroceryTable;
 import com.groceryotg.android.database.StoreParentTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
@@ -37,7 +38,7 @@ public class MyFlyerFragment extends GroceryListFragment {
                 GroceryTable.COLUMN_GROCERY_NAME,
                 GroceryTable.COLUMN_GROCERY_PRICE,
                 StoreParentTable.COLUMN_STORE_PARENT_NAME,
-                StoreParentTable.TABLE_STORE_PARENT + "." + StoreParentTable.COLUMN_STORE_PARENT_ID,
+                FlyerTable.TABLE_FLYER + "." + FlyerTable.COLUMN_FLYER_ID,
                 CartTable.COLUMN_CART_GROCERY_ID,
                 CartTable.COLUMN_CART_FLAG_SHOPLIST,
                 CartTable.COLUMN_CART_FLAG_WATCHLIST};

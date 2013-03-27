@@ -6,6 +6,8 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.location.Location;
 import android.media.AudioManager;
@@ -22,6 +24,7 @@ import com.groceryotg.android.R;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.StoreParentTable;
 import com.groceryotg.android.database.StoreTable;
+import com.groceryotg.android.settings.SettingsManager;
 import com.groceryotg.android.utils.GroceryOTGUtils;
 
 import java.util.ArrayList;
@@ -56,6 +59,7 @@ public class LocationReceiver extends BroadcastReceiver {
     private void constructNotification(Context context, Location loc) {
     	Bundle extras = new Bundle();
     	ArrayList<Integer> storeIDs = new ArrayList<Integer>();
+    	Set<String> newEvents = new HashSet<String>();
     	
     	ArrayList<String> events = new ArrayList<String>();
     	boolean displayNotification = false;
@@ -64,7 +68,7 @@ public class LocationReceiver extends BroadcastReceiver {
     	stores.moveToFirst();
     	while (!stores.isAfterLast()) {
         	String name = stores.getString(stores.getColumnIndex(CartTable.COLUMN_CART_GROCERY_NAME));
-            int id = stores.getInt(stores.getColumnIndex(StoreTable.COLUMN_STORE_ID));
+            int storeID = stores.getInt(stores.getColumnIndex(StoreTable.COLUMN_STORE_ID));
             Location storeLoc = new Location("Store Location");
             storeLoc.setLatitude(stores.getDouble(stores.getColumnIndex(StoreTable.COLUMN_STORE_LATITUDE)));
             storeLoc.setLongitude(stores.getDouble(stores.getColumnIndex(StoreTable.COLUMN_STORE_LONGITUDE)));
@@ -75,16 +79,28 @@ public class LocationReceiver extends BroadcastReceiver {
             if (distance <= LOCATION_NEAR) {
             	if (!events.contains(name))
             		events.add(name);
-            	if (!storeIDs.contains(id))
-            		storeIDs.add(id);
+            	if (!storeIDs.contains(storeID))
+            		storeIDs.add(storeID);
             	displayNotification = true;
             }
+            
+            newEvents.add(name);
             
             stores.moveToNext();
         }
     	
     	if (!displayNotification)
     		return;
+    	
+    	SharedPreferences prefs = SettingsManager.getPrefs(context);
+    	Set<String> oldEvents = prefs.getStringSet(SettingsManager.SETTINGS_PREVIOUS_NOTIFICATION, new HashSet<String>());
+    	if (oldEvents.equals(newEvents))
+    		return;
+    	
+    	Editor prefsEditor = prefs.edit();
+    	prefsEditor.putStringSet(SettingsManager.SETTINGS_PREVIOUS_NOTIFICATION, newEvents);
+    	prefsEditor.commit();
+    	
     	
     	extras.putIntegerArrayList(GroceryMapView.EXTRA_FILTER_STORE, storeIDs);
         

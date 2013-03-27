@@ -10,6 +10,8 @@ import android.preference.PreferenceManager;
 import android.util.SparseBooleanArray;
 
 public class SettingsManager {
+	public static final String SETTINGS_PREVIOUS_NOTIFICATION = "previous_notification_set";
+	
 	public static SharedPreferences getPrefs(Context context) {
 		return PreferenceManager.getDefaultSharedPreferences(context);
 	}

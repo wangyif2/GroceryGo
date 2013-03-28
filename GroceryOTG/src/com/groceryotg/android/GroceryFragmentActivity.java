@@ -47,7 +47,7 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
     SlidingMenu mSlidingMenu;
     RefreshStatusReceiver mRefreshStatusReceiver;
     MenuItem refreshItem;
-    Menu menu;
+    static Menu menu;
 
     public static String myQuery;
 
@@ -84,6 +84,9 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
     }
 
     private void handleIntent(Intent intent) {
+    	
+    	clearSearch();
+    	
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             // Gets the search query from the voice recognizer intent
             String query = intent.getStringExtra(SearchManager.QUERY);
@@ -277,6 +280,12 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
+    
+    private static void clearSearch() {
+    	// Clear any open searches
+    	MenuItem searchItem = menu.findItem(R.id.search);
+    	searchItem.collapseActionView();
+    }
 
     private void refreshCurrentPager() {
         Toast t = Toast.makeText(this, "Starting fetching new items...", Toast.LENGTH_LONG);
@@ -399,8 +408,10 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
             // if Page Scroll state is *SELECTED*, we can start loading
             if (i == PAGE_SELECTED) {
                 if (currentPage == GroceryAdapter.POSITION_CATEGORY) {
-                } else
+                } else {
+                	clearSearch();
                     getFragment(currentPage).loadDataWithQuery(false, "");
+                }
             }
         }
     }

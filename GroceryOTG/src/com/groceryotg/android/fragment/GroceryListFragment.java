@@ -20,10 +20,7 @@ import com.actionbarsherlock.app.SherlockListFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.groceryotg.android.GroceryFragmentActivity;
-import com.groceryotg.android.GroceryMapView;
-import com.groceryotg.android.R;
-import com.groceryotg.android.ShopCartOverView;
+import com.groceryotg.android.*;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.FlyerTable;
 import com.groceryotg.android.database.GroceryTable;
@@ -239,7 +236,11 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
                 newQuery != null && GroceryFragmentActivity.myQuery.equals(newQuery))
             return true;
 
-        loadDataWithQuery(true, newQuery);
+        Intent globalSearchIntent = new Intent(getActivity(), GlobalSearchActivity.class);
+        globalSearchIntent.putExtra(GlobalSearchActivity.GLOBAL_SEARCH, true);
+        globalSearchIntent.putExtra(SearchManager.QUERY, newQuery);
+        globalSearchIntent.setAction(Intent.ACTION_SEARCH);
+        startActivity(globalSearchIntent);
 
         return true;
     }

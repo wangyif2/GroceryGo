@@ -56,7 +56,6 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
     public static Map<Integer, String> storeNames;
     public static Double mPriceRangeMin;
     public static Double mPriceRangeMax;
-    private int currentPage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

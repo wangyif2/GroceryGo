@@ -41,5 +41,5 @@
     <string name="setting_store_dialog_title">Select Store</string>
     <string name="setting_store_summary">Select your favourite store in your area</string>
     <string name="setting_notification_freq_title">Frequency</string>
-    <string name="setting_notification_freq_summary">Select your favourite store in your area</string>
+    <string name="setting_notification_freq_summary">Set how often you would like to be notified of new sales items</string>
 </resources>

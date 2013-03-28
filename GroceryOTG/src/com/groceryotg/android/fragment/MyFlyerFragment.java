@@ -5,8 +5,7 @@ import android.os.Bundle;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.util.SparseBooleanArray;
-
-import com.groceryotg.android.GroceryFragmentActivity;
+import android.view.View;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.FlyerTable;
 import com.groceryotg.android.database.GroceryTable;
@@ -27,9 +26,8 @@ public class MyFlyerFragment extends GroceryListFragment {
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        String emptyString = bundle.getBoolean("reload") ? buildNoSearchResultString() : buildNoNewContentString();
+        isSearch = bundle.getBoolean("reload");
         String query = bundle.getString("query");
-        displayEmptyListMessage(emptyString);
 
         List<String> selectionArgs = new ArrayList<String>();
 
@@ -83,6 +81,15 @@ public class MyFlyerFragment extends GroceryListFragment {
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
         adapter.swapCursor(cursor);
+        if (progressView != null)
+            progressView.setVisibility(View.GONE);
+
+        if (cursor.getCount() == 0)
+            if (isSearch)
+                displayEmptyListMessage(buildNoSearchResultString());
+            else
+                displayEmptyListMessage(buildNoNewContentString());
+
     }
 
     @Override

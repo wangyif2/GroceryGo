@@ -1,8 +1,5 @@
 package com.groceryotg.android;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.LoaderManager;
 import android.app.SearchManager;
 import android.content.Context;
@@ -13,12 +10,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.SearchView;
-import android.widget.TextView;
-
+import android.widget.*;
 import com.actionbarsherlock.app.SherlockListActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -30,6 +22,9 @@ import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 import com.groceryotg.android.fragment.GroceryListCursorAdapter;
 import com.groceryotg.android.fragment.GroceryViewBinder;
 import com.slidingmenu.lib.SlidingMenu;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GlobalSearchActivity extends SherlockListActivity implements SearchView.OnQueryTextListener, LoaderManager.LoaderCallbacks<Cursor> {
 	
@@ -203,7 +198,7 @@ public class GlobalSearchActivity extends SherlockListActivity implements Search
         mSlidingMenu = new SlidingMenu(this);
         mSlidingMenu.setMode(SlidingMenu.LEFT);
         mSlidingMenu.setShadowWidthRes(R.dimen.shadow_width);
-        mSlidingMenu.setShadowDrawable(R.drawable.shadow);
+        mSlidingMenu.setShadowDrawable(R.xml.shadow);
         mSlidingMenu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
         mSlidingMenu.setFadeDegree(0.35f);
         mSlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);

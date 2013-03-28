@@ -3,11 +3,7 @@ package com.groceryotg.android.fragment;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.SearchManager;
-import android.content.ContentValues;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.*;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
@@ -19,10 +15,7 @@ import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
-import android.widget.SearchView;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 import com.actionbarsherlock.app.SherlockListFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -56,16 +49,19 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
     Activity activity;
     GroceryListCursorAdapter adapter;
     TextView emptyTextView;
+    ProgressBar progressView;
     Menu menu;
     MenuItem refreshItem;
     private Integer categoryId;
-    
+    boolean isSearch;
+
     private CharSequence[] items;
     private boolean[] states;
-	private SparseIntArray mapIndexToId; // maps index in the dialog to store_id
+    private SparseIntArray mapIndexToId; // maps index in the dialog to store_id
 
     private SearchView mSearchView;
-    
+    ViewGroup myViewGroup;
+
     SharedPreferences.OnSharedPreferenceChangeListener mSettingsListener;
 
     public static GroceryListFragment newInstance(int pos) {
@@ -81,10 +77,10 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
 
     @Override
     public void onAttach(Activity activity) {
-    	super.onAttach(activity);
-    	this.activity = activity;
+        super.onAttach(activity);
+        this.activity = activity;
     }
-    
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -160,21 +156,51 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        myViewGroup = container;
         View v = inflater.inflate(R.layout.grocery_fragment_list, container, false);
         emptyTextView = (TextView) v.findViewById(R.id.empty_grocery_list);
+        progressView = (ProgressBar) v.findViewById(R.id.refresh_progress);
         return v;
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        displayEmptyListMessage(buildNoNewContentString());
+        if (progressView != null)
+            progressView.setVisibility(View.VISIBLE);
+
+//        displayEmptyListMessage(buildNoNewContentString());
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        fillData();
+//        fillData();
+        String[] from = new String[]{GroceryTable.COLUMN_GROCERY_ID,
+                GroceryTable.COLUMN_GROCERY_NAME,
+                GroceryTable.COLUMN_GROCERY_NAME,
+                GroceryTable.COLUMN_GROCERY_PRICE,
+                StoreParentTable.COLUMN_STORE_PARENT_NAME,
+                FlyerTable.COLUMN_FLYER_ID,
+                CartTable.COLUMN_CART_FLAG_SHOPLIST,
+                CartTable.COLUMN_CART_FLAG_WATCHLIST,
+                CartTable.COLUMN_CART_FLAG_SHOPLIST,
+                CartTable.COLUMN_CART_FLAG_WATCHLIST};
+        int[] to = new int[]{R.id.grocery_row_id,
+                R.id.grocery_row_label,
+                R.id.grocery_row_details,
+                R.id.grocery_row_price,
+                R.id.grocery_row_store,
+                R.id.grocery_row_store_id,
+                R.id.grocery_row_inshopcart,
+                R.id.grocery_row_inwatchlist,
+                R.id.grocery_row_inshopcart_flag,
+                R.id.grocery_row_inwatchlist_flag};
+
+        adapter = new GroceryListCursorAdapter(getActivity(), R.layout.grocery_fragment_row, null, from, to);
+        adapter.setViewBinder(new GroceryViewBinder());
+
+        setListAdapter(adapter);
     }
 
     @Override
@@ -241,9 +267,8 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        String emptyString = bundle.getBoolean("reload") ? buildNoSearchResultString() : buildNoNewContentString();
+        isSearch = bundle.getBoolean("reload");
         String query = bundle.getString("query");
-        displayEmptyListMessage(emptyString);
 
         List<String> selectionArgs = new ArrayList<String>();
 
@@ -301,6 +326,14 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
         adapter.swapCursor(cursor);
+        if (progressView != null)
+            progressView.setVisibility(View.GONE);
+
+        if (cursor.getCount() == 0)
+            if (isSearch)
+                displayEmptyListMessage(buildNoSearchResultString());
+            else
+                displayEmptyListMessage(buildNoNewContentString());
     }
 
     @Override
@@ -330,8 +363,8 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
                 SparseBooleanArray selectedItems = ((AlertDialog) dialog).getListView().getCheckedItemPositions();
                 SparseBooleanArray selectedStores = new SparseBooleanArray();
                 for (int i = 0; i < selectedItems.size(); i++) {
-                	int key_index = selectedItems.keyAt(i);
-                	selectedStores.append(mapIndexToId.get(key_index), selectedItems.valueAt(i));
+                    int key_index = selectedItems.keyAt(i);
+                    selectedStores.append(mapIndexToId.get(key_index), selectedItems.valueAt(i));
                 }
                 SettingsManager.setStoreFilter(activity, selectedStores);
                 loadDataWithQuery(true, GroceryFragmentActivity.myQuery);
@@ -359,33 +392,7 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
         }
     }
 
-    private void fillData() {
-        String[] from = new String[]{GroceryTable.COLUMN_GROCERY_ID,
-                GroceryTable.COLUMN_GROCERY_NAME,
-                GroceryTable.COLUMN_GROCERY_NAME,
-                GroceryTable.COLUMN_GROCERY_PRICE,
-                StoreParentTable.COLUMN_STORE_PARENT_NAME,
-                FlyerTable.COLUMN_FLYER_ID,
-                CartTable.COLUMN_CART_FLAG_SHOPLIST,
-                CartTable.COLUMN_CART_FLAG_WATCHLIST,
-                CartTable.COLUMN_CART_FLAG_SHOPLIST,
-                CartTable.COLUMN_CART_FLAG_WATCHLIST};
-        int[] to = new int[]{R.id.grocery_row_id,
-                R.id.grocery_row_label,
-                R.id.grocery_row_details,
-                R.id.grocery_row_price,
-                R.id.grocery_row_store,
-                R.id.grocery_row_store_id,
-                R.id.grocery_row_inshopcart,
-                R.id.grocery_row_inwatchlist,
-                R.id.grocery_row_inshopcart_flag,
-                R.id.grocery_row_inwatchlist_flag};
-
-        adapter = new GroceryListCursorAdapter(getActivity(), R.layout.grocery_fragment_row, null, from, to);
-        adapter.setViewBinder(new GroceryViewBinder());
-
-        setListAdapter(adapter);
-
+    public void fillData() {
         // Prepare the asynchronous loader.
         Bundle b = new Bundle();
         b.putString("query", "");
@@ -396,6 +403,7 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
     public void displayEmptyListMessage(String emptyStringMsg) {
         ListView myListView = this.getListView();
         emptyTextView.setText(emptyStringMsg);
+        emptyTextView.setVisibility(View.VISIBLE);
         myListView.setEmptyView(emptyTextView);
     }
 
@@ -407,11 +415,11 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
     public String buildNoSearchResultString() {
         return getResources().getString(R.string.no_search_results);
     }
-    
+
     private void initFilter() {
         this.items = new CharSequence[GroceryFragmentActivity.storeNames.keySet().size()];
         this.states = new boolean[GroceryFragmentActivity.storeNames.keySet().size()];
-    	this.mapIndexToId = new SparseIntArray(); // maps index in the dialog to store_id
+        this.mapIndexToId = new SparseIntArray(); // maps index in the dialog to store_id
 
         Iterator<Map.Entry<Integer, String>> it = GroceryFragmentActivity.storeNames.entrySet().iterator();
         Integer indexer = 0;
@@ -424,19 +432,19 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
             indexer++;
         }
     }
-    
+
     private void watchSettings() {
-		mSettingsListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
-			public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-				loadDataWithQuery(true, GroceryFragmentActivity.myQuery);
-			}
-		};
-		SettingsManager.getPrefs(activity).registerOnSharedPreferenceChangeListener(mSettingsListener);
+        mSettingsListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+            public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+                loadDataWithQuery(true, GroceryFragmentActivity.myQuery);
+            }
+        };
+        SettingsManager.getPrefs(activity).registerOnSharedPreferenceChangeListener(mSettingsListener);
     }
-    
+
     @Override
     public void onDestroy() {
-    	super.onDestroy();
-    	SettingsManager.getPrefs(activity).unregisterOnSharedPreferenceChangeListener(mSettingsListener);
+        super.onDestroy();
+        SettingsManager.getPrefs(activity).unregisterOnSharedPreferenceChangeListener(mSettingsListener);
     }
 }

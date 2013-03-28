@@ -1,8 +1,5 @@
 package com.groceryotg.android;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -12,17 +9,21 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.View;
-import android.widget.*;
+import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
 import com.actionbarsherlock.app.SherlockListActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.groceryotg.android.database.CartTable;
-import com.groceryotg.android.database.GroceryTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
-import com.groceryotg.android.fragment.GroceryViewBinder;
 import com.slidingmenu.lib.SlidingMenu;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * User: robert
@@ -206,7 +207,7 @@ public class ShopCartOverView extends SherlockListActivity implements LoaderMana
         slidingMenu = new SlidingMenu(this);
         slidingMenu.setMode(SlidingMenu.LEFT);
         slidingMenu.setShadowWidthRes(R.dimen.shadow_width);
-        slidingMenu.setShadowDrawable(R.drawable.shadow);
+        slidingMenu.setShadowDrawable(R.xml.shadow);
         slidingMenu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
         slidingMenu.setFadeDegree(0.35f);
         slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);

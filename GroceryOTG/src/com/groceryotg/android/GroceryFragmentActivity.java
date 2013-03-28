@@ -51,10 +51,12 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
 
     public static String myQuery;
 
-    public static Map<Integer, String> storeNames;
+    private final int OFFPAGE_LIMIT = 0;
 
+    public static Map<Integer, String> storeNames;
     public static Double mPriceRangeMin;
     public static Double mPriceRangeMax;
+    private int currentPage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -189,33 +191,18 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
     }
 
     private void configViewPager() {
-        mAdapter = new GroceryAdapter(getSupportFragmentManager());
-
         mPager = (ViewPager) findViewById(R.id.pager);
+
+        mAdapter = new GroceryAdapter(getSupportFragmentManager());
         mPager.setAdapter(mAdapter);
-        mPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int i, float v, int i2) {
-            }
-
-            @Override
-            public void onPageSelected(int i) {
-                GroceryAdapter mAdapter = (GroceryAdapter) mPager.getAdapter();
-                if (mAdapter.getFragment(i) != null)
-                    mAdapter.getFragment(i).loadDataWithQuery(false, "");
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int i) {
-            }
-        });
+        mPager.setOffscreenPageLimit(OFFPAGE_LIMIT);
     }
 
     private void configSlidingMenu() {
         mSlidingMenu = new SlidingMenu(this);
         mSlidingMenu.setMode(SlidingMenu.LEFT);
         mSlidingMenu.setShadowWidthRes(R.dimen.shadow_width);
-        mSlidingMenu.setShadowDrawable(R.drawable.shadow);
+        mSlidingMenu.setShadowDrawable(R.xml.shadow);
         mSlidingMenu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
         mSlidingMenu.setFadeDegree(0.35f);
         mSlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
@@ -330,7 +317,11 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
         }
     }
 
-    public static class GroceryAdapter extends FragmentStatePagerAdapter {
+    public static class GroceryAdapter extends FragmentStatePagerAdapter implements ViewPager.OnPageChangeListener {
+
+        private static int currentPage;
+
+        private static final int PAGE_SELECTED = 0;
 
         private static final int POSITION_CATEGORY = 0;
         private static final int POSITION_MYFLYER_PAGER = 1;
@@ -342,6 +333,7 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
         public GroceryAdapter(FragmentManager fm) {
             super(fm);
             mPageReferenceMap = new HashMap<Integer, GroceryListFragment>();
+            mPager.setOnPageChangeListener(this);
         }
 
         @Override
@@ -391,6 +383,26 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
 
         public GroceryListFragment getFragment(int key) {
             return mPageReferenceMap.get(key);
+        }
+
+        @Override
+        public void onPageScrolled(int i, float v, int i2) {
+        }
+
+        //TODO: refactor hack to improve scroll perf
+        @Override
+        public void onPageSelected(int i) {
+            currentPage = i;
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int i) {
+            // if Page Scroll state is *SELECTED*, we can start loading
+            if (i == PAGE_SELECTED) {
+                if (currentPage == GroceryAdapter.POSITION_CATEGORY) {
+                } else
+                    getFragment(currentPage).loadDataWithQuery(false, "");
+            }
         }
     }
 }

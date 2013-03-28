@@ -8,21 +8,40 @@
     <ListView
         android:id="@android:id/list"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content">
     </ListView>
 
-    <TextView
-        android:id="@+id/empty_grocery_list"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:textSize="18sp"
-        android:fontFamily="sans-serif-light"
-        android:gravity="center_vertical|left"
-        android:text="@string/no_new_content"
-        android:drawableLeft="@drawable/warning"
-        android:drawablePadding="2dip"
-        android:paddingLeft="10dip"
-        android:paddingRight="10dip"
-        android:paddingTop="10dip"
-        android:singleLine="false"/>
+    <LinearLayout
+        android:id="@+id/empty_list_layout"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical">
+
+        <ProgressBar
+            android:id="@+id/refresh_progress"
+            style="@android:style/Widget.Holo.Light.ProgressBar.Large"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:progressDrawable="@xml/progress_bar_circular"
+            android:layout_gravity="center_horizontal"
+            />
+
+        <TextView
+            android:id="@+id/empty_grocery_list"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:fontFamily="sans-serif-light"
+            android:gravity="center_vertical|left"
+            android:text="@string/no_new_content"
+            android:drawableLeft="@drawable/warning"
+            android:drawablePadding="2dip"
+            android:paddingLeft="10dip"
+            android:paddingRight="10dip"
+            android:paddingTop="10dip"
+            android:singleLine="false"
+            android:visibility="invisible"
+            />
+    </LinearLayout>
 </LinearLayout>

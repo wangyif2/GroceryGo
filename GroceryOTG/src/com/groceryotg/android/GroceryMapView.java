@@ -8,9 +8,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.View;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -23,8 +21,6 @@ import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
 import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.*;
-import com.groceryotg.android.database.CartTable;
-import com.groceryotg.android.database.GroceryTable;
 import com.groceryotg.android.database.StoreParentTable;
 import com.groceryotg.android.database.StoreTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
@@ -33,10 +29,8 @@ import com.groceryotg.android.utils.GroceryOTGUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class GroceryMapView extends SherlockFragmentActivity {
     public static final int CAM_ZOOM = 13;

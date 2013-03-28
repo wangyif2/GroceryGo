@@ -51,6 +51,8 @@ public class NetworkHandler extends IntentService {
         Integer requestType = null;
         int connectionState = NO_CONNECTION;
 
+        Bundle bundle = new Bundle();
+
         if (ServerURL.checkNetworkStatus(this.getBaseContext()) && extras != null) {
             requestType = (Integer) extras.get(REFRESH_CONTENT);
             switch (requestType) {
@@ -74,13 +76,13 @@ public class NetworkHandler extends IntentService {
                     break;
             }
             connectionState = CONNECTION;
+            bundle.putInt(REQUEST_TYPE, requestType);
         } else if (!ServerURL.checkNetworkStatus(this.getBaseContext())) {
             connectionState = NO_CONNECTION;
+            bundle.putInt(REQUEST_TYPE, 0);
         }
 
-        Bundle bundle = new Bundle();
         bundle.putInt(CONNECTION_STATE, connectionState);
-        bundle.putInt(REQUEST_TYPE, requestType);
         Intent localIntent = new Intent(REFRESH_COMPLETED_ACTION).putExtra("bundle", bundle);
         LocalBroadcastManager.getInstance(this).sendBroadcast(localIntent);
     }

@@ -318,6 +318,7 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
             if (resultCode == NetworkHandler.CONNECTION) {
                 toast = Toast.makeText(mContext, "Groceries Updated", Toast.LENGTH_LONG);
             } else if (resultCode == NetworkHandler.NO_CONNECTION) {
+                RefreshAnimation.refreshIcon(context, false, refreshItem);
                 toast = Toast.makeText(mContext, "No Internet Connection", Toast.LENGTH_LONG);
             }
             assert toast != null;

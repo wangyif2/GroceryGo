@@ -160,6 +160,7 @@ public class GroceryMapView extends SherlockFragmentActivity {
             	int storeID = storeLocations.getInt(storeLocations.getColumnIndex(StoreTable.COLUMN_STORE_ID));
             	int storeParentID = storeLocations.getInt(storeLocations.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_ID));
                 String storeName = storeLocations.getString(storeLocations.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_NAME));
+                String storeAdr = storeLocations.getString(storeLocations.getColumnIndex(StoreTable.COLUMN_STORE_ADDR));
                 double storeLat = storeLocations.getDouble(storeLocations.getColumnIndex(StoreTable.COLUMN_STORE_LATITUDE));
                 double storeLng = storeLocations.getDouble(storeLocations.getColumnIndex(StoreTable.COLUMN_STORE_LONGITUDE));
                 
@@ -179,17 +180,18 @@ public class GroceryMapView extends SherlockFragmentActivity {
                 }
                 
                 if (isIncluded) {
-                	buildStoreMarker(context, map, storeName, storeLatLng);
+                	buildStoreMarker(context, map, storeName, storeAdr, storeLatLng);
                 }
             }
             storeLocations.moveToNext();
         }
     }
 
-    private void buildStoreMarker(Context context, GoogleMap map, String storeName, LatLng storeLatLng) {
+    private void buildStoreMarker(Context context, GoogleMap map, String storeName, String storeAdr, LatLng storeLatLng) {
     	MarkerOptions markerOptions = new MarkerOptions()
         	.position(storeLatLng)
         	.title(storeName)
+        	.snippet(storeAdr)
         	.draggable(false)
         	.visible(false);
         
@@ -257,6 +259,7 @@ public class GroceryMapView extends SherlockFragmentActivity {
         String[] projection = {StoreTable.TABLE_STORE+"."+StoreTable.COLUMN_STORE_ID,
         		StoreParentTable.TABLE_STORE_PARENT+"."+StoreParentTable.COLUMN_STORE_PARENT_ID,
         		StoreParentTable.TABLE_STORE_PARENT+"."+StoreParentTable.COLUMN_STORE_PARENT_NAME,
+        		StoreTable.TABLE_STORE+"."+StoreTable.COLUMN_STORE_ADDR,
         		StoreTable.TABLE_STORE+"."+StoreTable.COLUMN_STORE_LATITUDE,
         		StoreTable.TABLE_STORE+"."+StoreTable.COLUMN_STORE_LONGITUDE};
         String selection = "";

@@ -1016,7 +1016,7 @@ def stripAllTags(html):
     if html is None:
         return None
     html = html.replace('<br />', '. ')
-    return ''.join(BeautifulSoup(html).findAll(text=True)) 
+    return (''.join(BeautifulSoup(html).findAll(text=True))).title()
 
 
 #******************************************************************************

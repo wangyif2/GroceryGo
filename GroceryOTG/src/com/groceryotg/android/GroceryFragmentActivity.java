@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
@@ -284,7 +285,9 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
     private static void clearSearch() {
     	// Clear any open searches
     	MenuItem searchItem = menu.findItem(R.id.search);
-    	searchItem.collapseActionView();
+    	if (searchItem != null) {
+    		searchItem.collapseActionView();
+    	}
     }
 
     private void refreshCurrentPager() {

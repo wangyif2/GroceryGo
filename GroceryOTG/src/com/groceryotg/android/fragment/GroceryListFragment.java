@@ -269,7 +269,7 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         isSearch = bundle.getBoolean("reload");
-        String query = bundle.getString("query");
+        String query = bundle.getString("query").trim();
 
         List<String> selectionArgs = new ArrayList<String>();
 

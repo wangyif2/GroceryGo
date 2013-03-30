@@ -9,6 +9,7 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.SparseBooleanArray;
 import android.view.View;
 import android.widget.*;
 import com.actionbarsherlock.app.SherlockListActivity;
@@ -21,6 +22,7 @@ import com.groceryotg.android.database.StoreParentTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 import com.groceryotg.android.fragment.GroceryListCursorAdapter;
 import com.groceryotg.android.fragment.GroceryViewBinder;
+import com.groceryotg.android.settings.SettingsManager;
 import com.slidingmenu.lib.SlidingMenu;
 
 import java.util.ArrayList;
@@ -66,7 +68,7 @@ public class GlobalSearchActivity extends SherlockListActivity implements Loader
 		if (intent.getExtras().containsKey(GLOBAL_SEARCH) || Intent.ACTION_SEARCH.equals(intent.getAction())) {
 			
 			// Update the query - this is used by the loader when fetching results from database
-			mQuery = intent.getStringExtra(SearchManager.QUERY);
+			mQuery = intent.getStringExtra(SearchManager.QUERY).trim();
 			
 			// When we receive an intent from within this activity (i.e. after it
 			// has been created), the searchView already exists. In this case,
@@ -221,6 +223,29 @@ public class GlobalSearchActivity extends SherlockListActivity implements Loader
         if (!mQuery.isEmpty()) {
             selection += GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_GROCERY_NAME + " LIKE ?";
             selectionArgs.add("%" + mQuery + "%");
+        }
+        
+        // Filter by store based on shared preferences
+        SparseBooleanArray selectedStores = SettingsManager.getStoreFilter(this);
+        if (selectedStores != null && selectedStores.size() > 0) {
+            // Go through selected stores and add them to query
+            String storeSelection = "";
+            for (int storeNum = 0; storeNum < selectedStores.size(); storeNum++) {
+                if (selectedStores.valueAt(storeNum) == true) {
+                    if (storeSelection.isEmpty()) {
+                        storeSelection = "(";
+                        storeSelection += StoreParentTable.TABLE_STORE_PARENT + "." + StoreParentTable.COLUMN_STORE_PARENT_ID + " = ?";
+                    } else {
+                        storeSelection += " OR " + StoreParentTable.TABLE_STORE_PARENT + "." + StoreParentTable.COLUMN_STORE_PARENT_ID + " = ?";
+                    }
+                    selectionArgs.add(((Integer) selectedStores.keyAt(storeNum)).toString());
+                }
+            }
+            if (!storeSelection.isEmpty()) {
+                storeSelection += ")";
+                selection += (selection.isEmpty() ? "" : " AND ");
+                selection += storeSelection;
+            }
         }
         
         // Order by most relevant item first

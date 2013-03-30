@@ -26,7 +26,7 @@ import com.slidingmenu.lib.SlidingMenu;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GlobalSearchActivity extends SherlockListActivity implements SearchView.OnQueryTextListener, LoaderManager.LoaderCallbacks<Cursor> {
+public class GlobalSearchActivity extends SherlockListActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 	
 	public static final String GLOBAL_SEARCH = "global_search";
 	
@@ -64,18 +64,25 @@ public class GlobalSearchActivity extends SherlockListActivity implements Search
 	
 	private void handleIntent(Intent intent) {
 		if (intent.getExtras().containsKey(GLOBAL_SEARCH) || Intent.ACTION_SEARCH.equals(intent.getAction())) {
+			
+			// Update the query - this is used by the loader when fetching results from database
 			mQuery = intent.getStringExtra(SearchManager.QUERY);
+			
+			// When we receive an intent from within this activity (i.e. after it
+			// has been created), the searchView already exists. In this case,
+			// update the searchView text to display the new query, and clear focus
+			// in order to collapse the keyboard.
+			if (mSearchView != null) {
+				mSearchView.setQuery(mQuery, false);
+				mSearchView.clearFocus();
+			}
         }
 	}
 	
+	/*
 	@Override
     public boolean onQueryTextSubmit(String query) {
-        String newQuery = !TextUtils.isEmpty(query) ? query : null;
-
-        // Don't do anything if the query hasn't changed
-        if (newQuery == null && mQuery == null || newQuery != null && mQuery.equals(newQuery))
-            return true;
-        
+		mQuery = query;
         refreshQuery();
         return true;
     }
@@ -83,8 +90,10 @@ public class GlobalSearchActivity extends SherlockListActivity implements Search
 	@Override
 	public boolean onQueryTextChange(String newText) {
 		// TODO Auto-generated method stub
+		
 		return false;
 	}
+	*/
 	
 	private void refreshQuery() {
         Bundle b = new Bundle();
@@ -120,13 +129,48 @@ public class GlobalSearchActivity extends SherlockListActivity implements Search
 	public boolean onCreateOptionsMenu(Menu menu) {
 	    // Inflate the options menu from XML
 	    MenuInflater inflater = getSupportMenuInflater();
-	    inflater.inflate(R.menu.grocery_pager_menu, menu);
+	    inflater.inflate(R.menu.search_menu, menu);
 	    
 	    // Get the SearchView and set the searchable configuration
 	    SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
 	    mSearchView = (SearchView) menu.findItem(R.id.search).getActionView();
 	    mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 	    mSearchView.setIconifiedByDefault(true);
+	    //mSearchView.setOnQueryTextListener(this);
+	    
+	    // Add callbacks to the menu item that contains the SearchView in order to capture
+        // the event of pressing the 'back' button
+        MenuItem searchItem = menu.findItem(R.id.search);
+        searchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                // This is called when the user clicks on the magnifying glass icon to
+                // expand the search view widget.
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                // This is called the user presses the 'back' button to exit the collapsed
+                // search widget view (i.e., to close the search). Here, refresh the query
+                // to display the whole list of items:
+                mQuery = "";
+                refreshQuery();
+                return true;
+            }
+        });
+	    
+	    // When we have received a search intent from another activity (i.e. not by 
+        // capturing user input in this activity), we need to programmatically expand 
+        // the search menu item as if the user clicked the magnifying glass, set
+        // the searchView text to the received query, and call clearFocus to collapse
+        // the keyboard.
+	    if (!mQuery.isEmpty()) {
+	    	menu.findItem(R.id.search).expandActionView();
+	    	mSearchView.setQuery(mQuery, false);
+	    	mSearchView.clearFocus();
+	    }
 	    
 	    return true;
 	}
@@ -179,14 +223,22 @@ public class GlobalSearchActivity extends SherlockListActivity implements Search
             selectionArgs.add("%" + mQuery + "%");
         }
         
+        // Order by most relevant item first
+        String sortOrder = GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_GROCERY_SCORE;
+        
         final String[] selectionArgsArr = new String[selectionArgs.size()];
         selectionArgs.toArray(selectionArgsArr);
-        return new CursorLoader(this, GroceryotgProvider.CONTENT_URI_GRO_JOINSTORE, projection, selection, selectionArgsArr, null);
+        return new CursorLoader(this, GroceryotgProvider.CONTENT_URI_GRO_JOINSTORE, projection, selection, selectionArgsArr, sortOrder);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         adapter.swapCursor(data);
+        
+        // Fill in the number of results in the top bar
+        int numResults = adapter.getCount();
+        TextView tv_numResults = (TextView) findViewById(R.id.search_num_results);
+        tv_numResults.setText(((Integer)numResults).toString());
     }
 
     @Override

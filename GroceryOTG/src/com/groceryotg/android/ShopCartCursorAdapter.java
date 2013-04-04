@@ -10,12 +10,8 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.groceryotg.android.R;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 
@@ -157,7 +153,7 @@ public class ShopCartCursorAdapter extends SimpleCursorAdapter {
                 	activity.getContentResolver().update(GroceryotgProvider.CONTENT_URI_CART_ITEM, values, whereClause, selectionArgs);
                 }
                 
-                Toast t = Toast.makeText(activity, displayMessage, Toast.LENGTH_SHORT);
+                Toast t = Toast.makeText(activity, displayMessage, Toast.LENGTH_LONG);
                 t.show();
             }
         });

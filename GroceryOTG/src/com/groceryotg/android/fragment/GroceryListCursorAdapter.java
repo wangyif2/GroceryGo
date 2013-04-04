@@ -1,7 +1,5 @@
 package com.groceryotg.android.fragment;
 
-import java.util.ArrayList;
-
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
@@ -9,21 +7,16 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.widget.SimpleCursorAdapter;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
-import android.widget.Toast;
-
+import android.widget.*;
 import com.groceryotg.android.GroceryMapView;
 import com.groceryotg.android.R;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
+
+import java.util.ArrayList;
 
 
 public class GroceryListCursorAdapter extends SimpleCursorAdapter {
@@ -175,7 +168,7 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
                 	activity.getContentResolver().delete(GroceryotgProvider.CONTENT_URI_CART_ITEM, whereClause, selectionArgs);
                 }
                 	
-                Toast t = Toast.makeText(activity, displayMessage, Toast.LENGTH_SHORT);
+                Toast t = Toast.makeText(activity, displayMessage, Toast.LENGTH_LONG);
                 t.show();
             }
         });

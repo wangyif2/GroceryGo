@@ -78,6 +78,10 @@ def classify(noun_list, subcategory):
             word = str(word.lower())
             definition = definition.lower()
             
+            #lematize
+            hypernyms = [lemmatizer.lemmatize(x) for x in hypernyms]
+            synonyms = [lemmatizer.lemmatize(x) for x in synonyms]
+
             for record in subcategory:
                 # Once the subcategory_tags are implemented, uncomment the below:
                 #subcategory_id, subcategory_name = record[0], re.split(r"[,]", record[1])
@@ -85,25 +89,40 @@ def classify(noun_list, subcategory):
                 subcategory_words = map(lambda x: x.lower(), subcategory_name)
                 for cat in subcategory_words:
                     cat = lemmatizer.lemmatize(cat)
+                    word = lemmatizer.lemmatize(word)
                     if cat == word:
                         logging.debug("Found subcategory word '%s' directly in word '%s'" % (cat, word))
                         logging.debug("Classify word '%s' as subcategory '%s' with score %.2f" % (word, record[1], w_word))
                         subcategory_score[subcategory_id] += w_word
-                    
-                    if cat in definition.split(' '):
-                        logging.debug("Found subcategory word '%s' in the definition of word '%s' (%s)" % (cat, word, definition))
+                        
+                    if cat is definition.split(' '):
+                        logging.debug("Found subcategory word '%s' IS the definition of word '%s' (%s)" % (cat, word, definition))
                         logging.debug("Classify word '%s' as subcategory '%s' with score %.2f" % (word, record[1], w_def))
                         subcategory_score[subcategory_id] += w_def
-                    
-                    if any(cat in s for s in synonyms):
-                        logging.debug("Found subcategory word '%s' in the synonyms of word '%s' (%s)" % (cat, word, synonyms))
+                    elif cat in definition.split(' '):
+                        logging.debug("Found subcategory word '%s' in the definition of word '%s' (%s)" % (cat, word, definition))
+                        logging.debug("Classify word '%s' as subcategory '%s' with score %.2f" % (word, record[1], 0.7*w_def))
+                        subcategory_score[subcategory_id] += 0.7*w_def
+                        
+                    if any(cat is s for s in synonyms):
+                        logging.debug("Found subcategory word '%s' IS the synonyms of word '%s' (%s)" % (cat, word, synonyms))
                         logging.debug("Classify word '%s' as subcategory '%s' with score %.2f" % (word, record[1], w_syn))
                         subcategory_score[subcategory_id] += w_syn
+                    elif any(cat in s for s in synonyms):
+                        logging.debug("Found subcategory word '%s' in the synonyms of word '%s' (%s)" % (cat, word, synonyms))
+                        logging.debug("Classify word '%s' as subcategory '%s' with score %.2f" % (word, record[1], 0.7*w_syn))
+                        subcategory_score[subcategory_id] += 0.7*w_syn
                     
-                    if any(cat in h for h in hypernyms):
-                        logging.debug("Found subcategory word '%s' in the hypernyms of word '%s' (%s)" % (cat, word, hypernyms))
+                    if any(cat is h for h in hypernyms):
+                        logging.debug("Found subcategory word '%s' IS the hypernyms of word '%s' (%s)" % (cat, word, hypernyms))
                         logging.debug("Classify word '%s' as subcategory '%s' with score %.2f" % (word, record[1], w_hyp))
                         subcategory_score[subcategory_id] += w_hyp
+                    elif any(cat in h for h in hypernyms):
+                        logging.debug("Found subcategory word '%s' in the hypernyms of word '%s' (%s)" % (cat, word, hypernyms))
+                        logging.debug("Classify word '%s' as subcategory '%s' with score %.2f" % (word, record[1], 0.7*w_hyp))
+                        subcategory_score[subcategory_id] += 0.7*w_hyp
+                    
+
 
     logging.debug(subcategory_score)
                         

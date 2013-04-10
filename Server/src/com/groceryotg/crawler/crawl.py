@@ -1010,6 +1010,8 @@ def evaluateAccuracy(store_id, labels,  category_map, item_list = None, noun_lis
         if category_map[targets[i]] == category_map[labels[i]]:
             correctly_classified_category += 1
     
+    logging.debug("TOTAL Correctly items: %d" %correctly_classified_category)
+
     return [float(correctly_classified) / float(len(targets)), float(correctly_classified_category) / float(len(targets))]            
 
 def stripAllTags(html):

@@ -101,13 +101,14 @@ public class GroceryMapView extends SherlockFragmentActivity {
         if (fragment != null) {
             mMap = fragment.getMap();
             if (mMap != null) {
-                // move the camera to the current location
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()), CAM_ZOOM));
-                
                 mMap.setOnCameraChangeListener(getCameraChangeListener());
 
-                // add a marker at the current location
-                buildUserMarker(context, mMap, getString(R.string.map_usermarker), lastKnownLocation);
+                if (lastKnownLocation != null) {
+	                // add a marker at the current location
+	                buildUserMarker(context, mMap, getString(R.string.map_usermarker), lastKnownLocation);
+	                // move the camera to the current location
+	                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()), CAM_ZOOM));
+                }
 
                 buildStoreMarkers(context, storeLocations, mMap);
             }
@@ -198,7 +199,10 @@ public class GroceryMapView extends SherlockFragmentActivity {
 
     private Location getLastKnownLocation() {
         LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        Location loc = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        Location loc = null;
+        if (locationManager != null) {
+        	loc = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        }
         return loc;
     }
 

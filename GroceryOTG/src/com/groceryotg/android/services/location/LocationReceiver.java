@@ -12,25 +12,19 @@ import android.database.Cursor;
 import android.location.Location;
 import android.media.AudioManager;
 import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
-import android.util.Log;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.groceryotg.android.GroceryMapView;
 import com.groceryotg.android.R;
 import com.groceryotg.android.database.CartTable;
-import com.groceryotg.android.database.StoreParentTable;
 import com.groceryotg.android.database.StoreTable;
 import com.groceryotg.android.settings.SettingsManager;
 import com.groceryotg.android.utils.GroceryOTGUtils;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 /**

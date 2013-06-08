@@ -12,10 +12,6 @@ import com.groceryotg.android.utils.GroceryOTGUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * User: robert
- * Date: 22/03/13
- */
 public class SettingsFragment extends PreferenceFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {

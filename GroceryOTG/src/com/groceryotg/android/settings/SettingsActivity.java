@@ -3,10 +3,6 @@ package com.groceryotg.android.settings;
 import android.app.Activity;
 import android.os.Bundle;
 
-/**
- * User: robert
- * Date: 22/03/13
- */
 public class SettingsActivity extends Activity {
 
     @Override

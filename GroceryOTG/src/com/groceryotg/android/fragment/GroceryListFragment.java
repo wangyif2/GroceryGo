@@ -36,11 +36,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-
-/**
- * User: robert
- * Date: 16/03/13
- */
 public class GroceryListFragment extends SherlockListFragment implements SearchView.OnQueryTextListener, SearchView.OnCloseListener, LoaderManager.LoaderCallbacks<Cursor> {
     private static final String CATEGORY_POSITION = "position";
     Activity activity;
@@ -367,7 +362,7 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
                     int key_index = selectedItems.keyAt(i);
                     selectedStores.append(mapIndexToId.get(key_index), selectedItems.valueAt(i));
                 }
-                SettingsManager.setStoreFilter(activity, selectedStores);
+                //SettingsManager.setStoreFilter(activity, selectedStores);
                 loadDataWithQuery(true, GroceryFragmentActivity.myQuery);
                 Toast.makeText(getActivity(), getResources().getString(R.string.groceryoverview_filter_updated), Toast.LENGTH_LONG).show();
             }

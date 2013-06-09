@@ -20,7 +20,7 @@
 
         <ProgressBar
             android:id="@+id/refresh_progress"
-            style="@android:style/Widget.Holo.Light.ProgressBar.Large"
+            style="@android:style/Widget.ProgressBar.Large"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:progressDrawable="@xml/progress_bar_circular"

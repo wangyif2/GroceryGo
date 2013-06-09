@@ -15,11 +15,17 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.widget.SearchView;
 import com.groceryotg.android.database.CategoryTable;
 import com.groceryotg.android.database.StoreParentTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
@@ -35,10 +41,6 @@ import com.slidingmenu.lib.SlidingMenu;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * User: robert
- * Date: 16/03/13
- */
 public class GroceryFragmentActivity extends SherlockFragmentActivity {
     static HashMap<Integer, String> categories;
 
@@ -272,7 +274,7 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
     }
 
     private void launchShopCartActivity() {
-        Intent intent = new Intent(this, ShopCartOverView.class);
+        Intent intent = new Intent(this, ShopCartOverviewFragmentActivity.class);
         startActivity(intent);
     }
 

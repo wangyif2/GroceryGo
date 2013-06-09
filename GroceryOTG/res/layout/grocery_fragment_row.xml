@@ -64,6 +64,7 @@
         	</TextView>  
         </LinearLayout>
         
+        <!-- android:textColor="@android:color/holo_red_dark" -->
         <TextView
 	        android:id="@+id/grocery_row_price"
 	        android:layout_column="1"
@@ -72,7 +73,7 @@
 	        android:layout_weight="0.25"
 	        android:layout_marginTop="6dp"
 	        android:text="@+id/grocery_row_price_text"
-	        android:textColor="@android:color/holo_red_dark"
+	        android:textColor="#01060017"
 	        android:textSize="18sp"
 	        android:fontFamily="sans-serif"
 	        android:singleLine="true"

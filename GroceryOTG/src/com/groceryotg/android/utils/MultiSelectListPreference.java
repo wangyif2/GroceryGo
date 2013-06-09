@@ -28,6 +28,7 @@ import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.content.res.TypedArray;
 import android.preference.ListPreference;
 import android.util.AttributeSet;
+import android.util.Log;
 
 // android:defaultValue="entryValue1|entryValue2"
 public class MultiSelectListPreference extends ListPreference {
@@ -84,14 +85,34 @@ public class MultiSelectListPreference extends ListPreference {
 	
 	@Override
 	public void setEntryValues(CharSequence[] entryValues) {
-		super.setEntries(entryValues);
+		super.setEntryValues(entryValues);
 		updateCheckedEntryIndexes();
-		
-		for(CharSequence c : entryValues) {
-			this.setValue(c.toString());
+	}
+	
+	@Override
+	protected void onSetInitialValue(boolean restorePersistedValue, Object defaultValue) {
+		if (restorePersistedValue) {
+			String s = getPersistedString("");
+			if (s == "") {
+				s = toPersistedPreferenceValue(getEntryValues());
+			}
+			setValue(s);
+			
+		} else {
+			setValue((String) defaultValue);
 		}
 	}
-
+	
+	@Override
+	protected Object onGetDefaultValue(TypedArray a, int index) {
+		return a.getString(index);
+	}
+	
+	@Override
+	public void setDefaultValue(Object defaultValue) {
+		// Never used???
+		setValue((String) defaultValue);
+	}
 
 	@Override
 	public void setValue(String value) {

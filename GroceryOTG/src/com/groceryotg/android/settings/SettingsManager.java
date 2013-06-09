@@ -1,13 +1,9 @@
 package com.groceryotg.android.settings;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import com.groceryotg.android.utils.MultiSelectListPreference;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 import android.util.SparseBooleanArray;
 
@@ -31,8 +27,9 @@ public class SettingsManager {
 		String[] strs = MultiSelectListPreference.fromPersistedPreferenceValue(strRaw);
 		SparseBooleanArray a = new SparseBooleanArray();
 		
-		if (strRaw == "")
+		if (strRaw == "") {
 			return a;
+		}
 		
 		for (String s : strs) {
 			a.append(Integer.valueOf(s), true);

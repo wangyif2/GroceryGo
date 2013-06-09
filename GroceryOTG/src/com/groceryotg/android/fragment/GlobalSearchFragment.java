@@ -58,6 +58,7 @@ public class GlobalSearchFragment extends SherlockListFragment implements Loader
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		this.mActivity = activity;
+		this.setHasOptionsMenu(true);
 	}
     
 	@Override

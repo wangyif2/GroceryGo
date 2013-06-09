@@ -27,10 +27,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * User: John
- * Date: 2013-02-12
- */
 public class LocationReceiver extends BroadcastReceiver {
     //currently polling time is every 1 hour
     public static final int pollingPeriod = 60*60*1000;
@@ -86,14 +82,15 @@ public class LocationReceiver extends BroadcastReceiver {
     	if (!displayNotification)
     		return;
     	
-    	SharedPreferences prefs = SettingsManager.getPrefs(context);
+    	// TODO: Add a check for previously notified items
+    	/*SharedPreferences prefs = SettingsManager.getPrefs(context);
     	Set<String> oldEvents = prefs.getStringSet(SettingsManager.SETTINGS_PREVIOUS_NOTIFICATION, new HashSet<String>());
     	if (oldEvents.equals(newEvents))
     		return;
     	
     	Editor prefsEditor = prefs.edit();
     	prefsEditor.putStringSet(SettingsManager.SETTINGS_PREVIOUS_NOTIFICATION, newEvents);
-    	prefsEditor.commit();
+    	prefsEditor.commit();*/
     	
     	
     	extras.putIntegerArrayList(GroceryMapView.EXTRA_FILTER_STORE, storeIDs);

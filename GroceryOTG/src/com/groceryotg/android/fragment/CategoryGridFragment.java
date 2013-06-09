@@ -19,10 +19,6 @@ import com.groceryotg.android.R;
 import com.groceryotg.android.database.CategoryTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 
-/**
- * User: robert
- * Date: 16/03/13
- */
 public class CategoryGridFragment extends SherlockFragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private GridView gridview;
     private MergeAdapter adapter;
@@ -68,7 +64,7 @@ public class CategoryGridFragment extends SherlockFragment implements LoaderMana
         Object[] obj = {"0", "my flyer"};
         mc.addRow(obj);
         SimpleCursorAdapter sa1 = new MyFlyerGridCursorAdapter(getActivity(), R.layout.category_fragment_row, null, from, to);
-        sa1.swapCursor(mc);
+        sa1.changeCursor(mc);
         adapter.addAdapter(sa1);
 
         SimpleCursorAdapter sa = new CategoryGridCursorAdapter(getActivity(), R.layout.category_fragment_row, null, from, to);
@@ -88,12 +84,12 @@ public class CategoryGridFragment extends SherlockFragment implements LoaderMana
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
         SimpleCursorAdapter sa = (SimpleCursorAdapter) adapter.getPieces().get(1);
         if (sa != null)
-            sa.swapCursor(cursor);
+            sa.changeCursor(cursor);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
         SimpleCursorAdapter sa = (SimpleCursorAdapter) adapter.getAdapter(1);
-        sa.swapCursor(null);
+        sa.changeCursor(null);
     }
 }

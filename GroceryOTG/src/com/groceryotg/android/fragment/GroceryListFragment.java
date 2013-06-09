@@ -15,11 +15,16 @@ import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.actionbarsherlock.app.SherlockListFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.widget.SearchView;
 import com.groceryotg.android.*;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.FlyerTable;
@@ -251,7 +256,7 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
     }
 
     private void launchShopCartActivity() {
-        Intent intent = new Intent(getActivity(), ShopCartOverView.class);
+        Intent intent = new Intent(getActivity(), ShopCartOverviewFragmentActivity.class);
         startActivity(intent);
     }
 

@@ -1,21 +1,27 @@
 package com.groceryotg.android;
 
-import android.app.LoaderManager;
 import android.app.SearchManager;
 import android.content.Context;
-import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.text.TextUtils;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
+import android.support.v4.widget.CursorAdapter;
 import android.util.SparseBooleanArray;
 import android.view.View;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
+
 import com.actionbarsherlock.app.SherlockListActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.widget.SearchView;
+
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.GroceryTable;
 import com.groceryotg.android.database.StoreParentTable;
@@ -23,6 +29,7 @@ import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 import com.groceryotg.android.fragment.GroceryListCursorAdapter;
 import com.groceryotg.android.fragment.GroceryViewBinder;
 import com.groceryotg.android.settings.SettingsManager;
+
 import com.slidingmenu.lib.SlidingMenu;
 
 import java.util.ArrayList;
@@ -80,22 +87,6 @@ public class GlobalSearchActivity extends SherlockListActivity implements Loader
 			}
         }
 	}
-	
-	/*
-	@Override
-    public boolean onQueryTextSubmit(String query) {
-		mQuery = query;
-        refreshQuery();
-        return true;
-    }
-	
-	@Override
-	public boolean onQueryTextChange(String newText) {
-		// TODO Auto-generated method stub
-		
-		return false;
-	}
-	*/
 	
 	private void refreshQuery() {
         Bundle b = new Bundle();
@@ -342,7 +333,7 @@ public class GlobalSearchActivity extends SherlockListActivity implements Loader
     }
     
     private void launchShopCartActivity() {
-        Intent intent = new Intent(this, ShopCartOverView.class);
+        Intent intent = new Intent(this, ShopCartOverviewFragmentActivity.class);
         startActivity(intent);
     }
 }

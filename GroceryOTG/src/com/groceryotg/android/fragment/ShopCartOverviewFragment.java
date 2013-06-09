@@ -40,7 +40,7 @@ public class ShopCartOverviewFragment extends SherlockListFragment implements Lo
 
 	private static final int DELETE_ID = 1;
     private ShopCartCursorAdapter adapter;
-    private SlidingMenu slidingMenu;
+
     private Menu actionBarMenu;
     private boolean filterShoplist;
     private boolean filterWatchlist;
@@ -59,19 +59,13 @@ public class ShopCartOverviewFragment extends SherlockListFragment implements Lo
         
         initFilter();
         
-        configActionBar();
-        
-        configSlidingMenu();
-        
         fillData();
-        registerForContextMenu(getListView());
+        //registerForContextMenu(getListView());
     }
     
     @Override
     public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    	super.onCreateView(inflater, container, savedInstanceState);
-    	ListView v = (ListView) inflater.inflate(R.layout.shopcart_list, null);
-    	v.setDividerHeight(2);
+    	View v = inflater.inflate(R.layout.shopcart_list, container, false);
     	return v;
     }
 
@@ -212,81 +206,6 @@ public class ShopCartOverviewFragment extends SherlockListFragment implements Lo
         adapter.swapCursor(null);
     }
 
-    private void launchHomeActivity() {
-        Intent intent = new Intent(mActivity, GroceryFragmentActivity.class);
-        startActivity(intent);
-    }
-    
-    private void launchMapActivity() {
-        Intent intent = new Intent(mActivity, GroceryMapView.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-    }
-    
-    private void configSlidingMenu() {
-        slidingMenu = new SlidingMenu(mActivity);
-        slidingMenu.setMode(SlidingMenu.LEFT);
-        slidingMenu.setShadowWidthRes(R.dimen.shadow_width);
-        slidingMenu.setShadowDrawable(R.xml.shadow);
-        slidingMenu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
-        slidingMenu.setFadeDegree(0.35f);
-        slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
-        slidingMenu.attachToActivity(mActivity, SlidingMenu.SLIDING_CONTENT);
-        slidingMenu.setMenu(R.layout.menu_frame);
-
-        // Populate the SlidingMenu
-        String[] slidingMenuItems = new String[]{getString(R.string.slidingmenu_item_cat),
-                getString(R.string.slidingmenu_item_cart),
-                getString(R.string.slidingmenu_item_map),
-                getString(R.string.slidingmenu_item_sync),
-                getString(R.string.slidingmenu_item_settings),
-                getString(R.string.slidingmenu_item_about)};
-        
-        ListView menuView = (ListView) mActivity.findViewById(R.id.menu_items);
-        ArrayAdapter<String> menuAdapter = new ArrayAdapter<String>(mActivity,
-                R.layout.menu_item, android.R.id.text1, slidingMenuItems);
-        menuView.setAdapter(menuAdapter);
-
-        menuView.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-                // Switch activity based on what slidingMenu item the user selected
-                TextView textView = (TextView) view;
-                String selectedItem = textView.getText().toString();
-
-                if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_cat))) {
-                    // Selected Categories
-                	launchHomeActivity();
-                } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_cart))) {
-                    // Selected Shopping Cart
-                	if (slidingMenu.isMenuShowing())
-                        slidingMenu.showContent();
-                } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_map))) {
-                    // Selected Map
-                    launchMapActivity();
-                } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_sync))) {
-                    // Selected Sync
-                	if (slidingMenu.isMenuShowing())
-                        slidingMenu.showContent();
-                } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_settings))) {
-                    // Selected Settings
-                	if (slidingMenu.isMenuShowing())
-                        slidingMenu.showContent();
-                } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_about))) {
-                    // Selected About
-                    //startActivity(new Intent(CategoryOverView.this, About.class));
-                	if (slidingMenu.isMenuShowing())
-                        slidingMenu.showContent();
-                }
-            }
-        });
-    }
-    
-    private void configActionBar() {
-    	((SherlockFragmentActivity) mActivity).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    }
-    
     private void initFilter() {
     	filterShoplist = false;
         filterWatchlist = false;

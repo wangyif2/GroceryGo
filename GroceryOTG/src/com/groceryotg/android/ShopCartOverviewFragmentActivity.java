@@ -10,7 +10,6 @@ import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.groceryotg.android.fragment.ShopCartOverviewFragment;
 import com.slidingmenu.lib.SlidingMenu;
 
 public class ShopCartOverviewFragmentActivity extends SherlockFragmentActivity {
@@ -24,10 +23,6 @@ public class ShopCartOverviewFragmentActivity extends SherlockFragmentActivity {
         
         configActionBar();
         configSlidingMenu();
-        
-        ShopCartOverviewFragment frag = new ShopCartOverviewFragment();
-        frag.setHasOptionsMenu(true);
-        getSupportFragmentManager().beginTransaction().replace(android.R.id.content, frag).commit();
     }
 	
 	private void configSlidingMenu() {

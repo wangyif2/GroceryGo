@@ -23,8 +23,13 @@
     <PreferenceCategory
         android:title="Stores">
 
-        <MultiSelectListPreference
+        <com.groceryotg.android.utils.MultiSelectListPreference
             android:key="store_select"
+            android:title="@string/setting_store_title"
+            android:summary="@string/setting_store_summary"
+            android:dialogTitle="@string/setting_store_dialog_title"
+            android:entries="@array/store_names"
+            android:entryValues="@array/store_ids"
             />
 
     </PreferenceCategory>

@@ -31,19 +31,18 @@ public class GlobalSearchFragmentActivity extends SherlockFragmentActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        setContentView(R.layout.empty_top);
+        setContentView(R.layout.search_top);
         
         configActionBar();
         configSlidingMenu();
         
-        mFrag = new GlobalSearchFragment();
-        mFrag.setHasOptionsMenu(true);
+        mFrag = (GlobalSearchFragment) getSupportFragmentManager().findFragmentById(R.id.search_fragment);
 
         // Get the initial intent and pass it to the fragment as an argument
         Intent intent = getIntent();
-        mFrag.setArguments(intent.getExtras());
-        
-        getSupportFragmentManager().beginTransaction().replace(android.R.id.content, mFrag).commit();
+        setIntent(intent);
+        handleIntent(intent);
+        mFrag.refreshQuery(mQuery);
     }
 	
 	@Override

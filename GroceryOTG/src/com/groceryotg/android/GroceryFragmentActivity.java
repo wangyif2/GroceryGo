@@ -101,9 +101,9 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
             } else {
                 // If on the home page and doing a global search, send the intent
                 // to the GlobalSearchActivity
-                Intent globalSearchIntent = new Intent(this, GlobalSearchActivity.class);
+                Intent globalSearchIntent = new Intent(this, GlobalSearchFragmentActivity.class);
                 GroceryOTGUtils.copyIntentData(intent, globalSearchIntent);
-                globalSearchIntent.putExtra(GlobalSearchActivity.GLOBAL_SEARCH, true);
+                globalSearchIntent.putExtra(GlobalSearchFragmentActivity.GLOBAL_SEARCH, true);
                 startActivity(globalSearchIntent);
             }
         }

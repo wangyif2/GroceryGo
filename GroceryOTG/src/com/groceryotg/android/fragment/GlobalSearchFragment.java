@@ -1,5 +1,7 @@
-package com.groceryotg.android;
+package com.groceryotg.android.fragment;
 
+import android.app.Activity;
+import android.app.ListActivity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -10,18 +12,27 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.CursorAdapter;
 import android.util.SparseBooleanArray;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.actionbarsherlock.app.SherlockFragment;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.app.SherlockListActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.widget.SearchView;
 
+import com.groceryotg.android.GlobalSearchFragmentActivity;
+import com.groceryotg.android.GroceryFragmentActivity;
+import com.groceryotg.android.GroceryMapView;
+import com.groceryotg.android.R;
+import com.groceryotg.android.ShopCartOverviewFragmentActivity;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.GroceryTable;
 import com.groceryotg.android.database.StoreParentTable;
@@ -35,47 +46,44 @@ import com.slidingmenu.lib.SlidingMenu;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GlobalSearchActivity extends SherlockListActivity implements LoaderManager.LoaderCallbacks<Cursor> {
-	
-	public static final String GLOBAL_SEARCH = "global_search";
-	
+public class GlobalSearchFragment extends SherlockFragment implements LoaderManager.LoaderCallbacks<Cursor> {
 	private GroceryListCursorAdapter adapter;
 	private String mQuery;
 	private SlidingMenu mSlidingMenu;
 	private SearchView mSearchView;
+    private Activity mActivity;
 	
+    @Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+		this.mActivity = activity;
+	}
+    
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.search_list);
-        this.getListView().setDividerHeight(2);
         
-        // Enable ancestral navigation ("Up" button in ActionBar) for Android < 4.1
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        
-        // Configure sliding menu
+        configActionBar();
         configSlidingMenu();
         
-        // Get the intent, verify the action and get the query
-        Intent intent = getIntent();
-        handleIntent(intent);
-        
+        Bundle args = getArguments();
+        handleIntent(args);
         fillData();
     }
 	
-	@Override
-    public void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        setIntent(intent);
-        handleIntent(intent);
-        refreshQuery();
+    @Override
+    public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    	super.onCreateView(inflater, container, savedInstanceState);
+    	ListView v = (ListView) inflater.inflate(R.layout.search_list, null);
+    	v.setDividerHeight(2);
+    	return v;
     }
 	
-	private void handleIntent(Intent intent) {
-		if (intent.getExtras().containsKey(GLOBAL_SEARCH) || Intent.ACTION_SEARCH.equals(intent.getAction())) {
+	private void handleIntent(Bundle args) {
+		if (args.containsKey(GlobalSearchFragmentActivity.GLOBAL_SEARCH)) { // || Intent.ACTION_SEARCH.equals(intent.getAction())) {
 			
 			// Update the query - this is used by the loader when fetching results from database
-			mQuery = intent.getStringExtra(SearchManager.QUERY).trim();
+			mQuery = args.getString(SearchManager.QUERY).trim();
 			
 			// When we receive an intent from within this activity (i.e. after it
 			// has been created), the searchView already exists. In this case,
@@ -102,11 +110,11 @@ public class GlobalSearchActivity extends SherlockListActivity implements Loader
                 // in the Action Bar. This handles Android < 4.1.
             	
             	// Specify the parent activity
-            	Intent parentActivityIntent = new Intent(this, GroceryFragmentActivity.class);
+            	Intent parentActivityIntent = new Intent(mActivity, GroceryFragmentActivity.class);
             	parentActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | 
             								Intent.FLAG_ACTIVITY_NEW_TASK);
             	startActivity(parentActivityIntent);
-            	finish();
+            	mActivity.finish();
             	return true;
             case R.id.map:
                 launchMapActivity();
@@ -118,16 +126,14 @@ public class GlobalSearchActivity extends SherlockListActivity implements Loader
         return super.onOptionsItemSelected(item);
     }
 	
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-	    // Inflate the options menu from XML
-	    MenuInflater inflater = getSupportMenuInflater();
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 	    inflater.inflate(R.menu.search_menu, menu);
 	    
 	    // Get the SearchView and set the searchable configuration
-	    SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+	    SearchManager searchManager = (SearchManager) mActivity.getSystemService(Context.SEARCH_SERVICE);
 	    mSearchView = (SearchView) menu.findItem(R.id.search).getActionView();
-	    mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+	    mSearchView.setSearchableInfo(searchManager.getSearchableInfo(mActivity.getComponentName()));
 	    mSearchView.setIconifiedByDefault(true);
 	    //mSearchView.setOnQueryTextListener(this);
 	    
@@ -164,8 +170,6 @@ public class GlobalSearchActivity extends SherlockListActivity implements Loader
 	    	mSearchView.setQuery(mQuery, false);
 	    	mSearchView.clearFocus();
 	    }
-	    
-	    return true;
 	}
 	
 	private void fillData() {
@@ -189,9 +193,9 @@ public class GlobalSearchActivity extends SherlockListActivity implements Loader
                 R.id.grocery_row_inwatchlist_flag};
 
         
-        adapter = new GroceryListCursorAdapter(this, R.layout.grocery_fragment_row, null, from, to);
+        adapter = new GroceryListCursorAdapter(mActivity, R.layout.grocery_fragment_row, null, from, to);
         adapter.setViewBinder(new GroceryViewBinder());
-        setListAdapter(adapter);
+        ((ListActivity) mActivity).setListAdapter(adapter);
         
         getLoaderManager().initLoader(0, null, this);
     }
@@ -217,7 +221,7 @@ public class GlobalSearchActivity extends SherlockListActivity implements Loader
         }
         
         // Filter by store based on shared preferences
-        SparseBooleanArray selectedStores = SettingsManager.getStoreFilter(this);
+        SparseBooleanArray selectedStores = SettingsManager.getStoreFilter(mActivity);
         if (selectedStores != null && selectedStores.size() > 0) {
             // Go through selected stores and add them to query
             String storeSelection = "";
@@ -244,7 +248,7 @@ public class GlobalSearchActivity extends SherlockListActivity implements Loader
         
         final String[] selectionArgsArr = new String[selectionArgs.size()];
         selectionArgs.toArray(selectionArgsArr);
-        return new CursorLoader(this, GroceryotgProvider.CONTENT_URI_GRO_JOINSTORE, projection, selection, selectionArgsArr, sortOrder);
+        return new CursorLoader(mActivity, GroceryotgProvider.CONTENT_URI_GRO_JOINSTORE, projection, selection, selectionArgsArr, sortOrder);
     }
 
     @Override
@@ -253,7 +257,7 @@ public class GlobalSearchActivity extends SherlockListActivity implements Loader
         
         // Fill in the number of results in the top bar
         int numResults = adapter.getCount();
-        TextView tv_numResults = (TextView) findViewById(R.id.search_num_results);
+        TextView tv_numResults = (TextView) mActivity.findViewById(R.id.search_num_results);
         tv_numResults.setText(((Integer)numResults).toString());
     }
 
@@ -263,14 +267,14 @@ public class GlobalSearchActivity extends SherlockListActivity implements Loader
     }
     
     private void configSlidingMenu() {
-        mSlidingMenu = new SlidingMenu(this);
+        mSlidingMenu = new SlidingMenu(mActivity);
         mSlidingMenu.setMode(SlidingMenu.LEFT);
         mSlidingMenu.setShadowWidthRes(R.dimen.shadow_width);
         mSlidingMenu.setShadowDrawable(R.xml.shadow);
         mSlidingMenu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
         mSlidingMenu.setFadeDegree(0.35f);
         mSlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
-        mSlidingMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
+        mSlidingMenu.attachToActivity(mActivity, SlidingMenu.SLIDING_CONTENT);
         mSlidingMenu.setMenu(R.layout.menu_frame);
 
         // Populate the SlidingMenu
@@ -281,8 +285,8 @@ public class GlobalSearchActivity extends SherlockListActivity implements Loader
                 getString(R.string.slidingmenu_item_settings),
                 getString(R.string.slidingmenu_item_about)};
 
-        ListView menuView = (ListView) findViewById(R.id.menu_items);
-        ArrayAdapter<String> menuAdapter = new ArrayAdapter<String>(this,
+        ListView menuView = (ListView) mActivity.findViewById(R.id.menu_items);
+        ArrayAdapter<String> menuAdapter = new ArrayAdapter<String>(mActivity,
                 R.layout.menu_item, android.R.id.text1, slidingMenuItems);
         menuView.setAdapter(menuAdapter);
 
@@ -322,18 +326,22 @@ public class GlobalSearchActivity extends SherlockListActivity implements Loader
     }
     
     private void launchHomeActivity() {
-        Intent intent = new Intent(this, GroceryFragmentActivity.class);
+        Intent intent = new Intent(mActivity, GroceryFragmentActivity.class);
         startActivity(intent);
     }
     
     private void launchMapActivity() {
-        Intent intent = new Intent(this, GroceryMapView.class);
+        Intent intent = new Intent(mActivity, GroceryMapView.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
     
     private void launchShopCartActivity() {
-        Intent intent = new Intent(this, ShopCartOverviewFragmentActivity.class);
+        Intent intent = new Intent(mActivity, ShopCartOverviewFragmentActivity.class);
         startActivity(intent);
+    }
+    
+    private void configActionBar() {
+    	((SherlockFragmentActivity) mActivity).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 }

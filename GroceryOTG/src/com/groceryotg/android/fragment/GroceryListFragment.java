@@ -236,8 +236,8 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
                 newQuery != null && GroceryFragmentActivity.myQuery.equals(newQuery))
             return true;
 
-        Intent globalSearchIntent = new Intent(getActivity(), GlobalSearchActivity.class);
-        globalSearchIntent.putExtra(GlobalSearchActivity.GLOBAL_SEARCH, true);
+        Intent globalSearchIntent = new Intent(getActivity(), GlobalSearchFragmentActivity.class);
+        globalSearchIntent.putExtra(GlobalSearchFragmentActivity.GLOBAL_SEARCH, true);
         globalSearchIntent.putExtra(SearchManager.QUERY, newQuery);
         globalSearchIntent.setAction(Intent.ACTION_SEARCH);
         startActivity(globalSearchIntent);

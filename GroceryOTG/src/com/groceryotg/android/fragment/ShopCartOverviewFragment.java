@@ -51,7 +51,14 @@ public class ShopCartOverviewFragment extends SherlockListFragment implements Lo
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		this.mActivity = activity;
+		this.setHasOptionsMenu(true);
 	}
+    
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+    	super.onActivityCreated(savedInstanceState);
+    	registerForContextMenu(getListView());
+    }
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,7 +67,6 @@ public class ShopCartOverviewFragment extends SherlockListFragment implements Lo
         initFilter();
         
         fillData();
-        //registerForContextMenu(getListView());
     }
     
     @Override

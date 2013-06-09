@@ -4,10 +4,5 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
-              
-	<fragment
-		android:name="com.groceryotg.android.fragment.ShopCartOverviewFragment"
-		android:id="@+id/shopcart_overview_fragment"
-		android:layout_width="match_parent"
-		android:layout_height="match_parent" />
+
 </LinearLayout>

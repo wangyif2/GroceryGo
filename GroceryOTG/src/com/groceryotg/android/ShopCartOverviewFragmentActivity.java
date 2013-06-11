@@ -15,7 +15,8 @@ public class ShopCartOverviewFragmentActivity extends SherlockFragmentActivity {
         setContentView(R.layout.shopcart_top);
         
         configActionBar();
-        mSlidingMenu = GroceryOTGUtils.configSlidingMenu(this);
+        mSlidingMenu = GroceryOTGUtils.createSlidingMenu(this);
+        GroceryOTGUtils.registerSlidingMenu(mSlidingMenu, this);
     }
 	
     private void configActionBar() {

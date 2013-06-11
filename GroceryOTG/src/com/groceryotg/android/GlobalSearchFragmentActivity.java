@@ -28,7 +28,8 @@ public class GlobalSearchFragmentActivity extends SherlockFragmentActivity {
         setContentView(R.layout.search_top);
         
         configActionBar();
-        mSlidingMenu = GroceryOTGUtils.configSlidingMenu(this);
+        mSlidingMenu = GroceryOTGUtils.createSlidingMenu(this);
+        GroceryOTGUtils.registerSlidingMenu(mSlidingMenu, this);
         
         mFrag = (GlobalSearchFragment) getSupportFragmentManager().findFragmentById(R.id.search_fragment);
 

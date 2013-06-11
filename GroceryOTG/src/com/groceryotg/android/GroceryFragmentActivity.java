@@ -12,13 +12,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -33,7 +27,6 @@ import com.groceryotg.android.fragment.CategoryGridFragment;
 import com.groceryotg.android.fragment.GroceryListFragment;
 import com.groceryotg.android.fragment.MyFlyerFragment;
 import com.groceryotg.android.services.NetworkHandler;
-import com.groceryotg.android.settings.SettingsActivity;
 import com.groceryotg.android.utils.GroceryOTGUtils;
 import com.groceryotg.android.utils.RefreshAnimation;
 import com.slidingmenu.lib.SlidingMenu;
@@ -76,7 +69,8 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
 
         configViewPager();
 
-        configSlidingMenu();
+        mSlidingMenu = GroceryOTGUtils.createSlidingMenu(this);
+        GroceryOTGUtils.registerSlidingMenu(mSlidingMenu, this);
     }
 
     @Override
@@ -128,7 +122,7 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getSupportMenuInflater();
         inflater.inflate(R.menu.grocery_pager_menu, menu);
-        this.menu = menu;
+        GroceryFragmentActivity.menu = menu;
 
         // Get the SearchView and set the searchable configuration
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
@@ -146,13 +140,21 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
                 refreshCurrentPager();
                 return true;
             case R.id.map:
-                launchMapActivity();
+                GroceryOTGUtils.launchMapActivity(this);
                 return true;
             case R.id.shop_cart:
-                launchShopCartActivity();
+            	GroceryOTGUtils.launchShopCartActivity(this);
                 return true;
             case android.R.id.home:
-                launchSlidingMenu();
+            	// When home is pressed
+            	if (mPager.getCurrentItem() == 0) {
+            		if (mSlidingMenu.isMenuShowing())
+            			mSlidingMenu.showContent();
+            		else
+            			mSlidingMenu.showMenu();
+            	} else {
+            		mPager.setCurrentItem(0);
+            	}
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -201,87 +203,6 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
         mAdapter = new GroceryAdapter(getSupportFragmentManager());
         mPager.setAdapter(mAdapter);
         mPager.setOffscreenPageLimit(OFFPAGE_LIMIT);
-    }
-
-    private void configSlidingMenu() {
-        mSlidingMenu = new SlidingMenu(this);
-        mSlidingMenu.setMode(SlidingMenu.LEFT);
-        mSlidingMenu.setShadowWidthRes(R.dimen.shadow_width);
-        mSlidingMenu.setShadowDrawable(R.xml.shadow);
-        mSlidingMenu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
-        mSlidingMenu.setFadeDegree(0.35f);
-        mSlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
-        mSlidingMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
-        mSlidingMenu.setMenu(R.layout.menu_frame);
-
-        // Populate the SlidingMenu
-        String[] slidingMenuItems = new String[]{getString(R.string.slidingmenu_item_cat),
-                getString(R.string.slidingmenu_item_cart),
-                getString(R.string.slidingmenu_item_map),
-                getString(R.string.slidingmenu_item_sync),
-                getString(R.string.slidingmenu_item_settings),
-                getString(R.string.slidingmenu_item_about)};
-
-        ListView menuView = (ListView) findViewById(R.id.menu_items);
-        ArrayAdapter<String> menuAdapter = new ArrayAdapter<String>(this,
-                R.layout.menu_item, android.R.id.text1, slidingMenuItems);
-        menuView.setAdapter(menuAdapter);
-
-        menuView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-                // Switch activity based on what mSlidingMenu item the user selected
-                TextView textView = (TextView) view;
-                String selectedItem = textView.getText().toString();
-
-                if (mSlidingMenu.isMenuShowing())
-                    mSlidingMenu.showContent();
-
-                if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_cat))) {
-                    // Selected Categories
-                    mPager.setCurrentItem(0);
-                } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_cart))) {
-                    // Selected Shopping Cart
-                    launchShopCartActivity();
-                } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_map))) {
-                    // Selected Map
-                    launchMapActivity();
-                } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_sync))) {
-                    // Selected Sync
-                    refreshCurrentPager();
-                } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_settings))) {
-                    // Selected Settings
-                    launchSettingsActivity();
-                } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_about))) {
-                    // Selected About
-                    //startActivity(new Intent(CategoryOverView.this, About.class));
-                }
-            }
-        });
-    }
-
-    private void launchSettingsActivity() {
-        Intent intent = new Intent(this, SettingsActivity.class);
-        startActivity(intent);
-    }
-
-    private void launchSlidingMenu() {
-        if (!mSlidingMenu.isMenuShowing())
-            mSlidingMenu.showMenu();
-        else
-            mSlidingMenu.showContent();
-    }
-
-    private void launchShopCartActivity() {
-        Intent intent = new Intent(this, ShopCartOverviewFragmentActivity.class);
-        startActivity(intent);
-    }
-
-    private void launchMapActivity() {
-        Intent intent = new Intent(this, GroceryMapView.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
     }
     
     private static void clearSearch() {

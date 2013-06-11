@@ -77,7 +77,7 @@ public class GroceryOTGUtils {
         }
     }
     
-    public static SlidingMenu configSlidingMenu(final Activity activity) {
+    public static SlidingMenu createSlidingMenu(final Activity activity) {
     	SlidingMenu slidingMenu;
         slidingMenu = new SlidingMenu(activity);
         slidingMenu.setMode(SlidingMenu.LEFT);
@@ -89,7 +89,11 @@ public class GroceryOTGUtils {
         slidingMenu.attachToActivity(activity, SlidingMenu.SLIDING_CONTENT);
         slidingMenu.setMenu(R.layout.menu_frame);
 
-        // Populate the SlidingMenu
+		return slidingMenu;
+    }
+    
+    public static void registerSlidingMenu(final SlidingMenu slidingMenu, final Activity activity) {
+    	// Populate the SlidingMenu
         String[] slidingMenuItems = new String[]{activity.getString(R.string.slidingmenu_item_cat),
         		activity.getString(R.string.slidingmenu_item_cart),
         		activity.getString(R.string.slidingmenu_item_map),
@@ -109,6 +113,9 @@ public class GroceryOTGUtils {
                 // Switch activity based on what mSlidingMenu item the user selected
                 TextView textView = (TextView) view;
                 String selectedItem = textView.getText().toString();
+                
+                if (slidingMenu.isMenuShowing())
+        			slidingMenu.showContent();
 
                 if (selectedItem.equalsIgnoreCase(activity.getString(R.string.slidingmenu_item_cat))) {
                     // Selected Categories
@@ -129,18 +136,17 @@ public class GroceryOTGUtils {
                 }
             }
         });
-        
-		return slidingMenu;
     }
 
     public static void launchHomeActivity(Activity activity) {
         Intent intent = new Intent(activity, GroceryFragmentActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         activity.startActivity(intent);
     }
     
     public static void launchMapActivity(Activity activity) {
         Intent intent = new Intent(activity, GroceryMapView.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         activity.startActivity(intent);
     }
     

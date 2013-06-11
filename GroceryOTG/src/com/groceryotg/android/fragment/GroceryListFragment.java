@@ -1,7 +1,6 @@
 package com.groceryotg.android.fragment;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.*;
 import android.database.Cursor;
@@ -11,7 +10,6 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.text.TextUtils;
 import android.util.SparseBooleanArray;
-import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,9 +35,7 @@ import com.groceryotg.android.settings.SettingsManager;
 import com.groceryotg.android.utils.RefreshAnimation;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 public class GroceryListFragment extends SherlockListFragment implements SearchView.OnQueryTextListener, SearchView.OnCloseListener, LoaderManager.LoaderCallbacks<Cursor> {
     private static final String CATEGORY_POSITION = "position";
@@ -51,10 +47,6 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
     MenuItem refreshItem;
     private Integer categoryId;
     boolean isSearch;
-
-    private CharSequence[] items;
-    private boolean[] states;
-    private SparseIntArray mapIndexToId; // maps index in the dialog to store_id
 
     private SearchView mSearchView;
     ViewGroup myViewGroup;
@@ -137,9 +129,6 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
         switch (item.getItemId()) {
             case R.id.refresh:
                 refreshGrocery();
-                return true;
-            case R.id.filter:
-                launchFilterDialog();
                 return true;
             case R.id.map:
                 launchMapActivity();
@@ -351,35 +340,6 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
         getActivity().startService(intent);
     }
 
-    private void launchFilterDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(R.string.groceryoverview_filter_title);
-        initFilter();
-        builder.setMultiChoiceItems(items, states, new DialogInterface.OnMultiChoiceClickListener() {
-            public void onClick(DialogInterface dialogInterface, int item, boolean state) {
-            }
-        });
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                SparseBooleanArray selectedItems = ((AlertDialog) dialog).getListView().getCheckedItemPositions();
-                SparseBooleanArray selectedStores = new SparseBooleanArray();
-                for (int i = 0; i < selectedItems.size(); i++) {
-                    int key_index = selectedItems.keyAt(i);
-                    selectedStores.append(mapIndexToId.get(key_index), selectedItems.valueAt(i));
-                }
-                //SettingsManager.setStoreFilter(activity, selectedStores);
-                loadDataWithQuery(true, GroceryFragmentActivity.myQuery);
-                Toast.makeText(getActivity(), getResources().getString(R.string.groceryoverview_filter_updated), Toast.LENGTH_LONG).show();
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.cancel();
-            }
-        });
-        builder.create().show();
-    }
-
     public void loadDataWithQuery(Boolean reload, String query) {
         Bundle b = new Bundle();
         b.putString("query", query);
@@ -415,23 +375,6 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
 
     public String buildNoSearchResultString() {
         return getResources().getString(R.string.no_search_results);
-    }
-
-    private void initFilter() {
-        this.items = new CharSequence[GroceryFragmentActivity.storeNames.keySet().size()];
-        this.states = new boolean[GroceryFragmentActivity.storeNames.keySet().size()];
-        this.mapIndexToId = new SparseIntArray(); // maps index in the dialog to store_id
-
-        Iterator<Map.Entry<Integer, String>> it = GroceryFragmentActivity.storeNames.entrySet().iterator();
-        Integer indexer = 0;
-        SparseBooleanArray selectedStores = SettingsManager.getStoreFilter(activity);
-        while (it.hasNext()) {
-            Map.Entry<Integer, String> pairs = (Map.Entry<Integer, String>) it.next();
-            this.items[indexer] = pairs.getValue();
-            this.states[indexer] = selectedStores.get(pairs.getKey(), false);
-            this.mapIndexToId.put(indexer, pairs.getKey());
-            indexer++;
-        }
     }
 
     private void watchSettings() {

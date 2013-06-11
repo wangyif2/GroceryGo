@@ -14,10 +14,6 @@ import com.groceryotg.android.database.CategoryTable;
 
 import java.util.Locale;
 
-/**
- * User: robert
- * Date: 16/03/13
- */
 public class CategoryGridCursorAdapter extends SimpleCursorAdapter {
     protected Context mContext;
     private int mLayout;

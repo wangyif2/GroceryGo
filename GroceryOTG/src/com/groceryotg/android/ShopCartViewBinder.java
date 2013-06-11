@@ -43,32 +43,6 @@ public class ShopCartViewBinder implements SimpleCursorAdapter.ViewBinder, ViewB
         	}
         	return true;
         }	
-        else if (columnIndex == cursor.getColumnIndex(CartTable.COLUMN_CART_FLAG_WATCHLIST) 
-        		&& viewId == R.id.cart_row_inwatchlist) {
-        	Integer inWatchlist = cursor.getInt(columnIndex);
-        	ImageView img = (ImageView) view;
-        	
-        	if (inWatchlist != 0) {
-        		img.setImageResource(R.drawable.ic_flag_watchlist_highlight);
-        	}
-        	else {
-        		img.setImageResource(R.drawable.ic_flag_watchlist);
-        	}
-        	return true;
-        }	
-        else if (columnIndex == cursor.getColumnIndex(CartTable.COLUMN_CART_FLAG_WATCHLIST) 
-        		&& viewId == R.id.cart_flag_watchlist) {
-        	Integer inWatchlist = cursor.getInt(columnIndex);
-        	TextView flag = (TextView) view;
-        	
-        	if (inWatchlist != 0) {
-        		flag.setText("1");
-        	}
-        	else {
-        		flag.setText("0");
-        	}
-        	return true;
-        }
         
         return false;
     }

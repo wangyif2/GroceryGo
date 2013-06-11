@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
@@ -35,6 +36,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class GroceryFragmentActivity extends SherlockFragmentActivity {
+	public static String EXTRA_LAUNCH_PAGE = "extra_launch_page";
+	
     static HashMap<Integer, String> categories;
 
     public static Context mContext;
@@ -58,7 +61,6 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.grocery_pager);
 
-        Bundle extras = getIntent().getExtras();
         categories = getCategoryInfo();
         mContext = this;
         setMyQuery("");
@@ -81,7 +83,7 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
     }
 
     private void handleIntent(Intent intent) {
-    	
+    	Log.i("GroceryOTG", "Handing intent");
     	clearSearch();
     	
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
@@ -100,6 +102,12 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
                 globalSearchIntent.putExtra(GlobalSearchFragmentActivity.GLOBAL_SEARCH, true);
                 startActivity(globalSearchIntent);
             }
+        }
+        
+        Bundle extras = intent.getExtras();
+        if (extras != null) {
+        	Log.i("GroceryOTG", Integer.toString(extras.getInt(GroceryFragmentActivity.EXTRA_LAUNCH_PAGE)));
+        	mPager.setCurrentItem(extras.getInt(GroceryFragmentActivity.EXTRA_LAUNCH_PAGE));
         }
     }
 

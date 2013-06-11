@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -141,12 +142,18 @@ public class GroceryOTGUtils {
     public static void launchHomeActivity(Activity activity) {
         Intent intent = new Intent(activity, GroceryFragmentActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        
+        // Add an extra to tell the pager to return to the first page
+        Bundle extras = new Bundle();
+        extras.putInt(GroceryFragmentActivity.EXTRA_LAUNCH_PAGE, 0);
+        intent.putExtras(extras);
+        
         activity.startActivity(intent);
     }
     
     public static void launchMapActivity(Activity activity) {
         Intent intent = new Intent(activity, GroceryMapView.class);
-        //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         activity.startActivity(intent);
     }
     

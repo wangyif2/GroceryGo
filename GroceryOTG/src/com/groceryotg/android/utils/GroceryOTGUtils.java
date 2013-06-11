@@ -5,15 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.TableLayout;
 import android.widget.TableRow;
-import android.widget.TextView;
 
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.groceryotg.android.GroceryFragmentActivity;
 import com.groceryotg.android.GroceryMapActivity;
 import com.groceryotg.android.R;
@@ -23,6 +20,7 @@ import com.groceryotg.android.database.GroceryTable;
 import com.groceryotg.android.database.StoreParentTable;
 import com.groceryotg.android.database.StoreTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
+import com.groceryotg.android.fragment.AboutDialogFragment;
 import com.groceryotg.android.settings.SettingsActivity;
 import com.slidingmenu.lib.SlidingMenu;
 
@@ -155,6 +153,7 @@ public class GroceryOTGUtils {
 				if (slidingMenu.isMenuShowing())
         			slidingMenu.showContent();
 				// Selected About
+				launchAboutDialog(activity);
 			}
         });
         
@@ -186,5 +185,10 @@ public class GroceryOTGUtils {
     public static void launchSettingsActivity(Activity activity) {
         Intent intent = new Intent(activity, SettingsActivity.class);
         activity.startActivity(intent);
+    }
+    
+    public static void launchAboutDialog(Activity activity) {
+    	AboutDialogFragment dialog = new AboutDialogFragment();
+    	dialog.show(((SherlockFragmentActivity) activity).getSupportFragmentManager(), "about_dialog");
     }
 }

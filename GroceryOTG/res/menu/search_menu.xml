@@ -8,12 +8,6 @@
         android:title="@string/groceryoverview_menu_item_search"
         android:icon="@drawable/ic_menu_search"
         android:actionViewClass="com.actionbarsherlock.widget.SearchView" />
-	
-    <item
-        android:id="@+id/filter"
-        android:showAsAction="always"
-        android:title="@string/groceryoverview_menu_item_filter"
-        android:icon="@drawable/ic_menu_filter"/>
 
     <item
         android:id="@+id/map"
@@ -26,5 +20,4 @@
         android:showAsAction="always"
         android:title="@string/slidingmenu_item_cart"
         android:icon="@drawable/ic_menu_cart"/>
-    
 </menu>

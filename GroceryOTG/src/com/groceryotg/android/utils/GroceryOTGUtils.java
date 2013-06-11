@@ -1,20 +1,29 @@
 package com.groceryotg.android.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import com.groceryotg.android.GroceryFragmentActivity;
+import com.groceryotg.android.GroceryMapView;
+import com.groceryotg.android.R;
+import com.groceryotg.android.ShopCartOverviewFragmentActivity;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.GroceryTable;
 import com.groceryotg.android.database.StoreParentTable;
 import com.groceryotg.android.database.StoreTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
+import com.groceryotg.android.settings.SettingsActivity;
+import com.slidingmenu.lib.SlidingMenu;
 
 import java.util.Set;
 
-/**
- * User: robert
- * Date: 14/03/13
- */
 public class GroceryOTGUtils {
 
     public static Cursor getStoreLocations(Context context) {
@@ -66,5 +75,82 @@ public class GroceryOTGUtils {
         for (String lKey : lKeys) {
             aDispatch.putExtra(lKey, aReceived.getStringExtra(lKey));
         }
+    }
+    
+    public static SlidingMenu configSlidingMenu(final Activity activity) {
+    	SlidingMenu slidingMenu;
+        slidingMenu = new SlidingMenu(activity);
+        slidingMenu.setMode(SlidingMenu.LEFT);
+        slidingMenu.setShadowWidthRes(R.dimen.shadow_width);
+        slidingMenu.setShadowDrawable(R.xml.shadow);
+        slidingMenu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
+        slidingMenu.setFadeDegree(0.35f);
+        slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
+        slidingMenu.attachToActivity(activity, SlidingMenu.SLIDING_CONTENT);
+        slidingMenu.setMenu(R.layout.menu_frame);
+
+        // Populate the SlidingMenu
+        String[] slidingMenuItems = new String[]{activity.getString(R.string.slidingmenu_item_cat),
+        		activity.getString(R.string.slidingmenu_item_cart),
+        		activity.getString(R.string.slidingmenu_item_map),
+        		activity.getString(R.string.slidingmenu_item_sync),
+        		activity.getString(R.string.slidingmenu_item_settings),
+        		activity.getString(R.string.slidingmenu_item_about)};
+
+        ListView menuView = (ListView) activity.findViewById(R.id.menu_items);
+        ArrayAdapter<String> menuAdapter = new ArrayAdapter<String>(activity,
+                R.layout.menu_item, android.R.id.text1, slidingMenuItems);
+        menuView.setAdapter(menuAdapter);
+
+        menuView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                // Switch activity based on what mSlidingMenu item the user selected
+                TextView textView = (TextView) view;
+                String selectedItem = textView.getText().toString();
+
+                if (selectedItem.equalsIgnoreCase(activity.getString(R.string.slidingmenu_item_cat))) {
+                    // Selected Categories
+                    launchHomeActivity(activity);
+                } else if (selectedItem.equalsIgnoreCase(activity.getString(R.string.slidingmenu_item_cart))) {
+                    // Selected Shopping Cart
+                    launchShopCartActivity(activity);
+                } else if (selectedItem.equalsIgnoreCase(activity.getString(R.string.slidingmenu_item_map))) {
+                    // Selected Map
+                    launchMapActivity(activity);
+                } else if (selectedItem.equalsIgnoreCase(activity.getString(R.string.slidingmenu_item_sync))) {
+                    // Selected Sync
+                } else if (selectedItem.equalsIgnoreCase(activity.getString(R.string.slidingmenu_item_settings))) {
+                    // Selected Settings
+                	launchSettingsActivity(activity);
+                } else if (selectedItem.equalsIgnoreCase(activity.getString(R.string.slidingmenu_item_about))) {
+                    // Selected About
+                }
+            }
+        });
+        
+		return slidingMenu;
+    }
+
+    public static void launchHomeActivity(Activity activity) {
+        Intent intent = new Intent(activity, GroceryFragmentActivity.class);
+        activity.startActivity(intent);
+    }
+    
+    public static void launchMapActivity(Activity activity) {
+        Intent intent = new Intent(activity, GroceryMapView.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        activity.startActivity(intent);
+    }
+    
+    public static void launchShopCartActivity(Activity activity) {
+        Intent intent = new Intent(activity, ShopCartOverviewFragmentActivity.class);
+        activity.startActivity(intent);
+    }
+    
+    public static void launchSettingsActivity(Activity activity) {
+        Intent intent = new Intent(activity, SettingsActivity.class);
+        activity.startActivity(intent);
     }
 }

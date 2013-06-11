@@ -4,20 +4,13 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
-
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.widget.SearchView;
 import com.groceryotg.android.fragment.GlobalSearchFragment;
-import com.groceryotg.android.settings.SettingsActivity;
+import com.groceryotg.android.utils.GroceryOTGUtils;
 import com.slidingmenu.lib.SlidingMenu;
 
 public class GlobalSearchFragmentActivity extends SherlockFragmentActivity {
@@ -35,7 +28,7 @@ public class GlobalSearchFragmentActivity extends SherlockFragmentActivity {
         setContentView(R.layout.search_top);
         
         configActionBar();
-        configSlidingMenu();
+        mSlidingMenu = GroceryOTGUtils.configSlidingMenu(this);
         
         mFrag = (GlobalSearchFragment) getSupportFragmentManager().findFragmentById(R.id.search_fragment);
 
@@ -69,10 +62,10 @@ public class GlobalSearchFragmentActivity extends SherlockFragmentActivity {
             	finish();
             	return true;
             case R.id.map:
-                launchMapActivity();
+            	GroceryOTGUtils.launchMapActivity(this);
                 return true;
             case R.id.shop_cart:
-                launchShopCartActivity();
+            	GroceryOTGUtils.launchShopCartActivity(this);
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -143,85 +136,6 @@ public class GlobalSearchFragmentActivity extends SherlockFragmentActivity {
         }
 	}
 	
-	private void configSlidingMenu() {
-        mSlidingMenu = new SlidingMenu(this);
-        mSlidingMenu.setMode(SlidingMenu.LEFT);
-        mSlidingMenu.setShadowWidthRes(R.dimen.shadow_width);
-        mSlidingMenu.setShadowDrawable(R.xml.shadow);
-        mSlidingMenu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
-        mSlidingMenu.setFadeDegree(0.35f);
-        mSlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
-        mSlidingMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
-        mSlidingMenu.setMenu(R.layout.menu_frame);
-
-        // Populate the SlidingMenu
-        String[] slidingMenuItems = new String[]{getString(R.string.slidingmenu_item_cat),
-                getString(R.string.slidingmenu_item_cart),
-                getString(R.string.slidingmenu_item_map),
-                getString(R.string.slidingmenu_item_sync),
-                getString(R.string.slidingmenu_item_settings),
-                getString(R.string.slidingmenu_item_about)};
-
-        ListView menuView = (ListView) findViewById(R.id.menu_items);
-        ArrayAdapter<String> menuAdapter = new ArrayAdapter<String>(this,
-                R.layout.menu_item, android.R.id.text1, slidingMenuItems);
-        menuView.setAdapter(menuAdapter);
-
-        menuView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-                // Switch activity based on what mSlidingMenu item the user selected
-                TextView textView = (TextView) view;
-                String selectedItem = textView.getText().toString();
-
-                if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_cat))) {
-                    // Selected Categories
-                    launchHomeActivity();
-                } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_cart))) {
-                    // Selected Shopping Cart
-                    launchShopCartActivity();
-                } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_map))) {
-                    // Selected Map
-                    launchMapActivity();
-                } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_sync))) {
-                    // Selected Sync
-                	if (mSlidingMenu.isMenuShowing())
-                        mSlidingMenu.showContent();
-                } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_settings))) {
-                    // Selected Settings
-                	launchSettingsActivity();
-                } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_about))) {
-                    // Selected About
-                    //startActivity(new Intent(CategoryOverView.this, About.class));
-                    if (mSlidingMenu.isMenuShowing())
-                        mSlidingMenu.showContent();
-                }
-            }
-        });
-    }
-
-    private void launchHomeActivity() {
-        Intent intent = new Intent(this, GroceryFragmentActivity.class);
-        startActivity(intent);
-    }
-    
-    private void launchMapActivity() {
-        Intent intent = new Intent(this, GroceryMapView.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-    }
-    
-    private void launchShopCartActivity() {
-        Intent intent = new Intent(this, ShopCartOverviewFragmentActivity.class);
-        startActivity(intent);
-    }
-    
-    private void launchSettingsActivity() {
-        Intent intent = new Intent(this, SettingsActivity.class);
-        startActivity(intent);
-    }
-    
     private void configActionBar() {
     	getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }

@@ -16,35 +16,24 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.AdapterView.OnItemClickListener;
-
-import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.app.SherlockListFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.groceryotg.android.GroceryFragmentActivity;
-import com.groceryotg.android.GroceryMapActivity;
 import com.groceryotg.android.R;
 import com.groceryotg.android.ShopCartCursorAdapter;
 import com.groceryotg.android.ShopCartDetailView;
 import com.groceryotg.android.ShopCartViewBinder;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
-import com.slidingmenu.lib.SlidingMenu;
 
 public class ShopCartOverviewFragment extends SherlockListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
 	private static final int DELETE_ID = 1;
     private ShopCartCursorAdapter adapter;
 
-    private Menu actionBarMenu;
-    private boolean filterShoplist;
-    private boolean filterWatchlist;
-    
     private Activity mActivity;
     
     @Override
@@ -78,7 +67,6 @@ public class ShopCartOverviewFragment extends SherlockListFragment implements Lo
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.shopcart_menu, menu);
-        actionBarMenu = menu;
     }
 
     @Override
@@ -87,19 +75,6 @@ public class ShopCartOverviewFragment extends SherlockListFragment implements Lo
             case R.id.cart_add:
                 createCartGroceryItem();
                 return true;
-            case R.id.cart_filter_shoplist:
-            	//MenuItem itemShoplist = ;
-            	int newIconShoplist = (filterShoplist ? R.drawable.ic_menu_cart : R.drawable.ic_menu_cart_highlight);
-            	actionBarMenu.findItem(R.id.cart_filter_shoplist).setIcon(newIconShoplist);
-            	filterShoplist = (filterShoplist ? false : true);
-            	refreshData();
-            	return true;
-            case R.id.cart_filter_watchlist:
-            	int newIconWatchlist = (filterWatchlist ? R.drawable.ic_menu_watch : R.drawable.ic_menu_watch_highlight);
-            	actionBarMenu.findItem(R.id.cart_filter_watchlist).setIcon(newIconWatchlist);
-            	filterWatchlist = (filterWatchlist ? false : true);
-            	refreshData();
-            	return true;
             case android.R.id.home:
             	// This is called when the Home (Up) button is pressed
                 // in the Action Bar. This handles Android < 4.1.
@@ -154,16 +129,12 @@ public class ShopCartOverviewFragment extends SherlockListFragment implements Lo
         							 CartTable.COLUMN_CART_GROCERY_NAME,
         							 CartTable.COLUMN_CART_GROCERY_ID,
         							 CartTable.COLUMN_CART_FLAG_SHOPLIST,
-        							 CartTable.COLUMN_CART_FLAG_WATCHLIST,
-        							 CartTable.COLUMN_CART_FLAG_SHOPLIST,
-        							 CartTable.COLUMN_CART_FLAG_WATCHLIST};
+        							 CartTable.COLUMN_CART_FLAG_SHOPLIST};
         int[] to = new int[]{R.id.cart_item_id,
         					 R.id.cart_grocery_name,
         					 R.id.cart_grocery_id,
         					 R.id.cart_flag_shoplist,
-        					 R.id.cart_flag_watchlist,
-        					 R.id.cart_row_inshoplist,
-        					 R.id.cart_row_inwatchlist};
+        					 R.id.cart_row_inshoplist};
 
         getLoaderManager().initLoader(0, null, this);
         adapter = new ShopCartCursorAdapter(mActivity, R.layout.shopcart_row, null, from, to);
@@ -176,23 +147,10 @@ public class ShopCartOverviewFragment extends SherlockListFragment implements Lo
         String[] projection = {CartTable.COLUMN_ID, 
         					   CartTable.COLUMN_CART_GROCERY_NAME, 
         					   CartTable.COLUMN_CART_GROCERY_ID, 
-        					   CartTable.COLUMN_CART_FLAG_SHOPLIST, 
-        					   CartTable.COLUMN_CART_FLAG_WATCHLIST};
+        					   CartTable.COLUMN_CART_FLAG_SHOPLIST};
         
         List<String> selectionArgs = new ArrayList<String>();
         String selection = "";
-        
-        // If user clicked on a filter, filter the results based on flags
-        if (filterShoplist) {
-        	selection += (selection.isEmpty() ? "" : " AND "); 
-            selection += CartTable.TABLE_CART + "." + CartTable.COLUMN_CART_FLAG_SHOPLIST + "=?";
-            selectionArgs.add("1");
-        }
-        if (filterWatchlist) {
-        	selection += (selection.isEmpty() ? "" : " AND ");
-        	selection += CartTable.TABLE_CART + "." + CartTable.COLUMN_CART_FLAG_WATCHLIST + "=?";
-            selectionArgs.add("1");
-        }
         
         final String[] selectionArgsArr = new String[selectionArgs.size()];
         selectionArgs.toArray(selectionArgsArr);
@@ -213,8 +171,6 @@ public class ShopCartOverviewFragment extends SherlockListFragment implements Lo
     }
 
     private void initFilter() {
-    	filterShoplist = false;
-        filterWatchlist = false;
     }
     
     private void refreshData() {

@@ -70,24 +70,6 @@
 		        android:paddingRight="8dp"
 		        android:paddingTop="8dp"
 		        android:src="@drawable/ic_flag_shoplist" />
-			    
-		    <TextView 
-		        android:id="@+id/cart_flag_watchlist"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:visibility="gone"
-		        android:text="0" />
-		    
-		    <ImageButton
-	            android:id="@+id/cart_row_inwatchlist"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:background="@null"
-	            android:clickable="true"
-	            android:paddingRight="8dp"
-	            android:paddingTop="8dp"
-	            android:src="@drawable/ic_flag_watchlist" />
-		    
 	</LinearLayout>
     
 </LinearLayout>

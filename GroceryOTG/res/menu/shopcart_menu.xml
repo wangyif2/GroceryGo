@@ -7,7 +7,7 @@
         android:showAsAction="always"
         android:title="@string/cart_shoplist_add"
         android:icon="@drawable/add_icon"/>
-    
+    <!--
     <item
         android:id="@+id/cart_filter_shoplist"
         android:showAsAction="always"
@@ -19,5 +19,6 @@
         android:showAsAction="always"
         android:title="@string/cart_filter_watchlist"
         android:icon="@drawable/ic_menu_watch"/>
+    -->
 
 </menu>

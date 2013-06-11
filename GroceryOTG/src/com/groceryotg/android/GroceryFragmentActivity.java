@@ -155,13 +155,13 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
                 return true;
             case android.R.id.home:
             	// When home is pressed
-            	if (mPager.getCurrentItem() == 0) {
-            		if (mSlidingMenu.isMenuShowing())
-            			mSlidingMenu.showContent();
-            		else
+            	if (mSlidingMenu.isMenuShowing())
+        			mSlidingMenu.showContent();
+            	else {
+            		if (mPager.getCurrentItem() == 0)
             			mSlidingMenu.showMenu();
-            	} else {
-            		mPager.setCurrentItem(0);
+            		else
+            			mPager.setCurrentItem(0);
             	}
                 return true;
         }

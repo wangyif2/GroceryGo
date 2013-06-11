@@ -1,14 +1,237 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/menu_frame"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    
-    <ListView
-    android:id="@+id/menu_items"
-    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/list_padding"
-    android:paddingRight="@dimen/list_padding" />
+    android:layout_span="2">
+    
+    <TableRow
+        android:id="@+id/menu_row_1"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:paddingLeft="@dimen/list_padding"
+	    android:paddingRight="@dimen/list_padding"
+	    android:clickable="true" >
+	    
+        <ImageView
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:gravity="center_vertical"
+		    android:src="@android:drawable/ic_menu_myplaces"
+		    android:minHeight="@dimen/slidingmenu_item_height" />
+	    
+	    <TextView
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:fontFamily="sans-serif-light"
+		    android:textStyle="normal"
+		    android:textSize="18sp"
+		    android:textIsSelectable="false"
+		    android:gravity="center_vertical"
+		    android:text="@string/slidingmenu_item_cat"
+		    android:minHeight="@dimen/slidingmenu_item_height" />
+	</TableRow>
 	
-</FrameLayout>
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:padding="1dp"
+            android:layout_weight="1"
+            android:background="@android:color/darker_gray" />
+    </TableRow>
+	
+    <TableRow
+        android:id="@+id/menu_row_2"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:paddingLeft="@dimen/list_padding"
+	    android:paddingRight="@dimen/list_padding"
+	    android:clickable="true" >
+	    
+        <ImageView
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:gravity="center_vertical"
+		    android:src="@android:drawable/ic_menu_agenda"
+		    android:minHeight="@dimen/slidingmenu_item_height" />
+	    
+	    <TextView
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:fontFamily="sans-serif-light"
+		    android:textStyle="normal"
+		    android:textSize="18sp"
+		    android:textIsSelectable="false"
+		    android:gravity="center_vertical"
+		    android:text="@string/slidingmenu_item_cart"
+		    android:minHeight="@dimen/slidingmenu_item_height" />
+	</TableRow>
+	
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:padding="1dp"
+            android:layout_weight="1"
+            android:background="@android:color/darker_gray" />
+    </TableRow>
+	
+    <TableRow
+        android:id="@+id/menu_row_3"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:paddingLeft="@dimen/list_padding"
+	    android:paddingRight="@dimen/list_padding"
+	    android:clickable="true" >
+	    
+        <ImageView
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:gravity="center_vertical"
+		    android:src="@android:drawable/ic_menu_mapmode"
+		    android:minHeight="@dimen/slidingmenu_item_height" />
+	    
+	    <TextView
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:fontFamily="sans-serif-light"
+		    android:textStyle="normal"
+		    android:textSize="18sp"
+		    android:textIsSelectable="false"
+		    android:gravity="center_vertical"
+		    android:text="@string/slidingmenu_item_map"
+		    android:minHeight="@dimen/slidingmenu_item_height" />
+	</TableRow>
+	
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:padding="1dp"
+            android:layout_weight="1"
+            android:background="@android:color/darker_gray" />
+    </TableRow>
+	
+    <TableRow
+        android:id="@+id/menu_row_4"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:paddingLeft="@dimen/list_padding"
+	    android:paddingRight="@dimen/list_padding"
+	    android:clickable="true" >
+	    
+        <ImageView
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:gravity="center_vertical"
+		    android:src="@android:drawable/ic_menu_rotate"
+		    android:minHeight="@dimen/slidingmenu_item_height" />
+	    
+	    <TextView
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:fontFamily="sans-serif-light"
+		    android:textStyle="normal"
+		    android:textSize="18sp"
+		    android:textIsSelectable="false"
+		    android:gravity="center_vertical"
+		    android:text="@string/slidingmenu_item_sync"
+		    android:minHeight="@dimen/slidingmenu_item_height" />
+	</TableRow>
+	
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:padding="1dp"
+            android:layout_weight="1"
+            android:background="@android:color/darker_gray" />
+    </TableRow>
+	
+    <TableRow
+        android:id="@+id/menu_row_5"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:paddingLeft="@dimen/list_padding"
+	    android:paddingRight="@dimen/list_padding"
+	    android:clickable="true" >
+	    
+        <ImageView
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:gravity="center_vertical"
+		    android:src="@android:drawable/ic_menu_preferences"
+		    android:minHeight="@dimen/slidingmenu_item_height" />
+	    
+	    <TextView
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:fontFamily="sans-serif-light"
+		    android:textStyle="normal"
+		    android:textSize="18sp"
+		    android:textIsSelectable="false"
+		    android:gravity="center_vertical"
+		    android:text="@string/slidingmenu_item_settings"
+		    android:minHeight="@dimen/slidingmenu_item_height" />
+	</TableRow>
+	
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:padding="1dp"
+            android:layout_weight="1"
+            android:background="@android:color/darker_gray" />
+    </TableRow>
+	
+    <TableRow
+        android:id="@+id/menu_row_6"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:paddingLeft="@dimen/list_padding"
+	    android:paddingRight="@dimen/list_padding"
+	    android:clickable="true" >
+	    
+        <ImageView
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:gravity="center_vertical"
+		    android:src="@android:drawable/ic_menu_info_details"
+		    android:minHeight="@dimen/slidingmenu_item_height" />
+	    
+	    <TextView
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:fontFamily="sans-serif-light"
+		    android:textStyle="normal"
+		    android:textSize="18sp"
+		    android:textIsSelectable="false"
+		    android:gravity="center_vertical"
+		    android:text="@string/slidingmenu_item_about"
+		    android:minHeight="@dimen/slidingmenu_item_height" />
+	</TableRow>
+	
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:padding="1dp"
+            android:layout_weight="1"
+            android:background="@android:color/darker_gray" />
+    </TableRow>
+	
+</TableLayout>

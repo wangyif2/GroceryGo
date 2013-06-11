@@ -10,6 +10,7 @@ import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.groceryotg.android.settings.SettingsActivity;
 import com.slidingmenu.lib.SlidingMenu;
 
 public class ShopCartOverviewFragmentActivity extends SherlockFragmentActivity {
@@ -62,8 +63,7 @@ public class ShopCartOverviewFragmentActivity extends SherlockFragmentActivity {
                 	launchHomeActivity();
                 } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_cart))) {
                     // Selected Shopping Cart
-                	if (slidingMenu.isMenuShowing())
-                        slidingMenu.showContent();
+                	launchShopCartActivity();
                 } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_map))) {
                     // Selected Map
                     launchMapActivity();
@@ -73,8 +73,7 @@ public class ShopCartOverviewFragmentActivity extends SherlockFragmentActivity {
                         slidingMenu.showContent();
                 } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_settings))) {
                     // Selected Settings
-                	if (slidingMenu.isMenuShowing())
-                        slidingMenu.showContent();
+                	launchSettingsActivity();
                 } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_about))) {
                     // Selected About
                     //startActivity(new Intent(CategoryOverView.this, About.class));
@@ -97,6 +96,16 @@ public class ShopCartOverviewFragmentActivity extends SherlockFragmentActivity {
     private void launchMapActivity() {
         Intent intent = new Intent(this, GroceryMapView.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+    }
+    
+    private void launchSettingsActivity() {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
+    }
+    
+    private void launchShopCartActivity() {
+        Intent intent = new Intent(this, ShopCartOverviewFragmentActivity.class);
         startActivity(intent);
     }
 }

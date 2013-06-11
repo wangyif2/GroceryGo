@@ -17,6 +17,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.widget.SearchView;
 import com.groceryotg.android.fragment.GlobalSearchFragment;
+import com.groceryotg.android.settings.SettingsActivity;
 import com.slidingmenu.lib.SlidingMenu;
 
 public class GlobalSearchFragmentActivity extends SherlockFragmentActivity {
@@ -189,8 +190,7 @@ public class GlobalSearchFragmentActivity extends SherlockFragmentActivity {
                         mSlidingMenu.showContent();
                 } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_settings))) {
                     // Selected Settings
-                    if (mSlidingMenu.isMenuShowing())
-                        mSlidingMenu.showContent();
+                	launchSettingsActivity();
                 } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_about))) {
                     // Selected About
                     //startActivity(new Intent(CategoryOverView.this, About.class));
@@ -214,6 +214,11 @@ public class GlobalSearchFragmentActivity extends SherlockFragmentActivity {
     
     private void launchShopCartActivity() {
         Intent intent = new Intent(this, ShopCartOverviewFragmentActivity.class);
+        startActivity(intent);
+    }
+    
+    private void launchSettingsActivity() {
+        Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
     }
     

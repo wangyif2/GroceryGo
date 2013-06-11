@@ -32,7 +32,7 @@ import com.actionbarsherlock.widget.SearchView;
 
 import com.groceryotg.android.GlobalSearchFragmentActivity;
 import com.groceryotg.android.GroceryFragmentActivity;
-import com.groceryotg.android.GroceryMapView;
+import com.groceryotg.android.GroceryMapActivity;
 import com.groceryotg.android.R;
 import com.groceryotg.android.ShopCartOverviewFragmentActivity;
 import com.groceryotg.android.database.CartTable;

@@ -12,7 +12,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.groceryotg.android.GroceryFragmentActivity;
-import com.groceryotg.android.GroceryMapView;
+import com.groceryotg.android.GroceryMapActivity;
 import com.groceryotg.android.R;
 import com.groceryotg.android.ShopCartOverviewFragmentActivity;
 import com.groceryotg.android.database.CartTable;
@@ -152,7 +152,7 @@ public class GroceryOTGUtils {
     }
     
     public static void launchMapActivity(Activity activity) {
-        Intent intent = new Intent(activity, GroceryMapView.class);
+        Intent intent = new Intent(activity, GroceryMapActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         activity.startActivity(intent);
     }

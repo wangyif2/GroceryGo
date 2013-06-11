@@ -27,7 +27,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.groceryotg.android.GroceryFragmentActivity;
-import com.groceryotg.android.GroceryMapView;
+import com.groceryotg.android.GroceryMapActivity;
 import com.groceryotg.android.R;
 import com.groceryotg.android.ShopCartCursorAdapter;
 import com.groceryotg.android.ShopCartDetailView;

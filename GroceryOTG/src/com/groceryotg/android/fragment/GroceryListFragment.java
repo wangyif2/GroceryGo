@@ -250,7 +250,7 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
     }
 
     private void launchMapActivity() {
-        Intent intent = new Intent(getActivity(), GroceryMapView.class);
+        Intent intent = new Intent(getActivity(), GroceryMapActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }

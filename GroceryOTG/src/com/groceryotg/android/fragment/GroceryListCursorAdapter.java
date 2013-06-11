@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.*;
-import com.groceryotg.android.GroceryMapView;
+import com.groceryotg.android.GroceryMapActivity;
 import com.groceryotg.android.R;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
@@ -187,9 +187,9 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
         		}
         		
             	Bundle extras = new Bundle();
-            	extras.putIntegerArrayList(GroceryMapView.EXTRA_FILTER_STORE, ids);
+            	extras.putIntegerArrayList(GroceryMapActivity.EXTRA_FILTER_STORE, ids);
             	
-        		Intent intent = new Intent(activity, GroceryMapView.class);
+        		Intent intent = new Intent(activity, GroceryMapActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.putExtras(extras);
                 activity.startActivity(intent);

@@ -32,7 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class GroceryMapView extends SherlockFragmentActivity {
+public class GroceryMapActivity extends SherlockFragmentActivity {
     public static final int CAM_ZOOM = 13;
     public static final String MAP_FRAGMENT_TAG = "map_fragment_tag";
     public static final String EXTRA_FILTER_STORE_PARENT = "extra_filter_store_parent";
@@ -69,8 +69,8 @@ public class GroceryMapView extends SherlockFragmentActivity {
 	        
 	        Bundle extras = getIntent().getExtras();
 	        if (extras != null) {
-		        this.filterStoreParents = extras.getIntegerArrayList(GroceryMapView.EXTRA_FILTER_STORE_PARENT);
-		        this.filterStores = extras.getIntegerArrayList(GroceryMapView.EXTRA_FILTER_STORE);
+		        this.filterStoreParents = extras.getIntegerArrayList(GroceryMapActivity.EXTRA_FILTER_STORE_PARENT);
+		        this.filterStores = extras.getIntegerArrayList(GroceryMapActivity.EXTRA_FILTER_STORE);
 	        }
         }
     }

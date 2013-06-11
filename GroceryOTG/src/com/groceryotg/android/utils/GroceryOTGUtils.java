@@ -6,9 +6,12 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.groceryotg.android.GroceryFragmentActivity;
@@ -94,49 +97,67 @@ public class GroceryOTGUtils {
     }
     
     public static void registerSlidingMenu(final SlidingMenu slidingMenu, final Activity activity) {
-    	// Populate the SlidingMenu
-        String[] slidingMenuItems = new String[]{activity.getString(R.string.slidingmenu_item_cat),
-        		activity.getString(R.string.slidingmenu_item_cart),
-        		activity.getString(R.string.slidingmenu_item_map),
-        		activity.getString(R.string.slidingmenu_item_sync),
-        		activity.getString(R.string.slidingmenu_item_settings),
-        		activity.getString(R.string.slidingmenu_item_about)};
-
-        ListView menuView = (ListView) activity.findViewById(R.id.menu_items);
-        ArrayAdapter<String> menuAdapter = new ArrayAdapter<String>(activity,
-                R.layout.menu_item, android.R.id.text1, slidingMenuItems);
-        menuView.setAdapter(menuAdapter);
-
-        menuView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-                // Switch activity based on what mSlidingMenu item the user selected
-                TextView textView = (TextView) view;
-                String selectedItem = textView.getText().toString();
-                
-                if (slidingMenu.isMenuShowing())
+        TableRow row;
+        
+        row = (TableRow) activity.findViewById(R.id.menu_row_1);
+        row.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (slidingMenu.isMenuShowing())
         			slidingMenu.showContent();
-
-                if (selectedItem.equalsIgnoreCase(activity.getString(R.string.slidingmenu_item_cat))) {
-                    // Selected Categories
-                    launchHomeActivity(activity);
-                } else if (selectedItem.equalsIgnoreCase(activity.getString(R.string.slidingmenu_item_cart))) {
-                    // Selected Shopping Cart
-                    launchShopCartActivity(activity);
-                } else if (selectedItem.equalsIgnoreCase(activity.getString(R.string.slidingmenu_item_map))) {
-                    // Selected Map
-                    launchMapActivity(activity);
-                } else if (selectedItem.equalsIgnoreCase(activity.getString(R.string.slidingmenu_item_sync))) {
-                    // Selected Sync
-                } else if (selectedItem.equalsIgnoreCase(activity.getString(R.string.slidingmenu_item_settings))) {
-                    // Selected Settings
-                	launchSettingsActivity(activity);
-                } else if (selectedItem.equalsIgnoreCase(activity.getString(R.string.slidingmenu_item_about))) {
-                    // Selected About
-                }
-            }
+				// Selected Categories
+				launchHomeActivity(activity);
+			}
         });
+        row = (TableRow) activity.findViewById(R.id.menu_row_2);
+        row.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (slidingMenu.isMenuShowing())
+        			slidingMenu.showContent();
+				// Selected Shopping Cart
+				launchShopCartActivity(activity);
+			}
+        });
+        row = (TableRow) activity.findViewById(R.id.menu_row_3);
+        row.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (slidingMenu.isMenuShowing())
+        			slidingMenu.showContent();
+				// Selected Map
+                launchMapActivity(activity);
+			}
+        });
+        row = (TableRow) activity.findViewById(R.id.menu_row_4);
+        row.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (slidingMenu.isMenuShowing())
+        			slidingMenu.showContent();
+				// Selected Sync
+			}
+        });
+        row = (TableRow) activity.findViewById(R.id.menu_row_5);
+        row.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (slidingMenu.isMenuShowing())
+        			slidingMenu.showContent();
+				// Selected Settings
+            	launchSettingsActivity(activity);
+			}
+        });
+        row = (TableRow) activity.findViewById(R.id.menu_row_6);
+        row.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (slidingMenu.isMenuShowing())
+        			slidingMenu.showContent();
+				// Selected About
+			}
+        });
+        
     }
 
     public static void launchHomeActivity(Activity activity) {

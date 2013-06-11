@@ -37,7 +37,7 @@ public class CategoryGridFragment extends SherlockFragment implements LoaderMana
         gridview = (GridView) v.findViewById(R.id.gridview);
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                GroceryFragmentActivity.mPager.setCurrentItem(position + 1, true);
+                GroceryFragmentActivity.mPager.setCurrentItem(position+1, true);
             }
         });
         gridview.setEmptyView(v.findViewById(R.id.empty_category_list));
@@ -58,15 +58,6 @@ public class CategoryGridFragment extends SherlockFragment implements LoaderMana
         getLoaderManager().initLoader(INDEX_LOADER_CAT, null, this);
         adapter = new MergeAdapter();
 
-        /*TODO: This is so much hack... need refactor as soon as possible*/
-        String[] col = {CategoryTable.COLUMN_ID, CategoryTable.COLUMN_CATEGORY_NAME};
-        MatrixCursor mc = new MatrixCursor(col);
-        Object[] obj = {"0", "my flyer"};
-        mc.addRow(obj);
-        SimpleCursorAdapter sa1 = new MyFlyerGridCursorAdapter(getActivity(), R.layout.category_fragment_row, null, from, to);
-        sa1.changeCursor(mc);
-        adapter.addAdapter(sa1);
-
         SimpleCursorAdapter sa = new CategoryGridCursorAdapter(getActivity(), R.layout.category_fragment_row, null, from, to);
         adapter.addAdapter(sa);
 
@@ -82,14 +73,14 @@ public class CategoryGridFragment extends SherlockFragment implements LoaderMana
 
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        SimpleCursorAdapter sa = (SimpleCursorAdapter) adapter.getPieces().get(1);
+        SimpleCursorAdapter sa = (SimpleCursorAdapter) adapter.getPieces().get(0);
         if (sa != null)
             sa.changeCursor(cursor);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
-        SimpleCursorAdapter sa = (SimpleCursorAdapter) adapter.getAdapter(1);
+        SimpleCursorAdapter sa = (SimpleCursorAdapter) adapter.getAdapter(0);
         sa.changeCursor(null);
     }
 }

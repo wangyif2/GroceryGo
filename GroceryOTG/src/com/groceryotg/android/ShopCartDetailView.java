@@ -15,10 +15,6 @@ import com.actionbarsherlock.view.MenuItem;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 
-/**
- * User: robert
- * Date: 23/02/13
- */
 public class ShopCartDetailView extends SherlockActivity {
     private EditText mCartGroceryName;
 

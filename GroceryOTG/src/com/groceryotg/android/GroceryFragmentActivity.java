@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
@@ -165,6 +166,21 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+    
+    @Override
+    public boolean onKeyDown(int keycode, KeyEvent e) {
+    	switch (keycode) {
+    	case KeyEvent.KEYCODE_BACK:
+    		if (mSlidingMenu.isMenuShowing()) {
+    			mSlidingMenu.showContent();
+    			return true;
+    		} else if (mPager.getCurrentItem() > 0) {
+    			mPager.setCurrentItem(0);
+    			return true;
+    		}
+    	}
+    	return super.onKeyDown(keycode, e);
     }
 
     private HashMap<Integer, String> getCategoryInfo() {

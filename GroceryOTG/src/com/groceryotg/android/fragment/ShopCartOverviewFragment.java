@@ -1,64 +1,84 @@
-package com.groceryotg.android;
-
-import android.app.LoaderManager;
-import android.content.CursorLoader;
-import android.content.Intent;
-import android.content.Loader;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.Bundle;
-import android.view.ContextMenu;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
-import com.actionbarsherlock.app.SherlockListActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
-import com.groceryotg.android.database.CartTable;
-import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
-import com.slidingmenu.lib.SlidingMenu;
+package com.groceryotg.android.fragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * User: robert
- * Date: 23/02/13
- */
-public class ShopCartOverView extends SherlockListActivity implements LoaderManager.LoaderCallbacks<Cursor> {
-    private static final int DELETE_ID = 1;
+import android.app.Activity;
+import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
+import android.view.ContextMenu;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.AdapterView.OnItemClickListener;
+
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.app.SherlockListFragment;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
+import com.groceryotg.android.GroceryFragmentActivity;
+import com.groceryotg.android.GroceryMapView;
+import com.groceryotg.android.R;
+import com.groceryotg.android.ShopCartCursorAdapter;
+import com.groceryotg.android.ShopCartDetailView;
+import com.groceryotg.android.ShopCartViewBinder;
+import com.groceryotg.android.database.CartTable;
+import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
+import com.slidingmenu.lib.SlidingMenu;
+
+public class ShopCartOverviewFragment extends SherlockListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
+
+	private static final int DELETE_ID = 1;
     private ShopCartCursorAdapter adapter;
-    private SlidingMenu slidingMenu;
+
     private Menu actionBarMenu;
     private boolean filterShoplist;
     private boolean filterWatchlist;
     
+    private Activity mActivity;
+    
+    @Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+		this.mActivity = activity;
+		this.setHasOptionsMenu(true);
+	}
+    
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+    	super.onActivityCreated(savedInstanceState);
+    	registerForContextMenu(getListView());
+    }
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.shopcart_list);
-        this.getListView().setDividerHeight(2);
         
         initFilter();
         
-        configActionBar();
-        
-        configSlidingMenu();
-        
         fillData();
-        registerForContextMenu(getListView());
+    }
+    
+    @Override
+    public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    	View v = inflater.inflate(R.layout.shopcart_list, container, false);
+    	return v;
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getSupportMenuInflater();
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.shopcart_menu, menu);
         actionBarMenu = menu;
-        return true;
     }
 
     @Override
@@ -85,11 +105,11 @@ public class ShopCartOverView extends SherlockListActivity implements LoaderMana
                 // in the Action Bar. This handles Android < 4.1.
             	
             	// Specify the parent activity
-            	Intent parentActivityIntent = new Intent(this, GroceryFragmentActivity.class);
+            	Intent parentActivityIntent = new Intent(mActivity, GroceryFragmentActivity.class);
             	parentActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | 
             								Intent.FLAG_ACTIVITY_NEW_TASK);
             	startActivity(parentActivityIntent);
-            	finish();
+            	mActivity.finish();
             	return true;
         }
         return super.onOptionsItemSelected(item);
@@ -107,7 +127,7 @@ public class ShopCartOverView extends SherlockListActivity implements LoaderMana
             case DELETE_ID:
                 AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
                 Uri uri = Uri.parse(GroceryotgProvider.CONTENT_URI_CART_ITEM + "/" + info.id);
-                getContentResolver().delete(uri, null, null);
+                mActivity.getContentResolver().delete(uri, null, null);
                 fillData();
                 return true;
         }
@@ -115,9 +135,9 @@ public class ShopCartOverView extends SherlockListActivity implements LoaderMana
     }
 
     @Override
-    protected void onListItemClick(ListView l, View v, int position, long id) {
+	public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        Intent i = new Intent(this, ShopCartDetailView.class);
+        Intent i = new Intent(mActivity, ShopCartDetailView.class);
         Uri cartGroceryItemUri = Uri.parse(GroceryotgProvider.CONTENT_URI_CART_ITEM + "/" + id);
         i.putExtra(GroceryotgProvider.CONTENT_ITEM_TYPE_CART_ITEM, cartGroceryItemUri);
 
@@ -125,7 +145,7 @@ public class ShopCartOverView extends SherlockListActivity implements LoaderMana
     }
 
     private void createCartGroceryItem() {
-        Intent i = new Intent(this, ShopCartDetailView.class);
+        Intent i = new Intent(mActivity, ShopCartDetailView.class);
         startActivity(i);
     }
 
@@ -146,7 +166,7 @@ public class ShopCartOverView extends SherlockListActivity implements LoaderMana
         					 R.id.cart_row_inwatchlist};
 
         getLoaderManager().initLoader(0, null, this);
-        adapter = new ShopCartCursorAdapter(this, R.layout.shopcart_row, null, from, to);
+        adapter = new ShopCartCursorAdapter(mActivity, R.layout.shopcart_row, null, from, to);
         adapter.setViewBinder(new ShopCartViewBinder());
         setListAdapter(adapter);
     }
@@ -179,7 +199,7 @@ public class ShopCartOverView extends SherlockListActivity implements LoaderMana
         
         String sortOrder = CartTable.TABLE_CART + "." + CartTable.COLUMN_CART_GROCERY_NAME;
         
-        return new CursorLoader(this, GroceryotgProvider.CONTENT_URI_CART_ITEM, projection, selection, selectionArgsArr, sortOrder);
+        return new CursorLoader(mActivity, GroceryotgProvider.CONTENT_URI_CART_ITEM, projection, selection, selectionArgsArr, sortOrder);
     }
 
     @Override
@@ -192,81 +212,6 @@ public class ShopCartOverView extends SherlockListActivity implements LoaderMana
         adapter.swapCursor(null);
     }
 
-    private void launchHomeActivity() {
-        Intent intent = new Intent(this, GroceryFragmentActivity.class);
-        startActivity(intent);
-    }
-    
-    private void launchMapActivity() {
-        Intent intent = new Intent(this, GroceryMapView.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-    }
-    
-    private void configSlidingMenu() {
-        slidingMenu = new SlidingMenu(this);
-        slidingMenu.setMode(SlidingMenu.LEFT);
-        slidingMenu.setShadowWidthRes(R.dimen.shadow_width);
-        slidingMenu.setShadowDrawable(R.xml.shadow);
-        slidingMenu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
-        slidingMenu.setFadeDegree(0.35f);
-        slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
-        slidingMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
-        slidingMenu.setMenu(R.layout.menu_frame);
-
-        // Populate the SlidingMenu
-        String[] slidingMenuItems = new String[]{getString(R.string.slidingmenu_item_cat),
-                getString(R.string.slidingmenu_item_cart),
-                getString(R.string.slidingmenu_item_map),
-                getString(R.string.slidingmenu_item_sync),
-                getString(R.string.slidingmenu_item_settings),
-                getString(R.string.slidingmenu_item_about)};
-        
-        ListView menuView = (ListView) findViewById(R.id.menu_items);
-        ArrayAdapter<String> menuAdapter = new ArrayAdapter<String>(this,
-                R.layout.menu_item, android.R.id.text1, slidingMenuItems);
-        menuView.setAdapter(menuAdapter);
-
-        menuView.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-                // Switch activity based on what slidingMenu item the user selected
-                TextView textView = (TextView) view;
-                String selectedItem = textView.getText().toString();
-
-                if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_cat))) {
-                    // Selected Categories
-                	launchHomeActivity();
-                } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_cart))) {
-                    // Selected Shopping Cart
-                	if (slidingMenu.isMenuShowing())
-                        slidingMenu.showContent();
-                } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_map))) {
-                    // Selected Map
-                    launchMapActivity();
-                } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_sync))) {
-                    // Selected Sync
-                	if (slidingMenu.isMenuShowing())
-                        slidingMenu.showContent();
-                } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_settings))) {
-                    // Selected Settings
-                	if (slidingMenu.isMenuShowing())
-                        slidingMenu.showContent();
-                } else if (selectedItem.equalsIgnoreCase(getString(R.string.slidingmenu_item_about))) {
-                    // Selected About
-                    //startActivity(new Intent(CategoryOverView.this, About.class));
-                	if (slidingMenu.isMenuShowing())
-                        slidingMenu.showContent();
-                }
-            }
-        });
-    }
-    
-    private void configActionBar() {
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    }
-    
     private void initFilter() {
     	filterShoplist = false;
         filterWatchlist = false;

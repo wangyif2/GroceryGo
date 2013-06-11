@@ -1,11 +1,9 @@
 package com.groceryotg.android.settings;
 
-import java.util.HashSet;
-import java.util.Set;
+import com.groceryotg.android.utils.MultiSelectListPreference;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 import android.util.SparseBooleanArray;
 
@@ -25,8 +23,14 @@ public class SettingsManager {
 	}
 	
 	public static SparseBooleanArray getStoreFilter(Context context) {
-		Set<String> strs = getPrefs(context).getStringSet("store_select", new HashSet<String>());
+		String strRaw = getPrefs(context).getString("store_select", "");
+		String[] strs = MultiSelectListPreference.fromPersistedPreferenceValue(strRaw);
 		SparseBooleanArray a = new SparseBooleanArray();
+		
+		if (strRaw == "") {
+			return a;
+		}
+		
 		for (String s : strs) {
 			a.append(Integer.valueOf(s), true);
 		}
@@ -34,7 +38,7 @@ public class SettingsManager {
 		return a;
 	}
 	
-	public static int setStoreFilter(Context context, SparseBooleanArray a) {
+	/*public static int setStoreFilter(Context context, SparseBooleanArray a) {
 		SharedPreferences prefs = getPrefs(context);
 		Editor editor = prefs.edit();
 		
@@ -49,5 +53,5 @@ public class SettingsManager {
 		editor.commit();
 		
 		return 0;
-	}
+	}*/
 }

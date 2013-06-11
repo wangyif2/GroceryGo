@@ -15,11 +15,16 @@ import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.actionbarsherlock.app.SherlockListFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.widget.SearchView;
 import com.groceryotg.android.*;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.FlyerTable;
@@ -36,11 +41,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-
-/**
- * User: robert
- * Date: 16/03/13
- */
 public class GroceryListFragment extends SherlockListFragment implements SearchView.OnQueryTextListener, SearchView.OnCloseListener, LoaderManager.LoaderCallbacks<Cursor> {
     private static final String CATEGORY_POSITION = "position";
     Activity activity;
@@ -236,8 +236,8 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
                 newQuery != null && GroceryFragmentActivity.myQuery.equals(newQuery))
             return true;
 
-        Intent globalSearchIntent = new Intent(getActivity(), GlobalSearchActivity.class);
-        globalSearchIntent.putExtra(GlobalSearchActivity.GLOBAL_SEARCH, true);
+        Intent globalSearchIntent = new Intent(getActivity(), GlobalSearchFragmentActivity.class);
+        globalSearchIntent.putExtra(GlobalSearchFragmentActivity.GLOBAL_SEARCH, true);
         globalSearchIntent.putExtra(SearchManager.QUERY, newQuery);
         globalSearchIntent.setAction(Intent.ACTION_SEARCH);
         startActivity(globalSearchIntent);
@@ -256,7 +256,7 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
     }
 
     private void launchShopCartActivity() {
-        Intent intent = new Intent(getActivity(), ShopCartOverView.class);
+        Intent intent = new Intent(getActivity(), ShopCartOverviewFragmentActivity.class);
         startActivity(intent);
     }
 
@@ -367,7 +367,7 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
                     int key_index = selectedItems.keyAt(i);
                     selectedStores.append(mapIndexToId.get(key_index), selectedItems.valueAt(i));
                 }
-                SettingsManager.setStoreFilter(activity, selectedStores);
+                //SettingsManager.setStoreFilter(activity, selectedStores);
                 loadDataWithQuery(true, GroceryFragmentActivity.myQuery);
                 Toast.makeText(getActivity(), getResources().getString(R.string.groceryoverview_filter_updated), Toast.LENGTH_LONG).show();
             }

@@ -24,8 +24,9 @@ public class AboutDialogFragment extends SherlockDialogFragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.about, container, false);
 		
+		String titleString = getString(R.string.about_title) + " v" + getString(R.string.version_name);
 		Dialog d = getDialog();
-		d.setTitle(R.string.about_title);
+		d.setTitle(titleString);
 		
 		return view;
 	}

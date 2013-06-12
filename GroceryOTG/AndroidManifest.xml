@@ -110,6 +110,8 @@
         <receiver
         	android:name="com.groceryotg.android.services.location.LocationServiceReceiver" >
         	<intent-filter>
+        		<action android:name="com.groceryotg.android.services.location.LocationServiceReceiver.LOCATION_SERVICE_RECEIVER_ENABLE" />
+        		<action android:name="com.groceryotg.android.services.location.LocationServiceReceiver.LOCATION_SERVICE_RECEIVER_DISABLE" />
         		<action android:name="android.intent.action.BOOT_COMPLETED" />
         	</intent-filter>
         </receiver>

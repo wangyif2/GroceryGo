@@ -9,17 +9,35 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.LocationManager;
 import android.os.SystemClock;
+import android.util.Log;
 
 public class LocationServiceReceiver extends BroadcastReceiver {
+	public static final String LOCATION_SERVICE_RECEIVER_ENABLE = "GOTG_ENABLE_NOTIFICATIONS";
+	public static final String LOCATION_SERVICE_RECEIVER_DISABLE = "GOTG_DISABLE_NOTIFICATIONS";
+	
     @Override
     public void onReceive(Context context, Intent intent) {
-    	if (SettingsManager.getNotificationsEnabled(context)) {
-	        AlarmManager locationAlarm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-	        Intent locationIntent = new Intent(context, LocationMonitor.class);
-	        locationIntent.putExtra(LocationMonitor.EXTRA_INTENT, new Intent(context, LocationReceiver.class));
-	        locationIntent.putExtra(LocationMonitor.EXTRA_PROVIDER, LocationManager.NETWORK_PROVIDER);
-	        PendingIntent locationPendingIntent = PendingIntent.getBroadcast(context, 0, locationIntent, 0);
-	        locationAlarm.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), LocationReceiver.pollingPeriod, locationPendingIntent);
-    	}
+    	Log.i("GroceryOTG", "Got broadcast");
+    	AlarmManager locationAlarm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent locationIntent = new Intent(context, LocationMonitor.class);
+        locationIntent.putExtra(LocationMonitor.EXTRA_INTENT, new Intent(context, LocationReceiver.class));
+        locationIntent.putExtra(LocationMonitor.EXTRA_PROVIDER, LocationManager.NETWORK_PROVIDER);
+        PendingIntent locationPendingIntent = PendingIntent.getBroadcast(context, 0, locationIntent, 0);
+        
+    	if (intent.getAction() == Intent.ACTION_BOOT_COMPLETED) {
+    		// If the intent comes from system startup
+	    	if (SettingsManager.getNotificationsEnabled(context)) {
+	    		// If notifications are enabled
+		        locationAlarm.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), LocationReceiver.pollingPeriod, locationPendingIntent);
+	    	}
+    	} else if (intent.getAction() == LocationServiceReceiver.LOCATION_SERVICE_RECEIVER_ENABLE) {
+			Log.i("GroceryOTG", "Enabling notifications");
+			// If notifications are enabled
+			locationAlarm.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), LocationReceiver.pollingPeriod, locationPendingIntent);
+    	} else if (intent.getAction() == LocationServiceReceiver.LOCATION_SERVICE_RECEIVER_DISABLE) {
+			Log.i("GroceryOTG", "Disabling notifications");
+			// If notifications are disabled, then cancel any alarms - in essence disabling the notification service
+			locationAlarm.cancel(locationPendingIntent);
+    	}	
     }
 }

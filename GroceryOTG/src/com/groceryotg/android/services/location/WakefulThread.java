@@ -5,11 +5,6 @@ import android.os.PowerManager;
 import android.util.Log;
 
 /**
- * User: robert
- * Date: 25/01/13
- */
-
-/**
  * HandlerThread that unlocks itself when its work is
  * complete. Used in conjunction with a WakeLock to
  * accomplish this end.

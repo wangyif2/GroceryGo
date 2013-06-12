@@ -1,22 +1,16 @@
 package com.groceryotg.android;
 
 import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.*;
 import android.database.Cursor;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.widget.ProgressBar;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 import com.groceryotg.android.services.NetworkHandler;
 import com.groceryotg.android.services.ServerURL;
-import com.groceryotg.android.services.location.LocationMonitor;
-import com.groceryotg.android.services.location.LocationReceiver;
 
 public class SplashScreen extends Activity {
 	private static final String SETTINGS_IS_DB_POPULATED = "isDBPopulated";
@@ -63,8 +57,6 @@ public class SplashScreen extends Activity {
     	configProgressBar();
 
         configDatabase();
-
-        configLocationPoll();
     }
     
     private void configProgressBar() {
@@ -144,17 +136,6 @@ public class SplashScreen extends Activity {
         // set the flag to true so the next activity won't start up
         mIsBackButtonPressed = true;
         super.onBackPressed();
-    }
-
-    private void configLocationPoll() {
-        AlarmManager locationAlarm = (AlarmManager) getSystemService(ALARM_SERVICE);
-        Intent locationIntent = new Intent(this, LocationMonitor.class);
-        locationIntent.putExtra(LocationMonitor.EXTRA_INTENT, new Intent(this, LocationReceiver.class));
-        locationIntent.putExtra(LocationMonitor.EXTRA_PROVIDER, LocationManager.NETWORK_PROVIDER);
-        PendingIntent locationPendingIntent = PendingIntent.getBroadcast(this, 0, locationIntent, 0);
-        locationAlarm.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), LocationReceiver.pollingPeriod, locationPendingIntent);
-        
-        mProgressBar.incrementProgressBy(10);
     }
 
     private class RefreshStatusReceiver extends BroadcastReceiver {

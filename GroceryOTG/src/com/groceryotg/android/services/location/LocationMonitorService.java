@@ -12,10 +12,6 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
 
-/**
- * User: robert
- * Date: 25/01/13
- */
 public class LocationMonitorService extends Service {
     private static final String LOCK_NAME_STATIC = "com.groceryotg.android.service.LocationPoller";
     private static final int DEFAULT_TIMEOUT = 120000; // two minutes

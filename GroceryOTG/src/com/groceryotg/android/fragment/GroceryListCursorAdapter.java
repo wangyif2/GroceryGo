@@ -36,14 +36,17 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
         long id = getItemId(position);
         
         CheckBox cb_inshoplist = (CheckBox) view.findViewById(R.id.grocery_row_in_shopcart);
-        cb_inshoplist.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        cb_inshoplist.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onCheckedChanged(CompoundButton v, boolean checked) {
+			public void onClick(View view) {
+				CheckBox cb = (CheckBox) view;
+				boolean isChecked = cb.isChecked();
+				
 				// the "v" parameter represents the just-clicked button/image
 				//CheckBox cb = (CheckBox) v.findViewById(R.id.grocery_row_in_shopcart);
             	
             	// Get the row ID and grocery name from the parent view
-            	TableLayout tableParent = (TableLayout) v.getParent().getParent().getParent();
+            	TableLayout tableParent = (TableLayout) cb.getParent().getParent().getParent();
             	TextView tv_id = (TextView)((LinearLayout)((TableRow) tableParent.getChildAt(0)).getChildAt(0)).getChildAt(0);
             	TextView tv_name = (TextView)((LinearLayout)((TableRow) tableParent.getChildAt(0)).getChildAt(0)).getChildAt(1);
             	
@@ -51,7 +54,7 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
             	int shopListFlag;
             	String displayMessage;
             	
-            	if (checked == true) {
+            	if (isChecked == true) {
             		shopListFlag = CartTable.FLAG_TRUE;
             		displayMessage = context.getResources().getString(R.string.cart_shoplist_added);
             	}
@@ -66,10 +69,10 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
                 values.put(CartTable.COLUMN_CART_FLAG_SHOPLIST, shopListFlag);
                 values.put(CartTable.COLUMN_CART_FLAG_WATCHLIST, CartTable.FLAG_FALSE);
                 
-                boolean existsInDatabase = !checked;
+                boolean existsInDatabase = !isChecked;
                 
                 // Determine whether to insert, update, or delete the CartTable entry
-                if (!existsInDatabase && checked) {
+                if (!existsInDatabase && isChecked) {
                 	activity.getContentResolver().insert(GroceryotgProvider.CONTENT_URI_CART_ITEM, values);
                 }
                 /*else if (existsInDatabase && watchListFlag==CartTable.FLAG_TRUE) {
@@ -77,7 +80,7 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
                 	String[] selectionArgs = { tv_id.getText().toString() };
                 	activity.getContentResolver().update(GroceryotgProvider.CONTENT_URI_CART_ITEM, values, whereClause, selectionArgs);
                 }*/
-                else if (existsInDatabase && !checked) {
+                else if (existsInDatabase && !isChecked) {
                 	String whereClause = CartTable.TABLE_CART + "." + CartTable.COLUMN_CART_GROCERY_ID + "=?";
                 	String[] selectionArgs = { tv_id.getText().toString() };
                 	activity.getContentResolver().delete(GroceryotgProvider.CONTENT_URI_CART_ITEM, whereClause, selectionArgs);

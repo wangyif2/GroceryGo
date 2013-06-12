@@ -35,12 +35,15 @@ public class ShopCartCursorAdapter extends SimpleCursorAdapter {
         long id = getItemId(position);
         
         CheckBox cb_inshoplist = (CheckBox) view.findViewById(R.id.cart_row_in_shopcart);
-        cb_inshoplist.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener () {
+        cb_inshoplist.setOnClickListener(new OnClickListener () {
 			@Override
-			public void onCheckedChanged(CompoundButton v, boolean isChecked)
+			public void onClick(View view)
 			{
+				CheckBox cb = (CheckBox) view;
+				boolean isChecked = cb.isChecked();
+				
             	// Get the row ID and grocery name from the parent view
-            	LinearLayout layoutParent = (LinearLayout) v.getParent().getParent();
+            	LinearLayout layoutParent = (LinearLayout) cb.getParent().getParent();
             	TextView tv_id = (TextView)((LinearLayout) layoutParent.getChildAt(0)).getChildAt(0);
             	TextView tv_grocery_id = (TextView)((LinearLayout) layoutParent.getChildAt(0)).getChildAt(1);
             	TextView tv_name = (TextView)((LinearLayout) layoutParent.getChildAt(0)).getChildAt(2);

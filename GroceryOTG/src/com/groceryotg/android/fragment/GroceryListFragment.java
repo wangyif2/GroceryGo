@@ -74,7 +74,7 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        categoryId = getArguments() != null ? getArguments().getInt(CATEGORY_POSITION) - 1 : 1;
+        categoryId = getArguments().getInt(CATEGORY_POSITION);
         watchSettings();
     }
 

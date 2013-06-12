@@ -73,7 +73,7 @@
 	        android:layout_weight="0.25"
 	        android:layout_marginTop="6dp"
 	        android:text="@+id/grocery_row_price_text"
-	        android:textColor="#01060017"
+	        android:textColor="#ffcc0000"
 	        android:textSize="18sp"
 	        android:fontFamily="sans-serif"
 	        android:singleLine="true"

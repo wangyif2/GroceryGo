@@ -83,7 +83,6 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
     }
 
     private void handleIntent(Intent intent) {
-    	Log.i("GroceryOTG", "Handing intent");
     	clearSearch();
     	
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {

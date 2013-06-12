@@ -1,12 +1,10 @@
 package com.groceryotg.android.fragment;
 
-import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.SimpleCursorAdapter.ViewBinder;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
@@ -23,9 +21,7 @@ import com.groceryotg.android.utils.GroceryOTGUtils;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class GroceryViewBinder implements SimpleCursorAdapter.ViewBinder, ViewBinder {
     @Override

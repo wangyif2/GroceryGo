@@ -3,12 +3,12 @@ package com.groceryotg.android;
 import android.database.Cursor;
 import android.support.v4.widget.SimpleCursorAdapter.ViewBinder;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import com.groceryotg.android.R;
 import com.groceryotg.android.database.CartTable;
-
 
 public class ShopCartViewBinder implements SimpleCursorAdapter.ViewBinder, ViewBinder {
 
@@ -18,28 +18,15 @@ public class ShopCartViewBinder implements SimpleCursorAdapter.ViewBinder, ViewB
         int viewId = view.getId();
 
         if (columnIndex == cursor.getColumnIndex(CartTable.COLUMN_CART_FLAG_SHOPLIST) 
-        		&& viewId == R.id.cart_row_inshoplist) {
+        		&& viewId == R.id.cart_row_in_shopcart) {
         	Integer inShoplist = cursor.getInt(columnIndex);
-        	ImageView img = (ImageView) view;
+        	CheckBox cb = (CheckBox) view;
         	
         	if (inShoplist != 0) {
-        		img.setImageResource(R.drawable.ic_flag_shoplist_highlight);
+        		cb.setChecked(true);
         	}
         	else {
-        		img.setImageResource(R.drawable.ic_flag_shoplist);
-        	}
-        	return true;
-        }	
-        else if (columnIndex == cursor.getColumnIndex(CartTable.COLUMN_CART_FLAG_SHOPLIST) 
-        		&& viewId == R.id.cart_flag_shoplist) {
-        	Integer inShoplist = cursor.getInt(columnIndex);
-        	TextView flag = (TextView) view;
-        	
-        	if (inShoplist != 0) {
-        		flag.setText("1");
-        	}
-        	else {
-        		flag.setText("0");
+        		cb.setChecked(false);
         	}
         	return true;
         }	

@@ -8,6 +8,8 @@ import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -31,19 +33,12 @@ public class ShopCartCursorAdapter extends SimpleCursorAdapter {
     public View getView(int position, View convertView, ViewGroup parent){
         View view = super.getView(position, convertView, parent);
         long id = getItemId(position);
-        ImageView icon_inshoplist = (ImageView) view.findViewById(R.id.cart_row_inshoplist);
-        icon_inshoplist.setOnClickListener(new OnClickListener() 
-        {
-            @Override
-            public void onClick(View v) 
-            {
-            	// the "v" parameter represents the just-clicked button/image
-            	ImageView icon = (ImageView) v.findViewById(R.id.cart_row_inshoplist);
-            	
-            	// This flag represents the state of the shoplist icon *before* the user clicked
-            	TextView tv_selected_shoplist = (TextView) ((LinearLayout)v.getParent()).getChildAt(0);
-            	int shopListFlagBefore = tv_selected_shoplist.getText().toString().equalsIgnoreCase(((Integer)CartTable.FLAG_TRUE).toString()) ? 1 : 0;
-            	
+        
+        CheckBox cb_inshoplist = (CheckBox) view.findViewById(R.id.cart_row_in_shopcart);
+        cb_inshoplist.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener () {
+			@Override
+			public void onCheckedChanged(CompoundButton v, boolean isChecked)
+			{
             	// Get the row ID and grocery name from the parent view
             	LinearLayout layoutParent = (LinearLayout) v.getParent().getParent();
             	TextView tv_id = (TextView)((LinearLayout) layoutParent.getChildAt(0)).getChildAt(0);
@@ -51,31 +46,27 @@ public class ShopCartCursorAdapter extends SimpleCursorAdapter {
             	TextView tv_name = (TextView)((LinearLayout) layoutParent.getChildAt(0)).getChildAt(2);
             	
             	// Toggle shoplist flag
-            	int newImage, shopListFlag;
+            	int shopListFlag;
             	String displayMessage;
             	
-            	if (shopListFlagBefore == CartTable.FLAG_FALSE) {
-            		newImage = R.drawable.ic_flag_shoplist_highlight;
+            	if (isChecked) {
             		shopListFlag = CartTable.FLAG_TRUE;
-            		tv_selected_shoplist.setText(((Integer)CartTable.FLAG_TRUE).toString());
             		displayMessage = context.getResources().getString(R.string.cart_shoplist_added);
             	}
             	else {
-            		newImage = R.drawable.ic_flag_shoplist;
             		shopListFlag = CartTable.FLAG_FALSE;
-            		tv_selected_shoplist.setText(((Integer)CartTable.FLAG_FALSE).toString());
             		displayMessage = context.getResources().getString(R.string.cart_shoplist_removed);
             	}
-            	icon.setImageResource(newImage);
             	
             	ContentValues values = new ContentValues();
                 values.put(CartTable.COLUMN_ID, tv_id.getText().toString());
                 values.put(CartTable.COLUMN_CART_GROCERY_ID, tv_grocery_id.getText().toString());
                 values.put(CartTable.COLUMN_CART_GROCERY_NAME, tv_name.getText().toString());
                 values.put(CartTable.COLUMN_CART_FLAG_SHOPLIST, shopListFlag);
+                values.put(CartTable.COLUMN_CART_FLAG_WATCHLIST, CartTable.FLAG_FALSE);
                 
                 // Determine whether to insert, update, or delete the CartTable entry
-                if (shopListFlag==CartTable.FLAG_FALSE) {
+                if (!isChecked) {
                 	String whereClause = CartTable.TABLE_CART + "." + CartTable.COLUMN_ID + "=?";
                 	String[] selectionArgs = { tv_id.getText().toString() };
                 	activity.getContentResolver().delete(GroceryotgProvider.CONTENT_URI_CART_ITEM, whereClause, selectionArgs);
@@ -88,7 +79,8 @@ public class ShopCartCursorAdapter extends SimpleCursorAdapter {
                 
                 Toast t = Toast.makeText(activity, displayMessage, Toast.LENGTH_SHORT);
                 t.show();
-            }
+				
+			}
         });
 
         return view;

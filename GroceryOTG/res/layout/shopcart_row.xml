@@ -53,7 +53,6 @@
         android:orientation="horizontal"
         android:paddingTop="14dp" >
 	    
-	    
 	    <CheckBox
            	android:id="@+id/cart_row_in_shopcart"
             android:layout_width="wrap_content"

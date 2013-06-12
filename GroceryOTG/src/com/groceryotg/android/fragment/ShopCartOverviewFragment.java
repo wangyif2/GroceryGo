@@ -127,10 +127,12 @@ public class ShopCartOverviewFragment extends SherlockListFragment implements Lo
     private void fillData() {
         String[] from = new String[]{CartTable.COLUMN_ID,
         							 CartTable.COLUMN_CART_GROCERY_NAME,
-        							 CartTable.COLUMN_CART_GROCERY_ID};
+        							 CartTable.COLUMN_CART_GROCERY_ID,
+        							 CartTable.COLUMN_CART_FLAG_SHOPLIST};
         int[] to = new int[]{R.id.cart_item_id,
         					 R.id.cart_grocery_name,
-        					 R.id.cart_grocery_id};
+        					 R.id.cart_grocery_id,
+        					 R.id.cart_row_in_shopcart};
 
         getLoaderManager().initLoader(0, null, this);
         adapter = new ShopCartCursorAdapter(mActivity, R.layout.shopcart_row, null, from, to);

@@ -4,9 +4,7 @@ import android.database.Cursor;
 import android.support.v4.widget.SimpleCursorAdapter.ViewBinder;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.ImageView;
 import android.widget.SimpleCursorAdapter;
-import android.widget.TextView;
 import com.groceryotg.android.R;
 import com.groceryotg.android.database.CartTable;
 

@@ -167,13 +167,15 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
                 GroceryTable.COLUMN_GROCERY_NAME,
                 GroceryTable.COLUMN_GROCERY_PRICE,
                 StoreParentTable.COLUMN_STORE_PARENT_NAME,
-                FlyerTable.COLUMN_FLYER_ID};
+                FlyerTable.COLUMN_FLYER_ID,
+                CartTable.COLUMN_CART_FLAG_SHOPLIST};
         int[] to = new int[]{R.id.grocery_row_id,
                 R.id.grocery_row_label,
                 R.id.grocery_row_details,
                 R.id.grocery_row_price,
                 R.id.grocery_row_store,
-                R.id.grocery_row_store_id};
+                R.id.grocery_row_store_id,
+                R.id.grocery_row_in_shopcart};
 
         adapter = new GroceryListCursorAdapter(getActivity(), R.layout.grocery_fragment_row, null, from, to);
         adapter.setViewBinder(new GroceryViewBinder());

@@ -1,40 +1,19 @@
 package com.groceryotg.android.fragment;
 
 import android.app.Activity;
-import android.app.ListActivity;
-import android.app.SearchManager;
-import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v4.widget.CursorAdapter;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 
-import com.actionbarsherlock.app.SherlockFragment;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.app.SherlockListActivity;
 import com.actionbarsherlock.app.SherlockListFragment;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.widget.SearchView;
-
-import com.groceryotg.android.GlobalSearchFragmentActivity;
-import com.groceryotg.android.GroceryFragmentActivity;
-import com.groceryotg.android.GroceryMapActivity;
 import com.groceryotg.android.R;
-import com.groceryotg.android.ShopCartOverviewFragmentActivity;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.GroceryTable;
 import com.groceryotg.android.database.StoreParentTable;
@@ -42,8 +21,6 @@ import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 import com.groceryotg.android.fragment.GroceryListCursorAdapter;
 import com.groceryotg.android.fragment.GroceryViewBinder;
 import com.groceryotg.android.settings.SettingsManager;
-
-import com.slidingmenu.lib.SlidingMenu;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,12 +63,14 @@ public class GlobalSearchFragment extends SherlockListFragment implements Loader
                 GroceryTable.COLUMN_GROCERY_NAME,
                 GroceryTable.COLUMN_GROCERY_NAME,
                 GroceryTable.COLUMN_GROCERY_PRICE,
-                StoreParentTable.COLUMN_STORE_PARENT_NAME};
+                StoreParentTable.COLUMN_STORE_PARENT_NAME,
+                CartTable.COLUMN_CART_FLAG_SHOPLIST};
         int[] to = new int[]{R.id.grocery_row_id,
                 R.id.grocery_row_label,
                 R.id.grocery_row_details,
                 R.id.grocery_row_price,
-                R.id.grocery_row_store};
+                R.id.grocery_row_store,
+                R.id.grocery_row_in_shopcart};
 
         
         adapter = new GroceryListCursorAdapter(mActivity, R.layout.grocery_fragment_row, null, from, to);

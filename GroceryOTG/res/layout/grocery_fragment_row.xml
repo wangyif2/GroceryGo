@@ -123,17 +123,9 @@
             android:orientation="horizontal"
             android:layout_gravity="right"
             android:gravity="right" >
-	        
-            <TextView
-	            android:id="@+id/grocery_row_inshopcart_flag"
-	            android:layout_width="fill_parent"
-	            android:layout_height="wrap_content"
-	            android:visibility="gone"
-	            android:text="0"
-	            />
-
-	        <ImageButton
-	            android:id="@+id/grocery_row_inshopcart"
+            
+            <CheckBox
+            	android:id="@+id/grocery_row_in_shopcart"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
 	            android:background="@null"
@@ -141,31 +133,9 @@
 	            android:contentDescription="@string/groceryoverview_row_imagedesc"
 	            android:paddingRight="8dp"
 	            android:paddingTop="8dp"
-	            android:src="@drawable/ic_flag_shoplist" >
-
-			</ImageButton>
-			
-	        <TextView
-	            android:id="@+id/grocery_row_inwatchlist_flag"
-	            android:layout_width="fill_parent"
-	            android:layout_height="wrap_content"
-	            android:visibility="gone"
-	            android:text="0"
-	            />
-
-			<ImageButton
-			    android:id="@+id/grocery_row_inwatchlist"
-			    android:layout_width="wrap_content"
-			    android:layout_height="wrap_content"
-			    android:background="@null"
-			    android:clickable="true"
-			    android:contentDescription="@string/groceryoverview_row_imagedesc"
-			    android:paddingRight="8dp"
-			    android:paddingTop="8dp"
-			    android:src="@drawable/ic_flag_watchlist" >
-
-			</ImageButton>
-			
+	            android:button="@drawable/ic_checkbox_shoplist" >
+	        </CheckBox>
+	            
 		</LinearLayout>
 		
     </TableRow>

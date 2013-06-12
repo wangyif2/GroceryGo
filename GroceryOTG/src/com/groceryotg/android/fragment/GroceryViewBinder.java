@@ -5,6 +5,8 @@ import android.database.Cursor;
 import android.support.v4.widget.SimpleCursorAdapter.ViewBinder;
 import android.util.Log;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
@@ -25,10 +27,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * User: robert
- * Date: 08/03/13
- */
 public class GroceryViewBinder implements SimpleCursorAdapter.ViewBinder, ViewBinder {
     @Override
     public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
@@ -121,63 +119,20 @@ public class GroceryViewBinder implements SimpleCursorAdapter.ViewBinder, ViewBi
 
             return true;
         }
-        
         else if (columnIndex == cursor.getColumnIndex(CartTable.COLUMN_CART_FLAG_SHOPLIST) 
-        		&& viewId == R.id.grocery_row_inshopcart) {
+        		&& viewId == R.id.grocery_row_in_shopcart) {
         	Integer inShoplist = cursor.getInt(columnIndex);
-        	ImageView img = (ImageView) view;
+        	CheckBox cb = (CheckBox) view;
         	
         	if (inShoplist != 0) {
-        		// Change the view to a highlighted star
-        		img.setImageResource(R.drawable.ic_flag_shoplist_highlight);
+        		cb.setChecked(true);
         	}
         	else {
-        		// Display a non-highlighted star
-        		img.setImageResource(R.drawable.ic_flag_shoplist);
+        		cb.setChecked(false);
         	}
-        	return true;
-        }	
-        else if (columnIndex == cursor.getColumnIndex(CartTable.COLUMN_CART_FLAG_SHOPLIST) 
-        		&& viewId == R.id.grocery_row_inshopcart_flag) {
-        	Integer inShoplist = cursor.getInt(columnIndex);
-        	TextView flag = (TextView) view;
         	
-        	if (inShoplist != 0) {
-        		// Change the view to a highlighted star
-        		flag.setText("1");
-        	}
-        	else {
-        		// Display a non-highlighted star
-        		flag.setText("0");
-        	}
         	return true;
-        }	
-        else if (columnIndex == cursor.getColumnIndex(CartTable.COLUMN_CART_FLAG_WATCHLIST) 
-        		&& viewId == R.id.grocery_row_inwatchlist) {
-        	Integer inWatchlist = cursor.getInt(columnIndex);
-        	ImageView img = (ImageView) view;
-        	
-        	if (inWatchlist != 0) {
-        		img.setImageResource(R.drawable.ic_flag_watchlist_highlight);
-        	}
-        	else {
-        		img.setImageResource(R.drawable.ic_flag_watchlist);
-        	}
-        	return true;
-        }	
-        else if (columnIndex == cursor.getColumnIndex(CartTable.COLUMN_CART_FLAG_WATCHLIST) 
-        		&& viewId == R.id.grocery_row_inwatchlist_flag) {
-        	Integer inWatchlist = cursor.getInt(columnIndex);
-        	TextView flag = (TextView) view;
-        	
-        	if (inWatchlist != 0) {
-        		flag.setText("1");
-        	}
-        	else {
-        		flag.setText("0");
-        	}
-        	return true;
-        }	
+        }
         else if (columnIndex == cursor.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_NAME) 
         		&& viewId == R.id.grocery_row_store) {
         	String storeParentName = cursor.getString(columnIndex);

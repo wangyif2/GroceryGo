@@ -53,23 +53,17 @@
         android:orientation="horizontal"
         android:paddingTop="14dp" >
 	    
-		    <TextView 
-		        android:id="@+id/cart_flag_shoplist"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:visibility="gone"
-		        android:text="0"
-		        />
-		    
-		    <ImageButton
-		        android:id="@+id/cart_row_inshoplist"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:background="@null"
-		        android:clickable="true"
-		        android:paddingRight="8dp"
-		        android:paddingTop="8dp"
-		        android:src="@drawable/ic_flag_shoplist" />
+	    <CheckBox
+           	android:id="@+id/cart_row_in_shopcart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:clickable="true"
+            android:contentDescription="@string/groceryoverview_row_imagedesc"
+            android:paddingRight="8dp"
+            android:paddingTop="8dp"
+            android:button="@drawable/ic_checkbox_shoplist" >
+	    </CheckBox>
 	</LinearLayout>
     
 </LinearLayout>

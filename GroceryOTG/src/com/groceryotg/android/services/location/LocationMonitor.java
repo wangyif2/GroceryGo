@@ -4,10 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-/**
- * User: robert
- * Date: 25/01/13
- */
 public class LocationMonitor extends BroadcastReceiver {
     public static final String EXTRA_ERROR = "com.groceryotg.android.service.EXTRA_ERROR";
     public static final String EXTRA_INTENT = "com.groceryotg.android.service.EXTRA_INTENT";

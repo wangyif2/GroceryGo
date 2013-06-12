@@ -63,7 +63,7 @@
             android:contentDescription="@string/groceryoverview_row_imagedesc"
             android:paddingRight="8dp"
             android:paddingTop="8dp"
-            android:src="@drawable/ic_checkbox_shoplist" >
+            android:button="@drawable/ic_checkbox_shoplist" >
 	    </CheckBox>
 	</LinearLayout>
     

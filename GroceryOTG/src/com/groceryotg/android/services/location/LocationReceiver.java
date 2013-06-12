@@ -29,8 +29,7 @@ import java.util.Set;
 
 public class LocationReceiver extends BroadcastReceiver {
     //currently polling time is every 1 hour
-    //public static final int pollingPeriod = 60*60*1000;
-    public static final int pollingPeriod = 1000;
+    public static final int pollingPeriod = 60*60*1000;
 
     // a near location is 500m
     //public static int LOCATION_NEAR = 500;

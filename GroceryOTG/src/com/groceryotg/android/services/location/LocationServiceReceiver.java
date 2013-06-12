@@ -17,7 +17,6 @@ public class LocationServiceReceiver extends BroadcastReceiver {
 	
     @Override
     public void onReceive(Context context, Intent intent) {
-    	Log.i("GroceryOTG", "Got broadcast");
     	AlarmManager locationAlarm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent locationIntent = new Intent(context, LocationMonitor.class);
         locationIntent.putExtra(LocationMonitor.EXTRA_INTENT, new Intent(context, LocationReceiver.class));
@@ -31,11 +30,9 @@ public class LocationServiceReceiver extends BroadcastReceiver {
 		        locationAlarm.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), LocationReceiver.pollingPeriod, locationPendingIntent);
 	    	}
     	} else if (intent.getAction() == LocationServiceReceiver.LOCATION_SERVICE_RECEIVER_ENABLE) {
-			Log.i("GroceryOTG", "Enabling notifications");
 			// If notifications are enabled
 			locationAlarm.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), LocationReceiver.pollingPeriod, locationPendingIntent);
     	} else if (intent.getAction() == LocationServiceReceiver.LOCATION_SERVICE_RECEIVER_DISABLE) {
-			Log.i("GroceryOTG", "Disabling notifications");
 			// If notifications are disabled, then cancel any alarms - in essence disabling the notification service
 			locationAlarm.cancel(locationPendingIntent);
     	}	

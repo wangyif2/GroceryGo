@@ -11,6 +11,8 @@ import android.widget.ProgressBar;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 import com.groceryotg.android.services.NetworkHandler;
 import com.groceryotg.android.services.ServerURL;
+import com.groceryotg.android.services.location.LocationServiceReceiver;
+import com.groceryotg.android.settings.SettingsManager;
 
 public class SplashScreen extends Activity {
 	private static final String SETTINGS_IS_DB_POPULATED = "isDBPopulated";
@@ -57,6 +59,8 @@ public class SplashScreen extends Activity {
     	configProgressBar();
 
         configDatabase();
+        
+        configDefaultSettings();
     }
     
     private void configProgressBar() {
@@ -79,6 +83,18 @@ public class SplashScreen extends Activity {
         } else {
             configHandler();
         }
+    }
+    
+    private void configDefaultSettings() {
+    	// Sets up up the settings defaults
+    	PreferenceManager.setDefaultValues(this, R.id.preference_screen, false);
+    }
+    
+    private void configLocationPoll() {
+    	if (SettingsManager.getNotificationsEnabled(this)) {
+	    	Intent intent = new Intent(this, LocationServiceReceiver.class);
+	    	intent.setAction(LocationServiceReceiver.LOCATION_SERVICE_RECEIVER_ENABLE);
+    	}
     }
 
     private void populateCategory() {
@@ -154,6 +170,9 @@ public class SplashScreen extends Activity {
             	settingsEditor.putBoolean(SETTINGS_IS_DB_POPULATED, true);
             	settingsEditor.commit();
                 
+            	// If this is the first time the app ran, start the location notification service
+            	configLocationPoll();
+            	
                 configHandler();
             }
         }

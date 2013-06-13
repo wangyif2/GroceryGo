@@ -4,11 +4,13 @@ import com.groceryotg.android.utils.MultiSelectListPreference;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 import android.util.SparseBooleanArray;
 
 public class SettingsManager {
 	public static final String SETTINGS_PREVIOUS_NOTIFICATION = "previous_notification_set";
+	public static final String SETTINGS_NAVIGATION_DRAWER_SEEN = "navigation_drawer_seen";
 	
 	public static SharedPreferences getPrefs(Context context) {
 		return PreferenceManager.getDefaultSharedPreferences(context);
@@ -20,6 +22,16 @@ public class SettingsManager {
 	
 	public static int getNotificationFrequency(Context context) {
 		return getPrefs(context).getInt("notification_freq", 3);
+	}
+	
+	public static boolean getNavigationDrawerSeen(Context context) {
+		return getPrefs(context).getBoolean(SettingsManager.SETTINGS_NAVIGATION_DRAWER_SEEN, false);
+	}
+	
+	public static void setNavigationDrawerSeen(Context context, boolean state) {
+		Editor editor = getPrefs(context).edit();
+		editor.putBoolean(SettingsManager.SETTINGS_NAVIGATION_DRAWER_SEEN, state);
+		editor.commit();
 	}
 	
 	public static SparseBooleanArray getStoreFilter(Context context) {
@@ -37,21 +49,4 @@ public class SettingsManager {
 		
 		return a;
 	}
-	
-	/*public static int setStoreFilter(Context context, SparseBooleanArray a) {
-		SharedPreferences prefs = getPrefs(context);
-		Editor editor = prefs.edit();
-		
-		Set<String> strs = new HashSet<String>();
-		for (int i = 0; i < a.size(); i++) {
-			if (a.valueAt(i)) {
-				strs.add(Integer.toString(a.keyAt(i)));
-			}
-		}
-		
-		editor.putStringSet("store_select", strs);
-		editor.commit();
-		
-		return 0;
-	}*/
 }

@@ -40,6 +40,7 @@ import com.groceryotg.android.fragment.CategoryGridFragment;
 import com.groceryotg.android.fragment.GroceryListFragment;
 import com.groceryotg.android.services.NetworkHandler;
 import com.groceryotg.android.settings.SettingsActivity;
+import com.groceryotg.android.settings.SettingsManager;
 import com.groceryotg.android.utils.GroceryOTGUtils;
 import com.groceryotg.android.utils.RefreshAnimation;
 
@@ -177,8 +178,11 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
             	if (mDrawerLayout.isDrawerOpen(mDrawerList))
             		mDrawerLayout.closeDrawer(mDrawerList);
             	else {
-            		if (mPager.getCurrentItem() == 0)
+            		if (mPager.getCurrentItem() == 0) {
+            			if (!SettingsManager.getNavigationDrawerSeen(mContext))
+            				SettingsManager.setNavigationDrawerSeen(mContext, true);
             			mDrawerLayout.openDrawer(mDrawerList);
+            		}
             		else
             			mPager.setCurrentItem(0);
             	}
@@ -243,7 +247,6 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
     			R.string.navdrawer_item_cat,
     			R.string.navdrawer_item_cart,
     			R.string.navdrawer_item_map,
-    			R.string.navdrawer_item_sync,
     			R.string.navdrawer_item_settings,
     			R.string.navdrawer_item_about
     	};
@@ -251,7 +254,6 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
     			android.R.drawable.ic_menu_myplaces,
     			android.R.drawable.ic_menu_agenda,
     			android.R.drawable.ic_menu_mapmode,
-    			android.R.drawable.ic_menu_rotate,
     			android.R.drawable.ic_menu_preferences,
     			android.R.drawable.ic_menu_info_details
     	};
@@ -265,8 +267,20 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
     	
     	mDrawerList.setOnItemClickListener(new NavigationDrawerItemClickListener());
     	
-    	mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer, R.string.navdrawer_open, R.string.navdrawer_closed);
+    	mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer, R.string.navdrawer_open, R.string.navdrawer_closed) {
+    		public void onDrawerClosed(View view) {
+    			getSupportActionBar().setTitle(getString(R.string.title_main));
+    		}
+    		public void onDrawerOpened(View drawerView) {
+    			getSupportActionBar().setTitle(getString(R.string.app_name));
+    		}
+    	};
     	mDrawerLayout.setDrawerListener(mDrawerToggle);
+    	
+    	// Handle first-time viewing of navigaton drawer
+    	if (!SettingsManager.getNavigationDrawerSeen(mContext)) {
+    		mDrawerLayout.openDrawer(mDrawerList);
+    	}
     }
     
     private class NavigationDrawerAdapter extends BaseAdapter {
@@ -335,11 +349,9 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
 				launchMapActivity(mContext);
 				break;
 			case 3:
-				break;
-			case 4:
 				launchSettingsActivity(mContext);
 				break;
-			case 5:
+			case 4:
 				launchAboutDialog(mContext);
 				break;
 			}

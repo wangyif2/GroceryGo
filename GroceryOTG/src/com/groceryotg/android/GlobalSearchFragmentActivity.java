@@ -13,13 +13,11 @@ import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.widget.SearchView;
 import com.groceryotg.android.fragment.GlobalSearchFragment;
 import com.groceryotg.android.utils.GroceryOTGUtils;
-import com.slidingmenu.lib.SlidingMenu;
 
 public class GlobalSearchFragmentActivity extends SherlockFragmentActivity {
 	public static final String GLOBAL_SEARCH = "global_search";
 	
 	private String mQuery = "";
-	private SlidingMenu mSlidingMenu;
 	private SearchView mSearchView;
 	private GlobalSearchFragment mFrag;
 	
@@ -30,8 +28,6 @@ public class GlobalSearchFragmentActivity extends SherlockFragmentActivity {
         setContentView(R.layout.search_top);
         
         configActionBar();
-        mSlidingMenu = GroceryOTGUtils.createSlidingMenu(this);
-        GroceryOTGUtils.registerSlidingMenu(mSlidingMenu, this);
         
         mFrag = (GlobalSearchFragment) getSupportFragmentManager().findFragmentById(R.id.search_fragment);
 
@@ -65,10 +61,10 @@ public class GlobalSearchFragmentActivity extends SherlockFragmentActivity {
             	finish();
             	return true;
             case R.id.map:
-            	GroceryOTGUtils.launchMapActivity(this);
+            	//launchMapActivity(this);
                 return true;
             case R.id.shop_cart:
-            	GroceryOTGUtils.launchShopCartActivity(this);
+            	//launchShopCartActivity(this);
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -145,13 +141,6 @@ public class GlobalSearchFragmentActivity extends SherlockFragmentActivity {
     
     @Override
     public boolean onKeyDown(int keycode, KeyEvent e) {
-    	switch (keycode) {
-    	case KeyEvent.KEYCODE_BACK:
-    		if (mSlidingMenu.isMenuShowing()) {
-    			mSlidingMenu.showContent();
-    			return true;
-    		}
-    	}
     	return super.onKeyDown(keycode, e);
     }
 }

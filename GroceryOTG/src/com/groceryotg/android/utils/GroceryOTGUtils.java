@@ -5,14 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.TableRow;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+
 import com.groceryotg.android.GroceryFragmentActivity;
 import com.groceryotg.android.GroceryMapActivity;
-import com.groceryotg.android.R;
 import com.groceryotg.android.ShopCartOverviewFragmentActivity;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.GroceryTable;
@@ -21,7 +18,6 @@ import com.groceryotg.android.database.StoreTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 import com.groceryotg.android.fragment.AboutDialogFragment;
 import com.groceryotg.android.settings.SettingsActivity;
-import com.slidingmenu.lib.SlidingMenu;
 
 import java.util.Set;
 
@@ -78,22 +74,7 @@ public class GroceryOTGUtils {
         }
     }
     
-    public static SlidingMenu createSlidingMenu(final Activity activity) {
-    	SlidingMenu slidingMenu;
-        slidingMenu = new SlidingMenu(activity);
-        slidingMenu.setMode(SlidingMenu.LEFT);
-        slidingMenu.setShadowWidthRes(R.dimen.shadow_width);
-        slidingMenu.setShadowDrawable(R.xml.shadow);
-        slidingMenu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
-        slidingMenu.setFadeDegree(0.35f);
-        slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
-        slidingMenu.attachToActivity(activity, SlidingMenu.SLIDING_CONTENT);
-        slidingMenu.setMenu(R.layout.menu_frame);
-
-		return slidingMenu;
-    }
-    
-    public static void registerSlidingMenu(final SlidingMenu slidingMenu, final Activity activity) {
+    /*public static void registerSlidingMenu(final SlidingMenu slidingMenu, final Activity activity) {
         TableRow row;
         
         row = (TableRow) activity.findViewById(R.id.menu_row_1);
@@ -189,5 +170,5 @@ public class GroceryOTGUtils {
     public static void launchAboutDialog(Activity activity) {
     	AboutDialogFragment dialog = new AboutDialogFragment();
     	dialog.show(((SherlockFragmentActivity) activity).getSupportFragmentManager(), "about_dialog");
-    }
+    }*/
 }

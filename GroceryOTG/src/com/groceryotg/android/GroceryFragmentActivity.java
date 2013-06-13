@@ -7,14 +7,23 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -22,15 +31,17 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.widget.SearchView;
+
 import com.groceryotg.android.database.CategoryTable;
 import com.groceryotg.android.database.StoreParentTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
+import com.groceryotg.android.fragment.AboutDialogFragment;
 import com.groceryotg.android.fragment.CategoryGridFragment;
 import com.groceryotg.android.fragment.GroceryListFragment;
 import com.groceryotg.android.services.NetworkHandler;
+import com.groceryotg.android.settings.SettingsActivity;
 import com.groceryotg.android.utils.GroceryOTGUtils;
 import com.groceryotg.android.utils.RefreshAnimation;
-import com.slidingmenu.lib.SlidingMenu;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,8 +53,12 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
 
     public static Context mContext;
     public static ViewPager mPager;
+    
+    private DrawerLayout mDrawerLayout;
+    private ListView mDrawerList;
+    ActionBarDrawerToggle mDrawerToggle;
+    
     GroceryAdapter mAdapter;
-    SlidingMenu mSlidingMenu;
     RefreshStatusReceiver mRefreshStatusReceiver;
     MenuItem refreshItem;
     static Menu menu;
@@ -67,12 +82,17 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
 
         setStoreInformation();
 
-        configActionBar();
+        //configActionBar();
+        
+        configNavigationDrawer();
 
         configViewPager();
-
-        mSlidingMenu = GroceryOTGUtils.createSlidingMenu(this);
-        GroceryOTGUtils.registerSlidingMenu(mSlidingMenu, this);
+    }
+    
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+    	super.onPostCreate(savedInstanceState);
+    	mDrawerToggle.syncState();
     }
 
     @Override
@@ -147,18 +167,18 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
                 refreshCurrentPager();
                 return true;
             case R.id.map:
-                GroceryOTGUtils.launchMapActivity(this);
+                launchMapActivity(this);
                 return true;
             case R.id.shop_cart:
-            	GroceryOTGUtils.launchShopCartActivity(this);
+            	launchShopCartActivity(this);
                 return true;
             case android.R.id.home:
             	// When home is pressed
-            	if (mSlidingMenu.isMenuShowing())
-        			mSlidingMenu.showContent();
+            	if (mDrawerLayout.isDrawerOpen(mDrawerList))
+            		mDrawerLayout.closeDrawer(mDrawerList);
             	else {
             		if (mPager.getCurrentItem() == 0)
-            			mSlidingMenu.showMenu();
+            			mDrawerLayout.openDrawer(mDrawerList);
             		else
             			mPager.setCurrentItem(0);
             	}
@@ -171,13 +191,13 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
     public boolean onKeyDown(int keycode, KeyEvent e) {
     	switch (keycode) {
     	case KeyEvent.KEYCODE_BACK:
-    		if (mSlidingMenu.isMenuShowing()) {
+    		/*if (mSlidingMenu.isMenuShowing()) {
     			mSlidingMenu.showContent();
     			return true;
     		} else if (mPager.getCurrentItem() > 0) {
     			mPager.setCurrentItem(0);
     			return true;
-    		}
+    		}*/
     	}
     	return super.onKeyDown(keycode, e);
     }
@@ -225,6 +245,144 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
         mAdapter = new GroceryAdapter(getSupportFragmentManager());
         mPager.setAdapter(mAdapter);
         mPager.setOffscreenPageLimit(OFFPAGE_LIMIT);
+    }
+    
+    private void configNavigationDrawer() {
+    	int[] titles = new int[] {
+    			R.string.navdrawer_item_cat,
+    			R.string.navdrawer_item_cart,
+    			R.string.navdrawer_item_map,
+    			R.string.navdrawer_item_sync,
+    			R.string.navdrawer_item_settings,
+    			R.string.navdrawer_item_about
+    	};
+    	int[] icons = new int[] {
+    			android.R.drawable.ic_menu_myplaces,
+    			android.R.drawable.ic_menu_agenda,
+    			android.R.drawable.ic_menu_mapmode,
+    			android.R.drawable.ic_menu_rotate,
+    			android.R.drawable.ic_menu_preferences,
+    			android.R.drawable.ic_menu_info_details
+    	};
+    	
+    	mDrawerLayout = (DrawerLayout) findViewById(R.id.navigation_drawer_layout);
+    	mDrawerList = (ListView) findViewById(R.id.navigation_drawer_view);
+    	
+    	mDrawerList.setAdapter(new NavigationDrawerAdapter(this, titles, icons));
+    	
+    	configActionBar();
+    	
+    	mDrawerList.setOnItemClickListener(new NavigationDrawerItemClickListener());
+    	
+    	mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer, R.string.navdrawer_open, R.string.navdrawer_closed);
+    	mDrawerLayout.setDrawerListener(mDrawerToggle);
+    }
+    
+    private class NavigationDrawerAdapter extends BaseAdapter {
+    	Context mContext;
+    	int[] mTitles;
+    	int[] mIcons;
+    	int mCount;
+    	LayoutInflater mInflater;
+    	
+    	public NavigationDrawerAdapter(Context context, int[] titles, int[] icons) {
+    		this.mContext = context;
+    		this.mTitles = titles;
+    		this.mIcons = icons;
+    		
+    		assert (mTitles.length == mIcons.length);
+    		this.mCount = mTitles.length;
+    	}
+
+		@Override
+		public int getCount() {
+			return this.mCount;
+		}
+
+		@Override
+		public Object getItem(int position) {
+			return getString(mTitles[position]);
+		}
+
+		@Override
+		public long getItemId(int position) {
+			return position;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			TextView titleView;
+			ImageView iconView;
+			
+			mInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			View itemView = mInflater.inflate(R.layout.navdrawer_item, parent, false);
+			
+			iconView = (ImageView) itemView.findViewById(R.id.navdrawer_item_icon);
+			titleView = (TextView) itemView.findViewById(R.id.navdrawer_item_title);
+			
+			iconView.setImageResource(mIcons[position]);
+			titleView.setText(getString(mTitles[position]));
+			
+			return itemView;
+		}
+    }
+    
+    private class NavigationDrawerItemClickListener implements ListView.OnItemClickListener {
+		@Override
+		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+			switch (position) {
+			case 0:
+				launchHomeActivity(mContext);
+				break;
+			case 1:
+				launchShopCartActivity(mContext);
+				break;
+			case 2:
+				launchMapActivity(mContext);
+				break;
+			case 3:
+				break;
+			case 4:
+				launchSettingsActivity(mContext);
+				break;
+			case 5:
+				launchAboutDialog(mContext);
+				break;
+			}
+		}
+    }
+    
+    private static void launchHomeActivity(Context context) {
+        Intent intent = new Intent(context, GroceryFragmentActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        
+        // Add an extra to tell the pager to return to the first page
+        Bundle extras = new Bundle();
+        extras.putInt(GroceryFragmentActivity.EXTRA_LAUNCH_PAGE, 0);
+        intent.putExtras(extras);
+        
+        context.startActivity(intent);
+    }
+    
+    private static void launchMapActivity(Context context) {
+        Intent intent = new Intent(context, GroceryMapActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        context.startActivity(intent);
+    }
+    
+    private static void launchShopCartActivity(Context context) {
+        Intent intent = new Intent(context, ShopCartOverviewFragmentActivity.class);
+        context.startActivity(intent);
+    }
+    
+    private static void launchSettingsActivity(Context context) {
+        Intent intent = new Intent(context, SettingsActivity.class);
+        context.startActivity(intent);
+    }
+    
+    private static void launchAboutDialog(Context context) {
+    	AboutDialogFragment dialog = new AboutDialogFragment();
+    	dialog.show(((SherlockFragmentActivity) context).getSupportFragmentManager(), "about_dialog");
     }
     
     private static void clearSearch() {

@@ -12,7 +12,6 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.SimpleCursorAdapter;
 import com.actionbarsherlock.app.SherlockFragment;
-import com.commonsware.cwac.merge.MergeAdapter;
 import com.groceryotg.android.GroceryFragmentActivity;
 import com.groceryotg.android.R;
 import com.groceryotg.android.database.CategoryTable;
@@ -20,7 +19,7 @@ import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 
 public class CategoryGridFragment extends SherlockFragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private GridView gridview;
-    private MergeAdapter adapter;
+    private SimpleCursorAdapter mAdapter;
 
     private final int INDEX_LOADER_CAT = 0;
 
@@ -55,12 +54,10 @@ public class CategoryGridFragment extends SherlockFragment implements LoaderMana
         int[] to = new int[]{R.id.category_row_label};
 
         getLoaderManager().initLoader(INDEX_LOADER_CAT, null, this);
-        adapter = new MergeAdapter();
 
-        SimpleCursorAdapter sa = new CategoryGridCursorAdapter(getActivity(), R.layout.category_fragment_row, null, from, to);
-        adapter.addAdapter(sa);
+        mAdapter = new CategoryGridCursorAdapter(getActivity(), R.layout.category_fragment_row, null, from, to);
 
-        gridview.setAdapter(adapter);
+        gridview.setAdapter(mAdapter);
 
     }
 
@@ -72,14 +69,14 @@ public class CategoryGridFragment extends SherlockFragment implements LoaderMana
 
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        SimpleCursorAdapter sa = (SimpleCursorAdapter) adapter.getPieces().get(0);
+        SimpleCursorAdapter sa = mAdapter;
         if (sa != null)
             sa.changeCursor(cursor);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
-        SimpleCursorAdapter sa = (SimpleCursorAdapter) adapter.getAdapter(0);
+        SimpleCursorAdapter sa = mAdapter;
         sa.changeCursor(null);
     }
 }

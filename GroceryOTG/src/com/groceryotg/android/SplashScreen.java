@@ -2,7 +2,6 @@ package com.groceryotg.android;
 
 import android.app.Activity;
 import android.content.*;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -35,7 +34,7 @@ public class SplashScreen extends Activity {
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
         // Initialize the database tables if they aren't created
-        Cursor c = getContentResolver().query(GroceryotgProvider.CONTENT_URI_CAT, null, null, null, null);
+        getContentResolver().query(GroceryotgProvider.CONTENT_URI_CAT, null, null, null, null);
 
         init();
     }

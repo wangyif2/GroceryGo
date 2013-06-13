@@ -1,7 +1,6 @@
 package com.groceryotg.android.fragment;
 
 import android.database.Cursor;
-import android.database.MatrixCursor;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;

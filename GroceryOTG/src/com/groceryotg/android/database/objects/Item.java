@@ -1,9 +1,5 @@
 package com.groceryotg.android.database.objects;
 
-/**
- * User: robert
- * Date: 07/02/13
- */
 public class Item {
     private Integer itemId;
 
@@ -19,8 +15,21 @@ public class Item {
     public Item() {
     }
 
+    /**
+	 * @return the itemId
+	 */
+	public Integer getItemId() {
+		return itemId;
+	}
 
-    public String getItemName() {
+	/**
+	 * @param itemId the itemId to set
+	 */
+	public void setItemId(Integer itemId) {
+		this.itemId = itemId;
+	}
+
+	public String getItemName() {
         return itemName;
     }
 

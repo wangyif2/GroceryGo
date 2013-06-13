@@ -24,7 +24,7 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
     Activity activity;
     public GroceryListCursorAdapter(Context context, int layout, Cursor c,
             String[] from, int[] to) {
-        super(context, layout, c, from, to);
+        super(context, layout, c, from, to, 0);
         this.context=context;
         this.activity=(Activity) context;
     }
@@ -33,7 +33,6 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent){
         View view = super.getView(position, convertView, parent);
-        long id = getItemId(position);
         
         CheckBox cb_inshoplist = (CheckBox) view.findViewById(R.id.grocery_row_in_shopcart);
         cb_inshoplist.setOnClickListener(new OnClickListener() {

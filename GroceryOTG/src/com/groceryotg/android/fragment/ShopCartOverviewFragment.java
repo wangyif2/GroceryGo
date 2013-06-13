@@ -171,7 +171,7 @@ public class ShopCartOverviewFragment extends SherlockListFragment implements Lo
     private void initFilter() {
     }
     
-    private void refreshData() {
+    /*private void refreshData() {
     	getLoaderManager().restartLoader(0, null, this);
-    }
+    }*/
 }

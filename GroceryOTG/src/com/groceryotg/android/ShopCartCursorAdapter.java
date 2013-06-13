@@ -9,8 +9,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,7 +30,6 @@ public class ShopCartCursorAdapter extends SimpleCursorAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent){
         View view = super.getView(position, convertView, parent);
-        long id = getItemId(position);
         
         CheckBox cb_inshoplist = (CheckBox) view.findViewById(R.id.cart_row_in_shopcart);
         cb_inshoplist.setOnClickListener(new OnClickListener () {

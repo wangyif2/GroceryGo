@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.LocationManager;
 import android.os.SystemClock;
-import android.util.Log;
 
 public class LocationServiceReceiver extends BroadcastReceiver {
 	public static final String LOCATION_SERVICE_RECEIVER_ENABLE = "GOTG_ENABLE_NOTIFICATIONS";

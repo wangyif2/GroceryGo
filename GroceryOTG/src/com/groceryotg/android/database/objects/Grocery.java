@@ -2,10 +2,6 @@ package com.groceryotg.android.database.objects;
 
 import java.util.Date;
 
-/**
- * User: robert
- * Date: 07/02/13
- */
 public class Grocery {
     private Integer groceryId;
 
@@ -42,7 +38,7 @@ public class Grocery {
         this.endDate = endDate;
         this.updateDate = updateDate;
         this.lineNumber = lineNumber;
-        this.score = score;
+        this.score = sc;
         this.rawString = rawString;
     }
 

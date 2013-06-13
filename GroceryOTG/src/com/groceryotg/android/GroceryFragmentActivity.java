@@ -267,7 +267,14 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
     	
     	mDrawerList.setOnItemClickListener(new NavigationDrawerItemClickListener());
     	
-    	mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer, R.string.navdrawer_open, R.string.navdrawer_closed);
+    	mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer, R.string.navdrawer_open, R.string.navdrawer_closed) {
+    		public void onDrawerClosed(View view) {
+    			getSupportActionBar().setTitle(getString(R.string.title_main));
+    		}
+    		public void onDrawerOpened(View drawerView) {
+    			getSupportActionBar().setTitle(getString(R.string.app_name));
+    		}
+    	};
     	mDrawerLayout.setDrawerListener(mDrawerToggle);
     	
     	// Handle first-time viewing of navigaton drawer

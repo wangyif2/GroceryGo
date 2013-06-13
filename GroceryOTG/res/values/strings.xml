@@ -29,6 +29,13 @@
     <string name="navdrawer_open">Open</string>
     <string name="navdrawer_closed">Closed</string>
     
+    <string name="title_main">Categories</string>
+    <string name="title_search">Search</string>
+    <string name="title_map">Map</string>
+    <string name="title_settings">Settings</string>
+    <string name="title_cart">Shopping List</string>
+    <string name="title_cart_detail">Add Item</string>
+    
     <string name="groceryoverview_menu_item_search">Search</string>
     <string name="groceryoverview_menu_item_filter">Filter</string>
     <string name="groceryoverview_menu_item_select">Select Mode</string>

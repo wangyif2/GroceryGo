@@ -15,7 +15,7 @@ public class SettingsManager {
 	}
 	
 	public static boolean getNotificationsEnabled(Context context) {
-		return getPrefs(context).getBoolean("notification_enabled", false);
+		return getPrefs(context).getBoolean("notification_enabled", true);
 	}
 	
 	public static int getNotificationFrequency(Context context) {

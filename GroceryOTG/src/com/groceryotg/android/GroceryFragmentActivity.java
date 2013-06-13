@@ -40,6 +40,7 @@ import com.groceryotg.android.fragment.CategoryGridFragment;
 import com.groceryotg.android.fragment.GroceryListFragment;
 import com.groceryotg.android.services.NetworkHandler;
 import com.groceryotg.android.settings.SettingsActivity;
+import com.groceryotg.android.settings.SettingsManager;
 import com.groceryotg.android.utils.GroceryOTGUtils;
 import com.groceryotg.android.utils.RefreshAnimation;
 
@@ -177,8 +178,11 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
             	if (mDrawerLayout.isDrawerOpen(mDrawerList))
             		mDrawerLayout.closeDrawer(mDrawerList);
             	else {
-            		if (mPager.getCurrentItem() == 0)
+            		if (mPager.getCurrentItem() == 0) {
+            			if (!SettingsManager.getNavigationDrawerSeen(mContext))
+            				SettingsManager.setNavigationDrawerSeen(mContext, true);
             			mDrawerLayout.openDrawer(mDrawerList);
+            		}
             		else
             			mPager.setCurrentItem(0);
             	}
@@ -267,6 +271,11 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
     	
     	mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer, R.string.navdrawer_open, R.string.navdrawer_closed);
     	mDrawerLayout.setDrawerListener(mDrawerToggle);
+    	
+    	// Handle first-time viewing of navigaton drawer
+    	if (!SettingsManager.getNavigationDrawerSeen(mContext)) {
+    		mDrawerLayout.openDrawer(mDrawerList);
+    	}
     }
     
     private class NavigationDrawerAdapter extends BaseAdapter {

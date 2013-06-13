@@ -1,24 +1,13 @@
 package com.groceryotg.android.utils;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.os.Bundle;
-
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-
-import com.groceryotg.android.GroceryFragmentActivity;
-import com.groceryotg.android.GroceryMapActivity;
-import com.groceryotg.android.ShopCartOverviewFragmentActivity;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.GroceryTable;
 import com.groceryotg.android.database.StoreParentTable;
 import com.groceryotg.android.database.StoreTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
-import com.groceryotg.android.fragment.AboutDialogFragment;
-import com.groceryotg.android.settings.SettingsActivity;
-
 import java.util.Set;
 
 public class GroceryOTGUtils {

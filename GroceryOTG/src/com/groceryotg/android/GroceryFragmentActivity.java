@@ -189,16 +189,6 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
     
     @Override
     public boolean onKeyDown(int keycode, KeyEvent e) {
-    	switch (keycode) {
-    	case KeyEvent.KEYCODE_BACK:
-    		/*if (mSlidingMenu.isMenuShowing()) {
-    			mSlidingMenu.showContent();
-    			return true;
-    		} else if (mPager.getCurrentItem() > 0) {
-    			mPager.setCurrentItem(0);
-    			return true;
-    		}*/
-    	}
     	return super.onKeyDown(keycode, e);
     }
 
@@ -237,6 +227,7 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
 
     private void configActionBar() {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
     }
 
     private void configViewPager() {
@@ -330,6 +321,9 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
     private class NavigationDrawerItemClickListener implements ListView.OnItemClickListener {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+			if (mDrawerLayout.isDrawerOpen(mDrawerList))
+        		mDrawerLayout.closeDrawer(mDrawerList);
+			
 			switch (position) {
 			case 0:
 				launchHomeActivity(mContext);

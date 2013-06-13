@@ -247,7 +247,6 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
     			R.string.navdrawer_item_cat,
     			R.string.navdrawer_item_cart,
     			R.string.navdrawer_item_map,
-    			R.string.navdrawer_item_sync,
     			R.string.navdrawer_item_settings,
     			R.string.navdrawer_item_about
     	};
@@ -255,7 +254,6 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
     			android.R.drawable.ic_menu_myplaces,
     			android.R.drawable.ic_menu_agenda,
     			android.R.drawable.ic_menu_mapmode,
-    			android.R.drawable.ic_menu_rotate,
     			android.R.drawable.ic_menu_preferences,
     			android.R.drawable.ic_menu_info_details
     	};
@@ -344,11 +342,9 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
 				launchMapActivity(mContext);
 				break;
 			case 3:
-				break;
-			case 4:
 				launchSettingsActivity(mContext);
 				break;
-			case 5:
+			case 4:
 				launchAboutDialog(mContext);
 				break;
 			}

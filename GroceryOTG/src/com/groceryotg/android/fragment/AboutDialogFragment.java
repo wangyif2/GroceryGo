@@ -27,6 +27,7 @@ public class AboutDialogFragment extends SherlockDialogFragment {
 		String titleString = getString(R.string.about_title) + " v" + getString(R.string.version_name);
 		Dialog d = getDialog();
 		d.setTitle(titleString);
+		d.setCanceledOnTouchOutside(true);
 		
 		return view;
 	}

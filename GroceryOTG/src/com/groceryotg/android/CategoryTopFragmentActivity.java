@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
+import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -43,8 +44,6 @@ public class CategoryTopFragmentActivity extends SherlockFragmentActivity {
     MenuItem refreshItem;
     static Menu menu;
 
-    public static String myQuery;
-
     public static Map<Integer, String> storeNames;
     public static Double mPriceRangeMin;
     public static Double mPriceRangeMax;
@@ -56,7 +55,6 @@ public class CategoryTopFragmentActivity extends SherlockFragmentActivity {
 
         categories = getCategoryInfo();
         mContext = this;
-        setMyQuery("");
 
         setStoreInformation();
 
@@ -80,11 +78,9 @@ public class CategoryTopFragmentActivity extends SherlockFragmentActivity {
     }
 
     private void handleIntent(Intent intent) {
-    	clearSearch();
-    	
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             // Gets the search query from the voice recognizer intent
-            String query = intent.getStringExtra(SearchManager.QUERY);
+            //String query = intent.getStringExtra(SearchManager.QUERY);
 
             // If on the home page and doing a global search, send the intent
             // to the GlobalSearchActivity
@@ -111,7 +107,7 @@ public class CategoryTopFragmentActivity extends SherlockFragmentActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(final Menu menu) {
         MenuInflater inflater = getSupportMenuInflater();
         inflater.inflate(R.menu.category_activity_menu, menu);
         CategoryTopFragmentActivity.menu = menu;
@@ -121,7 +117,19 @@ public class CategoryTopFragmentActivity extends SherlockFragmentActivity {
         SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setIconifiedByDefault(true);
-
+        
+        searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+			@Override
+			public void onFocusChange(View view, boolean queryTextFocused) {
+				if (!queryTextFocused) {
+					MenuItem searchItem = menu.findItem(R.id.search);
+			        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+					searchItem.collapseActionView();
+					searchView.setQuery("", false);
+				}
+			}
+        });
+        
         return true;
     }
 
@@ -174,18 +182,6 @@ public class CategoryTopFragmentActivity extends SherlockFragmentActivity {
         }
     }
 
-    public static void setMyQuery(String mQuery) {
-        CategoryTopFragmentActivity.myQuery = mQuery;
-    }
-    
-    private static void clearSearch() {
-    	// Clear any open searches
-    	MenuItem searchItem = menu.findItem(R.id.search);
-    	if (searchItem != null) {
-    		searchItem.collapseActionView();
-    	}
-    }
-    
     private void refreshCategories() {
         Toast t = Toast.makeText(this, "Fetching new items...", Toast.LENGTH_LONG);
         t.show();

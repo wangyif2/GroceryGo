@@ -46,7 +46,7 @@
     <string name="groceryoverview_filter_title">Filter by store</string>
     <string name="groceryoverview_filter_updated">Your store preferences have been updated</string>
     
-    <string name="search_hint">Search grocery items</string>
+    <string name="search_hint">Search</string>
 
     <string name="map_usermarker">You are here</string>
     <string name="setting_store_title">Select Store</string>

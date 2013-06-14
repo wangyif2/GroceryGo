@@ -55,6 +55,10 @@ public class GlobalSearchFragment extends SherlockListFragment implements Loader
         Bundle b = new Bundle();
     	b.putBoolean("reload", true);
     	mQuery = newQuery;
+    	
+    	TextView searchTitle = (TextView) mActivity.findViewById(R.id.search_title);
+    	searchTitle.setText("\"" + newQuery + "\"");
+    	
     	getLoaderManager().restartLoader(0, b, this);
     }
 	

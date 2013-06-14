@@ -1,12 +1,10 @@
 package com.groceryotg.android;
 
 import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
-import android.view.KeyEvent;
 import android.widget.ListView;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -15,7 +13,6 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.widget.SearchView;
 import com.groceryotg.android.fragment.GlobalSearchFragment;
-import com.groceryotg.android.settings.SettingsManager;
 import com.groceryotg.android.utils.GroceryOTGUtils;
 
 public class GlobalSearchFragmentActivity extends SherlockFragmentActivity {

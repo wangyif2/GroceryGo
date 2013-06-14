@@ -35,13 +35,16 @@ import java.util.List;
 
 public class GroceryListFragment extends SherlockListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final String CATEGORY_POSITION = "position";
+    private static final int GLOBAL_SEARCH_CATEGORY = -1;
     Activity activity;
+    
     GroceryListCursorAdapter adapter;
+    
     TextView emptyTextView;
     ProgressBar progressView;
     Menu menu;
     MenuItem refreshItem;
-    private Integer categoryId;
+    private Integer categoryId = GroceryListFragment.GLOBAL_SEARCH_CATEGORY;
 
     ViewGroup myViewGroup;
 
@@ -67,7 +70,9 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        categoryId = getArguments().getInt(CATEGORY_POSITION);
+        if (getArguments() != null) {
+        	categoryId = getArguments().getInt(CATEGORY_POSITION);
+        }
         watchSettings();
     }
 
@@ -141,6 +146,7 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
         String query = bundle.getString("query").trim();
 
         List<String> selectionArgs = new ArrayList<String>();
+        boolean isAtLeastOneWhere = false;
 
         String[] projection = {GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_ID,
                 GroceryTable.COLUMN_GROCERY_ID,
@@ -150,12 +156,26 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
                 FlyerTable.TABLE_FLYER + "." + FlyerTable.COLUMN_FLYER_ID,
                 CartTable.COLUMN_CART_GROCERY_ID,
                 CartTable.COLUMN_CART_FLAG_SHOPLIST};
-        String selection = GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_GROCERY_CATEGORY + "=?";
-        selectionArgs.add(categoryId.toString());
+        
+        String selection;
+        if (categoryId == GroceryListFragment.GLOBAL_SEARCH_CATEGORY) {
+        	selection = "";
+        } else {
+        	if (!isAtLeastOneWhere) {
+        		isAtLeastOneWhere = true;
+        	}
+	        selection = GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_GROCERY_CATEGORY + "=?";
+	        selectionArgs.add(categoryId.toString());
+        }
 
         // If user entered a search query, filter the results based on grocery name
         if (!query.isEmpty()) {
-            selection += " AND " + GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_GROCERY_NAME + " LIKE ?";
+        	if (!isAtLeastOneWhere) {
+        		isAtLeastOneWhere = true;
+        	} else {
+        		selection += " AND ";
+        	}
+            selection += GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_GROCERY_NAME + " LIKE ?";
             selectionArgs.add("%" + query + "%");
         }
         SparseBooleanArray selectedStores = SettingsManager.getStoreFilter(activity);
@@ -165,7 +185,12 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
             for (int storeNum = 0; storeNum < selectedStores.size(); storeNum++) {
                 if (selectedStores.valueAt(storeNum) == true) {
                     if (storeSelection.isEmpty()) {
-                        storeSelection = " AND (";
+                    	if (!isAtLeastOneWhere) {
+                    		isAtLeastOneWhere = true;
+                    	} else {
+                    		selection += " AND ";
+                    	}
+                        storeSelection = "(";
                         storeSelection += StoreParentTable.TABLE_STORE_PARENT + "." + StoreParentTable.COLUMN_STORE_PARENT_ID + " = ?";
                     } else {
                         storeSelection += " OR " + StoreParentTable.TABLE_STORE_PARENT + "." + StoreParentTable.COLUMN_STORE_PARENT_ID + " = ?";
@@ -179,11 +204,21 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
             }
         }
         if (GroceryPagerFragmentActivity.mPriceRangeMin != null) {
-            selection += " AND " + GroceryTable.COLUMN_GROCERY_PRICE + " >= ?";
+        	if (!isAtLeastOneWhere) {
+        		isAtLeastOneWhere = true;
+        	} else {
+        		selection += " AND ";
+        	}
+            selection += GroceryTable.COLUMN_GROCERY_PRICE + " >= ?";
             selectionArgs.add(GroceryPagerFragmentActivity.mPriceRangeMin.toString());
         }
         if (GroceryPagerFragmentActivity.mPriceRangeMax != null) {
-            selection += " AND " + GroceryTable.COLUMN_GROCERY_PRICE + " <= ?";
+        	if (!isAtLeastOneWhere) {
+        		isAtLeastOneWhere = true;
+        	} else {
+        		selection += " AND ";
+        	}
+            selection += GroceryTable.COLUMN_GROCERY_PRICE + " <= ?";
             selectionArgs.add(GroceryPagerFragmentActivity.mPriceRangeMax.toString());
         }
 

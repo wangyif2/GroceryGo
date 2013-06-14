@@ -21,11 +21,9 @@ import com.actionbarsherlock.app.SherlockListFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.groceryotg.android.GroceryFragmentActivity;
+import com.groceryotg.android.GroceryPagerFragmentActivity;
 import com.groceryotg.android.R;
-import com.groceryotg.android.ShopCartCursorAdapter;
-import com.groceryotg.android.ShopCartDetailView;
-import com.groceryotg.android.ShopCartViewBinder;
+import com.groceryotg.android.ShopCartDetailActivity;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 
@@ -80,7 +78,7 @@ public class ShopCartOverviewFragment extends SherlockListFragment implements Lo
                 // in the Action Bar. This handles Android < 4.1.
             	
             	// Specify the parent activity
-            	Intent parentActivityIntent = new Intent(mActivity, GroceryFragmentActivity.class);
+            	Intent parentActivityIntent = new Intent(mActivity, GroceryPagerFragmentActivity.class);
             	parentActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | 
             								Intent.FLAG_ACTIVITY_NEW_TASK);
             	startActivity(parentActivityIntent);
@@ -112,7 +110,7 @@ public class ShopCartOverviewFragment extends SherlockListFragment implements Lo
     @Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        Intent i = new Intent(mActivity, ShopCartDetailView.class);
+        Intent i = new Intent(mActivity, ShopCartDetailActivity.class);
         Uri cartGroceryItemUri = Uri.parse(GroceryotgProvider.CONTENT_URI_CART_ITEM + "/" + id);
         i.putExtra(GroceryotgProvider.CONTENT_ITEM_TYPE_CART_ITEM, cartGroceryItemUri);
 
@@ -120,7 +118,7 @@ public class ShopCartOverviewFragment extends SherlockListFragment implements Lo
     }
 
     private void createCartGroceryItem() {
-        Intent i = new Intent(mActivity, ShopCartDetailView.class);
+        Intent i = new Intent(mActivity, ShopCartDetailActivity.class);
         startActivity(i);
     }
 

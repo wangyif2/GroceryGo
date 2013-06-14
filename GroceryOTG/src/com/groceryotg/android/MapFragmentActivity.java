@@ -32,7 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class GroceryMapActivity extends SherlockFragmentActivity {
+public class MapFragmentActivity extends SherlockFragmentActivity {
     public static final int CAM_ZOOM = 13;
     public static final String MAP_FRAGMENT_TAG = "map_fragment_tag";
     public static final String EXTRA_FILTER_STORE_PARENT = "extra_filter_store_parent";
@@ -69,8 +69,8 @@ public class GroceryMapActivity extends SherlockFragmentActivity {
 	        
 	        Bundle extras = getIntent().getExtras();
 	        if (extras != null) {
-		        this.filterStoreParents = extras.getIntegerArrayList(GroceryMapActivity.EXTRA_FILTER_STORE_PARENT);
-		        this.filterStores = extras.getIntegerArrayList(GroceryMapActivity.EXTRA_FILTER_STORE);
+		        this.filterStoreParents = extras.getIntegerArrayList(MapFragmentActivity.EXTRA_FILTER_STORE_PARENT);
+		        this.filterStores = extras.getIntegerArrayList(MapFragmentActivity.EXTRA_FILTER_STORE);
 	        }
         }
     }
@@ -242,7 +242,7 @@ public class GroceryMapActivity extends SherlockFragmentActivity {
                 // in the Action Bar. This handles Android < 4.1.
 
                 // Specify the parent activity
-                Intent parentActivityIntent = new Intent(this, GroceryFragmentActivity.class);
+                Intent parentActivityIntent = new Intent(this, GroceryPagerFragmentActivity.class);
                 parentActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
                         Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(parentActivityIntent);

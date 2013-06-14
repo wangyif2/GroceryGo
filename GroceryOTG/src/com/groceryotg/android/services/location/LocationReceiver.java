@@ -14,7 +14,7 @@ import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 
-import com.groceryotg.android.GroceryMapActivity;
+import com.groceryotg.android.MapFragmentActivity;
 import com.groceryotg.android.R;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.StoreTable;
@@ -91,7 +91,7 @@ public class LocationReceiver extends BroadcastReceiver {
     	prefsEditor.commit();*/
     	
     	
-    	extras.putIntegerArrayList(GroceryMapActivity.EXTRA_FILTER_STORE, storeIDs);
+    	extras.putIntegerArrayList(MapFragmentActivity.EXTRA_FILTER_STORE, storeIDs);
         
     	// Now make a notification if there are nearby items in the cart
         NotificationCompat.Builder mBuilder =
@@ -114,7 +114,7 @@ public class LocationReceiver extends BroadcastReceiver {
         mBuilder.setStyle(inboxStyle);
         
         // Creates an explicit intent for the top activity that will be opened (the map)
-        Intent resultIntent = new Intent(context, GroceryMapActivity.class);
+        Intent resultIntent = new Intent(context, MapFragmentActivity.class);
         resultIntent.putExtras(extras);
 
         // The stack builder object will contain an artificial back stack for the
@@ -122,7 +122,7 @@ public class LocationReceiver extends BroadcastReceiver {
         // Activity leads out of your application to the Home screen.
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
         // Adds the back stack for the Intent (but not the Intent itself)
-        stackBuilder.addParentStack(GroceryMapActivity.class);
+        stackBuilder.addParentStack(MapFragmentActivity.class);
         // Adds the Intent that starts the Activity to the top of the stack
         stackBuilder.addNextIntent(resultIntent);
         PendingIntent resultPendingIntent =

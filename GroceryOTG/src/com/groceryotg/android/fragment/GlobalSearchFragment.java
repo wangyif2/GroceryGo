@@ -73,7 +73,7 @@ public class GlobalSearchFragment extends SherlockListFragment implements Loader
                 R.id.grocery_row_in_shopcart};
 
         
-        adapter = new GroceryListCursorAdapter(mActivity, R.layout.grocery_fragment_row, null, from, to);
+        adapter = new GroceryListCursorAdapter(mActivity, R.layout.grocery_fragment_list_row, null, from, to);
         adapter.setViewBinder(new GroceryViewBinder());
         setListAdapter(adapter);
         

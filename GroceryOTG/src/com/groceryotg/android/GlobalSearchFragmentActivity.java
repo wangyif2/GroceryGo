@@ -54,7 +54,7 @@ public class GlobalSearchFragmentActivity extends SherlockFragmentActivity {
                 // in the Action Bar. This handles Android < 4.1.
             	
             	// Specify the parent activity
-            	Intent parentActivityIntent = new Intent(this, GroceryFragmentActivity.class);
+            	Intent parentActivityIntent = new Intent(this, GroceryPagerFragmentActivity.class);
             	parentActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | 
             								Intent.FLAG_ACTIVITY_NEW_TASK);
             	startActivity(parentActivityIntent);

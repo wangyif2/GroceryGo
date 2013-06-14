@@ -13,7 +13,7 @@ import com.groceryotg.android.services.ServerURL;
 import com.groceryotg.android.services.location.LocationServiceReceiver;
 import com.groceryotg.android.settings.SettingsManager;
 
-public class SplashScreen extends Activity {
+public class SplashScreenActivity extends Activity {
 	private static final String SETTINGS_IS_DB_POPULATED = "isDBPopulated";
     // used to know if the back button was pressed in the splash screen activity
     // and avoid opening the next activity
@@ -139,8 +139,8 @@ public class SplashScreen extends Activity {
                 if (!mIsBackButtonPressed) {
                     // start the home screen if the back button wasn't pressed
                     // already
-                    Intent intent = new Intent(SplashScreen.this, GroceryFragmentActivity.class);
-                    SplashScreen.this.startActivity(intent);
+                    Intent intent = new Intent(SplashScreenActivity.this, GroceryPagerFragmentActivity.class);
+                    SplashScreenActivity.this.startActivity(intent);
                 }
             }
         }, SPLASH_DURATION);

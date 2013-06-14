@@ -177,7 +177,7 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
                 R.id.grocery_row_store_id,
                 R.id.grocery_row_in_shopcart};
 
-        adapter = new GroceryListCursorAdapter(getActivity(), R.layout.grocery_fragment_row, null, from, to);
+        adapter = new GroceryListCursorAdapter(getActivity(), R.layout.grocery_fragment_list_row, null, from, to);
         adapter.setViewBinder(new GroceryViewBinder());
 
         setListAdapter(adapter);
@@ -198,7 +198,7 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
         getActivity().getContentResolver().insert(GroceryotgProvider.CONTENT_URI_CART_ITEM, values);
 
         Bundle b = new Bundle();
-        b.putString("query", GroceryFragmentActivity.myQuery);
+        b.putString("query", GroceryPagerFragmentActivity.myQuery);
         b.putBoolean("reload", true);
         getLoaderManager().restartLoader(0, b, this);
         Toast t = Toast.makeText(getActivity(), "Item added to Shopping Cart", Toast.LENGTH_SHORT);
@@ -215,8 +215,8 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
         String newQuery = !TextUtils.isEmpty(query) ? query : null;
 
         // Don't do anything if the query hasn't changed
-        if (newQuery == null && GroceryFragmentActivity.myQuery == null ||
-                newQuery != null && GroceryFragmentActivity.myQuery.equals(newQuery))
+        if (newQuery == null && GroceryPagerFragmentActivity.myQuery == null ||
+                newQuery != null && GroceryPagerFragmentActivity.myQuery.equals(newQuery))
             return true;
 
         Intent globalSearchIntent = new Intent(getActivity(), GlobalSearchFragmentActivity.class);
@@ -244,7 +244,7 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
     }
 
     private void launchMapActivity() {
-        Intent intent = new Intent(getActivity(), GroceryMapActivity.class);
+        Intent intent = new Intent(getActivity(), MapFragmentActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
@@ -292,13 +292,13 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
                 selection += storeSelection;
             }
         }
-        if (GroceryFragmentActivity.mPriceRangeMin != null) {
+        if (GroceryPagerFragmentActivity.mPriceRangeMin != null) {
             selection += " AND " + GroceryTable.COLUMN_GROCERY_PRICE + " >= ?";
-            selectionArgs.add(GroceryFragmentActivity.mPriceRangeMin.toString());
+            selectionArgs.add(GroceryPagerFragmentActivity.mPriceRangeMin.toString());
         }
-        if (GroceryFragmentActivity.mPriceRangeMax != null) {
+        if (GroceryPagerFragmentActivity.mPriceRangeMax != null) {
             selection += " AND " + GroceryTable.COLUMN_GROCERY_PRICE + " <= ?";
-            selectionArgs.add(GroceryFragmentActivity.mPriceRangeMax.toString());
+            selectionArgs.add(GroceryPagerFragmentActivity.mPriceRangeMax.toString());
         }
 
         final String[] selectionArgsArr = new String[selectionArgs.size()];
@@ -337,7 +337,7 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
         Bundle b = new Bundle();
         b.putString("query", query);
         if (reload) {
-            GroceryFragmentActivity.setMyQuery(query);
+            GroceryPagerFragmentActivity.setMyQuery(query);
             b.putBoolean("reload", true);
             getLoaderManager().restartLoader(0, b, this);
         } else {
@@ -373,7 +373,7 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
     private void watchSettings() {
         mSettingsListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
             public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-                loadDataWithQuery(true, GroceryFragmentActivity.myQuery);
+                loadDataWithQuery(true, GroceryPagerFragmentActivity.myQuery);
             }
         };
         SettingsManager.getPrefs(activity).registerOnSharedPreferenceChangeListener(mSettingsListener);

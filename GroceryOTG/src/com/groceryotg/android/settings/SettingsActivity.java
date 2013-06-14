@@ -2,7 +2,7 @@ package com.groceryotg.android.settings;
 
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
 import com.actionbarsherlock.view.MenuItem;
-import com.groceryotg.android.GroceryFragmentActivity;
+import com.groceryotg.android.GroceryPagerFragmentActivity;
 import com.groceryotg.android.R;
 import com.groceryotg.android.services.location.LocationServiceReceiver;
 
@@ -37,7 +37,7 @@ public class SettingsActivity extends SherlockPreferenceActivity {
                 // in the Action Bar. This handles Android < 4.1.
             	
             	// Specify the parent activity
-            	Intent parentActivityIntent = new Intent(this, GroceryFragmentActivity.class);
+            	Intent parentActivityIntent = new Intent(this, GroceryPagerFragmentActivity.class);
             	parentActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | 
             								Intent.FLAG_ACTIVITY_NEW_TASK);
             	startActivity(parentActivityIntent);

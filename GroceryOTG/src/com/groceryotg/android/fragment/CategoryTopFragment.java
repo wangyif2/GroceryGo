@@ -12,12 +12,12 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.SimpleCursorAdapter;
 import com.actionbarsherlock.app.SherlockFragment;
-import com.groceryotg.android.GroceryFragmentActivity;
+import com.groceryotg.android.GroceryPagerFragmentActivity;
 import com.groceryotg.android.R;
 import com.groceryotg.android.database.CategoryTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 
-public class CategoryGridFragment extends SherlockFragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class CategoryTopFragment extends SherlockFragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private GridView gridview;
     private SimpleCursorAdapter mAdapter;
 
@@ -35,7 +35,7 @@ public class CategoryGridFragment extends SherlockFragment implements LoaderMana
         gridview = (GridView) v.findViewById(R.id.gridview);
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                GroceryFragmentActivity.mPager.setCurrentItem(position+1, true);
+                GroceryPagerFragmentActivity.mPager.setCurrentItem(position+1, true);
             }
         });
         gridview.setEmptyView(v.findViewById(R.id.empty_category_list));
@@ -55,7 +55,7 @@ public class CategoryGridFragment extends SherlockFragment implements LoaderMana
 
         getLoaderManager().initLoader(INDEX_LOADER_CAT, null, this);
 
-        mAdapter = new CategoryGridCursorAdapter(getActivity(), R.layout.category_fragment_row, null, from, to);
+        mAdapter = new CategoryTopCursorAdapter(getActivity(), R.layout.category_fragment_list_row, null, from, to);
 
         gridview.setAdapter(mAdapter);
 

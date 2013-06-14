@@ -15,7 +15,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 
-public class ShopCartDetailView extends SherlockActivity {
+public class ShopCartDetailActivity extends SherlockActivity {
     private EditText mCartGroceryName;
 
     private Uri cartGroceryItemUri;

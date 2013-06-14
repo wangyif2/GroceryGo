@@ -36,7 +36,7 @@ import com.groceryotg.android.database.CategoryTable;
 import com.groceryotg.android.database.StoreParentTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 import com.groceryotg.android.fragment.AboutDialogFragment;
-import com.groceryotg.android.fragment.CategoryGridFragment;
+import com.groceryotg.android.fragment.CategoryTopFragment;
 import com.groceryotg.android.fragment.GroceryListFragment;
 import com.groceryotg.android.services.NetworkHandler;
 import com.groceryotg.android.settings.SettingsActivity;
@@ -47,7 +47,7 @@ import com.groceryotg.android.utils.RefreshAnimation;
 import java.util.HashMap;
 import java.util.Map;
 
-public class GroceryFragmentActivity extends SherlockFragmentActivity {
+public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
 	public static String EXTRA_LAUNCH_PAGE = "extra_launch_page";
 	
     static HashMap<Integer, String> categories;
@@ -75,7 +75,7 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.grocery_pager);
+        setContentView(R.layout.grocery_pager_activity);
 
         categories = getCategoryInfo();
         mContext = this;
@@ -126,8 +126,8 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
         
         Bundle extras = intent.getExtras();
         if (extras != null) {
-        	Log.i("GroceryOTG", Integer.toString(extras.getInt(GroceryFragmentActivity.EXTRA_LAUNCH_PAGE)));
-        	mPager.setCurrentItem(extras.getInt(GroceryFragmentActivity.EXTRA_LAUNCH_PAGE));
+        	Log.i("GroceryOTG", Integer.toString(extras.getInt(GroceryPagerFragmentActivity.EXTRA_LAUNCH_PAGE)));
+        	mPager.setCurrentItem(extras.getInt(GroceryPagerFragmentActivity.EXTRA_LAUNCH_PAGE));
         }
     }
 
@@ -150,7 +150,7 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getSupportMenuInflater();
         inflater.inflate(R.menu.grocery_pager_menu, menu);
-        GroceryFragmentActivity.menu = menu;
+        GroceryPagerFragmentActivity.menu = menu;
 
         // Get the SearchView and set the searchable configuration
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
@@ -226,7 +226,7 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
     }
 
     public static void setMyQuery(String mQuery) {
-        GroceryFragmentActivity.myQuery = mQuery;
+        GroceryPagerFragmentActivity.myQuery = mQuery;
     }
 
     private void configActionBar() {
@@ -359,19 +359,19 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
     }
     
     private static void launchHomeActivity(Context context) {
-        Intent intent = new Intent(context, GroceryFragmentActivity.class);
+        Intent intent = new Intent(context, GroceryPagerFragmentActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         
         // Add an extra to tell the pager to return to the first page
         Bundle extras = new Bundle();
-        extras.putInt(GroceryFragmentActivity.EXTRA_LAUNCH_PAGE, 0);
+        extras.putInt(GroceryPagerFragmentActivity.EXTRA_LAUNCH_PAGE, 0);
         intent.putExtras(extras);
         
         context.startActivity(intent);
     }
     
     private static void launchMapActivity(Context context) {
-        Intent intent = new Intent(context, GroceryMapActivity.class);
+        Intent intent = new Intent(context, MapFragmentActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(intent);
     }
@@ -468,7 +468,7 @@ public class GroceryFragmentActivity extends SherlockFragmentActivity {
         @Override
         public Fragment getItem(int i) {
             if (i == POSITION_CATEGORY) {
-                return new CategoryGridFragment();
+                return new CategoryTopFragment();
             } else {
                 GroceryListFragment myFragment;
                 if (mPageReferenceMap.get(i) == null) {

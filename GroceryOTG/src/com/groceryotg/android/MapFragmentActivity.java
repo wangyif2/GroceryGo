@@ -83,14 +83,6 @@ public class MapFragmentActivity extends SherlockFragmentActivity {
     }
     
     @Override
-    public void onAttachFragment(Fragment fragment) {
-    	Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-        	fragment.setArguments(extras);
-        }
-    }
-    
-    @Override
     protected void onResume() {
     	super.onResume();
     }

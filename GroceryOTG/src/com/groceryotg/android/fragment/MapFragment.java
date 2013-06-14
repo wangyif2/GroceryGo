@@ -64,7 +64,7 @@ public class MapFragment extends SupportMapFragment {
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        Bundle args = getArguments();
+        Bundle args = mActivity.getIntent().getExtras();
         if (args != null) {
 	        this.filterStoreParents = args.getIntegerArrayList(MapFragmentActivity.EXTRA_FILTER_STORE_PARENT);
 	        this.filterStores = args.getIntegerArrayList(MapFragmentActivity.EXTRA_FILTER_STORE);

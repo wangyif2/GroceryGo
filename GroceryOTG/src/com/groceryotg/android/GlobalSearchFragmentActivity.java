@@ -12,7 +12,6 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.widget.SearchView;
 import com.groceryotg.android.fragment.GlobalSearchFragment;
-import com.groceryotg.android.utils.GroceryOTGUtils;
 
 public class GlobalSearchFragmentActivity extends SherlockFragmentActivity {
 	public static final String GLOBAL_SEARCH = "global_search";

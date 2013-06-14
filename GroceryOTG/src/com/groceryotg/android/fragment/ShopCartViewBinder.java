@@ -6,7 +6,6 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.SimpleCursorAdapter;
 import com.groceryotg.android.R;
-import com.groceryotg.android.R.id;
 import com.groceryotg.android.database.CartTable;
 
 public class ShopCartViewBinder implements SimpleCursorAdapter.ViewBinder, ViewBinder {

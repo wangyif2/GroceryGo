@@ -119,7 +119,7 @@ public class GroceryOTGUtils {
 		}
     }
     
-    private static void configActionBar(Activity activity) {
+    public static void configActionBar(Activity activity) {
     	((SherlockFragmentActivity) activity).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     	((SherlockFragmentActivity) activity).getSupportActionBar().setHomeButtonEnabled(true);
     }
@@ -177,7 +177,7 @@ public class GroceryOTGUtils {
     	
     }
     
-    public static class NavigationDrawerAdapter extends BaseAdapter {
+    private static class NavigationDrawerAdapter extends BaseAdapter {
     	Context mContext;
     	int[] mTitles;
     	int[] mIcons;
@@ -226,7 +226,7 @@ public class GroceryOTGUtils {
 		}
     }
     
-    public static class NavigationDrawerItemClickListener implements ListView.OnItemClickListener {
+    private static class NavigationDrawerItemClickListener implements ListView.OnItemClickListener {
     	Context mContext;
     	private DrawerLayout mDrawerLayout;
     	private ListView mDrawerList;

@@ -5,14 +5,14 @@
 	android:id="@+id/navigation_drawer_layout"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent" >
-	
+
 	<fragment
-		android:name="com.groceryotg.android.fragment.CategoryTopFragment"
-		android:id="@+id/category_top_activity_content_fragment"
+		android:name="com.groceryotg.android.fragment.MapFragment"
+		android:id="@+id/map_activity_content_fragment"
 		android:layout_width="match_parent"
-		android:layout_height="match_parent" >
-	</fragment>	
-	
+		android:layout_height="match_parent">
+	</fragment>
+
 	<ListView
 		android:id="@+id/navigation_drawer_view"
 		android:layout_width="240dp"

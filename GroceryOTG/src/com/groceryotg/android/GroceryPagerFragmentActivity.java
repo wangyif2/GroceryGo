@@ -62,7 +62,6 @@ public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
     GroceryAdapter mAdapter;
     RefreshStatusReceiver mRefreshStatusReceiver;
     MenuItem refreshItem;
-    static Menu menu;
 
     public static String myQuery;
 
@@ -83,9 +82,10 @@ public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
 
         setStoreInformation();
 
-        //configActionBar();
-        
-        configNavigationDrawer();
+        GroceryOTGUtils.NavigationDrawerBundle drawerBundle = GroceryOTGUtils.configNavigationDrawer(this, false);
+        this.mDrawerLayout = drawerBundle.getDrawerLayout();
+        this.mDrawerList = drawerBundle.getDrawerList();
+        this.mDrawerToggle = drawerBundle.getDrawerToggle();
 
         configViewPager();
     }
@@ -104,24 +104,13 @@ public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
     }
 
     private void handleIntent(Intent intent) {
-    	clearSearch();
-    	
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             // Gets the search query from the voice recognizer intent
             String query = intent.getStringExtra(SearchManager.QUERY);
 
-            if (mPager.getCurrentItem() > 0) {
-                // Set the search box text to the received query and submit the search
-                // from within the fragment if not on the category overview page:
-                mAdapter.getFragment(mPager.getCurrentItem()).handleVoiceSearch(query);
-            } else {
-                // If on the home page and doing a global search, send the intent
-                // to the GlobalSearchActivity
-                Intent globalSearchIntent = new Intent(this, GlobalSearchFragmentActivity.class);
-                GroceryOTGUtils.copyIntentData(intent, globalSearchIntent);
-                globalSearchIntent.putExtra(GlobalSearchFragmentActivity.GLOBAL_SEARCH, true);
-                startActivity(globalSearchIntent);
-            }
+            // Set the search box text to the received query and submit the search
+            // from within the fragment if not on the category overview page:
+            mAdapter.getFragment(mPager.getCurrentItem()).handleVoiceSearch(query);
         }
         
         Bundle extras = intent.getExtras();
@@ -150,7 +139,6 @@ public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getSupportMenuInflater();
         inflater.inflate(R.menu.grocery_pager_activity_menu, menu);
-        GroceryPagerFragmentActivity.menu = menu;
 
         // Get the SearchView and set the searchable configuration
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
@@ -168,26 +156,19 @@ public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
                 refreshCurrentPager();
                 return true;
             case android.R.id.home:
-            	// When home is pressed
             	if (mDrawerLayout.isDrawerOpen(mDrawerList))
             		mDrawerLayout.closeDrawer(mDrawerList);
             	else {
-            		if (mPager.getCurrentItem() == 0) {
-            			if (!SettingsManager.getNavigationDrawerSeen(mContext))
-            				SettingsManager.setNavigationDrawerSeen(mContext, true);
-            			mDrawerLayout.openDrawer(mDrawerList);
-            		}
-            		else
-            			mPager.setCurrentItem(0);
+            		// Specify the parent activity
+                	Intent parentActivityIntent = new Intent(this, CategoryTopFragmentActivity.class);
+                	parentActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | 
+                								Intent.FLAG_ACTIVITY_NEW_TASK);
+                	startActivity(parentActivityIntent);
+                	this.finish();
             	}
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-    
-    @Override
-    public boolean onKeyDown(int keycode, KeyEvent e) {
-    	return super.onKeyDown(keycode, e);
     }
 
     private HashMap<Integer, String> getCategoryInfo() {
@@ -223,11 +204,6 @@ public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
         GroceryPagerFragmentActivity.myQuery = mQuery;
     }
 
-    private void configActionBar() {
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-    }
-
     private void configViewPager() {
         mPager = (ViewPager) findViewById(R.id.pager);
 
@@ -236,174 +212,12 @@ public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
         mPager.setOffscreenPageLimit(OFFPAGE_LIMIT);
     }
     
-    private void configNavigationDrawer() {
-    	int[] titles = new int[] {
-    			R.string.navdrawer_item_cat,
-    			R.string.navdrawer_item_cart,
-    			R.string.navdrawer_item_map,
-    			R.string.navdrawer_item_settings,
-    			R.string.navdrawer_item_about
-    	};
-    	int[] icons = new int[] {
-    			android.R.drawable.ic_menu_myplaces,
-    			android.R.drawable.ic_menu_agenda,
-    			android.R.drawable.ic_menu_mapmode,
-    			android.R.drawable.ic_menu_preferences,
-    			android.R.drawable.ic_menu_info_details
-    	};
-    	
-    	mDrawerLayout = (DrawerLayout) findViewById(R.id.navigation_drawer_layout);
-    	mDrawerList = (ListView) findViewById(R.id.navigation_drawer_view);
-    	
-    	mDrawerList.setAdapter(new NavigationDrawerAdapter(this, titles, icons));
-    	
-    	configActionBar();
-    	
-    	mDrawerList.setOnItemClickListener(new NavigationDrawerItemClickListener());
-    	
-    	mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer, R.string.navdrawer_open, R.string.navdrawer_closed) {
-    		public void onDrawerClosed(View view) {
-    			getSupportActionBar().setTitle(getString(R.string.title_main));
-    		}
-    		public void onDrawerOpened(View drawerView) {
-    			getSupportActionBar().setTitle(getString(R.string.app_name));
-    		}
-    	};
-    	mDrawerLayout.setDrawerListener(mDrawerToggle);
-    	
-    	// Handle first-time viewing of navigaton drawer
-    	if (!SettingsManager.getNavigationDrawerSeen(mContext)) {
-    		mDrawerLayout.openDrawer(mDrawerList);
-    	}
-    }
-    
-    private class NavigationDrawerAdapter extends BaseAdapter {
-    	Context mContext;
-    	int[] mTitles;
-    	int[] mIcons;
-    	int mCount;
-    	LayoutInflater mInflater;
-    	
-    	public NavigationDrawerAdapter(Context context, int[] titles, int[] icons) {
-    		this.mContext = context;
-    		this.mTitles = titles;
-    		this.mIcons = icons;
-    		
-    		assert (mTitles.length == mIcons.length);
-    		this.mCount = mTitles.length;
-    	}
-
-		@Override
-		public int getCount() {
-			return this.mCount;
-		}
-
-		@Override
-		public Object getItem(int position) {
-			return getString(mTitles[position]);
-		}
-
-		@Override
-		public long getItemId(int position) {
-			return position;
-		}
-
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			TextView titleView;
-			ImageView iconView;
-			
-			mInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			View itemView = mInflater.inflate(R.layout.navdrawer_item, parent, false);
-			
-			iconView = (ImageView) itemView.findViewById(R.id.navdrawer_item_icon);
-			titleView = (TextView) itemView.findViewById(R.id.navdrawer_item_title);
-			
-			iconView.setImageResource(mIcons[position]);
-			titleView.setText(getString(mTitles[position]));
-			
-			return itemView;
-		}
-    }
-    
-    private class NavigationDrawerItemClickListener implements ListView.OnItemClickListener {
-		@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-			if (mDrawerLayout.isDrawerOpen(mDrawerList))
-        		mDrawerLayout.closeDrawer(mDrawerList);
-			
-			switch (position) {
-			case 0:
-				launchHomeActivity(mContext);
-				break;
-			case 1:
-				launchShopCartActivity(mContext);
-				break;
-			case 2:
-				launchMapActivity(mContext);
-				break;
-			case 3:
-				launchSettingsActivity(mContext);
-				break;
-			case 4:
-				launchAboutDialog(mContext);
-				break;
-			}
-		}
-    }
-    
-    private static void launchHomeActivity(Context context) {
-        Intent intent = new Intent(context, GroceryPagerFragmentActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        
-        // Add an extra to tell the pager to return to the first page
-        Bundle extras = new Bundle();
-        extras.putInt(GroceryPagerFragmentActivity.EXTRA_LAUNCH_PAGE, 0);
-        intent.putExtras(extras);
-        
-        context.startActivity(intent);
-    }
-    
-    private static void launchMapActivity(Context context) {
-        Intent intent = new Intent(context, MapFragmentActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        context.startActivity(intent);
-    }
-    
-    private static void launchShopCartActivity(Context context) {
-        Intent intent = new Intent(context, ShopCartOverviewFragmentActivity.class);
-        context.startActivity(intent);
-    }
-    
-    private static void launchSettingsActivity(Context context) {
-        Intent intent = new Intent(context, SettingsActivity.class);
-        context.startActivity(intent);
-    }
-    
-    private static void launchAboutDialog(Context context) {
-    	AboutDialogFragment dialog = new AboutDialogFragment();
-    	dialog.show(((SherlockFragmentActivity) context).getSupportFragmentManager(), "about_dialog");
-    }
-    
-    private static void clearSearch() {
-    	// Clear any open searches
-    	MenuItem searchItem = menu.findItem(R.id.search);
-    	if (searchItem != null) {
-    		searchItem.collapseActionView();
-    	}
-    }
-
     private void refreshCurrentPager() {
-        Toast t = Toast.makeText(this, "Starting fetching new items...", Toast.LENGTH_LONG);
+        Toast t = Toast.makeText(this, "Fetching new items...", Toast.LENGTH_LONG);
         t.show();
 
         Intent intent = new Intent(mContext, NetworkHandler.class);
-        if (mPager.getCurrentItem() == 0) {
-            refreshItem = menu.findItem(R.id.refresh);
-            RefreshAnimation.refreshIcon(mContext, true, refreshItem);
-            intent.putExtra(NetworkHandler.REFRESH_CONTENT, NetworkHandler.CAT);
-        } else
-            intent.putExtra(NetworkHandler.REFRESH_CONTENT, NetworkHandler.GRO);
+        intent.putExtra(NetworkHandler.REFRESH_CONTENT, NetworkHandler.GRO);
         startService(intent);
     }
 
@@ -504,11 +318,7 @@ public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
         public void onPageScrollStateChanged(int i) {
             // if Page Scroll state is *SELECTED*, we can start loading
             if (i == PAGE_SELECTED) {
-                if (currentPage == GroceryAdapter.POSITION_CATEGORY) {
-                } else {
-                	clearSearch();
-                    getFragment(currentPage).loadDataWithQuery(false, "");
-                }
+            	getFragment(currentPage).loadDataWithQuery(false, "");
             }
         }
     }

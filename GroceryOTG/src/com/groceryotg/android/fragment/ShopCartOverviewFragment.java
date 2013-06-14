@@ -21,6 +21,7 @@ import com.actionbarsherlock.app.SherlockListFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.groceryotg.android.CategoryTopFragmentActivity;
 import com.groceryotg.android.GroceryPagerFragmentActivity;
 import com.groceryotg.android.R;
 import com.groceryotg.android.ShopCartDetailActivity;
@@ -63,32 +64,6 @@ public class ShopCartOverviewFragment extends SherlockListFragment implements Lo
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.shopcart_activity_menu, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.cart_add:
-                createCartGroceryItem();
-                return true;
-            case android.R.id.home:
-            	// This is called when the Home (Up) button is pressed
-                // in the Action Bar. This handles Android < 4.1.
-            	
-            	// Specify the parent activity
-            	Intent parentActivityIntent = new Intent(mActivity, GroceryPagerFragmentActivity.class);
-            	parentActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | 
-            								Intent.FLAG_ACTIVITY_NEW_TASK);
-            	startActivity(parentActivityIntent);
-            	mActivity.finish();
-            	return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         menu.add(0, DELETE_ID, 0, R.string.cart_item_delete);
@@ -116,12 +91,7 @@ public class ShopCartOverviewFragment extends SherlockListFragment implements Lo
 
         startActivity(i);
     }
-
-    private void createCartGroceryItem() {
-        Intent i = new Intent(mActivity, ShopCartDetailActivity.class);
-        startActivity(i);
-    }
-
+    
     private void fillData() {
         String[] from = new String[]{CartTable.COLUMN_ID,
         							 CartTable.COLUMN_CART_GROCERY_NAME,

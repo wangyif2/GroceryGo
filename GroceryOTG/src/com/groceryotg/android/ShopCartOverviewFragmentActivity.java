@@ -1,27 +1,66 @@
 package com.groceryotg.android;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.KeyEvent;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.widget.DrawerLayout;
+import android.widget.ListView;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
+import com.groceryotg.android.utils.GroceryOTGUtils;
 
 public class ShopCartOverviewFragmentActivity extends SherlockFragmentActivity {
+	private DrawerLayout mDrawerLayout;
+	private ListView mDrawerList;
+	private ActionBarDrawerToggle mDrawerToggle;
+	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
         setContentView(R.layout.shopcart_activity);
         
-        configActionBar();
-    }
-	
-    private void configActionBar() {
-    	getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        GroceryOTGUtils.NavigationDrawerBundle drawerBundle = GroceryOTGUtils.configNavigationDrawer(this, false);
+        this.mDrawerLayout = drawerBundle.getDrawerLayout();
+        this.mDrawerList = drawerBundle.getDrawerList();
+        this.mDrawerToggle = drawerBundle.getDrawerToggle();
     }
     
     @Override
-    public boolean onKeyDown(int keycode, KeyEvent e) {
-    	return super.onKeyDown(keycode, e);
+    public boolean onCreateOptionsMenu(Menu menu) {
+    	MenuInflater inflater = getSupportMenuInflater();
+        inflater.inflate(R.menu.shopcart_activity_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.cart_add:
+                createCartGroceryItem();
+                return true;
+            case android.R.id.home:
+            	if (mDrawerLayout.isDrawerOpen(mDrawerList))
+            		mDrawerLayout.closeDrawer(mDrawerList);
+            	else {
+            		// Specify the parent activity
+                	Intent parentActivityIntent = new Intent(this, CategoryTopFragmentActivity.class);
+                	parentActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | 
+                								Intent.FLAG_ACTIVITY_NEW_TASK);
+                	startActivity(parentActivityIntent);
+                	this.finish();
+            	}
+            	return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+    
+    private void createCartGroceryItem() {
+        Intent i = new Intent(this, ShopCartDetailActivity.class);
+        startActivity(i);
     }
 }
 

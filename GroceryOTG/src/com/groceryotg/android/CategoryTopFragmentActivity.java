@@ -81,6 +81,12 @@ public class CategoryTopFragmentActivity extends SherlockFragmentActivity {
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             // Gets the search query from the voice recognizer intent
             //String query = intent.getStringExtra(SearchManager.QUERY);
+        	
+        	// Collapse the search view as a search is performed
+        	MenuItem searchItem = menu.findItem(R.id.search);
+	        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        	searchItem.collapseActionView();
+			searchView.setQuery("", false);
 
             // If on the home page and doing a global search, send the intent
             // to the GlobalSearchActivity
@@ -117,18 +123,6 @@ public class CategoryTopFragmentActivity extends SherlockFragmentActivity {
         SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setIconifiedByDefault(true);
-        
-        searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
-			@Override
-			public void onFocusChange(View view, boolean queryTextFocused) {
-				if (!queryTextFocused) {
-					MenuItem searchItem = menu.findItem(R.id.search);
-			        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
-					searchItem.collapseActionView();
-					searchView.setQuery("", false);
-				}
-			}
-        });
         
         return true;
     }

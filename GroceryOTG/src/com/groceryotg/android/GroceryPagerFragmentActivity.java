@@ -63,12 +63,11 @@ public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
     RefreshStatusReceiver mRefreshStatusReceiver;
     MenuItem refreshItem;
 
-    public static String myQuery;
-
     private final int OFFPAGE_LIMIT = 0;
 
     public static Map<Integer, String> storeNames;
-    public static Double mPriceRangeMin;
+
+	public static Double mPriceRangeMin;
     public static Double mPriceRangeMax;
 
     @Override
@@ -78,7 +77,6 @@ public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
 
         categories = getCategoryInfo();
         mContext = this;
-        setMyQuery("");
 
         setStoreInformation();
 
@@ -91,12 +89,6 @@ public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
     }
     
     @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-    	super.onPostCreate(savedInstanceState);
-    	mDrawerToggle.syncState();
-    }
-
-    @Override
     public void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         setIntent(intent);
@@ -104,15 +96,6 @@ public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
     }
 
     private void handleIntent(Intent intent) {
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            // Gets the search query from the voice recognizer intent
-            String query = intent.getStringExtra(SearchManager.QUERY);
-
-            // Set the search box text to the received query and submit the search
-            // from within the fragment if not on the category overview page:
-            mAdapter.getFragment(mPager.getCurrentItem()).handleVoiceSearch(query);
-        }
-        
         Bundle extras = intent.getExtras();
         if (extras != null) {
         	Log.i("GroceryOTG", Integer.toString(extras.getInt(GroceryPagerFragmentActivity.EXTRA_LAUNCH_PAGE)));
@@ -139,12 +122,6 @@ public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getSupportMenuInflater();
         inflater.inflate(R.menu.grocery_pager_activity_menu, menu);
-
-        // Get the SearchView and set the searchable configuration
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        searchView.setIconifiedByDefault(true);
 
         return true;
     }
@@ -200,10 +177,6 @@ public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
         }
     }
 
-    public static void setMyQuery(String mQuery) {
-        GroceryPagerFragmentActivity.myQuery = mQuery;
-    }
-
     private void configViewPager() {
         mPager = (ViewPager) findViewById(R.id.pager);
 
@@ -252,9 +225,6 @@ public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
 
         private static final int PAGE_SELECTED = 0;
 
-        private static final int POSITION_CATEGORY = 0;
-        private static final String TITLE_PAGER_CATEGORY = "categories overview";
-
         private HashMap<Integer, GroceryListFragment> mPageReferenceMap;
 
         public GroceryAdapter(FragmentManager fm) {
@@ -265,27 +235,19 @@ public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            if (position == POSITION_CATEGORY) {
-                return TITLE_PAGER_CATEGORY;
-            }
-            else
-                // The hashmap is offset by the position of myflyer pager
-                return categories.get(position);
+            // The hashmap is offset by the position of myflyer pager
+            return categories.get(position);
         }
 
         @Override
         public Fragment getItem(int i) {
-            if (i == POSITION_CATEGORY) {
-                return new CategoryTopFragment();
-            } else {
-                GroceryListFragment myFragment;
-                if (mPageReferenceMap.get(i) == null) {
-                    myFragment = GroceryListFragment.newInstance(i);
-                    mPageReferenceMap.put(i, myFragment);
-                    return myFragment;
-                } else
-                    return mPageReferenceMap.get(i);
-            }
+            GroceryListFragment myFragment;
+            if (mPageReferenceMap.get(i) == null) {
+                myFragment = GroceryListFragment.newInstance(i);
+                mPageReferenceMap.put(i, myFragment);
+                return myFragment;
+            } else
+                return mPageReferenceMap.get(i);
         }
 
         @Override
@@ -296,8 +258,7 @@ public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
 
         @Override
         public int getCount() {
-            //the plus 1 here is for the overview front page
-            return categories.size() + 1;
+            return categories.size();
         }
 
         public GroceryListFragment getFragment(int key) {

@@ -37,7 +37,7 @@ import com.groceryotg.android.utils.RefreshAnimation;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GroceryListFragment extends SherlockListFragment implements SearchView.OnQueryTextListener, SearchView.OnCloseListener, LoaderManager.LoaderCallbacks<Cursor> {
+public class GroceryListFragment extends SherlockListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final String CATEGORY_POSITION = "position";
     Activity activity;
     GroceryListCursorAdapter adapter;
@@ -46,9 +46,7 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
     Menu menu;
     MenuItem refreshItem;
     private Integer categoryId;
-    boolean isSearch;
 
-    private SearchView mSearchView;
     ViewGroup myViewGroup;
 
     SharedPreferences.OnSharedPreferenceChangeListener mSettingsListener;
@@ -81,47 +79,16 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
+        
         if (RefreshAnimation.isInProgress()) {
             RefreshAnimation.setInProgress(false);
             RefreshAnimation.getRefresh().getActionView().clearAnimation();
             RefreshAnimation.getRefresh().setActionView(null);
         }
         menu.clear();
+        
         inflater.inflate(R.menu.grocery_pager_activity_menu, menu);
         this.menu = menu;
-        // Get the SearchView and set the searchable configuration
-        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
-        mSearchView = (SearchView) menu.findItem(R.id.search).getActionView();
-        mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
-
-        // If set to "true" the icon is displayed within the EditText, if set to "false" it is displayed outside
-        mSearchView.setIconifiedByDefault(true);
-
-        // Instead of invoking activity again, use onQueryTextListener when a search is performed
-        mSearchView.setOnQueryTextListener(this);
-        mSearchView.setOnCloseListener(this);
-
-        // Add callbacks to the menu item that contains the SearchView in order to capture
-        // the event of pressing the 'back' button
-        MenuItem searchItem = menu.findItem(R.id.search);
-        searchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
-
-            @Override
-            public boolean onMenuItemActionExpand(MenuItem item) {
-                // This is called when the user clicks on the magnifying glass icon to
-                // expand the search view widget.
-                return true;
-            }
-
-            @Override
-            public boolean onMenuItemActionCollapse(MenuItem item) {
-                // This is called the user presses the 'back' button to exit the collapsed
-                // search widget view (i.e., to close the search). Here, refresh the query
-                // to display the whole list of items:
-                loadDataWithQuery(true, "");
-                return true;
-            }
-        });
     }
 
     @Override
@@ -148,14 +115,12 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
         super.onViewCreated(view, savedInstanceState);
         if (progressView != null)
             progressView.setVisibility(View.VISIBLE);
-
-//        displayEmptyListMessage(buildNoNewContentString());
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-//        fillData();
+        
         String[] from = new String[]{GroceryTable.COLUMN_GROCERY_ID,
                 GroceryTable.COLUMN_GROCERY_NAME,
                 GroceryTable.COLUMN_GROCERY_NAME,
@@ -192,7 +157,7 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
         getActivity().getContentResolver().insert(GroceryotgProvider.CONTENT_URI_CART_ITEM, values);
 
         Bundle b = new Bundle();
-        b.putString("query", GroceryPagerFragmentActivity.myQuery);
+        b.putString("query", "");
         b.putBoolean("reload", true);
         getLoaderManager().restartLoader(0, b, this);
         Toast t = Toast.makeText(getActivity(), "Item added to Shopping Cart", Toast.LENGTH_SHORT);
@@ -200,41 +165,7 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
     }
 
     @Override
-    public boolean onClose() {
-        return false;
-    }
-
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        String newQuery = !TextUtils.isEmpty(query) ? query : null;
-
-        // Don't do anything if the query hasn't changed
-        if (newQuery == null && GroceryPagerFragmentActivity.myQuery == null ||
-                newQuery != null && GroceryPagerFragmentActivity.myQuery.equals(newQuery))
-            return true;
-
-        Intent globalSearchIntent = new Intent(getActivity(), GlobalSearchFragmentActivity.class);
-        globalSearchIntent.putExtra(GlobalSearchFragmentActivity.GLOBAL_SEARCH, true);
-        globalSearchIntent.putExtra(SearchManager.QUERY, newQuery);
-        globalSearchIntent.setAction(Intent.ACTION_SEARCH);
-        startActivity(globalSearchIntent);
-
-        return true;
-    }
-
-    public boolean handleVoiceSearch(String query) {
-        mSearchView.setQuery(query, true);
-        return true;
-    }
-
-    @Override
-    public boolean onQueryTextChange(String newText) {
-        return false;
-    }
-
-    @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        isSearch = bundle.getBoolean("reload");
         String query = bundle.getString("query").trim();
 
         List<String> selectionArgs = new ArrayList<String>();
@@ -296,10 +227,7 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
             progressView.setVisibility(View.GONE);
 
         if (cursor.getCount() == 0)
-            if (isSearch)
-                displayEmptyListMessage(buildNoSearchResultString());
-            else
-                displayEmptyListMessage(buildNoNewContentString());
+            displayEmptyListMessage(buildNoNewContentString());
     }
 
     @Override
@@ -320,7 +248,6 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
         Bundle b = new Bundle();
         b.putString("query", query);
         if (reload) {
-            GroceryPagerFragmentActivity.setMyQuery(query);
             b.putBoolean("reload", true);
             getLoaderManager().restartLoader(0, b, this);
         } else {
@@ -356,7 +283,7 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
     private void watchSettings() {
         mSettingsListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
             public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-                loadDataWithQuery(true, GroceryPagerFragmentActivity.myQuery);
+                loadDataWithQuery(true, "");
             }
         };
         SettingsManager.getPrefs(activity).registerOnSharedPreferenceChangeListener(mSettingsListener);

@@ -68,7 +68,6 @@ public class MapFragmentActivity extends SherlockFragmentActivity {
         
         if (!isGooglePlaySuccess)
         	finish();
-        Log.i("GroceryOTG", "Google play check success");
     }
     
     private boolean checkGooglePlayService() {

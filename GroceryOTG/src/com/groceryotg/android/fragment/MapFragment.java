@@ -64,8 +64,6 @@ public class MapFragment extends SupportMapFragment {
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        Log.i("GroceryOTG", "Creating map frag");
-        
         Bundle args = getArguments();
         if (args != null) {
 	        this.filterStoreParents = args.getIntegerArrayList(MapFragmentActivity.EXTRA_FILTER_STORE_PARENT);
@@ -83,7 +81,6 @@ public class MapFragment extends SupportMapFragment {
 	    
 	    mMap = this.getMap();
 	    if (mMap != null) {
-	    	Log.i("GroceryOTG", "Map is not null");
 	        mMap.setOnCameraChangeListener(getCameraChangeListener());
 	
 	        if (lastKnownLocation != null) {

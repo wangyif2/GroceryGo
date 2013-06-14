@@ -86,6 +86,8 @@ public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
         this.mDrawerToggle = drawerBundle.getDrawerToggle();
 
         configViewPager();
+        
+        handleIntent(getIntent());
     }
     
     @Override
@@ -98,8 +100,10 @@ public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
     private void handleIntent(Intent intent) {
         Bundle extras = intent.getExtras();
         if (extras != null) {
-        	Log.i("GroceryOTG", Integer.toString(extras.getInt(GroceryPagerFragmentActivity.EXTRA_LAUNCH_PAGE)));
-        	mPager.setCurrentItem(extras.getInt(GroceryPagerFragmentActivity.EXTRA_LAUNCH_PAGE));
+        	int position = extras.getInt(GroceryPagerFragmentActivity.EXTRA_LAUNCH_PAGE);
+        	// This will ensure the view is populated at first
+        	mAdapter.getFragment(position).loadDataWithQuery(false, "");
+        	mPager.setCurrentItem(position);
         }
     }
 
@@ -232,28 +236,28 @@ public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
             mPageReferenceMap = new HashMap<Integer, GroceryListFragment>();
             mPager.setOnPageChangeListener(this);
         }
-
+        
         @Override
         public CharSequence getPageTitle(int position) {
-            // The hashmap is offset by the position of myflyer pager
-            return categories.get(position);
+            // The hashmap is offset by one
+            return categories.get(position+1);
         }
 
         @Override
         public Fragment getItem(int i) {
             GroceryListFragment myFragment;
-            if (mPageReferenceMap.get(i) == null) {
+            if (mPageReferenceMap.get(i+1) == null) {
                 myFragment = GroceryListFragment.newInstance(i);
-                mPageReferenceMap.put(i, myFragment);
+                mPageReferenceMap.put(i+1, myFragment);
                 return myFragment;
             } else
-                return mPageReferenceMap.get(i);
+                return mPageReferenceMap.get(i+1);
         }
 
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
             super.destroyItem(container, position, object);
-            mPageReferenceMap.remove(position);
+            mPageReferenceMap.remove(position+1);
         }
 
         @Override
@@ -262,7 +266,7 @@ public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
         }
 
         public GroceryListFragment getFragment(int key) {
-            return mPageReferenceMap.get(key);
+            return mPageReferenceMap.get(key+1);
         }
 
         @Override

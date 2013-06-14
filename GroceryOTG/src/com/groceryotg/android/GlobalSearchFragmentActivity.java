@@ -11,14 +11,11 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.widget.SearchView;
 import com.groceryotg.android.fragment.GlobalSearchFragment;
 import com.groceryotg.android.utils.GroceryOTGUtils;
 
 public class GlobalSearchFragmentActivity extends SherlockFragmentActivity {
 	public static final String GLOBAL_SEARCH = "global_search";
-	
-	private SearchView mSearchView;
 	
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
@@ -70,21 +67,11 @@ public class GlobalSearchFragmentActivity extends SherlockFragmentActivity {
 		setIntent(intent);
 		
 		if (intent.getExtras().containsKey(GlobalSearchFragmentActivity.GLOBAL_SEARCH)) {
-			
 			// Update the query - this is used by the loader when fetching results from database
 			query = intent.getStringExtra(SearchManager.QUERY).trim();
-			
-			// When we receive an intent from within this activity (i.e. after it
-			// has been created), the searchView already exists. In this case,
-			// update the searchView text to display the new query, and clear focus
-			// in order to collapse the keyboard.
-			if (mSearchView != null) {
-				mSearchView.setQuery(query, false);
-				mSearchView.clearFocus();
-			}
         }
 		
 		GlobalSearchFragment frag = (GlobalSearchFragment) getSupportFragmentManager().findFragmentById(R.id.search_activity_content_fragment);
-        frag.refreshQuery(query);
+        frag.setQuery(query);
 	}
 }

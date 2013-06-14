@@ -1,6 +1,7 @@
 package com.groceryotg.android.fragment;
 
 import android.app.Activity;
+import android.app.SearchManager;
 import android.content.*;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -36,7 +37,7 @@ import java.util.List;
 public class GroceryListFragment extends SherlockListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final String CATEGORY_POSITION = "position";
     private static final int GLOBAL_SEARCH_CATEGORY = -1;
-    Activity activity;
+    Activity mActivity;
     
     GroceryListCursorAdapter adapter;
     
@@ -64,7 +65,7 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        this.activity = activity;
+        this.mActivity = activity;
     }
 
     @Override
@@ -73,6 +74,7 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
         if (getArguments() != null) {
         	categoryId = getArguments().getInt(CATEGORY_POSITION);
         }
+        
         watchSettings();
     }
 
@@ -116,7 +118,17 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
 
         setListAdapter(adapter);
         
-        this.loadDataWithQuery(false, "");
+        // Handles the search filter
+        String query = "";
+        Bundle args = mActivity.getIntent().getExtras();
+        if (args != null) {
+	        if (args.containsKey(GlobalSearchFragmentActivity.GLOBAL_SEARCH)) {
+				// Update the query - this is used by the loader when fetching results from database
+				query = args.getString(SearchManager.QUERY).trim();
+	        }
+        }
+        
+        this.loadDataWithQuery(false, query);
     }
 
     @Override
@@ -178,7 +190,7 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
             selection += GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_GROCERY_NAME + " LIKE ?";
             selectionArgs.add("%" + query + "%");
         }
-        SparseBooleanArray selectedStores = SettingsManager.getStoreFilter(activity);
+        SparseBooleanArray selectedStores = SettingsManager.getStoreFilter(mActivity);
         if (selectedStores != null && selectedStores.size() > 0) {
             // Go through selected stores and add them to query
             String storeSelection = "";
@@ -293,12 +305,12 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
                 loadDataWithQuery(true, "");
             }
         };
-        SettingsManager.getPrefs(activity).registerOnSharedPreferenceChangeListener(mSettingsListener);
+        SettingsManager.getPrefs(mActivity).registerOnSharedPreferenceChangeListener(mSettingsListener);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        SettingsManager.getPrefs(activity).unregisterOnSharedPreferenceChangeListener(mSettingsListener);
+        SettingsManager.getPrefs(mActivity).unregisterOnSharedPreferenceChangeListener(mSettingsListener);
     }
 }

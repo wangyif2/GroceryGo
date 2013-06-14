@@ -12,6 +12,7 @@ import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.widget.DrawerLayout;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,10 +45,6 @@ import java.util.List;
 import java.util.Map;
 
 public class MapFragment extends SupportMapFragment {
-    public static final int CAM_ZOOM = 13;
-    public static final String EXTRA_FILTER_STORE_PARENT = "extra_filter_store_parent";
-    public static final String EXTRA_FILTER_STORE = "extra_filter_store";
-    
     Activity mActivity;
     
     private GoogleMap mMap = null;
@@ -67,6 +64,8 @@ public class MapFragment extends SupportMapFragment {
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
+        Log.i("GroceryOTG", "Creating map frag");
+        
         Bundle args = getArguments();
         if (args != null) {
 	        this.filterStoreParents = args.getIntegerArrayList(MapFragmentActivity.EXTRA_FILTER_STORE_PARENT);
@@ -75,30 +74,27 @@ public class MapFragment extends SupportMapFragment {
     }
     
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    	super.onCreateView(inflater, container, savedInstanceState);
+    public void onActivityCreated (Bundle savedInstanceState) {
+    	super.onActivityCreated(savedInstanceState);
     	
-        View v = inflater.inflate(R.layout.map_fragment, container, false);
-
-        buildIconMap(mActivity);
-        Location lastKnownLocation = getLastKnownLocation();
-        Cursor storeLocations = getFilteredStores(mActivity).loadInBackground();
-        
-        mMap = this.getMap();
-        if (mMap != null) {
-            mMap.setOnCameraChangeListener(getCameraChangeListener());
-
-            if (lastKnownLocation != null) {
-                // add a marker at the current location
-                buildUserMarker(mActivity, mMap, getString(R.string.map_usermarker), lastKnownLocation);
-                // move the camera to the current location
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()), CAM_ZOOM));
-            }
-
-            buildStoreMarkers(mActivity, storeLocations, mMap);
-        }
-        
-        return v;
+	    buildIconMap(mActivity);
+	    Location lastKnownLocation = getLastKnownLocation();
+	    Cursor storeLocations = getFilteredStores(mActivity).loadInBackground();
+	    
+	    mMap = this.getMap();
+	    if (mMap != null) {
+	    	Log.i("GroceryOTG", "Map is not null");
+	        mMap.setOnCameraChangeListener(getCameraChangeListener());
+	
+	        if (lastKnownLocation != null) {
+	            // add a marker at the current location
+	            buildUserMarker(mActivity, mMap, getString(R.string.map_usermarker), lastKnownLocation);
+	            // move the camera to the current location
+	            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()), MapFragmentActivity.CAM_ZOOM));
+	        }
+	
+	        buildStoreMarkers(mActivity, storeLocations, mMap);
+	    }
     }
     
     private void buildIconMap(Context context) {

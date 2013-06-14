@@ -14,6 +14,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.widget.DrawerLayout;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.View;
 import android.widget.ListView;
@@ -34,6 +35,7 @@ import com.google.android.gms.maps.model.*;
 import com.groceryotg.android.database.StoreParentTable;
 import com.groceryotg.android.database.StoreTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
+import com.groceryotg.android.fragment.MapFragment;
 import com.groceryotg.android.settings.SettingsManager;
 import com.groceryotg.android.utils.GroceryOTGUtils;
 
@@ -44,6 +46,7 @@ import java.util.Map;
 
 public class MapFragmentActivity extends SherlockFragmentActivity {
     public static final int CAM_ZOOM = 13;
+    public static final String MAP_FRAGMENT_TAG = "map_fragment_tag";
     public static final String EXTRA_FILTER_STORE_PARENT = "extra_filter_store_parent";
     public static final String EXTRA_FILTER_STORE = "extra_filter_store";
     
@@ -63,17 +66,9 @@ public class MapFragmentActivity extends SherlockFragmentActivity {
         
         boolean isGooglePlaySuccess = checkGooglePlayService();
         
-        if (isGooglePlaySuccess) {
-	        // Set map options
-	        GoogleMapOptions options = new GoogleMapOptions();
-	        options.mapType(GoogleMap.MAP_TYPE_NORMAL)
-	        	.compassEnabled(true)
-	        	.zoomControlsEnabled(false)
-	        	.rotateGesturesEnabled(false)
-	        	.tiltGesturesEnabled(false);
-        } else {
+        if (!isGooglePlaySuccess)
         	finish();
-        }
+        Log.i("GroceryOTG", "Google play check success");
     }
     
     private boolean checkGooglePlayService() {

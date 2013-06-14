@@ -1,26 +1,20 @@
-package com.groceryotg.android;
+package com.groceryotg.android.fragment;
 
-import android.app.Dialog;
+import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.content.CursorLoader;
-import android.util.AttributeSet;
 import android.util.SparseBooleanArray;
-import android.view.View;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.MenuItem;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
-import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.*;
+import com.groceryotg.android.MapFragmentActivity;
+import com.groceryotg.android.R;
 import com.groceryotg.android.database.StoreParentTable;
 import com.groceryotg.android.database.StoreTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
@@ -32,11 +26,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class GroceryMapActivity extends SherlockFragmentActivity {
-    public static final int CAM_ZOOM = 13;
-    public static final String MAP_FRAGMENT_TAG = "map_fragment_tag";
-    public static final String EXTRA_FILTER_STORE_PARENT = "extra_filter_store_parent";
-    public static final String EXTRA_FILTER_STORE = "extra_filter_store";
+public class MapFragment extends SupportMapFragment {
+    Activity mActivity;
     
     private GoogleMap mMap = null;
     private Map<String, Integer> mIconMap = new HashMap<String, Integer>();
@@ -46,74 +37,43 @@ public class GroceryMapActivity extends SherlockFragmentActivity {
     private ArrayList<Integer> filterStores = null;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onAttach(Activity activity) {
+    	super.onAttach(activity);
+    	this.mActivity = activity;
+    }
+    
+    @Override
+	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        // Enable ancestral navigation ("Up" button in ActionBar) for Android < 4.1
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        
-        boolean isGooglePlaySuccess = checkGooglePlayService();
-        
-        if (isGooglePlaySuccess) {
-	        // Set map options
-	        GoogleMapOptions options = new GoogleMapOptions();
-	        options.mapType(GoogleMap.MAP_TYPE_NORMAL)
-	        	.compassEnabled(true)
-	        	.zoomControlsEnabled(false)
-	        	.rotateGesturesEnabled(false)
-	        	.tiltGesturesEnabled(false);
-	        
-	        SupportMapFragment fragment = SupportMapFragment.newInstance(options);
-	        getSupportFragmentManager().beginTransaction().add(android.R.id.content, fragment, MAP_FRAGMENT_TAG).commit();
-	        getSupportFragmentManager().executePendingTransactions();
-	        
-	        Bundle extras = getIntent().getExtras();
-	        if (extras != null) {
-		        this.filterStoreParents = extras.getIntegerArrayList(GroceryMapActivity.EXTRA_FILTER_STORE_PARENT);
-		        this.filterStores = extras.getIntegerArrayList(GroceryMapActivity.EXTRA_FILTER_STORE);
-	        }
+        Bundle args = mActivity.getIntent().getExtras();
+        if (args != null) {
+	        this.filterStoreParents = args.getIntegerArrayList(MapFragmentActivity.EXTRA_FILTER_STORE_PARENT);
+	        this.filterStores = args.getIntegerArrayList(MapFragmentActivity.EXTRA_FILTER_STORE);
         }
     }
     
-    private boolean checkGooglePlayService() {
-    	int errorCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this.getApplicationContext());
-        if (errorCode != ConnectionResult.SUCCESS) {
-        	Dialog errorDialog = GooglePlayServicesUtil.getErrorDialog(errorCode, this, -1);
-        	if (errorDialog != null) {
-        		errorDialog.show();
-        		return false;
-        	}
-        }
-        return true;
-    }
-
     @Override
-    public View onCreateView(String name, Context context, AttributeSet attrs) {
-        super.onCreateView(name, context, attrs);
-        
-        buildIconMap(context);
-
-        Location lastKnownLocation = getLastKnownLocation();
-        
-        Cursor storeLocations = getFilteredStores(context).loadInBackground();
-        
-        SupportMapFragment fragment = (SupportMapFragment) getSupportFragmentManager().findFragmentByTag(MAP_FRAGMENT_TAG);
-        if (fragment != null) {
-            mMap = fragment.getMap();
-            if (mMap != null) {
-                mMap.setOnCameraChangeListener(getCameraChangeListener());
-
-                if (lastKnownLocation != null) {
-	                // add a marker at the current location
-	                buildUserMarker(context, mMap, getString(R.string.map_usermarker), lastKnownLocation);
-	                // move the camera to the current location
-	                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()), CAM_ZOOM));
-                }
-
-                buildStoreMarkers(context, storeLocations, mMap);
-            }
-        }
-        return null;
+    public void onActivityCreated (Bundle savedInstanceState) {
+    	super.onActivityCreated(savedInstanceState);
+    	
+	    buildIconMap(mActivity);
+	    Location lastKnownLocation = getLastKnownLocation();
+	    Cursor storeLocations = getFilteredStores(mActivity).loadInBackground();
+	    
+	    mMap = this.getMap();
+	    if (mMap != null) {
+	        mMap.setOnCameraChangeListener(getCameraChangeListener());
+	
+	        if (lastKnownLocation != null) {
+	            // add a marker at the current location
+	            buildUserMarker(mActivity, mMap, getString(R.string.map_usermarker), lastKnownLocation);
+	            // move the camera to the current location
+	            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()), MapFragmentActivity.CAM_ZOOM));
+	        }
+	
+	        buildStoreMarkers(mActivity, storeLocations, mMap);
+	    }
     }
     
     private void buildIconMap(Context context) {
@@ -121,7 +81,7 @@ public class GroceryMapActivity extends SherlockFragmentActivity {
     	parents.moveToFirst();
     	while (!parents.isAfterLast()) {
     		String name = parents.getString(parents.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_NAME));
-    		int markerImageID = context.getResources().getIdentifier("ic_mapmarker_" + name, "drawable", getPackageName());
+    		int markerImageID = context.getResources().getIdentifier("ic_mapmarker_" + name, "drawable", mActivity.getPackageName());
     		if (markerImageID != 0) {
     			mIconMap.put(name, markerImageID);
     		}
@@ -198,7 +158,7 @@ public class GroceryMapActivity extends SherlockFragmentActivity {
     }
 
     private Location getLastKnownLocation() {
-        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        LocationManager locationManager = (LocationManager) mActivity.getSystemService(Context.LOCATION_SERVICE);
         Location loc = null;
         if (locationManager != null) {
         	loc = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
@@ -234,24 +194,6 @@ public class GroceryMapActivity extends SherlockFragmentActivity {
     	}
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                // This is called when the Home (Up) button is pressed
-                // in the Action Bar. This handles Android < 4.1.
-
-                // Specify the parent activity
-                Intent parentActivityIntent = new Intent(this, GroceryFragmentActivity.class);
-                parentActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                        Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(parentActivityIntent);
-                finish();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-    
     private CursorLoader getFilteredStores(Context context) {
     	List<String> selectionArgs = new ArrayList<String>();
         String[] projection = {StoreTable.TABLE_STORE+"."+StoreTable.COLUMN_STORE_ID,

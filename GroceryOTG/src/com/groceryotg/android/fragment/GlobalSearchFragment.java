@@ -47,7 +47,7 @@ public class GlobalSearchFragment extends SherlockListFragment implements Loader
 	
     @Override
     public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    	View v = inflater.inflate(R.layout.search_list, container, false);
+    	View v = inflater.inflate(R.layout.search_fragment_list, container, false);
     	return v;
     }
 
@@ -55,6 +55,10 @@ public class GlobalSearchFragment extends SherlockListFragment implements Loader
         Bundle b = new Bundle();
     	b.putBoolean("reload", true);
     	mQuery = newQuery;
+    	
+    	TextView searchTitle = (TextView) mActivity.findViewById(R.id.search_title);
+    	searchTitle.setText("\"" + newQuery + "\"");
+    	
     	getLoaderManager().restartLoader(0, b, this);
     }
 	
@@ -73,7 +77,7 @@ public class GlobalSearchFragment extends SherlockListFragment implements Loader
                 R.id.grocery_row_in_shopcart};
 
         
-        adapter = new GroceryListCursorAdapter(mActivity, R.layout.grocery_fragment_row, null, from, to);
+        adapter = new GroceryListCursorAdapter(mActivity, R.layout.grocery_fragment_list_row, null, from, to);
         adapter.setViewBinder(new GroceryViewBinder());
         setListAdapter(adapter);
         

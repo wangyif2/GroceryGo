@@ -11,7 +11,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.groceryotg.android.SplashScreen;
+import com.groceryotg.android.SplashScreenActivity;
 import com.groceryotg.android.database.*;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 import com.groceryotg.android.database.objects.*;
@@ -114,7 +114,7 @@ public class NetworkHandler extends IntentService {
 
                     if (++previousIncrement == windowLength) {
                         previousIncrement = 0;
-                        SplashScreen.incrementProgressBar(1);
+                        SplashScreenActivity.incrementProgressBar(1);
                     }
                 }
             } finally {
@@ -167,7 +167,7 @@ public class NetworkHandler extends IntentService {
 
                     if (++previousIncrement == windowLength) {
                         previousIncrement = 0;
-                        SplashScreen.incrementProgressBar(1);
+                        SplashScreenActivity.incrementProgressBar(1);
                     }
                 }
             } finally {
@@ -214,7 +214,7 @@ public class NetworkHandler extends IntentService {
 
                     if (++previousIncrement == windowLength) {
                         previousIncrement = 0;
-                        SplashScreen.incrementProgressBar(1);
+                        SplashScreenActivity.incrementProgressBar(1);
                     }
                 }
             } finally {
@@ -251,7 +251,7 @@ public class NetworkHandler extends IntentService {
 
                     if (++previousIncrement == windowLength) {
                         previousIncrement = 0;
-                        SplashScreen.incrementProgressBar(1);
+                        SplashScreenActivity.incrementProgressBar(1);
                     }
                 }
             } finally {
@@ -302,7 +302,7 @@ public class NetworkHandler extends IntentService {
 
                 if (++previousIncrement == windowLength) {
                     previousIncrement = 0;
-                    SplashScreen.incrementProgressBar(1);
+                    SplashScreenActivity.incrementProgressBar(1);
                 }
             }
         } finally {

@@ -15,7 +15,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 
-public class ShopCartDetailView extends SherlockActivity {
+public class ShopCartDetailActivity extends SherlockActivity {
     private EditText mCartGroceryName;
 
     private Uri cartGroceryItemUri;
@@ -23,7 +23,7 @@ public class ShopCartDetailView extends SherlockActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.shopcart_edit);
+        setContentView(R.layout.shopcart_fragment_edit_dialog);
 
         // Enable ancestral navigation ("Up" button in ActionBar) for Android < 4.1
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

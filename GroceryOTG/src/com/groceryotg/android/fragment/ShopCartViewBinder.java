@@ -1,4 +1,4 @@
-package com.groceryotg.android;
+package com.groceryotg.android.fragment;
 
 import android.database.Cursor;
 import android.support.v4.widget.SimpleCursorAdapter.ViewBinder;

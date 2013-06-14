@@ -18,14 +18,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import com.actionbarsherlock.app.SherlockListFragment;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
-import com.groceryotg.android.GroceryFragmentActivity;
 import com.groceryotg.android.R;
-import com.groceryotg.android.ShopCartCursorAdapter;
-import com.groceryotg.android.ShopCartDetailView;
-import com.groceryotg.android.ShopCartViewBinder;
+import com.groceryotg.android.ShopCartDetailActivity;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 
@@ -60,34 +54,8 @@ public class ShopCartOverviewFragment extends SherlockListFragment implements Lo
     
     @Override
     public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    	View v = inflater.inflate(R.layout.shopcart_list, container, false);
+    	View v = inflater.inflate(R.layout.shopcart_fragment_list, container, false);
     	return v;
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.shopcart_menu, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.cart_add:
-                createCartGroceryItem();
-                return true;
-            case android.R.id.home:
-            	// This is called when the Home (Up) button is pressed
-                // in the Action Bar. This handles Android < 4.1.
-            	
-            	// Specify the parent activity
-            	Intent parentActivityIntent = new Intent(mActivity, GroceryFragmentActivity.class);
-            	parentActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | 
-            								Intent.FLAG_ACTIVITY_NEW_TASK);
-            	startActivity(parentActivityIntent);
-            	mActivity.finish();
-            	return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -112,18 +80,13 @@ public class ShopCartOverviewFragment extends SherlockListFragment implements Lo
     @Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        Intent i = new Intent(mActivity, ShopCartDetailView.class);
+        Intent i = new Intent(mActivity, ShopCartDetailActivity.class);
         Uri cartGroceryItemUri = Uri.parse(GroceryotgProvider.CONTENT_URI_CART_ITEM + "/" + id);
         i.putExtra(GroceryotgProvider.CONTENT_ITEM_TYPE_CART_ITEM, cartGroceryItemUri);
 
         startActivity(i);
     }
-
-    private void createCartGroceryItem() {
-        Intent i = new Intent(mActivity, ShopCartDetailView.class);
-        startActivity(i);
-    }
-
+    
     private void fillData() {
         String[] from = new String[]{CartTable.COLUMN_ID,
         							 CartTable.COLUMN_CART_GROCERY_NAME,
@@ -135,7 +98,7 @@ public class ShopCartOverviewFragment extends SherlockListFragment implements Lo
         					 R.id.cart_row_in_shopcart};
 
         getLoaderManager().initLoader(0, null, this);
-        adapter = new ShopCartCursorAdapter(mActivity, R.layout.shopcart_row, null, from, to);
+        adapter = new ShopCartCursorAdapter(mActivity, R.layout.shopcart_fragment_list_row, null, from, to);
         adapter.setViewBinder(new ShopCartViewBinder());
         setListAdapter(adapter);
     }

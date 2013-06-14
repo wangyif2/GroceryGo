@@ -30,6 +30,7 @@
     <string name="navdrawer_closed">Closed</string>
     
     <string name="title_main">Categories</string>
+    <string name="title_grocery_pager">Sales</string>
     <string name="title_search">Search</string>
     <string name="title_map">Map</string>
     <string name="title_settings">Settings</string>
@@ -45,7 +46,7 @@
     <string name="groceryoverview_filter_title">Filter by store</string>
     <string name="groceryoverview_filter_updated">Your store preferences have been updated</string>
     
-    <string name="search_hint">Search grocery items</string>
+    <string name="search_hint">Search</string>
 
     <string name="map_usermarker">You are here</string>
     <string name="setting_store_title">Select Store</string>

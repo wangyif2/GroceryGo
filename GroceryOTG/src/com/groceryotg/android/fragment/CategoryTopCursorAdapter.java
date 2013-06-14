@@ -14,14 +14,14 @@ import com.groceryotg.android.database.CategoryTable;
 
 import java.util.Locale;
 
-public class CategoryGridCursorAdapter extends SimpleCursorAdapter {
+public class CategoryTopCursorAdapter extends SimpleCursorAdapter {
     protected Context mContext;
     private int mLayout;
     private int[] gridColours;
     private TypedArray gridIcons;
 
     @SuppressWarnings("deprecation")
-    public CategoryGridCursorAdapter(Context context, int layout, Cursor c, String[] from, int[] to) {
+    public CategoryTopCursorAdapter(Context context, int layout, Cursor c, String[] from, int[] to) {
         super(context, layout, c, from, to);
         this.mContext = context;
         this.mLayout = layout;

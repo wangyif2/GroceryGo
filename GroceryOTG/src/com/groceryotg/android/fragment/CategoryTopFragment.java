@@ -1,5 +1,6 @@
 package com.groceryotg.android.fragment;
 
+import android.app.Activity;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
@@ -12,16 +13,23 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.SimpleCursorAdapter;
 import com.actionbarsherlock.app.SherlockFragment;
-import com.groceryotg.android.GroceryFragmentActivity;
 import com.groceryotg.android.R;
 import com.groceryotg.android.database.CategoryTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
+import com.groceryotg.android.utils.GroceryOTGUtils;
 
-public class CategoryGridFragment extends SherlockFragment implements LoaderManager.LoaderCallbacks<Cursor> {
-    private GridView gridview;
+public class CategoryTopFragment extends SherlockFragment implements LoaderManager.LoaderCallbacks<Cursor> {
+	private Activity mActivity;
+	private GridView gridview;
     private SimpleCursorAdapter mAdapter;
 
     private final int INDEX_LOADER_CAT = 0;
+    
+    @Override
+    public void onAttach(Activity activity) {
+    	super.onAttach(activity);
+    	this.mActivity = activity;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -35,7 +43,7 @@ public class CategoryGridFragment extends SherlockFragment implements LoaderMana
         gridview = (GridView) v.findViewById(R.id.gridview);
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                GroceryFragmentActivity.mPager.setCurrentItem(position+1, true);
+            	GroceryOTGUtils.launchGroceryPagerActivity(mActivity, position);
             }
         });
         gridview.setEmptyView(v.findViewById(R.id.empty_category_list));
@@ -55,7 +63,7 @@ public class CategoryGridFragment extends SherlockFragment implements LoaderMana
 
         getLoaderManager().initLoader(INDEX_LOADER_CAT, null, this);
 
-        mAdapter = new CategoryGridCursorAdapter(getActivity(), R.layout.category_fragment_row, null, from, to);
+        mAdapter = new CategoryTopCursorAdapter(getActivity(), R.layout.category_fragment_list_row, null, from, to);
 
         gridview.setAdapter(mAdapter);
 

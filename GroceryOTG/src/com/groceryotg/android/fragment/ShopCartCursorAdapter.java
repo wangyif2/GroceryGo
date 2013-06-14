@@ -1,4 +1,4 @@
-package com.groceryotg.android;
+package com.groceryotg.android.fragment;
 
 import android.app.Activity;
 import android.content.ContentValues;
@@ -12,6 +12,8 @@ import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.groceryotg.android.R;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 

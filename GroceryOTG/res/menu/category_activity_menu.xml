@@ -10,14 +10,10 @@
         android:actionViewClass="com.actionbarsherlock.widget.SearchView" />
 
     <item
-        android:id="@+id/map"
+        android:id="@+id/refresh"
         android:showAsAction="always"
-        android:title="@string/navdrawer_item_map"
-        android:icon="@drawable/ic_menu_map"/>
-    
-    <item
-        android:id="@+id/shop_cart"
-        android:showAsAction="always"
-        android:title="@string/navdrawer_item_cart"
-        android:icon="@drawable/ic_menu_cart"/>
+        android:icon="@drawable/ic_menu_refresh"
+        android:title="@string/navdrawer_item_sync">
+    </item>
+
 </menu>

@@ -130,12 +130,6 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
             case R.id.refresh:
                 refreshGrocery();
                 return true;
-            case R.id.map:
-                launchMapActivity();
-                return true;
-            case R.id.shop_cart:
-                launchShopCartActivity();
-                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -236,17 +230,6 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
     @Override
     public boolean onQueryTextChange(String newText) {
         return false;
-    }
-
-    private void launchShopCartActivity() {
-        Intent intent = new Intent(getActivity(), ShopCartOverviewFragmentActivity.class);
-        startActivity(intent);
-    }
-
-    private void launchMapActivity() {
-        Intent intent = new Intent(getActivity(), MapFragmentActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
     }
 
     @Override

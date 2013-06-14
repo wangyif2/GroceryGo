@@ -167,12 +167,6 @@ public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
             case R.id.refresh:
                 refreshCurrentPager();
                 return true;
-            case R.id.map:
-                launchMapActivity(this);
-                return true;
-            case R.id.shop_cart:
-            	launchShopCartActivity(this);
-                return true;
             case android.R.id.home:
             	// When home is pressed
             	if (mDrawerLayout.isDrawerOpen(mDrawerList))

@@ -131,12 +131,6 @@ public class CategoryTopFragmentActivity extends SherlockFragmentActivity {
             case R.id.refresh:
                 refreshCategories();
                 return true;
-            case R.id.map:
-                GroceryOTGUtils.launchMapActivity(this);
-                return true;
-            case R.id.shop_cart:
-            	GroceryOTGUtils.launchShopCartActivity(this);
-                return true;
             case android.R.id.home:
             	// When home is pressed
             	if (mDrawerLayout.isDrawerOpen(mDrawerList))

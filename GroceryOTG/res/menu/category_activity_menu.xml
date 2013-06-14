@@ -8,18 +8,6 @@
         android:title="@string/groceryoverview_menu_item_search"
         android:icon="@drawable/ic_menu_search"
         android:actionViewClass="com.actionbarsherlock.widget.SearchView" />
-    
-    <item
-        android:id="@+id/map"
-        android:showAsAction="always"
-        android:title="@string/navdrawer_item_map"
-        android:icon="@drawable/ic_menu_map"/>
-
-    <item
-        android:id="@+id/shop_cart"
-        android:showAsAction="always"
-        android:title="@string/navdrawer_item_cart"
-        android:icon="@drawable/ic_menu_cart"/>
 
     <item
         android:id="@+id/refresh"

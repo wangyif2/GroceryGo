@@ -60,12 +60,6 @@ public class GlobalSearchFragmentActivity extends SherlockFragmentActivity {
             	startActivity(parentActivityIntent);
             	finish();
             	return true;
-            case R.id.map:
-            	//launchMapActivity(this);
-                return true;
-            case R.id.shop_cart:
-            	//launchShopCartActivity(this);
-                return true;
         }
         return super.onOptionsItemSelected(item);
     }

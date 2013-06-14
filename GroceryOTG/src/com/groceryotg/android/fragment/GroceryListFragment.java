@@ -40,6 +40,7 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
     Activity mActivity;
     
     GroceryListCursorAdapter adapter;
+    String mQuery = "";
     
     TextView emptyTextView;
     ProgressBar progressView;
@@ -119,16 +120,15 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
         setListAdapter(adapter);
         
         // Handles the search filter
-        String query = "";
         Bundle args = mActivity.getIntent().getExtras();
         if (args != null) {
 	        if (args.containsKey(GlobalSearchFragmentActivity.GLOBAL_SEARCH)) {
 				// Update the query - this is used by the loader when fetching results from database
-				query = args.getString(SearchManager.QUERY).trim();
+				mQuery = args.getString(SearchManager.QUERY).trim();
 	        }
         }
         
-        this.loadDataWithQuery(false, query);
+        this.loadDataWithQuery(false, mQuery);
     }
 
     @Override
@@ -245,8 +245,13 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
         if (progressView != null)
             progressView.setVisibility(View.GONE);
 
-        if (cursor.getCount() == 0)
-            displayEmptyListMessage(buildNoNewContentString());
+        if (cursor.getCount() == 0) {
+        	if (!mQuery.isEmpty()) {
+        		displayEmptyListMessage(buildNoSearchResultString());
+        	} else {
+        		displayEmptyListMessage(buildNoNewContentString());
+        	}
+        }
     }
 
     @Override

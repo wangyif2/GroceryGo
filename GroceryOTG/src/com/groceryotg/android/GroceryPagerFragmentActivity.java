@@ -1,6 +1,5 @@
 package com.groceryotg.android;
 
-import android.app.SearchManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -8,39 +7,24 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.widget.SearchView;
-
 import com.groceryotg.android.database.CategoryTable;
 import com.groceryotg.android.database.StoreParentTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
-import com.groceryotg.android.fragment.AboutDialogFragment;
-import com.groceryotg.android.fragment.CategoryTopFragment;
 import com.groceryotg.android.fragment.GroceryListFragment;
 import com.groceryotg.android.services.NetworkHandler;
-import com.groceryotg.android.settings.SettingsActivity;
-import com.groceryotg.android.settings.SettingsManager;
 import com.groceryotg.android.utils.GroceryOTGUtils;
 import com.groceryotg.android.utils.RefreshAnimation;
 
@@ -101,8 +85,6 @@ public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
         Bundle extras = intent.getExtras();
         if (extras != null) {
         	int position = extras.getInt(GroceryPagerFragmentActivity.EXTRA_LAUNCH_PAGE);
-        	// This will ensure the view is populated at first
-        	mAdapter.getFragment(position).loadDataWithQuery(false, "");
         	mPager.setCurrentItem(position);
         }
     }
@@ -224,12 +206,9 @@ public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
     }
 
     public static class GroceryAdapter extends FragmentStatePagerAdapter implements ViewPager.OnPageChangeListener {
-
-        private static int currentPage;
-
-        private static final int PAGE_SELECTED = 0;
-
         private HashMap<Integer, GroceryListFragment> mPageReferenceMap;
+        
+        int mCurrentPage = 0;
 
         public GroceryAdapter(FragmentManager fm) {
             super(fm);
@@ -244,10 +223,10 @@ public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
         }
 
         @Override
-        public Fragment getItem(int i) {
+        public GroceryListFragment getItem(int i) {
             GroceryListFragment myFragment;
             if (mPageReferenceMap.get(i+1) == null) {
-                myFragment = GroceryListFragment.newInstance(i);
+                myFragment = GroceryListFragment.newInstance(i+1);
                 mPageReferenceMap.put(i+1, myFragment);
                 return myFragment;
             } else
@@ -270,21 +249,17 @@ public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
         }
 
         @Override
+		public void onPageScrollStateChanged(int state) {
+        	//getItem(mCurrentPage).loadDataWithQuery(false, "");
+		}
+        @Override
         public void onPageScrolled(int i, float v, int i2) {
         }
 
         //TODO: refactor hack to improve scroll perf
         @Override
-        public void onPageSelected(int i) {
-            currentPage = i;
-        }
-
-        @Override
-        public void onPageScrollStateChanged(int i) {
-            // if Page Scroll state is *SELECTED*, we can start loading
-            if (i == PAGE_SELECTED) {
-            	getFragment(currentPage).loadDataWithQuery(false, "");
-            }
+        public void onPageSelected(int position) {
+        	mCurrentPage = position;
         }
     }
 }

@@ -1,14 +1,12 @@
 package com.groceryotg.android.fragment;
 
 import android.app.Activity;
-import android.app.SearchManager;
 import android.content.*;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.text.TextUtils;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,9 +18,7 @@ import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockListFragment;
 import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.widget.SearchView;
 import com.groceryotg.android.*;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.FlyerTable;
@@ -71,34 +67,8 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
         categoryId = getArguments().getInt(CATEGORY_POSITION);
         watchSettings();
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        
-        if (RefreshAnimation.isInProgress()) {
-            RefreshAnimation.setInProgress(false);
-            RefreshAnimation.getRefresh().getActionView().clearAnimation();
-            RefreshAnimation.getRefresh().setActionView(null);
-        }
-        menu.clear();
-        
-        inflater.inflate(R.menu.grocery_pager_activity_menu, menu);
-        this.menu = menu;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.refresh:
-                refreshGrocery();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -140,6 +110,8 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
         adapter.setViewBinder(new GroceryViewBinder());
 
         setListAdapter(adapter);
+        
+        this.loadDataWithQuery(false, "");
     }
 
     @Override

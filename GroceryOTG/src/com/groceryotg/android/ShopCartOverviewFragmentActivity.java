@@ -10,7 +10,7 @@ public class ShopCartOverviewFragmentActivity extends SherlockFragmentActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        setContentView(R.layout.shopcart_top);
+        setContentView(R.layout.shopcart_activity);
         
         configActionBar();
     }

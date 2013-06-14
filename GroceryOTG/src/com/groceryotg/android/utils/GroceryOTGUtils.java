@@ -17,6 +17,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.groceryotg.android.CategoryTopFragmentActivity;
 import com.groceryotg.android.GroceryPagerFragmentActivity;
 import com.groceryotg.android.MapFragmentActivity;
 import com.groceryotg.android.R;
@@ -262,7 +263,7 @@ public class GroceryOTGUtils {
     }
     
     public static void launchHomeActivity(Context context) {
-        Intent intent = new Intent(context, GroceryPagerFragmentActivity.class);
+        Intent intent = new Intent(context, CategoryTopFragmentActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(intent);
     }

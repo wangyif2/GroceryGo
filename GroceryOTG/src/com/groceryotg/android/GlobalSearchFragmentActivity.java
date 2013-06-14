@@ -25,7 +25,7 @@ public class GlobalSearchFragmentActivity extends SherlockFragmentActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        setContentView(R.layout.search_top);
+        setContentView(R.layout.search_activity);
         
         configActionBar();
         
@@ -73,7 +73,7 @@ public class GlobalSearchFragmentActivity extends SherlockFragmentActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
     	MenuInflater inflater = getSupportMenuInflater();
-	    inflater.inflate(R.menu.search_menu, menu);
+	    inflater.inflate(R.menu.search_activity_menu, menu);
 	    
 	    // Get the SearchView and set the searchable configuration
 	    SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);

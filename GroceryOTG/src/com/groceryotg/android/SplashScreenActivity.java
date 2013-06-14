@@ -28,7 +28,7 @@ public class SplashScreenActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.splash_screen);
+        setContentView(R.layout.splashscreen_activity);
         
         // Load the default preferences
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
@@ -139,7 +139,7 @@ public class SplashScreenActivity extends Activity {
                 if (!mIsBackButtonPressed) {
                     // start the home screen if the back button wasn't pressed
                     // already
-                    Intent intent = new Intent(SplashScreenActivity.this, GroceryPagerFragmentActivity.class);
+                    Intent intent = new Intent(SplashScreenActivity.this, CategoryTopFragmentActivity.class);
                     SplashScreenActivity.this.startActivity(intent);
                 }
             }

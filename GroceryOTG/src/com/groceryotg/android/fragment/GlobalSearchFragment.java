@@ -47,7 +47,7 @@ public class GlobalSearchFragment extends SherlockListFragment implements Loader
 	
     @Override
     public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    	View v = inflater.inflate(R.layout.search_list, container, false);
+    	View v = inflater.inflate(R.layout.search_fragment_list, container, false);
     	return v;
     }
 

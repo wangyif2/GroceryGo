@@ -20,7 +20,7 @@ public class AboutDialogFragment extends SherlockDialogFragment {
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.about, container, false);
+		View view = inflater.inflate(R.layout.about_dialog, container, false);
 		
 		String titleString = getString(R.string.about_title) + " v" + getString(R.string.version_name);
 		Dialog d = getDialog();

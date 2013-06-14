@@ -149,7 +149,7 @@ public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getSupportMenuInflater();
-        inflater.inflate(R.menu.grocery_pager_menu, menu);
+        inflater.inflate(R.menu.grocery_pager_activity_menu, menu);
         GroceryPagerFragmentActivity.menu = menu;
 
         // Get the SearchView and set the searchable configuration

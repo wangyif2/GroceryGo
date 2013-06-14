@@ -87,7 +87,7 @@ public class GroceryListFragment extends SherlockListFragment implements SearchV
             RefreshAnimation.getRefresh().setActionView(null);
         }
         menu.clear();
-        inflater.inflate(R.menu.grocery_pager_menu1, menu);
+        inflater.inflate(R.menu.grocery_pager_activity_menu, menu);
         this.menu = menu;
         // Get the SearchView and set the searchable configuration
         SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);

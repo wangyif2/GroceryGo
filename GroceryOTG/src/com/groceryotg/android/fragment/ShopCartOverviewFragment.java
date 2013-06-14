@@ -58,13 +58,13 @@ public class ShopCartOverviewFragment extends SherlockListFragment implements Lo
     
     @Override
     public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    	View v = inflater.inflate(R.layout.shopcart_list, container, false);
+    	View v = inflater.inflate(R.layout.shopcart_fragment_list, container, false);
     	return v;
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.shopcart_menu, menu);
+        inflater.inflate(R.menu.shopcart_activity_menu, menu);
     }
 
     @Override
@@ -133,7 +133,7 @@ public class ShopCartOverviewFragment extends SherlockListFragment implements Lo
         					 R.id.cart_row_in_shopcart};
 
         getLoaderManager().initLoader(0, null, this);
-        adapter = new ShopCartCursorAdapter(mActivity, R.layout.shopcart_row, null, from, to);
+        adapter = new ShopCartCursorAdapter(mActivity, R.layout.shopcart_fragment_list_row, null, from, to);
         adapter.setViewBinder(new ShopCartViewBinder());
         setListAdapter(adapter);
     }

@@ -60,7 +60,10 @@ public class CategoryTopFragmentActivity extends SherlockFragmentActivity {
 
         setStoreInformation();
 
-        GroceryOTGUtils.configNavigationDrawer(this, true);
+        GroceryOTGUtils.NavigationDrawerBundle drawerBundle = GroceryOTGUtils.configNavigationDrawer(this, true);
+        this.mDrawerLayout = drawerBundle.getDrawerLayout();
+        this.mDrawerList = drawerBundle.getDrawerList();
+        this.mDrawerToggle = drawerBundle.getDrawerToggle();
     }
     
     @Override
@@ -110,7 +113,7 @@ public class CategoryTopFragmentActivity extends SherlockFragmentActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getSupportMenuInflater();
-        inflater.inflate(R.menu.grocery_pager_menu, menu);
+        inflater.inflate(R.menu.category_activity_menu, menu);
         CategoryTopFragmentActivity.menu = menu;
 
         // Get the SearchView and set the searchable configuration

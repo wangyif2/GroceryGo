@@ -22,7 +22,7 @@
         android:textSize="20sp"
         android:gravity="center"
         android:text="@string/no_content"
-        android:drawableLeft="@drawable/warning"
+        android:drawableLeft="@drawable/ic_menu_about"
         android:drawablePadding="2dip"
         android:paddingLeft="30dip"
         android:paddingRight="26dip"

@@ -22,6 +22,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 public class GroceryViewBinder implements SimpleCursorAdapter.ViewBinder, ViewBinder {
     @Override
@@ -136,7 +137,7 @@ public class GroceryViewBinder implements SimpleCursorAdapter.ViewBinder, ViewBi
         	
         	try {
         		Class<drawable> res = R.drawable.class;
-        		Field field = res.getField("ic_store_" + storeParentName.toLowerCase());
+        		Field field = res.getField("ic_store_" + storeParentName.toLowerCase(Locale.CANADA));
         		img.setImageResource(field.getInt(null));
         	} catch (Exception e) {
         	    Log.e("GroceryOTG", "Could not get drawable id for row.", e);

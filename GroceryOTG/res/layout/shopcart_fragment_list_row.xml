@@ -4,7 +4,8 @@
               android:orientation="horizontal"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:weightSum="1.0">
+              android:weightSum="1.0"
+              android:baselineAligned="false" >
 
     <LinearLayout android:id="@+id/cart_rowMiddle"
         android:layout_width="0dip"

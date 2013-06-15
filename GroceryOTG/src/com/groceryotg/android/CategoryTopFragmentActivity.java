@@ -41,7 +41,7 @@ public class CategoryTopFragmentActivity extends SherlockFragmentActivity {
     
     RefreshStatusReceiver mRefreshStatusReceiver;
     MenuItem refreshItem;
-    static Menu menu;
+    private Menu mMenu;
 
     public static Map<Integer, String> storeNames;
     public static Double mPriceRangeMin;
@@ -82,11 +82,11 @@ public class CategoryTopFragmentActivity extends SherlockFragmentActivity {
             //String query = intent.getStringExtra(SearchManager.QUERY);
         	
         	// Collapse the search view as a search is performed
-        	MenuItem searchItem = menu.findItem(R.id.search);
-	        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        	MenuItem searchItem = mMenu.findItem(R.id.search);
+	        SearchView searchView = (SearchView) mMenu.findItem(R.id.search).getActionView();
         	searchItem.collapseActionView();
 			searchView.setQuery("", false);
-
+			
             // If on the home page and doing a global search, send the intent
             // to the GlobalSearchActivity
             Intent globalSearchIntent = new Intent(this, GlobalSearchFragmentActivity.class);
@@ -115,7 +115,7 @@ public class CategoryTopFragmentActivity extends SherlockFragmentActivity {
     public boolean onCreateOptionsMenu(final Menu menu) {
         MenuInflater inflater = getSupportMenuInflater();
         inflater.inflate(R.menu.category_activity_menu, menu);
-        CategoryTopFragmentActivity.menu = menu;
+        mMenu = menu;
 
         // Get the SearchView and set the searchable configuration
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
@@ -180,7 +180,7 @@ public class CategoryTopFragmentActivity extends SherlockFragmentActivity {
         t.show();
 
         Intent intent = new Intent(mContext, NetworkHandler.class);
-        refreshItem = menu.findItem(R.id.refresh);
+        refreshItem = mMenu.findItem(R.id.refresh);
         RefreshAnimation.refreshIcon(mContext, true, refreshItem);
         intent.putExtra(NetworkHandler.REFRESH_CONTENT, NetworkHandler.CAT);
         startService(intent);

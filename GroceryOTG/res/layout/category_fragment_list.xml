@@ -9,7 +9,7 @@
         android:id="@+id/gridview"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:numColumns="3"
+        android:numColumns="@string/category_grid_width"
         android:verticalSpacing="5dp"
         android:horizontalSpacing="5dp"
         android:gravity="center"

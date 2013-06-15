@@ -30,7 +30,7 @@ public class MapFragmentActivity extends SherlockFragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.map_activity);
         
-        GroceryOTGUtils.NavigationDrawerBundle drawerBundle = GroceryOTGUtils.configNavigationDrawer(this, false);
+        GroceryOTGUtils.NavigationDrawerBundle drawerBundle = GroceryOTGUtils.configNavigationDrawer(this, false, R.string.title_map);
         this.mDrawerLayout = drawerBundle.getDrawerLayout();
         this.mDrawerList = drawerBundle.getDrawerList();
         this.mDrawerToggle = drawerBundle.getDrawerToggle();

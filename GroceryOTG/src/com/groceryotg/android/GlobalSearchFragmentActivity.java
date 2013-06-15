@@ -27,7 +27,7 @@ public class GlobalSearchFragmentActivity extends SherlockFragmentActivity {
         
         setContentView(R.layout.search_activity);
         
-        GroceryOTGUtils.NavigationDrawerBundle drawerBundle = GroceryOTGUtils.configNavigationDrawer(this, false);
+        GroceryOTGUtils.NavigationDrawerBundle drawerBundle = GroceryOTGUtils.configNavigationDrawer(this, false, R.string.title_search);
         this.mDrawerLayout = drawerBundle.getDrawerLayout();
         this.mDrawerList = drawerBundle.getDrawerList();
         this.mDrawerToggle = drawerBundle.getDrawerToggle();

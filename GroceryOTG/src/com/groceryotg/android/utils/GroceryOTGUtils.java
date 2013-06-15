@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -124,10 +125,12 @@ public class GroceryOTGUtils {
     	((SherlockFragmentActivity) activity).getSupportActionBar().setHomeButtonEnabled(true);
     }
     
-    public static GroceryOTGUtils.NavigationDrawerBundle configNavigationDrawer(final Activity activity, boolean isTopView) {
+    public static GroceryOTGUtils.NavigationDrawerBundle configNavigationDrawer(final Activity activity, boolean isTopView, final int titleResId) {
     	DrawerLayout drawerLayout;
 		ListView drawerList;
     	ActionBarDrawerToggle drawerToggle = null;
+    	
+    	configActionBar(activity);
     	
     	int[] titles = new int[] {
     			R.string.navdrawer_item_cat,
@@ -145,19 +148,24 @@ public class GroceryOTGUtils {
     	};
     	
     	drawerLayout = (DrawerLayout) activity.findViewById(R.id.navigation_drawer_layout);
+    	drawerLayout.setDrawerListener(new DrawerLayout.SimpleDrawerListener() {
+    		public void onDrawerClosed(View view) {
+    			((SherlockFragmentActivity) activity).getSupportActionBar().setTitle(activity.getString(titleResId));
+    		}
+    		public void onDrawerOpened(View drawerView) {
+    			((SherlockFragmentActivity) activity).getSupportActionBar().setTitle(activity.getString(R.string.app_name));
+    		}
+    	});
+    	
     	drawerList = (ListView) activity.findViewById(R.id.navigation_drawer_view);
-    	
     	drawerList.setAdapter(new GroceryOTGUtils.NavigationDrawerAdapter(activity, titles, icons));
-    	
-    	configActionBar(activity);
-    	
     	drawerList.setOnItemClickListener(new NavigationDrawerItemClickListener(activity, drawerLayout, drawerList));
     	
     	// Only set up toggling when at a top view
     	if (isTopView) {
 	    	drawerToggle = new ActionBarDrawerToggle(activity, drawerLayout, R.drawable.ic_drawer, R.string.navdrawer_open, R.string.navdrawer_closed) {
 	    		public void onDrawerClosed(View view) {
-	    			((SherlockFragmentActivity) activity).getSupportActionBar().setTitle(activity.getString(R.string.title_main));
+	    			((SherlockFragmentActivity) activity).getSupportActionBar().setTitle(activity.getString(titleResId));
 	    		}
 	    		public void onDrawerOpened(View drawerView) {
 	    			((SherlockFragmentActivity) activity).getSupportActionBar().setTitle(activity.getString(R.string.app_name));

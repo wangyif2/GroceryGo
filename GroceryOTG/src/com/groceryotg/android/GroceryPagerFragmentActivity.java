@@ -64,7 +64,7 @@ public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
 
         setStoreInformation();
 
-        GroceryOTGUtils.NavigationDrawerBundle drawerBundle = GroceryOTGUtils.configNavigationDrawer(this, false);
+        GroceryOTGUtils.NavigationDrawerBundle drawerBundle = GroceryOTGUtils.configNavigationDrawer(this, false, R.string.title_grocery_pager);
         this.mDrawerLayout = drawerBundle.getDrawerLayout();
         this.mDrawerList = drawerBundle.getDrawerList();
         this.mDrawerToggle = drawerBundle.getDrawerToggle();

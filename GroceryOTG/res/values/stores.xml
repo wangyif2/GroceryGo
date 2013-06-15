@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="store_names">
-    	<item>metro</item>
-    	<item>loblaws</item>
-        <item>foodbasics</item>
-		<item>nofrills</item>
-		<item>sobeys</item>
+    	<item>Metro</item>
+    	<item>Loblaws</item>
+        <item>Food Basics</item>
+		<item>No Frills</item>
+		<item>Sobeys</item>
     </string-array>
     <string-array name="store_ids">
         <item>1</item>

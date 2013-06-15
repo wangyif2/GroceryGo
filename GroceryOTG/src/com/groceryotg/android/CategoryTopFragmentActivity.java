@@ -136,11 +136,8 @@ public class CategoryTopFragmentActivity extends SherlockFragmentActivity {
             	// When home is pressed
             	if (mDrawerLayout.isDrawerOpen(mDrawerList))
             		mDrawerLayout.closeDrawer(mDrawerList);
-            	else {
-        			if (!SettingsManager.getNavigationDrawerSeen(mContext))
-        				SettingsManager.setNavigationDrawerSeen(mContext, true);
+            	else
         			mDrawerLayout.openDrawer(mDrawerList);
-            	}
                 return true;
         }
         return super.onOptionsItemSelected(item);

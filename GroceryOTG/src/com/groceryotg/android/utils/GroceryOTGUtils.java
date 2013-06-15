@@ -153,6 +153,8 @@ public class GroceryOTGUtils {
     			((SherlockFragmentActivity) activity).getSupportActionBar().setTitle(activity.getString(titleResId));
     		}
     		public void onDrawerOpened(View drawerView) {
+    			if (!SettingsManager.getNavigationDrawerSeen(activity))
+    				SettingsManager.setNavigationDrawerSeen(activity, true);
     			((SherlockFragmentActivity) activity).getSupportActionBar().setTitle(activity.getString(R.string.app_name));
     		}
     	});
@@ -168,6 +170,8 @@ public class GroceryOTGUtils {
 	    			((SherlockFragmentActivity) activity).getSupportActionBar().setTitle(activity.getString(titleResId));
 	    		}
 	    		public void onDrawerOpened(View drawerView) {
+	    			if (!SettingsManager.getNavigationDrawerSeen(activity))
+        				SettingsManager.setNavigationDrawerSeen(activity, true);
 	    			((SherlockFragmentActivity) activity).getSupportActionBar().setTitle(activity.getString(R.string.app_name));
 	    		}
 	    	};

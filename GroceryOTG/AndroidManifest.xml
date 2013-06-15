@@ -43,7 +43,6 @@
 
         <activity
             android:name=".SplashScreenActivity"
-            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -53,7 +52,6 @@
         
         <activity
             android:name=".CategoryTopFragmentActivity"
-            android:screenOrientation="portrait"
             android:launchMode="singleTop"
             android:label="@string/title_main" >
             <intent-filter>
@@ -66,7 +64,6 @@
 
         <activity
             android:name=".GroceryPagerFragmentActivity"
-            android:screenOrientation="portrait"
             android:launchMode="singleTop"
             android:label="@string/title_grocery_pager" >
             <intent-filter>
@@ -79,26 +76,22 @@
 
         <activity
             android:name=".ShopCartOverviewFragmentActivity"
-            android:screenOrientation="portrait"
             android:label="@string/title_cart" >
         </activity>
 
         <activity
             android:name=".ShopCartDetailActivity"
-            android:screenOrientation="portrait"
             android:label="@string/title_cart_detail" >
         </activity>
 
         <activity
             android:name=".MapFragmentActivity"
-            android:screenOrientation="portrait"
             android:label="@string/title_map" >
         </activity>
         
         <activity
             android:name=".GlobalSearchFragmentActivity"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait"
             android:label="@string/title_search" >
             <intent-filter>
 	            <action android:name="android.intent.action.SEARCH"/>

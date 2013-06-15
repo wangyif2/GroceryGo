@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">GroceryOTG</string>
+    <string name="version_name">1.0.0</string>
     
     <string name="no_content">Currently no content, please refresh</string>
     <string name="no_new_content">There is no new available data. Last checked: %1$s</string>
@@ -49,13 +50,15 @@
     <string name="search_hint">Search</string>
 
     <string name="map_usermarker">You are here</string>
-    <string name="setting_store_title">Select Store</string>
-    <string name="setting_store_dialog_title">Select Store</string>
-    <string name="setting_store_summary">Select your favourite store in your area</string>
+    <string name="setting_store_title">Select stores</string>
+    <string name="setting_store_summary">Filter by your favourite stores</string>
+    <string name="setting_notification_enable_title">Enable notifications</string>
+    <string name="setting_notification_enable_summary">Turn location-based notifications on or off</string>
     <string name="setting_notification_freq_title">Frequency</string>
-    <string name="setting_notification_freq_summary">Set how often you would like to be notified of new sales items</string>
+    <string name="setting_notification_freq_summary">Set notification interval</string>
+    
     <string name="legacy_store_filter_ids">1|2|3|4|5</string>
+    
     <string name="about_text">&lt;Placeholder description&gt;</string>
     <string name="about_title">About GroceryOTG</string>
-    <string name="version_name">1.0.0</string>
 </resources>

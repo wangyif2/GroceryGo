@@ -2,7 +2,6 @@ package com.groceryotg.android;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.ListView;
 
@@ -15,7 +14,6 @@ import com.groceryotg.android.utils.GroceryOTGUtils;
 public class ShopCartOverviewFragmentActivity extends SherlockFragmentActivity {
 	private DrawerLayout mDrawerLayout;
 	private ListView mDrawerList;
-	private ActionBarDrawerToggle mDrawerToggle;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -26,7 +24,6 @@ public class ShopCartOverviewFragmentActivity extends SherlockFragmentActivity {
         GroceryOTGUtils.NavigationDrawerBundle drawerBundle = GroceryOTGUtils.configNavigationDrawer(this, false, R.string.title_cart);
         this.mDrawerLayout = drawerBundle.getDrawerLayout();
         this.mDrawerList = drawerBundle.getDrawerList();
-        this.mDrawerToggle = drawerBundle.getDrawerToggle();
     }
     
     @Override

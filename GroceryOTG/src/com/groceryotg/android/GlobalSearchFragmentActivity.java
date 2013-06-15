@@ -3,7 +3,6 @@ package com.groceryotg.android;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.ListView;
 
@@ -19,7 +18,6 @@ public class GlobalSearchFragmentActivity extends SherlockFragmentActivity {
 	
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
-    ActionBarDrawerToggle mDrawerToggle;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -30,7 +28,6 @@ public class GlobalSearchFragmentActivity extends SherlockFragmentActivity {
         GroceryOTGUtils.NavigationDrawerBundle drawerBundle = GroceryOTGUtils.configNavigationDrawer(this, false, R.string.title_search);
         this.mDrawerLayout = drawerBundle.getDrawerLayout();
         this.mDrawerList = drawerBundle.getDrawerList();
-        this.mDrawerToggle = drawerBundle.getDrawerToggle();
         
         // Does the actual search
         handleSearch(getIntent());

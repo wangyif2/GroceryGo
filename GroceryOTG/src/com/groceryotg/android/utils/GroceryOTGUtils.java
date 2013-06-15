@@ -140,11 +140,11 @@ public class GroceryOTGUtils {
     			R.string.navdrawer_item_about
     	};
     	int[] icons = new int[] {
-    			android.R.drawable.ic_menu_myplaces,
-    			android.R.drawable.ic_menu_agenda,
-    			android.R.drawable.ic_menu_mapmode,
-    			android.R.drawable.ic_menu_preferences,
-    			android.R.drawable.ic_menu_info_details
+    			R.drawable.ic_menu_home,
+    			R.drawable.ic_menu_cart,
+    			R.drawable.ic_menu_map,
+    			R.drawable.ic_menu_settings,
+    			R.drawable.ic_menu_about
     	};
     	
     	drawerLayout = (DrawerLayout) activity.findViewById(R.id.navigation_drawer_layout);

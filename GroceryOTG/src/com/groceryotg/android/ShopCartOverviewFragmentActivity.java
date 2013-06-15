@@ -23,7 +23,7 @@ public class ShopCartOverviewFragmentActivity extends SherlockFragmentActivity {
         
         setContentView(R.layout.shopcart_activity);
         
-        GroceryOTGUtils.NavigationDrawerBundle drawerBundle = GroceryOTGUtils.configNavigationDrawer(this, false);
+        GroceryOTGUtils.NavigationDrawerBundle drawerBundle = GroceryOTGUtils.configNavigationDrawer(this, false, R.string.title_cart);
         this.mDrawerLayout = drawerBundle.getDrawerLayout();
         this.mDrawerList = drawerBundle.getDrawerList();
         this.mDrawerToggle = drawerBundle.getDrawerToggle();

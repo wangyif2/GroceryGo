@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.content.LocalBroadcastManager;
@@ -19,31 +18,21 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.widget.SearchView;
 
-import com.groceryotg.android.database.CategoryTable;
-import com.groceryotg.android.database.StoreParentTable;
-import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 import com.groceryotg.android.services.NetworkHandler;
-import com.groceryotg.android.settings.SettingsManager;
 import com.groceryotg.android.utils.GroceryOTGUtils;
 import com.groceryotg.android.utils.RefreshAnimation;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class CategoryTopFragmentActivity extends SherlockFragmentActivity {
-    static HashMap<Integer, String> categories;
-
-    public static Context mContext;
+    private Context mContext;
     
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
-    ActionBarDrawerToggle mDrawerToggle;
+    private ActionBarDrawerToggle mDrawerToggle;
     
     RefreshStatusReceiver mRefreshStatusReceiver;
     MenuItem refreshItem;
     private Menu mMenu;
 
-    public static Map<Integer, String> storeNames;
     public static Double mPriceRangeMin;
     public static Double mPriceRangeMax;
 
@@ -52,10 +41,7 @@ public class CategoryTopFragmentActivity extends SherlockFragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.category_activity);
 
-        categories = getCategoryInfo();
         mContext = this;
-
-        setStoreInformation();
 
         GroceryOTGUtils.NavigationDrawerBundle drawerBundle = GroceryOTGUtils.configNavigationDrawer(this, true, R.string.title_main);
         this.mDrawerLayout = drawerBundle.getDrawerLayout();
@@ -141,35 +127,6 @@ public class CategoryTopFragmentActivity extends SherlockFragmentActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private HashMap<Integer, String> getCategoryInfo() {
-        HashMap<Integer, String> categories = new HashMap<Integer, String>();
-        Cursor c = getContentResolver().query(GroceryotgProvider.CONTENT_URI_CAT, null, null, null, null);
-
-        c.moveToFirst();
-        while (!c.isAfterLast()) {
-            categories.put(
-                    c.getInt(c.getColumnIndexOrThrow(CategoryTable.COLUMN_CATEGORY_ID)),
-                    c.getString(c.getColumnIndexOrThrow(CategoryTable.COLUMN_CATEGORY_NAME)));
-            c.moveToNext();
-        }
-        return categories;
-    }
-
-    private void setStoreInformation() {
-        // Initialize the list of stores from database
-        storeNames = new HashMap<Integer, String>(); // {storeParentId, storeParentName}
-
-        Cursor storeCursor = GroceryOTGUtils.getStoreParentNamesCursor(this);
-        if (storeCursor != null) {
-            storeCursor.moveToFirst();
-            while (!storeCursor.isAfterLast()) {
-                storeNames.put(storeCursor.getInt(storeCursor.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_ID)),
-                        storeCursor.getString(storeCursor.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_NAME)));
-                storeCursor.moveToNext();
-            }
-        }
     }
 
     private void refreshCategories() {

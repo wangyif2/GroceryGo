@@ -6,7 +6,7 @@
         android:id="@+id/cart_add"
         android:showAsAction="always"
         android:title="@string/cart_shoplist_add"
-        android:icon="@drawable/add_icon"/>
+        android:icon="@drawable/ic_menu_add"/>
     <!--
     <item
         android:id="@+id/cart_filter_shoplist"

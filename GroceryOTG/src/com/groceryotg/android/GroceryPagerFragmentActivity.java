@@ -6,12 +6,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.util.SparseArray;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -28,31 +28,23 @@ import com.groceryotg.android.services.NetworkHandler;
 import com.groceryotg.android.utils.GroceryOTGUtils;
 import com.groceryotg.android.utils.RefreshAnimation;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
 	public static String EXTRA_LAUNCH_PAGE = "extra_launch_page";
 	
-    static HashMap<Integer, String> categories;
+    public static SparseArray<String> categories;
+    public static SparseArray<String> storeNames;
 
     public static Context mContext;
     public static ViewPager mPager;
     
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
-    ActionBarDrawerToggle mDrawerToggle;
     
     GroceryAdapter mAdapter;
     RefreshStatusReceiver mRefreshStatusReceiver;
     MenuItem refreshItem;
 
     private final int OFFPAGE_LIMIT = 0;
-
-    public static Map<Integer, String> storeNames;
-
-	public static Double mPriceRangeMin;
-    public static Double mPriceRangeMax;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +59,6 @@ public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
         GroceryOTGUtils.NavigationDrawerBundle drawerBundle = GroceryOTGUtils.configNavigationDrawer(this, false, R.string.title_grocery_pager);
         this.mDrawerLayout = drawerBundle.getDrawerLayout();
         this.mDrawerList = drawerBundle.getDrawerList();
-        this.mDrawerToggle = drawerBundle.getDrawerToggle();
 
         configViewPager();
         
@@ -134,8 +125,8 @@ public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private HashMap<Integer, String> getCategoryInfo() {
-        HashMap<Integer, String> categories = new HashMap<Integer, String>();
+    private SparseArray<String> getCategoryInfo() {
+        SparseArray<String> categories = new SparseArray<String>();
         Cursor c = getContentResolver().query(GroceryotgProvider.CONTENT_URI_CAT, null, null, null, null);
 
         c.moveToFirst();
@@ -150,7 +141,7 @@ public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
 
     private void setStoreInformation() {
         // Initialize the list of stores from database
-        storeNames = new HashMap<Integer, String>(); // {storeParentId, storeParentName}
+        storeNames = new SparseArray<String>(); // {storeParentId, storeParentName}
 
         Cursor storeCursor = GroceryOTGUtils.getStoreParentNamesCursor(this);
         if (storeCursor != null) {
@@ -206,37 +197,37 @@ public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
     }
 
     public static class GroceryAdapter extends FragmentStatePagerAdapter implements ViewPager.OnPageChangeListener {
-        private HashMap<Integer, GroceryListFragment> mPageReferenceMap;
+        private SparseArray<GroceryListFragment> mPageReferenceMap;
         
         int mCurrentPage = 0;
 
         public GroceryAdapter(FragmentManager fm) {
             super(fm);
-            mPageReferenceMap = new HashMap<Integer, GroceryListFragment>();
+            mPageReferenceMap = new SparseArray<GroceryListFragment>();
             mPager.setOnPageChangeListener(this);
         }
         
         @Override
         public CharSequence getPageTitle(int position) {
             // The hashmap is offset by one
-            return categories.get(position+1);
+            return categories.valueAt(position);
         }
 
         @Override
-        public GroceryListFragment getItem(int i) {
+        public GroceryListFragment getItem(int position) {
             GroceryListFragment myFragment;
-            if (mPageReferenceMap.get(i+1) == null) {
-                myFragment = GroceryListFragment.newInstance(i+1);
-                mPageReferenceMap.put(i+1, myFragment);
+            if (mPageReferenceMap.get(position) == null) {
+                myFragment = GroceryListFragment.newInstance(categories.keyAt(position));
+                mPageReferenceMap.put(position, myFragment);
                 return myFragment;
             } else
-                return mPageReferenceMap.get(i+1);
+                return mPageReferenceMap.get(position);
         }
 
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
             super.destroyItem(container, position, object);
-            mPageReferenceMap.remove(position+1);
+            mPageReferenceMap.remove(position);
         }
 
         @Override
@@ -244,19 +235,13 @@ public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
             return categories.size();
         }
 
-        public GroceryListFragment getFragment(int key) {
-            return mPageReferenceMap.get(key+1);
-        }
-
         @Override
 		public void onPageScrollStateChanged(int state) {
-        	//getItem(mCurrentPage).loadDataWithQuery(false, "");
 		}
         @Override
         public void onPageScrolled(int i, float v, int i2) {
         }
 
-        //TODO: refactor hack to improve scroll perf
         @Override
         public void onPageSelected(int position) {
         	mCurrentPage = position;

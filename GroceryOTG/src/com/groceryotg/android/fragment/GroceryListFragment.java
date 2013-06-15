@@ -26,11 +26,8 @@ import com.groceryotg.android.database.FlyerTable;
 import com.groceryotg.android.database.GroceryTable;
 import com.groceryotg.android.database.StoreParentTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
-import com.groceryotg.android.services.NetworkHandler;
 import com.groceryotg.android.services.ServerURL;
 import com.groceryotg.android.settings.SettingsManager;
-import com.groceryotg.android.utils.RefreshAnimation;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -215,23 +212,23 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
                 selection += storeSelection;
             }
         }
-        if (GroceryPagerFragmentActivity.mPriceRangeMin != null) {
+        if (CategoryTopFragmentActivity.mPriceRangeMin != null) {
         	if (!isAtLeastOneWhere) {
         		isAtLeastOneWhere = true;
         	} else {
         		selection += " AND ";
         	}
             selection += GroceryTable.COLUMN_GROCERY_PRICE + " >= ?";
-            selectionArgs.add(GroceryPagerFragmentActivity.mPriceRangeMin.toString());
+            selectionArgs.add(CategoryTopFragmentActivity.mPriceRangeMin.toString());
         }
-        if (GroceryPagerFragmentActivity.mPriceRangeMax != null) {
+        if (CategoryTopFragmentActivity.mPriceRangeMax != null) {
         	if (!isAtLeastOneWhere) {
         		isAtLeastOneWhere = true;
         	} else {
         		selection += " AND ";
         	}
             selection += GroceryTable.COLUMN_GROCERY_PRICE + " <= ?";
-            selectionArgs.add(GroceryPagerFragmentActivity.mPriceRangeMax.toString());
+            selectionArgs.add(CategoryTopFragmentActivity.mPriceRangeMax.toString());
         }
 
         final String[] selectionArgsArr = new String[selectionArgs.size()];
@@ -259,14 +256,14 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
         adapter.swapCursor(null);
     }
 
-    private void refreshGrocery() {
+    /*private void refreshGrocery() {
         refreshItem = menu.findItem(R.id.refresh);
         RefreshAnimation.refreshIcon(getActivity(), true, refreshItem);
 
         Intent intent = new Intent(getActivity(), NetworkHandler.class);
         intent.putExtra(NetworkHandler.REFRESH_CONTENT, NetworkHandler.GRO);
         getActivity().startService(intent);
-    }
+    }*/
 
     public void loadDataWithQuery(Boolean reload, String query) {
         Bundle b = new Bundle();

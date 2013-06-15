@@ -11,7 +11,7 @@
 
     <item
         android:id="@+id/refresh"
-        android:showAsAction="always"
+        android:showAsAction="ifRoom"
         android:icon="@drawable/ic_menu_refresh"
         android:title="@string/navdrawer_item_sync">
     </item>

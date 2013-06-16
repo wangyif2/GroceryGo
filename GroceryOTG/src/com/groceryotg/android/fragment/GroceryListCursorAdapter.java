@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
@@ -95,21 +96,21 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
 			public void onClick(View v) {
 				// Go to the map view, filtering by the stores that contain this item
 				TextView text = (TextView) ((LinearLayout) v.getParent().getParent().getParent()).findViewById(R.id.grocery_row_store_id);
-            	ArrayList<Integer> ids = new ArrayList<Integer>();
-            	String list = text.getText().toString();
-            	if (!list.equals("")) {
-	        		for (String s : list.split(",")) {
-	        			ids.add(Integer.parseInt(s));
-	        		}
-        		}
-        		
-            	Bundle extras = new Bundle();
-            	extras.putIntegerArrayList(MapFragmentActivity.EXTRA_FILTER_STORE, ids);
-            	
-        		Intent intent = new Intent(mActivity, MapFragmentActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.putExtras(extras);
-                mActivity.startActivity(intent);
+				ArrayList<Integer> ids = new ArrayList<Integer>();
+				String list = text.getText().toString();
+				if (!list.equals("")) {
+					for (String s : list.split(",")) {
+						ids.add(Integer.parseInt(s));
+					}
+				}
+				
+				Bundle extras = new Bundle();
+				extras.putIntegerArrayList(MapFragmentActivity.EXTRA_FILTER_STORE, ids);
+				
+				Intent intent = new Intent(mActivity, MapFragmentActivity.class);
+				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				intent.putExtras(extras);
+				mActivity.startActivity(intent);
 			}
         });
         ImageButton exp_shareButton = (ImageButton) view.findViewById(R.id.expand_button_share);
@@ -124,11 +125,15 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
         
         ImageButton exp_flyerviewButton = (ImageButton) view.findViewById(R.id.expand_button_flyerview);
         exp_flyerviewButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				// view flyers
-				Log.i("GroceryOTG", "The flyerview button was pressed");
+        	@Override
+        	public void onClick(View v) {
+        		// view flyers
+				TextView text = (TextView) ((LinearLayout) v.getParent().getParent().getParent()).findViewById(R.id.grocery_row_flyer_url);
+				String url = text.getText().toString();
+				
+				Uri uri = Uri.parse(url);
+				Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+				mActivity.startActivity(intent);
 			}
         });
         

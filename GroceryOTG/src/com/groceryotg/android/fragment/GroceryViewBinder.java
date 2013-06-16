@@ -132,6 +132,7 @@ public class GroceryViewBinder implements SimpleCursorAdapter.ViewBinder, ViewBi
         }
         else if (columnIndex == cursor.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_NAME) 
         		&& viewId == R.id.grocery_row_store) {
+        	// This is useless, since this is the default binding
         	String storeParentName = cursor.getString(columnIndex);
         	TextView textView = (TextView) view;
         	

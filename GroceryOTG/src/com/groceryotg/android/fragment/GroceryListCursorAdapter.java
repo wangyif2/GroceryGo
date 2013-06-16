@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
@@ -130,7 +131,9 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
 				TextView text = (TextView) ((LinearLayout) v.getParent().getParent().getParent()).findViewById(R.id.grocery_row_flyer_url);
 				String url = text.getText().toString();
 				
-				Log.i("GroceryOTG", "The flyerview button was pressed with url " + url);
+				Uri uri = Uri.parse(url);
+				Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+				mActivity.startActivity(intent);
 			}
         });
         

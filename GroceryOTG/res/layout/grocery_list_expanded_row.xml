@@ -10,15 +10,6 @@
 	android:paddingBottom="4dp" >
 	
 	<ImageButton
-		android:id="@+id/expand_button_search"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_weight="1"
-		android:src="@drawable/ic_menu_search"
-		android:background="?android:attr/selectableItemBackground" >
-	</ImageButton>
-	
-	<ImageButton
 		android:id="@+id/expand_button_map"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"

@@ -121,15 +121,6 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
 				Log.i("GroceryOTG", "The map button was pressed");
 			}
         });
-        ImageButton exp_searchButton = (ImageButton) view.findViewById(R.id.expand_button_search);
-        exp_searchButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				// Do a search for similar items (requested by user!)
-				Log.i("GroceryOTG", "The search button was pressed");
-			}
-        });
         ImageButton exp_shareButton = (ImageButton) view.findViewById(R.id.expand_button_share);
         exp_shareButton.setOnClickListener(new View.OnClickListener() {
 			@Override

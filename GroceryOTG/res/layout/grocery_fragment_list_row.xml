@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="fill_parent"
-	android:layout_height="fill_parent"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
 	android:orientation="vertical" >
 	
 	<!-- this is the default view that is initially shown -->
 	<LinearLayout
-		android:layout_width="fill_parent"
-		android:layout_height="fill_parent"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
 		android:orientation="horizontal" >
 		
 		<!-- include the generic grocery list item layout -->
@@ -25,7 +25,7 @@
 		
 		<LinearLayout
 			android:layout_width="wrap_content"
-			android:layout_height="fill_parent"
+			android:layout_height="match_parent"
 			android:layout_gravity="center_vertical"
 			android:paddingRight="4dp"
 			android:paddingLeft="4dp"
@@ -47,8 +47,8 @@
 	<!-- this is the expandable view that is initially hidden and will slide out when the more button is pressed -->
 	<LinearLayout
 		android:id="@+id/expandable"
-		android:layout_width="fill_parent"
-		android:layout_height="fill_parent"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
 		android:orientation="horizontal"
 		android:background="#ffffff" >
 		

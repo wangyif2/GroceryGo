@@ -23,25 +23,24 @@
 			android:background="#e8e8e8" >
 		</View>
 		
-		<LinearLayout
+		<RelativeLayout
 			android:layout_width="wrap_content"
 			android:layout_height="match_parent"
 			android:layout_gravity="center_vertical"
-			android:paddingRight="4dp"
-			android:paddingLeft="4dp"
+			
 			android:gravity="center_vertical" >
 			
 			<CheckBox
 				android:id="@+id/grocery_row_in_shopcart"
 				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_weight="1"
-				android:background="@null"
+				android:layout_height="match_parent"
+				android:background="@drawable/ic_checkbox_shoplist_bg"
 				android:clickable="true"
 				android:contentDescription="@string/groceryoverview_row_imagedesc"
-				android:button="@drawable/ic_checkbox_shoplist" >
+				android:button="@drawable/ic_menu_cart"
+				android:drawablePadding="20dp" >
 			</CheckBox>
-		</LinearLayout>
+		</RelativeLayout>
 	</LinearLayout>
 	
 	<!-- this is the expandable view that is initially hidden and will slide out when the more button is pressed -->

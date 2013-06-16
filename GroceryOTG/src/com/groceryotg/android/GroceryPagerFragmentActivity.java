@@ -1,5 +1,6 @@
 package com.groceryotg.android;
 
+import android.app.SearchManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -20,6 +21,7 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.widget.SearchView;
 import com.groceryotg.android.database.CategoryTable;
 import com.groceryotg.android.database.StoreParentTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
@@ -36,6 +38,7 @@ public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
 
     public static Context mContext;
     public static ViewPager mPager;
+    private Menu mMenu;
     
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
@@ -78,6 +81,24 @@ public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
         	int position = extras.getInt(GroceryPagerFragmentActivity.EXTRA_LAUNCH_PAGE);
         	mPager.setCurrentItem(position);
         }
+        
+		if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+			// Gets the search query from the voice recognizer intent
+			//String query = intent.getStringExtra(SearchManager.QUERY);
+			
+			// Collapse the search view as a search is performed
+			MenuItem searchItem = mMenu.findItem(R.id.search);
+			SearchView searchView = (SearchView) mMenu.findItem(R.id.search).getActionView();
+			searchItem.collapseActionView();
+			searchView.setQuery("", false);
+			
+			// If on the home page and doing a global search, send the intent
+			// to the GlobalSearchActivity
+			Intent globalSearchIntent = new Intent(this, GlobalSearchFragmentActivity.class);
+			GroceryOTGUtils.copyIntentData(intent, globalSearchIntent);
+			globalSearchIntent.putExtra(GlobalSearchFragmentActivity.GLOBAL_SEARCH, true);
+			startActivity(globalSearchIntent);
+		}
     }
 
     @Override
@@ -100,6 +121,14 @@ public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
         MenuInflater inflater = getSupportMenuInflater();
         inflater.inflate(R.menu.grocery_pager_activity_menu, menu);
 
+        this.mMenu = menu;
+        
+        // Get the SearchView and set the searchable configuration
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setIconifiedByDefault(true);
+        
         return true;
     }
 

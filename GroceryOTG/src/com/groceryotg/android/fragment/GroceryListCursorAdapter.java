@@ -126,7 +126,14 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
 				
 				Intent shareIntent = new Intent();
 				shareIntent.setAction(Intent.ACTION_SEND);
-				shareIntent.putExtra(Intent.EXTRA_TEXT, label.getText() + " is on sale for " + price.getText() + " at " + storeParent.getText() + "! - via " + mActivity.getString(R.string.app_name));
+				String shareText = "";
+				shareText += label.getText() + " is on sale";
+				if (price.getText() != mActivity.getString(R.string.no_price_available)) {
+					shareText += " for " + price.getText();
+        		}
+				shareText += " at " + storeParent.getText() + "! - via " + mActivity.getString(R.string.app_name);
+				
+				shareIntent.putExtra(Intent.EXTRA_TEXT, shareText);
 				shareIntent.setType("text/plain");
 				mActivity.startActivity(Intent.createChooser(shareIntent, "Share this sale"));
 			}

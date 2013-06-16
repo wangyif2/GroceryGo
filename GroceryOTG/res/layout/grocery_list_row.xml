@@ -27,14 +27,6 @@
             android:paddingRight="12dp" >
         	
 	        <TextView
-	            android:id="@+id/grocery_row_id"
-	            android:layout_width="fill_parent"
-	            android:layout_height="wrap_content"
-	            android:visibility="gone"
-	            android:text="@+id/grocery_row_id_text"
-	            />
-	        
-	        <TextView
 	            android:id="@+id/grocery_row_label"
 	            android:layout_width="fill_parent"
 	            android:layout_height="wrap_content"
@@ -94,25 +86,34 @@
             android:layout_column="0"
             android:layout_gravity="left"
             android:layout_weight="0.75"
-            android:orientation="horizontal" >
+            android:orientation="vertical" >
 
-            <TextView
-                android:id="@+id/grocery_row_store_id"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:text="0" >
-            </TextView>
-	        <ImageButton
+	        <TextView
 	            android:id="@+id/grocery_row_store"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
-                android:background="@null"
-	            android:contentDescription="@string/groceryoverview_row_imagedesc"
-	            android:src="@drawable/ic_store_metro"
 	            android:paddingBottom="4dp"
-	            android:paddingTop="8dp">
-			</ImageButton>
+	            android:paddingTop="8dp"
+				android:textSize="12sp"
+				android:fontFamily="sans-serif"
+				android:textStyle="normal"
+				android:singleLine="false" >
+			</TextView>
         </LinearLayout>
     </TableRow>
+    
+	<!-- Hold meta for grocery id -->
+	<TextView
+		android:id="@+id/grocery_row_id"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:visibility="gone"
+		android:text="@+id/grocery_row_id_text" />
+	<!-- Hold meta for store -->
+	<TextView
+		android:id="@+id/grocery_row_store_id"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:visibility="gone"
+		android:text="0" />
 </TableLayout>

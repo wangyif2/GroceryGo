@@ -133,15 +133,9 @@ public class GroceryViewBinder implements SimpleCursorAdapter.ViewBinder, ViewBi
         else if (columnIndex == cursor.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_NAME) 
         		&& viewId == R.id.grocery_row_store) {
         	String storeParentName = cursor.getString(columnIndex);
-        	ImageView img = (ImageView) view;
+        	TextView textView = (TextView) view;
         	
-        	try {
-        		Class<drawable> res = R.drawable.class;
-        		Field field = res.getField("ic_store_" + storeParentName.toLowerCase(Locale.CANADA));
-        		img.setImageResource(field.getInt(null));
-        	} catch (Exception e) {
-        	    Log.e("GroceryOTG", "Could not get drawable id for row.", e);
-        	}
+        	textView.setText(storeParentName);
         	
         	return true;
         }

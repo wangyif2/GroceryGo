@@ -88,11 +88,13 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
 			}
     	});
         
-        ImageView icon_store = (ImageView) view.findViewById(R.id.grocery_row_store);
-        icon_store.setOnClickListener(new OnClickListener() {
-        	@Override
-            public void onClick(View v) {
-            	TextView text = (TextView) ((LinearLayout)v.getParent()).getChildAt(0);
+        // Now add listeners for the expandable view's buttons
+        ImageButton exp_mapButton = (ImageButton) view.findViewById(R.id.expand_button_map);
+        exp_mapButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// Go to the map view, filtering by the stores that contain this item
+				TextView text = (TextView) ((LinearLayout) v.getParent().getParent().getParent()).findViewById(R.id.grocery_row_store_id);
             	ArrayList<Integer> ids = new ArrayList<Integer>();
             	String list = text.getText().toString();
             	if (!list.equals("")) {
@@ -108,17 +110,6 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.putExtras(extras);
                 mActivity.startActivity(intent);
-        	}
-        });
-        
-        // Now add listeners for the expandable view's buttons
-        ImageButton exp_mapButton = (ImageButton) view.findViewById(R.id.expand_button_map);
-        exp_mapButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				// Go to the map view, filtering by the stores that contain this item
-				Log.i("GroceryOTG", "The map button was pressed");
 			}
         });
         ImageButton exp_shareButton = (ImageButton) view.findViewById(R.id.expand_button_share);

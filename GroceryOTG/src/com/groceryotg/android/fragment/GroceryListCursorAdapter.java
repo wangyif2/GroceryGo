@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -20,15 +21,14 @@ import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 import java.util.ArrayList;
 
 public class GroceryListCursorAdapter extends SimpleCursorAdapter {
-	Context context;
-    Activity activity;
+	Context mContext;
+    Activity mActivity;
     public GroceryListCursorAdapter(Context context, int layout, Cursor c,
             String[] from, int[] to) {
         super(context, layout, c, from, to, 0);
-        this.context=context;
-        this.activity=(Activity) context;
+        this.mContext=context;
+        this.mActivity=(Activity) context;
     }
-
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent){
@@ -41,25 +41,22 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
 				CheckBox cb = (CheckBox) view;
 				boolean isChecked = cb.isChecked();
 				
-				// the "v" parameter represents the just-clicked button/image
-				//CheckBox cb = (CheckBox) v.findViewById(R.id.grocery_row_in_shopcart);
-            	
             	// Get the row ID and grocery name from the parent view
-            	TableLayout tableParent = (TableLayout) cb.getParent().getParent().getParent();
-            	TextView tv_id = (TextView)((LinearLayout)((TableRow) tableParent.getChildAt(0)).getChildAt(0)).getChildAt(0);
-            	TextView tv_name = (TextView)((LinearLayout)((TableRow) tableParent.getChildAt(0)).getChildAt(0)).getChildAt(1);
-            	
+				LinearLayout parentLayout = (LinearLayout) cb.getParent().getParent();
+				TextView tv_id = (TextView) parentLayout.findViewById(R.id.grocery_row_id);
+				TextView tv_name = (TextView) parentLayout.findViewById(R.id.grocery_row_label);
+				
             	// Toggle shoplist flag
             	int shopListFlag;
             	String displayMessage;
             	
             	if (isChecked == true) {
             		shopListFlag = CartTable.FLAG_TRUE;
-            		displayMessage = context.getResources().getString(R.string.cart_shoplist_added);
+            		displayMessage = mContext.getResources().getString(R.string.cart_shoplist_added);
             	}
             	else {
             		shopListFlag = CartTable.FLAG_FALSE;
-            		displayMessage = context.getResources().getString(R.string.cart_shoplist_removed);
+            		displayMessage = mContext.getResources().getString(R.string.cart_shoplist_removed);
             	}
             	
             	ContentValues values = new ContentValues();
@@ -72,7 +69,7 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
                 
                 // Determine whether to insert, update, or delete the CartTable entry
                 if (!existsInDatabase && isChecked) {
-                	activity.getContentResolver().insert(GroceryotgProvider.CONTENT_URI_CART_ITEM, values);
+                	mActivity.getContentResolver().insert(GroceryotgProvider.CONTENT_URI_CART_ITEM, values);
                 }
                 /*else if (existsInDatabase && watchListFlag==CartTable.FLAG_TRUE) {
                 	String whereClause = CartTable.TABLE_CART + "." + CartTable.COLUMN_CART_GROCERY_ID + "=?";
@@ -82,10 +79,10 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
                 else if (existsInDatabase && !isChecked) {
                 	String whereClause = CartTable.TABLE_CART + "." + CartTable.COLUMN_CART_GROCERY_ID + "=?";
                 	String[] selectionArgs = { tv_id.getText().toString() };
-                	activity.getContentResolver().delete(GroceryotgProvider.CONTENT_URI_CART_ITEM, whereClause, selectionArgs);
+                	mActivity.getContentResolver().delete(GroceryotgProvider.CONTENT_URI_CART_ITEM, whereClause, selectionArgs);
                 }
                 	
-                Toast t = Toast.makeText(activity, displayMessage, Toast.LENGTH_SHORT);
+                Toast t = Toast.makeText(mActivity, displayMessage, Toast.LENGTH_SHORT);
                 t.show();
 				
 			}
@@ -107,13 +104,42 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
             	Bundle extras = new Bundle();
             	extras.putIntegerArrayList(MapFragmentActivity.EXTRA_FILTER_STORE, ids);
             	
-        		Intent intent = new Intent(activity, MapFragmentActivity.class);
+        		Intent intent = new Intent(mActivity, MapFragmentActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.putExtras(extras);
-                activity.startActivity(intent);
+                mActivity.startActivity(intent);
         	}
         });
-
+        
+        // Now add listeners for the expandable view's buttons
+        ImageButton exp_mapButton = (ImageButton) view.findViewById(R.id.expand_button_map);
+        exp_mapButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				// Go to the map view, filtering by the stores that contain this item
+				Log.i("GroceryOTG", "The map button was pressed");
+			}
+        });
+        ImageButton exp_searchButton = (ImageButton) view.findViewById(R.id.expand_button_search);
+        exp_searchButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				// Do a search for similar items (requested by user!)
+				Log.i("GroceryOTG", "The search button was pressed");
+			}
+        });
+        ImageButton exp_shareButton = (ImageButton) view.findViewById(R.id.expand_button_share);
+        exp_shareButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				// Share
+				Log.i("GroceryOTG", "The share button was pressed");
+			}
+        });
+        
         return view;
     }
 

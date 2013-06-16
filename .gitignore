@@ -38,6 +38,9 @@ proguard/
 #database files
 *.db
 
+# linux gui helper files
+.directory
+
 #mac files
 *.DS_Store
 

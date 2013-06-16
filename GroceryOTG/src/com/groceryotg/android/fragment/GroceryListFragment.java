@@ -28,6 +28,8 @@ import com.groceryotg.android.database.StoreParentTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 import com.groceryotg.android.services.ServerURL;
 import com.groceryotg.android.settings.SettingsManager;
+import com.tjerkw.slideexpandable.library.SlideExpandableListAdapter;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -114,7 +116,7 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
         adapter = new GroceryListCursorAdapter(getActivity(), R.layout.grocery_fragment_list_row, null, from, to);
         adapter.setViewBinder(new GroceryViewBinder());
 
-        setListAdapter(adapter);
+        setListAdapter(new SlideExpandableListAdapter(adapter, R.id.expandable_toggle_button, R.id.expandable));
         
         // Handles the search filter
         Bundle args = mActivity.getIntent().getExtras();

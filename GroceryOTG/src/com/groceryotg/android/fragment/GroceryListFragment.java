@@ -104,6 +104,7 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
                 GroceryTable.COLUMN_GROCERY_PRICE,
                 StoreParentTable.COLUMN_STORE_PARENT_NAME,
                 FlyerTable.COLUMN_FLYER_ID,
+                FlyerTable.COLUMN_FLYER_URL,
                 CartTable.COLUMN_CART_FLAG_SHOPLIST};
         int[] to = new int[]{R.id.grocery_row_id,
                 R.id.grocery_row_label,
@@ -111,6 +112,7 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
                 R.id.grocery_row_price,
                 R.id.grocery_row_store,
                 R.id.grocery_row_store_id,
+                R.id.grocery_row_flyer_url,
                 R.id.grocery_row_in_shopcart};
 
         adapter = new GroceryListCursorAdapter(getActivity(), R.layout.grocery_fragment_list_row, null, from, to);
@@ -165,6 +167,7 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
                 GroceryTable.COLUMN_GROCERY_PRICE,
                 StoreParentTable.COLUMN_STORE_PARENT_NAME,
                 FlyerTable.TABLE_FLYER + "." + FlyerTable.COLUMN_FLYER_ID,
+                FlyerTable.TABLE_FLYER + "." + FlyerTable.COLUMN_FLYER_URL,
                 CartTable.COLUMN_CART_GROCERY_ID,
                 CartTable.COLUMN_CART_FLAG_SHOPLIST};
         

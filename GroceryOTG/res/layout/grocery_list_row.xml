@@ -115,15 +115,22 @@
 	<!-- Hold meta for grocery id -->
 	<TextView
 		android:id="@+id/grocery_row_id"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
 		android:visibility="gone"
 		android:text="@+id/grocery_row_id_text" />
-	<!-- Hold meta for store -->
+	<!-- Hold meta for store id -->
 	<TextView
 		android:id="@+id/grocery_row_store_id"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
 		android:visibility="gone"
 		android:text="0" />
+	<!-- Hold meta for flyer url -->
+	<TextView
+		android:id="@+id/grocery_row_flyer_url"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		android:visibility="gone"
+		android:text="" />
 </LinearLayout>

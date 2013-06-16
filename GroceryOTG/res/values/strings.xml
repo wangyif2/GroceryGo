@@ -55,4 +55,7 @@
     
     <string name="about_text">Send feedback to grocery.otg+support@gmail.com"</string>
     <string name="about_title">GroceryOTG</string>
+    <string name="expanded_row_map">Map</string>
+    <string name="expanded_row_share">Share</string>
+    <string name="expanded_row_flyerview">View in flyer</string>
 </resources>

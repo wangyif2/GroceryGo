@@ -122,6 +122,16 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
 			}
         });
         
+        ImageButton exp_flyerviewButton = (ImageButton) view.findViewById(R.id.expand_button_flyerview);
+        exp_flyerviewButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				// view flyers
+				Log.i("GroceryOTG", "The flyerview button was pressed");
+			}
+        });
+        
         return view;
     }
 

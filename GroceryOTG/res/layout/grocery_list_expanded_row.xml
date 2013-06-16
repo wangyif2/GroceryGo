@@ -10,12 +10,23 @@
 	android:paddingBottom="4dp" >
 	
 	<ImageButton
+		android:id="@+id/expand_button_flyerview"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_weight="1"
+		android:src="@drawable/ic_menu_flyerview"
+		android:background="?android:attr/selectableItemBackground"
+		android:contentDescription="@string/expanded_row_flyerview">
+	</ImageButton>
+    
+	<ImageButton
 		android:id="@+id/expand_button_map"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_weight="1"
 		android:src="@drawable/ic_menu_place"
-		android:background="?android:attr/selectableItemBackground" >
+		android:background="?android:attr/selectableItemBackground"
+		android:contentDescription="@string/expanded_row_map">
 	</ImageButton>
 	
 	<ImageButton
@@ -24,6 +35,7 @@
 		android:layout_height="wrap_content"
 		android:layout_weight="1"
 		android:src="@drawable/ic_menu_share"
-		android:background="?android:attr/selectableItemBackground" >
+		android:background="?android:attr/selectableItemBackground"
+		android:contentDescription="@string/expanded_row_share">
 	</ImageButton>
 </LinearLayout>

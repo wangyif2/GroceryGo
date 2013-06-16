@@ -5,25 +5,33 @@
 	android:layout_width="fill_parent"
 	android:layout_height="wrap_content"
 	android:layout_gravity="center_vertical"
-	android:orientation="horizontal" >
+	android:orientation="horizontal"
+	android:weightSum="3" >
+	<!-- NOTE: THIS SUM NEEDS TO EQUAL THE NUMBER OF BUTTONS IN THIS LAYOUT IN ORDER TO EVENLY SPACE THEM -->
 	
 	<ImageButton
+		android:id="@+id/expand_button_one"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+		android:layout_weight="1"
 		android:src="@drawable/ic_menu_home"
 		android:background="?android:attr/selectableItemBackground" >
 	</ImageButton>
 	
 	<ImageButton
+		android:id="@+id/expand_button_two"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+		android:layout_weight="1"
 		android:src="@drawable/ic_menu_home"
 		android:background="?android:attr/selectableItemBackground" >
 	</ImageButton>
 	
 	<ImageButton
+		android:id="@+id/expand_button_three"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+		android:layout_weight="1"
 		android:src="@drawable/ic_menu_home"
 		android:background="?android:attr/selectableItemBackground" >
 	</ImageButton>

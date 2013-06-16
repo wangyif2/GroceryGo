@@ -117,9 +117,16 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
         exp_shareButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				// Share
 				Log.i("GroceryOTG", "The share button was pressed");
+				
+				TextView text = (TextView) ((LinearLayout) v.getParent().getParent().getParent()).findViewById(R.id.grocery_row_label);
+				
+				Intent shareIntent = new Intent();
+				shareIntent.setAction(Intent.ACTION_SEND);
+				shareIntent.putExtra(Intent.EXTRA_TEXT, text.getText() + " is on sale! - via " + mActivity.getString(R.string.app_name));
+				shareIntent.setType("text/plain");
+				mActivity.startActivity(Intent.createChooser(shareIntent, "Share this sale"));
 			}
         });
         

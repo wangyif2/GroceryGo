@@ -53,6 +53,8 @@
     
     <string name="legacy_store_filter_ids">1|2|3|4|5</string>
     
+    <string name="no_price_available">N/A</string>
+    
     <string name="about_text">Send feedback to grocery.otg+support@gmail.com"</string>
     <string name="about_title">GroceryOTG</string>
     <string name="expanded_row_map">Map</string>

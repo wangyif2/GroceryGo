@@ -36,7 +36,7 @@ public class GroceryViewBinder implements SimpleCursorAdapter.ViewBinder, ViewBi
             if (cursor.getDouble(columnIndex) != 0) {
                 textView.setText("$" + ServerURL.getGetDecimalFormat().format(cursor.getDouble(columnIndex)));
             } else {
-                textView.setText("N/A");
+                textView.setText(R.string.no_price_available);
             }
             return true;
         } 

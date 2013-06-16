@@ -7,13 +7,14 @@
         android:showAsAction="always|collapseActionView"
         android:title="@string/groceryoverview_menu_item_search"
         android:icon="@drawable/ic_menu_search"
-        android:actionViewClass="com.actionbarsherlock.widget.SearchView" />
-
+        android:actionViewClass="com.actionbarsherlock.widget.SearchView" >
+    </item>
+    
     <item
         android:id="@+id/refresh"
         android:showAsAction="ifRoom"
         android:icon="@drawable/ic_menu_refresh"
-        android:title="@string/navdrawer_item_sync">
+        android:title="@string/navdrawer_item_sync" >
     </item>
 
 </menu>

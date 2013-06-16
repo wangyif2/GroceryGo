@@ -59,6 +59,6 @@
     
     <string name="legacy_store_filter_ids">1|2|3|4|5</string>
     
-    <string name="about_text">&lt;Placeholder description&gt;</string>
-    <string name="about_title">About GroceryOTG</string>
+    <string name="about_text">Send feedbacks at <a href="grocery.otg+support@gmail.com">"grocery.otg@gmail.com"</a></string>
+    <string name="about_title">GroceryOTG</string>
 </resources>

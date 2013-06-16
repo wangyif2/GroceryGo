@@ -36,6 +36,26 @@
 				android:src="@drawable/ic_spinner" >
 			</ImageView>
 		</RelativeLayout>
+		
+		<LinearLayout
+			android:layout_width="wrap_content"
+			android:layout_height="fill_parent"
+			android:layout_gravity="center_vertical"
+			android:gravity="center_vertical" >
+			
+			<CheckBox
+				android:id="@+id/grocery_row_in_shopcart"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_weight="1"
+				android:background="@null"
+				android:clickable="true"
+				android:contentDescription="@string/groceryoverview_row_imagedesc"
+				android:paddingRight="8dp"
+				android:paddingTop="8dp"
+				android:button="@drawable/ic_checkbox_shoplist" >
+			</CheckBox>
+		</LinearLayout>
 	</LinearLayout>
 	
 	<!-- this is the expandable view that is initially hidden and will slide out when the more button is pressed -->

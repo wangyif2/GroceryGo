@@ -5,9 +5,7 @@
 	android:layout_width="fill_parent"
 	android:layout_height="wrap_content"
 	android:layout_gravity="center_vertical"
-	android:orientation="horizontal"
-	android:weightSum="3" >
-	<!-- NOTE: THIS SUM NEEDS TO EQUAL THE NUMBER OF BUTTONS IN THIS LAYOUT IN ORDER TO EVENLY SPACE THEM -->
+	android:orientation="horizontal" >
 	
 	<ImageButton
 		android:id="@+id/expand_button_one"

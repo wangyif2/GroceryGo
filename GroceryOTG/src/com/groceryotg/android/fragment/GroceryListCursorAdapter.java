@@ -41,14 +41,11 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
 				CheckBox cb = (CheckBox) view;
 				boolean isChecked = cb.isChecked();
 				
-				// the "v" parameter represents the just-clicked button/image
-				//CheckBox cb = (CheckBox) v.findViewById(R.id.grocery_row_in_shopcart);
-            	
             	// Get the row ID and grocery name from the parent view
-            	TableLayout tableParent = (TableLayout) cb.getParent().getParent().getParent();
-            	TextView tv_id = (TextView)((LinearLayout)((TableRow) tableParent.getChildAt(0)).getChildAt(0)).getChildAt(0);
-            	TextView tv_name = (TextView)((LinearLayout)((TableRow) tableParent.getChildAt(0)).getChildAt(0)).getChildAt(1);
-            	
+				LinearLayout parentLayout = (LinearLayout) cb.getParent().getParent();
+				TextView tv_id = (TextView) parentLayout.findViewById(R.id.grocery_row_id);
+				TextView tv_name = (TextView) parentLayout.findViewById(R.id.grocery_row_label);
+				
             	// Toggle shoplist flag
             	int shopListFlag;
             	String displayMessage;

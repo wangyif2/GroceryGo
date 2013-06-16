@@ -65,7 +65,6 @@
         	</TextView>  
         </LinearLayout>
         
-        <!-- android:textColor="@android:color/holo_red_dark" -->
         <TextView
 	        android:id="@+id/grocery_row_price"
 	        android:layout_column="1"
@@ -115,30 +114,5 @@
 	            android:paddingTop="8dp">
 			</ImageButton>
         </LinearLayout>
-        
-        <LinearLayout
-            android:layout_width="0dip"
-            android:layout_height="wrap_content"
-            android:layout_column="1"
-            android:layout_weight="0.25"
-            android:orientation="horizontal"
-            android:layout_gravity="right"
-            android:gravity="right" >
-            
-            <CheckBox
-            	android:id="@+id/grocery_row_in_shopcart"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:background="@null"
-	            android:clickable="true"
-	            android:contentDescription="@string/groceryoverview_row_imagedesc"
-	            android:paddingRight="8dp"
-	            android:paddingTop="8dp"
-	            android:button="@drawable/ic_checkbox_shoplist" >
-	        </CheckBox>
-	            
-		</LinearLayout>
-		
     </TableRow>
-    
 </TableLayout>

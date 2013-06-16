@@ -5,32 +5,34 @@
 	android:layout_width="fill_parent"
 	android:layout_height="wrap_content"
 	android:layout_gravity="center_vertical"
-	android:orientation="horizontal" >
+	android:orientation="horizontal"
+	android:paddingTop="4dp"
+	android:paddingBottom="4dp" >
 	
 	<ImageButton
-		android:id="@+id/expand_button_one"
+		android:id="@+id/expand_button_search"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_weight="1"
-		android:src="@drawable/ic_menu_home"
+		android:src="@drawable/ic_menu_search"
 		android:background="?android:attr/selectableItemBackground" >
 	</ImageButton>
 	
 	<ImageButton
-		android:id="@+id/expand_button_two"
+		android:id="@+id/expand_button_map"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_weight="1"
-		android:src="@drawable/ic_menu_home"
+		android:src="@drawable/ic_menu_place"
 		android:background="?android:attr/selectableItemBackground" >
 	</ImageButton>
 	
 	<ImageButton
-		android:id="@+id/expand_button_three"
+		android:id="@+id/expand_button_share"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_weight="1"
-		android:src="@drawable/ic_menu_home"
+		android:src="@drawable/ic_menu_share"
 		android:background="?android:attr/selectableItemBackground" >
 	</ImageButton>
 </LinearLayout>

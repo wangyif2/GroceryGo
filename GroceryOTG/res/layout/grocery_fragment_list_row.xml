@@ -1,143 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/tableLayout1"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:layout_weight="1.0"
-    android:paddingBottom="8dp"
-    android:paddingLeft="12dp" >
 
-	<!-- 2 columns={0,1}, 2 rows -->
-
-    <TableRow
-        android:id="@+id/tableRow1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-        
-        <LinearLayout
-            android:id="@+id/linearLayoutStacked"
-            android:layout_width="0dip"
-            android:layout_height="wrap_content"
-            android:layout_column="0"
-            android:layout_weight="0.75"
-            android:clickable="false"
-            android:focusable="false"
-            android:orientation="vertical"
-            android:paddingRight="12dp" >
-        	
-	        <TextView
-	            android:id="@+id/grocery_row_id"
-	            android:layout_width="fill_parent"
-	            android:layout_height="wrap_content"
-	            android:visibility="gone"
-	            android:text="@+id/grocery_row_id_text"
-	            />
-	        
-	        <TextView
-	            android:id="@+id/grocery_row_label"
-	            android:layout_width="fill_parent"
-	            android:layout_height="wrap_content"
-	            android:layout_marginTop="6dp"
-	            android:text="@+id/grocery_row_label_text"
-	            android:textSize="16sp"
-	            android:fontFamily="sans-serif"
-	            android:textStyle="bold"
-	            android:singleLine="false"
-	            android:gravity="center_vertical"
-	            android:clickable="false"
-	            android:focusable="false">
-	        </TextView>
-	        
-	        <TextView
-	            android:id="@+id/grocery_row_details"
-	            android:layout_width="fill_parent"
-	            android:layout_height="wrap_content"
-	            android:layout_marginTop="6dp"
-	            android:text="@+id/grocery_row_details_text"
-	            android:textSize="12sp"
-	            android:fontFamily="sans-serif"
-	            android:textStyle="normal"
-	            android:singleLine="false"
-	            android:gravity="center_vertical"
-	            android:clickable="false"
-	            android:focusable="false">
-        	</TextView>  
-        </LinearLayout>
-        
-        <!-- android:textColor="@android:color/holo_red_dark" -->
-        <TextView
-	        android:id="@+id/grocery_row_price"
-	        android:layout_column="1"
-	        android:layout_width="0dip"
-	        android:layout_height="wrap_content"
-	        android:layout_weight="0.25"
-	        android:layout_marginTop="6dp"
-	        android:text="@+id/grocery_row_price_text"
-	        android:textColor="#ffcc0000"
-	        android:textSize="18sp"
-	        android:fontFamily="sans-serif"
-	        android:singleLine="true"
-	        android:gravity="right"
-	        android:paddingRight="10dp"
-	        android:background="#dddddd">
-	    </TextView>
-    </TableRow>
-    
-    <TableRow
-        android:id="@+id/tableRow2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        
-        <LinearLayout
-            android:layout_width="0dip"
-            android:layout_height="wrap_content"
-            android:layout_column="0"
-            android:layout_gravity="left"
-            android:layout_weight="0.75"
-            android:orientation="horizontal" >
-
-            <TextView
-                android:id="@+id/grocery_row_store_id"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:text="0" >
-            </TextView>
-	        <ImageButton
-	            android:id="@+id/grocery_row_store"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-                android:background="@null"
-	            android:contentDescription="@string/groceryoverview_row_imagedesc"
-	            android:src="@drawable/ic_store_metro"
-	            android:paddingBottom="4dp"
-	            android:paddingTop="8dp">
-			</ImageButton>
-        </LinearLayout>
-        
-        <LinearLayout
-            android:layout_width="0dip"
-            android:layout_height="wrap_content"
-            android:layout_column="1"
-            android:layout_weight="0.25"
-            android:orientation="horizontal"
-            android:layout_gravity="right"
-            android:gravity="right" >
-            
-            <CheckBox
-            	android:id="@+id/grocery_row_in_shopcart"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:background="@null"
-	            android:clickable="true"
-	            android:contentDescription="@string/groceryoverview_row_imagedesc"
-	            android:paddingRight="8dp"
-	            android:paddingTop="8dp"
-	            android:button="@drawable/ic_checkbox_shoplist" >
-	        </CheckBox>
-	            
-		</LinearLayout>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:orientation="vertical" >
+	
+	<!-- this is the default view that is initially shown -->
+	<RelativeLayout
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal" >
 		
-    </TableRow>
-    
-</TableLayout>
+		<!-- include the generic grocery list item layout -->
+		<include
+			layout="@layout/grocery_list_row" >
+		</include>
+		
+		<ImageButton
+			android:id="@+id/expandable_toggle_button"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentBottom="true"
+			android:layout_alignParentRight="true"
+			android:src="@drawable/ic_spinner" >
+		</ImageButton>
+	</RelativeLayout>
+	
+	<!-- this is the expandable view that is initially hidden and will slide out when the more button is pressed -->
+	<LinearLayout
+		android:id="@+id/expandable"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:orientation="horizontal"
+		android:background="#ffffff" >
+		
+		<include
+			layout="@layout/grocery_list_expanded_row" >
+		</include>
+	</LinearLayout>
+</LinearLayout>
+
+

@@ -28,7 +28,7 @@ import traceback
 import urllib
 import urllib2
 from urlparse import urlparse
-
+from datetime import date
 
 # Initialize log file (filename based on YYYY_MM_DD_hhmmsscc.log)
 timestamp = datetime.datetime.now()
@@ -40,6 +40,9 @@ print("writing log to %s..." % logname)
 # Define logging level (if you set this to logging.DEBUG, the debug print messages will be displayed) 
 logging.basicConfig(filename=logname, format='%(asctime)s:%(levelname)s: %(message)s', level=logging.INFO)
 
+# for debugging
+#logging.basicConfig(format='%(asctime)s:%(levelname)s: %(message)s', level=logging.DEBUG)
+
 
 # Keep these BELOW the logging setup. Otherwise, their loggers get registered as the root.
 import getNouns
@@ -50,10 +53,9 @@ import classifier
 start_timer = time.time()
 
 # Fill in your MySQL user & password
-mysql_user = "root"
-mysql_password = ""
+mysql_user = "user1"
+mysql_password = "1234"
 mysql_db = "groceryotg"
-
 
 # TODO:
 # Done. 1) Pass in only the item part of the line string to getNouns, so it doesn't get confused with the price 
@@ -143,24 +145,8 @@ def getFlyer():
                         div_pages = soup.find_all(lambda tag: tag.name=='div' and tag.has_key('style') and not tag.has_key('id'))
                         
                         # Find the start and end dates
-                        months = {'Jan':1,'Feb':2,'Mar':3,'Apr':4,'May':5,'Jun':6,'Jul':7,'Aug':8,'Sep':9,'Oct':10,'Nov':11,'Dec':12}
-                        
                         tag_dates = soup.find(text=re.compile('Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec[a-zA-Z]*\s[0-9]')).string
-                        pattern = re.compile('(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-zA-Z.]*\s([0-9]{1,2})(?=[^0-9])')
-                        matches = pattern.findall(tag_dates)
-                        pattern = re.compile('2[0-9]{3}')
-                        year_matches = pattern.findall(tag_dates)
-                        start_year = int(year_matches[0])
-                        if len(year_matches) > 1:
-                            end_year = int(year_matches[1])
-                        else:
-                            end_year = start_year
-                        
-                        start_date = datetime.datetime(start_year, months[matches[0][0]], int(matches[0][1])).strftime('%Y-%m-%d')
-                        end_date = datetime.datetime(end_year, months[matches[1][0]], int(matches[1][1])).strftime('%Y-%m-%d')
-                        logging.info("start date: %s" % start_date)
-                        logging.info("end date: %s" % end_date)
-                        logging.info("update date: %s" % update_date)
+                        [start_date, end_date] = getFlyerDates(tag_dates)
                         
                         for page in div_pages:
                             page_lines = re.sub('<[bB][rR]\s*?>', '', page.text).split('\n')
@@ -340,30 +326,13 @@ def getFlyer():
                         start_date = ""
                         end_date = ""
                         
-                        # Find the start and end dates
-                        months = {'Jan':1,'Feb':2,'Mar':3,'Apr':4,'May':5,'Jun':6,'Jul':7,'Aug':8,'Sep':9,'Oct':10,'Nov':11,'Dec':12}
-                        
-                        # Try finding the tag with "Prices effective from" content, then do the regex
-                        pattern = re.compile('Prices effective from[a-zA-Z0-9., ]*["]')
+                        # Find the start and end date
+                        #Try finding the tag with "effective from" content, then do the regex
+                        pattern = re.compile('effective from [^"]*["]')
                         datePattern = pattern.findall(response)
                         if datePattern:
                             response = datePattern[0]
-                        
-                        pattern = re.compile('(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-zA-Z.]*\s([0-9]{1,2})(?=[^0-9])')
-                        matches = pattern.findall(response)
-                        pattern = re.compile('2[0-9]{3}')
-                        year_matches = pattern.findall(tag_dates)
-                        start_year = int(year_matches[0])
-                        if len(year_matches) > 1:
-                            end_year = int(year_matches[1])
-                        else:
-                            end_year = start_year
-                        
-                        start_date = datetime.datetime(start_year, months[matches[0][0]], int(matches[0][1])).strftime('%Y-%m-%d')
-                        end_date = datetime.datetime(end_year, months[matches[1][0]], int(matches[1][1])).strftime('%Y-%m-%d')
-                        logging.info("start date: %s" % start_date)
-                        logging.info("end date: %s" % end_date)
-                        logging.info("update date: %s" % update_date)
+                        [start_date, end_date] = getFlyerDates(response)
                         
                         data_list = filter(lambda x: x if x.has_key('regiontypeid') and x['regiontypeid']=='1' else None, data_list)
                         for item in data_list:
@@ -483,25 +452,8 @@ def getFlyer():
                     div_pages = soup('div')
                     
                     # Find the start and end dates
-                    months = {'Jan':1,'Feb':2,'Mar':3,'Apr':4,'May':5,'Jun':6,'Jul':7,'Aug':8,'Sep':9,'Oct':10,'Nov':11,'Dec':12}
-                    
                     tag_dates = soup.find(text=re.compile('Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec[a-zA-Z]*\s[0-9]')).string
-                    pattern = re.compile('(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-zA-Z.]*\s([0-9]{1,2})(?=[^0-9])')
-                    matches = pattern.findall(tag_dates)
-                    pattern = re.compile('2[0-9]{3}')
-                    year_matches = pattern.findall(tag_dates)
-                    start_year = int(year_matches[0])
-                    if len(year_matches) > 1:
-                        end_year = int(year_matches[1])
-                    else:
-                        end_year = start_year
-                    
-                    start_date = datetime.datetime(start_year, months[matches[0][0]], int(matches[0][1])).strftime('%Y-%m-%d')
-                    end_date = datetime.datetime(end_year, months[matches[1][0]], int(matches[1][1])).strftime('%Y-%m-%d')
-                    logging.info("start date: %s" % start_date)
-                    logging.info("end date: %s" % end_date)
-                    logging.info("update date: %s" % update_date)
-                    
+                    [start_date, end_date] = getFlyerDates(tag_dates)
                     for page in div_pages:
                         
                         page_lines = re.sub('<[bB][rR]\s*?>', '', page.text).split('\n')
@@ -656,27 +608,13 @@ def getFlyer():
                     store_items = []
                     
                     line_number = 0
-                    start_date = ""
-                    end_date = ""
-                    
-                    # Find the start and end dates
-                    months = {'Jan':1,'Feb':2,'Mar':3,'Apr':4,'May':5,'Jun':6,'Jul':7,'Aug':8,'Sep':9,'Oct':10,'Nov':11,'Dec':12}
-                    
-                    pattern = re.compile('(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-zA-Z.]*\s([0-9]{1,2})(?=[^0-9])')
-                    matches = pattern.findall(response)
-                    pattern = re.compile('2[0-9]{3}')
-                    year_matches = pattern.findall(tag_dates)
-                    start_year = int(year_matches[0])
-                    if len(year_matches) > 1:
-                        end_year = int(year_matches[1])
-                    else:
-                        end_year = start_year
-                    
-                    start_date = datetime.datetime(start_year, months[matches[0][0]], int(matches[0][1])).strftime('%Y-%m-%d')
-                    end_date = datetime.datetime(end_year, months[matches[1][0]], int(matches[1][1])).strftime('%Y-%m-%d')
-                    logging.info("start date: %s" % start_date)
-                    logging.info("end date: %s" % end_date)
-                    logging.info("update date: %s" % update_date)
+                    # Find the start and end date
+                    #Try finding the tag with "effective from" content, then do the regex
+                    pattern = re.compile('effective from [^"]*["]')
+                    datePattern = pattern.findall(response)
+                    if datePattern:
+                        response = datePattern[0]
+                    [start_date, end_date] = getFlyerDates(response)
                     
                     data_list = filter(lambda x: x if x.has_key('regiontypeid') and x['regiontypeid']=='1' else None, data_list)
                     for item in data_list:
@@ -866,23 +804,7 @@ def getFlyer():
                 end_date = ""
                 
                 # Find the start and end dates
-                months = {'Jan':1,'Feb':2,'Mar':3,'Apr':4,'May':5,'Jun':6,'Jul':7,'Aug':8,'Sep':9,'Oct':10,'Nov':11,'Dec':12}
-                
-                pattern = re.compile('(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-zA-Z.]*\s([0-9]{1,2})(?=[^0-9])')
-                matches = pattern.findall(response)
-                pattern = re.compile('2[0-9]{3}')
-                year_matches = pattern.findall(tag_dates)
-                start_year = int(year_matches[0])
-                if len(year_matches) > 1:
-                    end_year = int(year_matches[1])
-                else:
-                    end_year = start_year
-                
-                start_date = datetime.datetime(start_year, months[matches[0][0]], int(matches[0][1])).strftime('%Y-%m-%d')
-                end_date = datetime.datetime(end_year, months[matches[1][0]], int(matches[1][1])).strftime('%Y-%m-%d')
-                logging.info("start date: %s" % start_date)
-                logging.info("end date: %s" % end_date)
-                logging.info("update date: %s" % update_date)
+                [start_date, end_date] = getFlyerDates(response)
                 
                 data_list = filter(lambda x: x if x.has_key('regiontypeid') and x['regiontypeid']=='1' else None, data_list)
                 for item in data_list:
@@ -1020,7 +942,43 @@ def stripAllTags(html):
     html = html.replace('<br />', '. ')
     return (''.join(BeautifulSoup(html).findAll(text=True))).title()
 
+def getFlyerDates(tag_dates):
+    '''Get the start and end day,month,year for a flyer'''
+    #find month and day
+    months = {'Jan':1,'Feb':2,'Mar':3,'Apr':4,'May':5,'Jun':6,'Jul':7,'Aug':8,'Sep':9,'Oct':10,'Nov':11,'Dec':12}
+    pattern = re.compile('(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-zA-Z.]*\s([0-9]{1,2})(?=[^0-9])')
+    matches = pattern.findall(tag_dates)
+    #default values
+    start_month = date.today().month
+    start_date = date.today().day
+    end_month = start_month
+    end_date = start_date+7
+    #if date information is posted in flyer, use that instead
+    if matches:
+        start_month = months[matches[0][0]]
+        start_date = int(matches[0][1])
+        end_month = months[matches[1][0]]
+        end_date =  int(matches[1][1])
 
+    #find year
+    pattern = re.compile('201{0-9}')
+    year_matches = pattern.findall(tag_dates)
+    #default values
+    start_year = date.today().year
+    end_year = start_year+1 if end_month < start_month else start_year
+    #if year information is posted in flyer, use that instead
+    if year_matches: 
+        start_year = int(year_matches[0])
+        end_year = int(year_matches[1]) if len(year_matches) > 1 else start_year 
+        
+    start_date = datetime.datetime(start_year, start_month, start_date).strftime('%Y-%m-%d')
+    end_date = datetime.datetime(end_year, end_month, end_date).strftime('%Y-%m-%d')
+    update_date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    logging.info("start date: %s" % start_date)
+    logging.info("end date: %s" % end_date)
+    logging.info("update date: %s" % update_date)
+    return [start_date, end_date]
+                    
 #******************************************************************************
 # An interface for accessing a database table, handles writing data to table
 #******************************************************************************

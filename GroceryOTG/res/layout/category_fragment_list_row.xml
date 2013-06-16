@@ -16,9 +16,9 @@
         android:fontFamily="sans-serif-light"
         android:textStyle="normal"
         android:textColor="#ffffff"
-        android:paddingLeft="10dip"
-        android:paddingBottom="5dip"
-        android:paddingRight="8dip"
+        android:paddingLeft="10dp"
+        android:paddingBottom="2dp"
+        android:paddingRight="8dp"
         android:singleLine="false"
         >
     </TextView>

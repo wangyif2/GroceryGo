@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<changelog>
+	<release version="nightly-20130615" versioncode="1">
+		<change>Feature: Added a changelog dialog!</change>
+		<change>Feature: Added an expandable drawer in the grocery list view (for now the buttons don't do anything).</change>
+		<change>Feature: Refactored grocery list view to allow for integration to shopping cart.</change>
+		<change>Bugfix: Fixed server bug (kudos to Bill for the hard work).</change>
+		<change>Tweak: Played around with the category grid sizes.</change>
+	</release>
+</changelog>

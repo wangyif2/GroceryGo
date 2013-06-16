@@ -136,13 +136,15 @@ public class GroceryOTGUtils {
     			R.string.navdrawer_item_cart,
     			R.string.navdrawer_item_map,
     			R.string.navdrawer_item_settings,
-    			R.string.navdrawer_item_about
+    			R.string.navdrawer_item_about,
+    			R.string.navdrawer_item_changelog
     	};
     	int[] icons = new int[] {
     			R.drawable.ic_menu_home,
     			R.drawable.ic_menu_cart,
     			R.drawable.ic_menu_map,
     			R.drawable.ic_menu_settings,
+    			R.drawable.ic_menu_about,
     			R.drawable.ic_menu_about
     	};
     	
@@ -268,6 +270,10 @@ public class GroceryOTGUtils {
 				break;
 			case 4:
 				launchAboutDialog(mContext);
+				break;
+			case 5:
+				ChangeLogDialog cd = new ChangeLogDialog(mContext);
+				cd.show();
 				break;
 			}
 		}

@@ -118,8 +118,6 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
 			@Override
 			public void onClick(View v) {
 				// Share
-				Log.i("GroceryOTG", "The share button was pressed");
-				
 				TextView label = (TextView) ((LinearLayout) v.getParent().getParent().getParent()).findViewById(R.id.grocery_row_label);
 				TextView price = (TextView) ((LinearLayout) v.getParent().getParent().getParent()).findViewById(R.id.grocery_row_price);
 				TextView storeParent = (TextView) ((LinearLayout) v.getParent().getParent().getParent()).findViewById(R.id.grocery_row_store);

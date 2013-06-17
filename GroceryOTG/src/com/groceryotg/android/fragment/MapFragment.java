@@ -58,8 +58,8 @@ public class MapFragment extends SupportMapFragment {
     	super.onActivityCreated(savedInstanceState);
     	
 	    buildIconMap(mActivity);
-	    Location lastKnownLocation = getLastKnownLocation();
-	    Cursor storeLocations = getFilteredStores(mActivity).loadInBackground();
+	    Location lastKnownLocation = GroceryOTGUtils.getLastKnownLocation(mActivity);
+	    Cursor storeLocations = GroceryOTGUtils.getFilteredStores(mActivity).loadInBackground();
 	    
 	    mMap = this.getMap();
 	    if (mMap != null) {
@@ -112,6 +112,7 @@ public class MapFragment extends SupportMapFragment {
         int storeNum = storeLocations.getColumnCount();
         while (!storeLocations.isAfterLast()) {
             for (int i = 0; i < storeNum; i++) {
+            	// TODO: wat
             	int storeID = storeLocations.getInt(storeLocations.getColumnIndex(StoreTable.COLUMN_STORE_ID));
             	int storeParentID = storeLocations.getInt(storeLocations.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_ID));
                 String storeName = storeLocations.getString(storeLocations.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_NAME));
@@ -157,15 +158,6 @@ public class MapFragment extends SupportMapFragment {
         mMapMarkers.add(marker);
     }
 
-    private Location getLastKnownLocation() {
-        LocationManager locationManager = (LocationManager) mActivity.getSystemService(Context.LOCATION_SERVICE);
-        Location loc = null;
-        if (locationManager != null) {
-        	loc = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-        }
-        return loc;
-    }
-
     private OnCameraChangeListener getCameraChangeListener() {
     	return new OnCameraChangeListener() {
     		@Override
@@ -193,40 +185,4 @@ public class MapFragment extends SupportMapFragment {
     		}
     	}
     }
-
-    private CursorLoader getFilteredStores(Context context) {
-    	List<String> selectionArgs = new ArrayList<String>();
-        String[] projection = {StoreTable.TABLE_STORE+"."+StoreTable.COLUMN_STORE_ID,
-        		StoreParentTable.TABLE_STORE_PARENT+"."+StoreParentTable.COLUMN_STORE_PARENT_ID,
-        		StoreParentTable.TABLE_STORE_PARENT+"."+StoreParentTable.COLUMN_STORE_PARENT_NAME,
-        		StoreTable.TABLE_STORE+"."+StoreTable.COLUMN_STORE_ADDR,
-        		StoreTable.TABLE_STORE+"."+StoreTable.COLUMN_STORE_LATITUDE,
-        		StoreTable.TABLE_STORE+"."+StoreTable.COLUMN_STORE_LONGITUDE};
-        String selection = "";
-        
-	    SparseBooleanArray selectedStores = SettingsManager.getStoreFilter(context);
-	    if (selectedStores != null && selectedStores.size() > 0) {
-	        // Go through selected stores and add them to query
-	        String storeSelection = "";
-	        for (int storeNum = 0; storeNum < selectedStores.size(); storeNum++) {
-	            if (selectedStores.valueAt(storeNum) == true) {
-	                if (storeSelection.isEmpty()) {
-	                    storeSelection += StoreParentTable.TABLE_STORE_PARENT + "." + StoreParentTable.COLUMN_STORE_PARENT_ID + " = ?";
-	                } else {
-	                    storeSelection += " OR " + StoreParentTable.TABLE_STORE_PARENT + "." + StoreParentTable.COLUMN_STORE_PARENT_ID + " = ?";
-	                }
-	                selectionArgs.add(((Integer) selectedStores.keyAt(storeNum)).toString());
-	            }
-	        }
-	        if (!storeSelection.isEmpty()) {
-	            selection += storeSelection;
-	        }
-	    }
-	
-	    final String[] selectionArgsArr = new String[selectionArgs.size()];
-	    selectionArgs.toArray(selectionArgsArr);
-	
-	    return new CursorLoader(context, GroceryotgProvider.CONTENT_URI_STO_JOIN_STOREPARENT, projection, selection, selectionArgsArr, null);
-	}
-    
 }

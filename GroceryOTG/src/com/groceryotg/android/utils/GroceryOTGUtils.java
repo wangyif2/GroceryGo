@@ -4,10 +4,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.content.CursorLoader;
 import android.support.v4.widget.DrawerLayout;
 import android.util.SparseArray;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +37,8 @@ import com.groceryotg.android.fragment.AboutDialogFragment;
 import com.groceryotg.android.settings.SettingsActivity;
 import com.groceryotg.android.settings.SettingsManager;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 public class GroceryOTGUtils {
@@ -101,7 +107,51 @@ public class GroceryOTGUtils {
         }
         return storeNames;
     }
+    
+    public static CursorLoader getFilteredStores(Context context) {
+    	List<String> selectionArgs = new ArrayList<String>();
+        String[] projection = {StoreTable.TABLE_STORE+"."+StoreTable.COLUMN_STORE_ID,
+        		StoreParentTable.TABLE_STORE_PARENT+"."+StoreParentTable.COLUMN_STORE_PARENT_ID,
+        		StoreParentTable.TABLE_STORE_PARENT+"."+StoreParentTable.COLUMN_STORE_PARENT_NAME,
+        		StoreTable.TABLE_STORE+"."+StoreTable.COLUMN_STORE_ADDR,
+        		StoreTable.TABLE_STORE+"."+StoreTable.COLUMN_STORE_LATITUDE,
+        		StoreTable.TABLE_STORE+"."+StoreTable.COLUMN_STORE_LONGITUDE};
+        String selection = "";
+        
+	    SparseBooleanArray selectedStores = SettingsManager.getStoreFilter(context);
+	    if (selectedStores != null && selectedStores.size() > 0) {
+	        // Go through selected stores and add them to query
+	        String storeSelection = "";
+	        for (int storeNum = 0; storeNum < selectedStores.size(); storeNum++) {
+	            if (selectedStores.valueAt(storeNum) == true) {
+	                if (storeSelection.isEmpty()) {
+	                    storeSelection += StoreParentTable.TABLE_STORE_PARENT + "." + StoreParentTable.COLUMN_STORE_PARENT_ID + " = ?";
+	                } else {
+	                    storeSelection += " OR " + StoreParentTable.TABLE_STORE_PARENT + "." + StoreParentTable.COLUMN_STORE_PARENT_ID + " = ?";
+	                }
+	                selectionArgs.add(((Integer) selectedStores.keyAt(storeNum)).toString());
+	            }
+	        }
+	        if (!storeSelection.isEmpty()) {
+	            selection += storeSelection;
+	        }
+	    }
+	
+	    final String[] selectionArgsArr = new String[selectionArgs.size()];
+	    selectionArgs.toArray(selectionArgsArr);
+	
+	    return new CursorLoader(context, GroceryotgProvider.CONTENT_URI_STO_JOIN_STOREPARENT, projection, selection, selectionArgsArr, null);
+	}
 
+    public static Location getLastKnownLocation(Context context) {
+        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        Location loc = null;
+        if (locationManager != null) {
+        	loc = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        }
+        return loc;
+    }
+    
     /**
      * Method copies the intent extras from the received intent to the intent
      * that will be dispatched.

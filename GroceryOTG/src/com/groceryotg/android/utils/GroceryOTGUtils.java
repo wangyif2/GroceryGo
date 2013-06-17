@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import com.groceryotg.android.MapFragmentActivity;
 import com.groceryotg.android.R;
 import com.groceryotg.android.ShopCartOverviewFragmentActivity;
 import com.groceryotg.android.database.CartTable;
+import com.groceryotg.android.database.CategoryTable;
 import com.groceryotg.android.database.GroceryTable;
 import com.groceryotg.android.database.StoreParentTable;
 import com.groceryotg.android.database.StoreTable;
@@ -69,6 +71,35 @@ public class GroceryOTGUtils {
         Cursor c = context.getContentResolver().query(GroceryotgProvider.CONTENT_URI_GRO, projection, null, null, null);
         c.moveToFirst();
         return c.getInt(0);
+    }
+    
+    public static SparseArray<String> getCategorySets(Context context) {
+        SparseArray<String> categories = new SparseArray<String>();
+        Cursor c = context.getContentResolver().query(GroceryotgProvider.CONTENT_URI_CAT, null, null, null, null);
+
+        c.moveToFirst();
+        while (!c.isAfterLast()) {
+            categories.put(
+                    c.getInt(c.getColumnIndexOrThrow(CategoryTable.COLUMN_CATEGORY_ID)),
+                    c.getString(c.getColumnIndexOrThrow(CategoryTable.COLUMN_CATEGORY_NAME)));
+            c.moveToNext();
+        }
+        return categories;
+    }
+
+    public static SparseArray<String> getStoreParentNameSets(Context context) {
+    	SparseArray<String> storeNames = new SparseArray<String>();
+
+        Cursor storeCursor = GroceryOTGUtils.getStoreParentNamesCursor(context);
+        if (storeCursor != null) {
+            storeCursor.moveToFirst();
+            while (!storeCursor.isAfterLast()) {
+                storeNames.put(storeCursor.getInt(storeCursor.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_ID)),
+                        storeCursor.getString(storeCursor.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_NAME)));
+                storeCursor.moveToNext();
+            }
+        }
+        return storeNames;
     }
 
     /**

@@ -3,22 +3,11 @@ package com.groceryotg.android.fragment;
 import android.app.Activity;
 import android.app.SearchManager;
 import android.content.*;
-import android.database.Cursor;
-import android.database.DataSetObserver;
 import android.os.Bundle;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.app.LoaderManager.LoaderCallbacks;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
-import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import com.actionbarsherlock.app.SherlockListFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
@@ -27,13 +16,8 @@ import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.FlyerTable;
 import com.groceryotg.android.database.GroceryTable;
 import com.groceryotg.android.database.StoreParentTable;
-import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
-import com.groceryotg.android.services.ServerURL;
 import com.groceryotg.android.settings.SettingsManager;
 import com.tjerkw.slideexpandable.library.SlideExpandableListAdapter;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class GroceryListFragment extends SherlockListFragment {
     private static final String CATEGORY_POSITION = "position";

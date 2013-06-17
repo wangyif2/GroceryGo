@@ -1,8 +1,6 @@
 package com.groceryotg.android.fragment;
 
 import android.app.Activity;
-import android.app.LoaderManager.LoaderCallbacks;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;

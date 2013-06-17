@@ -13,7 +13,6 @@ import com.groceryotg.android.services.NetworkHandler;
 import com.groceryotg.android.services.ServerURL;
 import com.groceryotg.android.services.location.LocationServiceReceiver;
 import com.groceryotg.android.settings.SettingsManager;
-import com.groceryotg.android.utils.ChangeLogDialog;
 
 public class SplashScreenActivity extends Activity {
 	private static final String SETTINGS_IS_DB_POPULATED = "isDBPopulated";

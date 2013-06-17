@@ -3,7 +3,11 @@
 <changelog>
 <release version="nightly-20130616" versioncode="1">
 		<change>Feature: Added actions for the expandable grocery list drawer.</change>
+		<change>Feature: Added first draft of distance display. Note that this is still in the experimental stage, and will contribute to most of the lag that is experienced in the grocery list view.</change>
+		<change>Bugfix: [Finally] fixed persistence of cart status when list views are recycled.</change>
+		<change>Tweak: Added navigation drawer headings.</change>
 		<change>Tweak: Reworked grocery list layout.</change>
+		<change>TODO: Needs more icons.</change>
 	</release>
 	<release version="nightly-20130615" versioncode="1">
 		<change>Feature: Added a changelog dialog!</change>

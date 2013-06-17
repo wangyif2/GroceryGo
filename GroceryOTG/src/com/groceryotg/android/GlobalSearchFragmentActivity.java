@@ -1,6 +1,7 @@
 package com.groceryotg.android;
 
 import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
@@ -10,6 +11,8 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.widget.SearchView;
+import com.actionbarsherlock.widget.SearchView.OnQueryTextListener;
 import com.groceryotg.android.fragment.GlobalSearchFragment;
 import com.groceryotg.android.utils.GroceryOTGUtils;
 
@@ -18,6 +21,10 @@ public class GlobalSearchFragmentActivity extends SherlockFragmentActivity {
 	
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
+    
+	private String mQuery = "";
+    
+    private SearchView mSearchView;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -30,7 +37,7 @@ public class GlobalSearchFragmentActivity extends SherlockFragmentActivity {
         this.mDrawerList = drawerBundle.getDrawerList();
         
         // Does the actual search
-        handleSearch(getIntent());
+        handleIntent(getIntent());
     }
 	
 	@Override
@@ -56,19 +63,40 @@ public class GlobalSearchFragmentActivity extends SherlockFragmentActivity {
     	MenuInflater inflater = getSupportMenuInflater();
 	    inflater.inflate(R.menu.search_activity_menu, menu);
 	    
+		// Get the SearchView and set the searchable configuration
+		SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+		mSearchView = (SearchView) menu.findItem(R.id.search).getActionView();
+		mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+		mSearchView.setIconifiedByDefault(false);
+		mSearchView.clearFocus();
+		
+		mSearchView.setOnQueryTextListener(new OnQueryTextListener() {
+			@Override
+			public boolean onQueryTextSubmit(String query) {
+				mQuery = query;
+				mSearchView.setQuery(query, false);
+				mSearchView.clearFocus();
+				GlobalSearchFragment frag = (GlobalSearchFragment) getSupportFragmentManager().findFragmentById(R.id.search_activity_content_fragment);
+		        frag.setQuery(query);
+				return false;
+			}
+			@Override
+			public boolean onQueryTextChange(String newText) {
+				return false;
+			}
+		});
+		
+		mSearchView.setQuery(mQuery, true);
+	    
 		return true;
 	}
-    
-	public void handleSearch(Intent intent) {
-		String query = "";
+
+	public void handleIntent(Intent intent) {
 		setIntent(intent);
 		
 		if (intent.getExtras().containsKey(GlobalSearchFragmentActivity.GLOBAL_SEARCH)) {
 			// Update the query - this is used by the loader when fetching results from database
-			query = intent.getStringExtra(SearchManager.QUERY).trim();
+			mQuery = intent.getStringExtra(SearchManager.QUERY).trim();
         }
-		
-		GlobalSearchFragment frag = (GlobalSearchFragment) getSupportFragmentManager().findFragmentById(R.id.search_activity_content_fragment);
-        frag.setQuery(query);
 	}
 }

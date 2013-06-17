@@ -30,7 +30,6 @@ import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.FlyerTable;
 import com.groceryotg.android.database.GroceryTable;
 import com.groceryotg.android.database.StoreParentTable;
-import com.groceryotg.android.database.StoreTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 import com.groceryotg.android.services.ServerURL;
 import com.groceryotg.android.settings.SettingsManager;
@@ -302,6 +301,13 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter implements Loa
         		displayEmptyListMessage(buildNoNewContentString());
         	}
         }
+        
+        // Now in the event we are searching, set the number of founc items
+    	Integer cnt = this.getCount();
+    	TextView numResults = (TextView) mActivity.findViewById(R.id.search_num_results);
+    	if (numResults != null) {
+    		numResults.setText(cnt.toString());
+    	}
     }
     
     private void displayEmptyListMessage(String emptyStringMsg) {

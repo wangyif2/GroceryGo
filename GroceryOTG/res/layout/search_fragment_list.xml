@@ -20,8 +20,18 @@
 	        android:layout_weight="0.75"
 	        android:text="@string/search_results"
 	        android:textSize="18sp"
-	        android:padding="6dp"
-	        />
+	        android:padding="6dp" />
+		
+		<TextView 
+			android:id="@+id/search_num_results"
+			android:layout_width="0dip"
+			android:layout_height="wrap_content"
+			android:layout_weight="0.25"
+			android:text="@string/search_results_num"
+			android:gravity="right|center"
+			android:layout_gravity="right|center"
+			android:textSize="18sp"
+			android:padding="6dp" />
     </LinearLayout>
     
   	<fragment

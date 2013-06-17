@@ -130,22 +130,15 @@ public class GroceryOTGUtils {
     	ActionBarDrawerToggle drawerToggle = null;
     	
     	configActionBar(activity);
-    	
-    	int[] titles = new int[] {
-    			R.string.navdrawer_item_cat,
-    			R.string.navdrawer_item_cart,
-    			R.string.navdrawer_item_map,
-    			R.string.navdrawer_item_settings,
-    			R.string.navdrawer_item_about,
-    			R.string.navdrawer_item_changelog
-    	};
-    	int[] icons = new int[] {
-    			R.drawable.ic_menu_home,
-    			R.drawable.ic_menu_cart,
-    			R.drawable.ic_menu_map,
-    			R.drawable.ic_menu_settings,
-    			R.drawable.ic_menu_about,
-    			R.drawable.ic_menu_about
+    	NavigationDrawerListViewModel[] rowModels = new NavigationDrawerListViewModel[] {
+    			new NavigationDrawerListViewModel(R.string.navdrawer_heading_places, -1, true),
+    			new NavigationDrawerListViewModel(R.string.navdrawer_item_cat, R.drawable.ic_menu_home, false),
+    			new NavigationDrawerListViewModel(R.string.navdrawer_item_cart, R.drawable.ic_menu_cart, false),
+    			new NavigationDrawerListViewModel(R.string.navdrawer_item_map, R.drawable.ic_menu_map, false),
+    			new NavigationDrawerListViewModel(R.string.navdrawer_heading_tools, -1, true),
+    			new NavigationDrawerListViewModel(R.string.navdrawer_item_settings, R.drawable.ic_menu_settings, false),
+    			new NavigationDrawerListViewModel(R.string.navdrawer_item_about, R.drawable.ic_menu_about, false),
+    			new NavigationDrawerListViewModel(R.string.navdrawer_item_changelog, R.drawable.ic_menu_about, false)
     	};
     	
     	drawerLayout = (DrawerLayout) activity.findViewById(R.id.navigation_drawer_layout);
@@ -161,7 +154,7 @@ public class GroceryOTGUtils {
     	});
     	
     	drawerList = (ListView) activity.findViewById(R.id.navigation_drawer_view);
-    	drawerList.setAdapter(new GroceryOTGUtils.NavigationDrawerAdapter(activity, titles, icons));
+    	drawerList.setAdapter(new GroceryOTGUtils.NavigationDrawerAdapter(activity, rowModels));
     	drawerList.setOnItemClickListener(new NavigationDrawerItemClickListener(activity, drawerLayout, drawerList));
     	
     	// Only set up toggling when at a top view
@@ -190,35 +183,49 @@ public class GroceryOTGUtils {
     	
     }
     
+    private static class NavigationDrawerListViewModel {
+    	public int mTitleResId;
+    	public int mIconResId;
+    	public boolean mIsHeader;
+    	
+    	public NavigationDrawerListViewModel(int titleResId, int iconResId, boolean isHeader) {
+    		this.mIconResId = iconResId;
+    		this.mTitleResId = titleResId;
+    		this.mIsHeader = isHeader;
+    	}
+    }
+    
     private static class NavigationDrawerAdapter extends BaseAdapter {
     	Context mContext;
-    	int[] mTitles;
-    	int[] mIcons;
+    	NavigationDrawerListViewModel[] mRowModels;
     	int mCount;
     	LayoutInflater mInflater;
     	
-    	public NavigationDrawerAdapter(Context context, int[] titles, int[] icons) {
+    	public NavigationDrawerAdapter(Context context, NavigationDrawerListViewModel[] rowModels) {
     		this.mContext = context;
-    		this.mTitles = titles;
-    		this.mIcons = icons;
+    		this.mRowModels = rowModels;
     		
-    		assert (mTitles.length == mIcons.length);
-    		this.mCount = mTitles.length;
+    		this.mCount = mRowModels.length;
     	}
 
 		@Override
 		public int getCount() {
 			return this.mCount;
 		}
-
+		
 		@Override
-		public Object getItem(int position) {
-			return mContext.getString(mTitles[position]);
+		public NavigationDrawerListViewModel getItem(int position) {
+			return mRowModels[position];
 		}
 
 		@Override
 		public long getItemId(int position) {
 			return position;
+		}
+		
+		@Override
+		public int getItemViewType(int position) {
+			return getItem(position).mIsHeader ? 0 : 1;
 		}
 
 		@Override
@@ -227,15 +234,30 @@ public class GroceryOTGUtils {
 			ImageView iconView;
 			
 			mInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			View itemView = mInflater.inflate(R.layout.navdrawer_item, parent, false);
+			View itemView;
 			
-			iconView = (ImageView) itemView.findViewById(R.id.navdrawer_item_icon);
+			if (getItem(position).mIconResId > 0) {
+				itemView = mInflater.inflate(R.layout.navdrawer_item, parent, false);
+				iconView = (ImageView) itemView.findViewById(R.id.navdrawer_item_icon);
+				iconView.setImageResource(getItem(position).mIconResId);
+			} else {
+				itemView = mInflater.inflate(R.layout.navdrawer_header, parent, false);
+			}
+			
 			titleView = (TextView) itemView.findViewById(R.id.navdrawer_item_title);
-			
-			iconView.setImageResource(mIcons[position]);
-			titleView.setText(mContext.getString(mTitles[position]));
+			titleView.setText(getItem(position).mTitleResId);
 			
 			return itemView;
+		}
+		
+		@Override
+		public int getViewTypeCount() {
+			return 2;
+		}
+		
+		@Override
+		public boolean isEnabled(int position) {
+			return !getItem(position).mIsHeader;
 		}
     }
     
@@ -256,22 +278,22 @@ public class GroceryOTGUtils {
         		mDrawerLayout.closeDrawer(mDrawerList);
 			
 			switch (position) {
-			case 0:
+			case 1:
 				launchHomeActivity(mContext);
 				break;
-			case 1:
+			case 2:
 				launchShopCartActivity(mContext);
 				break;
-			case 2:
+			case 3:
 				launchMapActivity(mContext);
 				break;
-			case 3:
+			case 5:
 				launchSettingsActivity(mContext);
 				break;
-			case 4:
+			case 6:
 				launchAboutDialog(mContext);
 				break;
-			case 5:
+			case 7:
 				ChangeLogDialog cd = new ChangeLogDialog(mContext);
 				cd.show();
 				break;

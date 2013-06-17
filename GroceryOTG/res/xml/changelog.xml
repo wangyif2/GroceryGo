@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <changelog>
+<release version="nightly-20130616" versioncode="1">
+		<change>Feature: Added actions for the expandable grocery list drawer.</change>
+		<change>Tweak: Reworked grocery list layout.</change>
+	</release>
 	<release version="nightly-20130615" versioncode="1">
 		<change>Feature: Added a changelog dialog!</change>
 		<change>Feature: Added an expandable drawer in the grocery list view (for now the buttons don't do anything).</change>

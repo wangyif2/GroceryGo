@@ -37,7 +37,7 @@
 				android:background="@drawable/ic_checkbox_shoplist_bg"
 				android:clickable="true"
 				android:contentDescription="@string/groceryoverview_row_imagedesc"
-				android:button="@drawable/ic_menu_cart"
+				android:button="@drawable/ic_menu_cart_wide"
 				android:drawablePadding="20dp" >
 			</CheckBox>
 		</RelativeLayout>

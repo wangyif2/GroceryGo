@@ -111,7 +111,8 @@
         <receiver android:name="com.groceryotg.android.services.location.LocationMonitor"/>
         <receiver android:name="com.groceryotg.android.services.location.LocationReceiver"/>
         <receiver
-        	android:name="com.groceryotg.android.services.location.LocationServiceReceiver" >
+        	android:name="com.groceryotg.android.services.location.LocationServiceReceiver"
+        	android:exported="false" >
         	<intent-filter>
         		<action android:name="com.groceryotg.android.services.location.LocationServiceReceiver.LOCATION_SERVICE_RECEIVER_ENABLE" />
         		<action android:name="com.groceryotg.android.services.location.LocationServiceReceiver.LOCATION_SERVICE_RECEIVER_DISABLE" />
@@ -121,7 +122,8 @@
 
         <provider
             android:name=".database.contentprovider.GroceryotgProvider"
-            android:authorities="com.groceryotg.android.database.contentprovider">
+            android:authorities="com.groceryotg.android.database.contentprovider"
+            android:exported="false" >
         </provider>
 
 

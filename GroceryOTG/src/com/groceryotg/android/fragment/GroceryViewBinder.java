@@ -2,6 +2,7 @@ package com.groceryotg.android.fragment;
 
 import android.database.Cursor;
 import android.support.v4.widget.SimpleCursorAdapter.ViewBinder;
+import android.util.SparseArray;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.SimpleCursorAdapter;
@@ -15,11 +16,18 @@ import com.groceryotg.android.database.StoreTable;
 import com.groceryotg.android.services.ServerURL;
 import com.groceryotg.android.utils.GroceryOTGUtils;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class GroceryViewBinder implements SimpleCursorAdapter.ViewBinder, ViewBinder {
+	private SparseArray<Float> mDistanceMap;
+	
+	public GroceryViewBinder(SparseArray<Float> distanceMap) {
+		this.mDistanceMap = distanceMap;
+	}
+	
     @Override
     public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
 
@@ -125,13 +133,36 @@ public class GroceryViewBinder implements SimpleCursorAdapter.ViewBinder, ViewBi
         	
         	return true;
         }
-        else if (columnIndex == cursor.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_NAME) 
+        else if (columnIndex == cursor.getColumnIndex(FlyerTable.COLUMN_FLYER_ID) 
         		&& viewId == R.id.grocery_row_store) {
-        	// This is useless, since this is the default binding
-        	String storeParentName = cursor.getString(columnIndex);
+        	Integer id = cursor.getInt(columnIndex);
         	TextView textView = (TextView) view;
         	
-        	textView.setText(storeParentName);
+        	Cursor flyerIDs = GroceryOTGUtils.getStoreFlyerIDs(view.getContext());
+        	final float BIG_FLOAT = (float) 1000000.0;
+        	Float oldDist = Float.valueOf(BIG_FLOAT), newDist;
+        	
+        	flyerIDs.moveToFirst();
+        	while (!flyerIDs.isAfterLast()) {
+        		if (flyerIDs.getInt(flyerIDs.getColumnIndex(StoreTable.COLUMN_STORE_FLYER)) == id) {
+        			newDist = this.mDistanceMap.get(flyerIDs.getInt(flyerIDs.getColumnIndex(StoreTable.COLUMN_STORE_ID)));
+        			if (newDist != null) {
+        				if (newDist < oldDist) {
+        					oldDist = newDist;
+        				}
+        			}
+        		}
+        		flyerIDs.moveToNext();
+        	}
+        	
+        	if (oldDist != BIG_FLOAT) {
+        		// Truncate to a single decimal place
+        		DecimalFormat oneD = new DecimalFormat("#.#");
+        		Float truc = Float.valueOf(oneD.format((float) (oldDist/1000.0)));
+        		textView.setText(truc.toString() + "km");
+        	} else {
+        		textView.setText("No distance info available");
+        	}
         	
         	return true;
         }

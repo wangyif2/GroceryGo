@@ -39,7 +39,7 @@ public class GroceryListFragment extends SherlockListFragment {
     MenuItem refreshItem;
     private Integer categoryId = GroceryListCursorAdapter.GLOBAL_SEARCH_CATEGORY;
     
-    SparseArray<Float> mDistanceMap;
+    private SparseArray<Float> mDistanceMap;
 
     ViewGroup myViewGroup;
 
@@ -100,7 +100,7 @@ public class GroceryListFragment extends SherlockListFragment {
                 GroceryTable.COLUMN_GROCERY_NAME,
                 GroceryTable.COLUMN_GROCERY_NAME,
                 GroceryTable.COLUMN_GROCERY_PRICE,
-                StoreParentTable.COLUMN_STORE_PARENT_NAME,
+                FlyerTable.COLUMN_FLYER_ID,
                 FlyerTable.COLUMN_FLYER_ID,
                 FlyerTable.COLUMN_FLYER_URL,
                 CartTable.COLUMN_CART_FLAG_SHOPLIST};
@@ -123,7 +123,7 @@ public class GroceryListFragment extends SherlockListFragment {
         }
 
         adapter = new GroceryListCursorAdapter(getActivity(), R.layout.grocery_fragment_list_row, null, from, to, this.categoryId, this.getView(), this.getListView(), mQuery, getLoaderManager());
-        adapter.setViewBinder(new GroceryViewBinder());
+        adapter.setViewBinder(new GroceryViewBinder(this.mDistanceMap));
         
         setListAdapter(new SlideExpandableListAdapter(adapter, R.id.expandable_toggle_button, R.id.expandable));
         
@@ -161,7 +161,7 @@ public class GroceryListFragment extends SherlockListFragment {
             distance = loc.distanceTo(storeLoc);
             
             // Add this distance to a hash map
-            Log.i("GroceryOTG", "Store " + storeID + " at distance " + distance);
+            //Log.i("GroceryOTG", "Store " + storeID + " at distance " + distance);
             map.put(storeID, distance);
             
             storeLocations.moveToNext();

@@ -85,7 +85,9 @@
 				android:textSize="12sp"
 				android:fontFamily="sans-serif"
 				android:textStyle="normal"
-				android:singleLine="false" >
+				android:singleLine="false"
+				android:textColor="#999999"
+				android:drawableLeft="@drawable/ic_menu_map" >
 			</TextView>
         </LinearLayout>
         

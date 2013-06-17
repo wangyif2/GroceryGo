@@ -118,7 +118,10 @@ public class GroceryListFragment extends SherlockListFragment {
 	        }
         }
 
-        adapter = new GroceryListCursorAdapter(getActivity(), R.layout.grocery_fragment_list_row, null, from, to, this.categoryId, this.getView(), this.getListView(), mQuery, getLoaderManager());
+        int layoutId = R.layout.grocery_fragment_list_row;
+        // Uncomment this to use alternate layout
+        //layoutId = R.layout.grocery_fragment_list_row_alt;
+        adapter = new GroceryListCursorAdapter(getActivity(), layoutId, null, from, to, this.categoryId, this.getView(), this.getListView(), mQuery, getLoaderManager());
         adapter.setViewBinder(new GroceryViewBinder(this.mDistanceMap));
         
         SlideExpandableListAdapter wrappedAdapter = new SlideExpandableListAdapter(adapter, R.id.expandable_toggle_button, R.id.expandable);

@@ -7,7 +7,7 @@
 	
 	<!-- this is the default view that is initially shown -->
 	<include
-		layout="@layout/grocery_list_row" >
+		layout="@layout/grocery_list_row_alt" >
 	</include>
 		
 	<!-- this is the expandable view that is initially hidden and will slide out when the more button is pressed -->

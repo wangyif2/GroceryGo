@@ -47,7 +47,7 @@
 				android:fontFamily="sans-serif"
 				android:singleLine="true"
 				android:gravity="center"
-				android:background="@color/transparent" >
+				android:background="@color/semi_transparent" >
 			</TextView>
 		</LinearLayout>
 		
@@ -96,27 +96,44 @@
 				</TextView>
 	        </LinearLayout>
 	        
-	        <RelativeLayout
+	        <LinearLayout
 				android:layout_width="0dp"
 				android:layout_height="match_parent"
 				android:orientation="vertical"
 				android:layout_weight="0.1" >
 				
-				<ImageButton
-					android:id="@+id/expandable_toggle_button"
-					android:layout_width="match_parent"
-					android:layout_height="fill_parent"
-					android:background="?android:attr/selectableItemBackground" >
-				</ImageButton>
-				
-				<ImageView
+				<CheckBox
+					android:id="@+id/grocery_row_in_shopcart"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:layout_alignParentBottom="true"
-					android:layout_alignParentRight="true"
-					android:src="@drawable/ic_spinner" >
-				</ImageView>
-			</RelativeLayout>
+					android:background="@null"
+					android:clickable="true"
+					android:contentDescription="@string/groceryoverview_row_imagedesc"
+					android:padding="6dp"
+					android:button="@drawable/ic_checkbox_shoplist" >
+				</CheckBox>
+			
+				<RelativeLayout
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content" >
+					<ImageButton
+						android:id="@+id/expandable_toggle_button"
+						android:layout_width="match_parent"
+						android:layout_height="match_parent"
+						android:background="?android:attr/selectableItemBackground" >
+					</ImageButton>
+					
+					<ImageView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_alignParentBottom="true"
+						android:layout_alignParentRight="true"
+						android:src="@drawable/ic_spinner" >
+					</ImageView>
+				</RelativeLayout>
+			</LinearLayout>
+			
+			
 	    </LinearLayout>
 	    
 		<!-- Hold meta for grocery id -->
@@ -141,31 +158,6 @@
 			android:visibility="gone"
 			android:text="" />
 	</LinearLayout>
-	
-	<!-- Make a darker grey divider line -->
-	<View
-		android:layout_width="1dp"
-		android:layout_height="match_parent"
-		android:background="#e8e8e8" >
-	</View>
-	
-	<RelativeLayout
-		android:layout_width="wrap_content"
-		android:layout_height="match_parent"
-		android:layout_gravity="center_vertical"
-		
-		android:gravity="center_vertical" >
-		
-		<CheckBox
-			android:id="@+id/grocery_row_in_shopcart"
-			android:layout_width="wrap_content"
-			android:layout_height="match_parent"
-			android:background="@drawable/ic_checkbox_shoplist_bg"
-			android:clickable="true"
-			android:contentDescription="@string/groceryoverview_row_imagedesc"
-			android:button="@drawable/ic_menu_cart_wide" >
-		</CheckBox>
-	</RelativeLayout>
 </LinearLayout>
 
 

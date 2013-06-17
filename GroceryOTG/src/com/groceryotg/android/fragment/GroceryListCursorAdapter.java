@@ -71,9 +71,9 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter implements Loa
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent){
-        View view = super.getView(position, convertView, parent);
+        final View topView = super.getView(position, convertView, parent);
         
-        CheckBox cb_inshoplist = (CheckBox) view.findViewById(R.id.grocery_row_in_shopcart);
+        CheckBox cb_inshoplist = (CheckBox) topView.findViewById(R.id.grocery_row_in_shopcart);
         cb_inshoplist.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -81,7 +81,7 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter implements Loa
 				boolean isChecked = cb.isChecked();
 				
             	// Get the row ID and grocery name from the parent view
-				LinearLayout parentLayout = (LinearLayout) cb.getParent().getParent();
+				LinearLayout parentLayout = (LinearLayout) topView.findViewById(R.id.grocery_list_row_layout);
 				TextView tv_id = (TextView) parentLayout.findViewById(R.id.grocery_row_id);
 				TextView tv_name = (TextView) parentLayout.findViewById(R.id.grocery_row_label);
 				
@@ -133,7 +133,7 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter implements Loa
     	});
         
         // Now add listeners for the expandable view's buttons
-        ImageButton exp_mapButton = (ImageButton) view.findViewById(R.id.expand_button_map);
+        ImageButton exp_mapButton = (ImageButton) topView.findViewById(R.id.expand_button_map);
         exp_mapButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -156,7 +156,7 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter implements Loa
 				mActivity.startActivity(intent);
 			}
         });
-        ImageButton exp_shareButton = (ImageButton) view.findViewById(R.id.expand_button_share);
+        ImageButton exp_shareButton = (ImageButton) topView.findViewById(R.id.expand_button_share);
         exp_shareButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -180,7 +180,7 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter implements Loa
 			}
         });
         
-        ImageButton exp_flyerviewButton = (ImageButton) view.findViewById(R.id.expand_button_flyerview);
+        ImageButton exp_flyerviewButton = (ImageButton) topView.findViewById(R.id.expand_button_flyerview);
         exp_flyerviewButton.setOnClickListener(new View.OnClickListener() {
         	@Override
         	public void onClick(View v) {
@@ -194,7 +194,7 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter implements Loa
 			}
         });
         
-        return view;
+        return topView;
     }
 
 	public void setViewBinder(GroceryViewBinder groceryViewBinder) {

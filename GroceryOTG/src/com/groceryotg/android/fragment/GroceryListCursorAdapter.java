@@ -30,6 +30,7 @@ import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.FlyerTable;
 import com.groceryotg.android.database.GroceryTable;
 import com.groceryotg.android.database.StoreParentTable;
+import com.groceryotg.android.database.StoreTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 import com.groceryotg.android.services.ServerURL;
 import com.groceryotg.android.settings.SettingsManager;

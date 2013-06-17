@@ -53,7 +53,7 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter implements Loa
 	private ProgressBar progressView;
 	private Integer categoryId;
 	
-    public GroceryListCursorAdapter(Context context, int layout, Cursor c, String[] from, int[] to, int categoryId, ListView listView, String query, LoaderManager loaderManager) {
+    public GroceryListCursorAdapter(Context context, int layout, Cursor c, String[] from, int[] to, int categoryId, View view, ListView listView, String query, LoaderManager loaderManager) {
         super(context, layout, c, from, to, 0);
         
         this.mLoaderManager = loaderManager;
@@ -64,6 +64,8 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter implements Loa
         
         this.categoryId = categoryId;
         this.mListView = listView;
+        this.emptyTextView = (TextView) view.findViewById(R.id.empty_grocery_list);
+        this.progressView = (ProgressBar) view.findViewById(R.id.refresh_progress);
         this.mQuery = query;
     }
 
@@ -119,9 +121,9 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter implements Loa
                 	mActivity.getContentResolver().delete(GroceryotgProvider.CONTENT_URI_CART_ITEM, whereClause, selectionArgs);
                 }
                 
-                // Notify watchers that the data has been changed, and we need to reload views
+                // Restart the loader, refreshing all views
                 Bundle b = new Bundle();
-                b.putString("query", "");
+                b.putString("query", mQuery);
                 b.putBoolean("reload", false);
                 mLoaderManager.restartLoader(0, b, mCallbacks);
                 

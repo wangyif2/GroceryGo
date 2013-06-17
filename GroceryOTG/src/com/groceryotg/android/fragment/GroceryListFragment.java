@@ -99,11 +99,6 @@ public class GroceryListFragment extends SherlockListFragment {
                 R.id.grocery_row_store_id,
                 R.id.grocery_row_flyer_url,
                 R.id.grocery_row_in_shopcart};
-
-        adapter = new GroceryListCursorAdapter(getActivity(), R.layout.grocery_fragment_list_row, null, from, to, this.categoryId, this.getListView(), mQuery, getLoaderManager());
-        adapter.setViewBinder(new GroceryViewBinder());
-        
-        setListAdapter(new SlideExpandableListAdapter(adapter, R.id.expandable_toggle_button, R.id.expandable));
         
         // Handles the search filter
         Bundle args = mActivity.getIntent().getExtras();
@@ -113,6 +108,11 @@ public class GroceryListFragment extends SherlockListFragment {
 				mQuery = args.getString(SearchManager.QUERY).trim();
 	        }
         }
+
+        adapter = new GroceryListCursorAdapter(getActivity(), R.layout.grocery_fragment_list_row, null, from, to, this.categoryId, this.getView(), this.getListView(), mQuery, getLoaderManager());
+        adapter.setViewBinder(new GroceryViewBinder());
+        
+        setListAdapter(new SlideExpandableListAdapter(adapter, R.id.expandable_toggle_button, R.id.expandable));
         
         this.loadDataWithQuery(false, mQuery);
     }
@@ -132,7 +132,7 @@ public class GroceryListFragment extends SherlockListFragment {
     public void fillData() {
         // Prepare the asynchronous loader.
         Bundle b = new Bundle();
-        b.putString("query", "");
+        b.putString("query", mQuery);
         b.putBoolean("reload", false);
         getLoaderManager().initLoader(0, b, adapter);
     }
@@ -140,7 +140,7 @@ public class GroceryListFragment extends SherlockListFragment {
     private void watchSettings() {
         mSettingsListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
             public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-                loadDataWithQuery(true, "");
+                loadDataWithQuery(true, mQuery);
             }
         };
         SettingsManager.getPrefs(mActivity).registerOnSharedPreferenceChangeListener(mSettingsListener);

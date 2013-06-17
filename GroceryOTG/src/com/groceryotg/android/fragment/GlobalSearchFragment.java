@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.app.SherlockListFragment;
 import com.groceryotg.android.R;
 
@@ -33,5 +34,8 @@ public class GlobalSearchFragment extends SherlockListFragment {
 	public void setQuery(String query) {
     	TextView searchTitle = (TextView) mActivity.findViewById(R.id.search_title);
     	searchTitle.setText("\"" + query + "\"");
+    	
+    	GroceryListFragment frag = (GroceryListFragment) ((SherlockFragmentActivity) mActivity).getSupportFragmentManager().findFragmentById(R.id.search_fragment_list_fragment);
+    	frag.loadDataWithQuery(false, query);
     }
 }

@@ -173,6 +173,9 @@ public class GroceryListFragment extends SherlockListFragment {
     }
     
     public void loadDataWithQuery(Boolean reload, String query) {
+    	if (adapter == null)
+    		return;
+    	
         Bundle b = new Bundle();
         b.putString("query", query);
         if (reload) {

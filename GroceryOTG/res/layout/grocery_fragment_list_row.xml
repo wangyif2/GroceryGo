@@ -44,23 +44,9 @@
 	</LinearLayout>
 	
 	<!-- this is the expandable view that is initially hidden and will slide out when the more button is pressed -->
-	<LinearLayout
-		android:id="@+id/expandable"
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:orientation="vertical"
-		android:background="#ffffff" >
-		
-		<View
-			android:layout_width="match_parent"
-			android:layout_height="2dp"
-			android:background="#33b5e5" >
-		</View>
-		
-		<include
-			layout="@layout/grocery_list_expanded_row" >
-		</include>
-	</LinearLayout>
+	<include
+		layout="@layout/grocery_list_expanded_row" >
+	</include>
 </LinearLayout>
 
 

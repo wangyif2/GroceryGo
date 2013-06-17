@@ -36,6 +36,6 @@
 		android:layout_height="match_parent"
 		android:layout_gravity="left"
 		android:choiceMode="singleChoice"
-		android:background="#e7e8e9" >
+		android:background="@color/navdrawer_gray" >
 	</ListView>
 </android.support.v4.widget.DrawerLayout>

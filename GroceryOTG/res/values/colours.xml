@@ -24,5 +24,10 @@
 	<color name="white">#ffffffff</color>
 	<color name="black">#ff000000</color>
 	
+	<color name="transparent">#00000000</color>
+	<color name="semi_transparent">#0c000000</color>
+	
 	<color name="holo_blue_very_light">#8033b5e5</color>
+	
+	<color name="navdrawer_gray">#ffe7e8e9</color>
 </resources>

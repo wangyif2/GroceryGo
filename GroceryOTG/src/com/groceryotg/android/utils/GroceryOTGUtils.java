@@ -152,6 +152,47 @@ public class GroceryOTGUtils {
         return loc;
     }
     
+    public static SparseArray<Float> buildDistanceMap(Context context) {
+    	Cursor storeLocations = GroceryOTGUtils.getFilteredStores(context).loadInBackground();
+    	
+    	SparseArray<Float> map = new SparseArray<Float>();
+    	
+    	int storeID;
+    	double storeLat;
+    	double storeLng;
+    	Location storeLoc;
+    	float distance;
+    	
+    	Location loc = GroceryOTGUtils.getLastKnownLocation(context);
+    	
+        storeLocations.moveToFirst();
+        while (!storeLocations.isAfterLast()) {
+        	storeID = storeLocations.getInt(storeLocations.getColumnIndex(StoreTable.COLUMN_STORE_ID));
+        	
+        	if (map.get(storeID) != null) {
+        		storeLocations.moveToNext();
+        		continue;
+        	}
+        	
+            storeLat = storeLocations.getDouble(storeLocations.getColumnIndex(StoreTable.COLUMN_STORE_LATITUDE));
+            storeLng = storeLocations.getDouble(storeLocations.getColumnIndex(StoreTable.COLUMN_STORE_LONGITUDE));
+            
+            storeLoc = new Location("Store Location");
+            storeLoc.setLatitude(storeLat);
+            storeLoc.setLongitude(storeLng);
+            
+            // calculate the distance in meters between the current user location and the store's location
+            distance = loc.distanceTo(storeLoc);
+            
+            // Add this distance to a hash map
+            //Log.i("GroceryOTG", "Store " + storeID + " at distance " + distance);
+            map.put(storeID, distance);
+            
+            storeLocations.moveToNext();
+        }
+        return map;
+    }
+    
     /**
      * Method copies the intent extras from the received intent to the intent
      * that will be dispatched.

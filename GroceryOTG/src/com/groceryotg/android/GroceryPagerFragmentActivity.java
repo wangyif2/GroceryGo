@@ -192,8 +192,9 @@ public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
         }
     }
 
-    public static class GroceryAdapter extends FragmentStatePagerAdapter implements ViewPager.OnPageChangeListener {
+    public class GroceryAdapter extends FragmentStatePagerAdapter implements ViewPager.OnPageChangeListener {
         private SparseArray<GroceryListFragment> mPageReferenceMap;
+        private SparseArray<Float> mDistanceMap = GroceryOTGUtils.buildDistanceMap(mContext);
         
         int mCurrentPage = 0;
 
@@ -213,7 +214,7 @@ public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
         public GroceryListFragment getItem(int position) {
             GroceryListFragment myFragment;
             if (mPageReferenceMap.get(position) == null) {
-                myFragment = GroceryListFragment.newInstance(categories.keyAt(position));
+                myFragment = GroceryListFragment.newInstance(categories.keyAt(position), mDistanceMap);
                 mPageReferenceMap.put(position, myFragment);
                 return myFragment;
             } else

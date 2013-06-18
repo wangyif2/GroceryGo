@@ -2,29 +2,29 @@ package com.groceryotg.android.fragment;
 
 import android.database.Cursor;
 import android.support.v4.widget.SimpleCursorAdapter.ViewBinder;
-import android.util.SparseArray;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import com.groceryotg.android.R;
+import com.groceryotg.android.R.drawable;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.FlyerTable;
 import com.groceryotg.android.database.GroceryTable;
+import com.groceryotg.android.database.StoreParentTable;
 import com.groceryotg.android.database.StoreTable;
 import com.groceryotg.android.services.ServerURL;
 import com.groceryotg.android.utils.GroceryOTGUtils;
 
-import java.text.DecimalFormat;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 public class GroceryViewBinder implements SimpleCursorAdapter.ViewBinder, ViewBinder {
-	private SparseArray<Float> mDistanceMap;
-	
-	public GroceryViewBinder(SparseArray<Float> distanceMap) {
-		this.mDistanceMap = distanceMap;
+	public GroceryViewBinder() {
 	}
 	
     @Override
@@ -132,37 +132,19 @@ public class GroceryViewBinder implements SimpleCursorAdapter.ViewBinder, ViewBi
         	
         	return true;
         }
-        else if (columnIndex == cursor.getColumnIndex(FlyerTable.COLUMN_FLYER_ID) 
-        		&& viewId == R.id.grocery_row_store) {
-        	Integer id = cursor.getInt(columnIndex);
-        	TextView textView = (TextView) view;
-        	
-        	Cursor flyerIDs = GroceryOTGUtils.getStoreFlyerIDs(view.getContext());
-        	final float BIG_FLOAT = (float) 1000000.0;
-        	Float oldDist = Float.valueOf(BIG_FLOAT), newDist;
-        	
-        	flyerIDs.moveToFirst();
-        	while (!flyerIDs.isAfterLast()) {
-        		if (flyerIDs.getInt(flyerIDs.getColumnIndex(StoreTable.COLUMN_STORE_FLYER)) == id) {
-        			newDist = this.mDistanceMap.get(flyerIDs.getInt(flyerIDs.getColumnIndex(StoreTable.COLUMN_STORE_ID)));
-        			if (newDist != null) {
-        				if (newDist < oldDist) {
-        					oldDist = newDist;
-        				}
-        			}
-        		}
-        		flyerIDs.moveToNext();
-        	}
-        	
-        	if (oldDist != BIG_FLOAT) {
-        		// Truncate to a single decimal place
-        		DecimalFormat oneD = new DecimalFormat("#.#");
-        		Float truc = Float.valueOf(oneD.format((float) (oldDist/1000.0)));
-        		textView.setText(truc.toString() + "km");
-        	} else {
-        		textView.setText("No distance info available");
-        	}
-        	
+        else if (columnIndex == cursor.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_NAME) 
+        		&& viewId == R.id.grocery_row_store_parent_name) {
+        	String storeParentName = cursor.getString(columnIndex);
+			TextView textView = (TextView) view;
+			
+			try {
+				Class<drawable> res = R.drawable.class;
+				Field field = res.getField("ic_store_" + storeParentName.toLowerCase(Locale.CANADA));
+				textView.setText(storeParentName);
+				textView.setTag(field.getInt(null));
+			} catch (Exception e) {
+				Log.e("GroceryOTG", "Could not get drawable id for row.", e);
+			}
         	return true;
         }
         else if (columnIndex == cursor.getColumnIndex(FlyerTable.COLUMN_FLYER_ID) 

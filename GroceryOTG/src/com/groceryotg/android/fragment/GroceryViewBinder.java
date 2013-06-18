@@ -139,7 +139,8 @@ public class GroceryViewBinder implements SimpleCursorAdapter.ViewBinder, ViewBi
 			
 			try {
 				Class<drawable> res = R.drawable.class;
-				Field field = res.getField("ic_store_" + storeParentName.toLowerCase(Locale.CANADA));
+				// Make the store name all lowercase, then chomp off whitespace
+				Field field = res.getField("ic_store_" + storeParentName.toLowerCase(Locale.CANADA).replace(" ", ""));
 				textView.setText(storeParentName);
 				textView.setTag(field.getInt(null));
 			} catch (Exception e) {

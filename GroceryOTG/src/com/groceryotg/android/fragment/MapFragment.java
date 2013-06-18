@@ -18,6 +18,7 @@ import com.groceryotg.android.utils.GroceryOTGUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class MapFragment extends SupportMapFragment {
@@ -75,7 +76,7 @@ public class MapFragment extends SupportMapFragment {
     	parents.moveToFirst();
     	while (!parents.isAfterLast()) {
     		String name = parents.getString(parents.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_NAME));
-    		int markerImageID = context.getResources().getIdentifier("ic_mapmarker_" + name, "drawable", mActivity.getPackageName());
+    		int markerImageID = context.getResources().getIdentifier("ic_mapmarker_" + name.toLowerCase(Locale.CANADA).replace(" ", ""), "drawable", mActivity.getPackageName());
     		if (markerImageID != 0) {
     			mIconMap.put(name, markerImageID);
     		}
@@ -103,36 +104,33 @@ public class MapFragment extends SupportMapFragment {
 
     private void buildStoreMarkers(Context context, Cursor storeLocations, GoogleMap map) {
         storeLocations.moveToFirst();
-        int storeNum = storeLocations.getColumnCount();
         while (!storeLocations.isAfterLast()) {
-            for (int i = 0; i < storeNum; i++) {
-            	// TODO: wat
-            	int storeID = storeLocations.getInt(storeLocations.getColumnIndex(StoreTable.COLUMN_STORE_ID));
-            	int storeParentID = storeLocations.getInt(storeLocations.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_ID));
-                String storeName = storeLocations.getString(storeLocations.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_NAME));
-                String storeAdr = storeLocations.getString(storeLocations.getColumnIndex(StoreTable.COLUMN_STORE_ADDR));
-                double storeLat = storeLocations.getDouble(storeLocations.getColumnIndex(StoreTable.COLUMN_STORE_LATITUDE));
-                double storeLng = storeLocations.getDouble(storeLocations.getColumnIndex(StoreTable.COLUMN_STORE_LONGITUDE));
-                
-                LatLng storeLatLng = new LatLng(storeLat, storeLng);
-                
-                // Now do filtering
-                boolean isIncluded = true;
-                if (this.filterStoreParents != null) {
-                	isIncluded = false;
-                	if (this.filterStoreParents.contains(storeParentID))
-                		isIncluded = true;
-                }
-                if (this.filterStores != null) {
-                	isIncluded = false;
-                	if (this.filterStores.contains(storeID))
-                		isIncluded = true;
-                }
-                
-                if (isIncluded) {
-                	buildStoreMarker(context, map, storeName, storeAdr, storeLatLng);
-                }
+        	int storeID = storeLocations.getInt(storeLocations.getColumnIndex(StoreTable.COLUMN_STORE_ID));
+        	int storeParentID = storeLocations.getInt(storeLocations.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_ID));
+            String storeName = storeLocations.getString(storeLocations.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_NAME));
+            String storeAdr = storeLocations.getString(storeLocations.getColumnIndex(StoreTable.COLUMN_STORE_ADDR));
+            double storeLat = storeLocations.getDouble(storeLocations.getColumnIndex(StoreTable.COLUMN_STORE_LATITUDE));
+            double storeLng = storeLocations.getDouble(storeLocations.getColumnIndex(StoreTable.COLUMN_STORE_LONGITUDE));
+            
+            LatLng storeLatLng = new LatLng(storeLat, storeLng);
+            
+            // Now do filtering
+            boolean isIncluded = true;
+            if (this.filterStoreParents != null) {
+            	isIncluded = false;
+            	if (this.filterStoreParents.contains(storeParentID))
+            		isIncluded = true;
             }
+            if (this.filterStores != null) {
+            	isIncluded = false;
+            	if (this.filterStores.contains(storeID))
+            		isIncluded = true;
+            }
+            
+            if (isIncluded) {
+            	buildStoreMarker(context, map, storeName, storeAdr, storeLatLng);
+            }
+            
             storeLocations.moveToNext();
         }
     }

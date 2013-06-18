@@ -10,8 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import com.actionbarsherlock.app.SherlockListFragment;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
 import com.groceryotg.android.*;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.FlyerTable;
@@ -32,8 +30,6 @@ public class GroceryListFragment extends SherlockListFragment {
     private String mQuery = "";
     
     private ProgressBar progressView;
-    private Menu menu;
-    private MenuItem refreshItem;
     private Integer categoryId = GroceryListCursorAdapter.GLOBAL_SEARCH_CATEGORY;
     
     private SparseArray<Float> mDistanceMap;

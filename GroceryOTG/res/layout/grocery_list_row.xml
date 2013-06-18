@@ -92,7 +92,8 @@
 					android:textStyle="normal"
 					android:singleLine="false"
 					android:textColor="#999999"
-					android:drawableLeft="@drawable/ic_menu_map" >
+					android:drawablePadding="6dip"
+					android:gravity="center_vertical" >
 				</TextView>
 	        </LinearLayout>
 	        

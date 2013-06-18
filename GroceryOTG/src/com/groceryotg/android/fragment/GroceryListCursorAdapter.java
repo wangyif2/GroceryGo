@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
@@ -31,7 +32,6 @@ import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.FlyerTable;
 import com.groceryotg.android.database.GroceryTable;
 import com.groceryotg.android.database.StoreParentTable;
-import com.groceryotg.android.database.StoreTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 import com.groceryotg.android.services.ServerURL;
 import com.groceryotg.android.settings.SettingsManager;
@@ -107,6 +107,11 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter implements Loa
     	} else {
     		distanceTextView.setText("No distance info available");
     	}
+    	
+    	// Replace the default map icon next to the distance text with the store parent's icon
+    	TextView storeParentTextView = (TextView) parentLayout.findViewById(R.id.grocery_row_store_parent_name);
+    	Drawable iconDrawable = mActivity.getResources().getDrawable((Integer) storeParentTextView.getTag());
+    	distanceTextView.setCompoundDrawablesWithIntrinsicBounds(iconDrawable, null, null, null);
         
     	// Now add listeners for the different buttons
         CheckBox cb_inshoplist = (CheckBox) topView.findViewById(R.id.grocery_row_in_shopcart);

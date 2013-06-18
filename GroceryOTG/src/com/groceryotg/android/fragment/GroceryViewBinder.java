@@ -3,7 +3,6 @@ package com.groceryotg.android.fragment;
 import android.database.Cursor;
 import android.support.v4.widget.SimpleCursorAdapter.ViewBinder;
 import android.util.Log;
-import android.util.SparseArray;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.SimpleCursorAdapter;

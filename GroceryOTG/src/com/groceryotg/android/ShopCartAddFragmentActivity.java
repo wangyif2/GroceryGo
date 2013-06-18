@@ -11,7 +11,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.groceryotg.android.utils.GroceryOTGUtils;
 
-public class ShopCartOverviewFragmentActivity extends SherlockFragmentActivity {
+public class ShopCartAddFragmentActivity extends SherlockFragmentActivity {
 	private DrawerLayout mDrawerLayout;
 	private ListView mDrawerList;
 	
@@ -19,9 +19,9 @@ public class ShopCartOverviewFragmentActivity extends SherlockFragmentActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        setContentView(R.layout.shopcart_activity);
+        setContentView(R.layout.shopcart_add_activity);
         
-        GroceryOTGUtils.NavigationDrawerBundle drawerBundle = GroceryOTGUtils.configNavigationDrawer(this, false, R.string.title_cart);
+        GroceryOTGUtils.NavigationDrawerBundle drawerBundle = GroceryOTGUtils.configNavigationDrawer(this, false, R.string.title_cart_detail);
         this.mDrawerLayout = drawerBundle.getDrawerLayout();
         this.mDrawerList = drawerBundle.getDrawerList();
     }
@@ -29,22 +29,19 @@ public class ShopCartOverviewFragmentActivity extends SherlockFragmentActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
     	MenuInflater inflater = getSupportMenuInflater();
-        inflater.inflate(R.menu.shopcart_activity_menu, menu);
+        inflater.inflate(R.menu.shopcart_add_activity_menu, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.cart_add:
-                createCartGroceryItem();
-                return true;
             case android.R.id.home:
             	if (mDrawerLayout.isDrawerOpen(mDrawerList))
             		mDrawerLayout.closeDrawer(mDrawerList);
             	else {
             		// Specify the parent activity
-                	Intent parentActivityIntent = new Intent(this, CategoryTopFragmentActivity.class);
+                	Intent parentActivityIntent = new Intent(this, ShopCartOverviewFragmentActivity.class);
                 	parentActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | 
                 								Intent.FLAG_ACTIVITY_NEW_TASK);
                 	startActivity(parentActivityIntent);
@@ -53,11 +50,6 @@ public class ShopCartOverviewFragmentActivity extends SherlockFragmentActivity {
             	return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-    
-    private void createCartGroceryItem() {
-        Intent i = new Intent(this, ShopCartAddFragmentActivity.class);
-        startActivity(i);
     }
 }
 

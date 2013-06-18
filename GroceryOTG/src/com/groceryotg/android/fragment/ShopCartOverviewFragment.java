@@ -20,7 +20,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import com.actionbarsherlock.app.SherlockListFragment;
 import com.groceryotg.android.R;
-import com.groceryotg.android.ShopCartDetailActivity;
+import com.groceryotg.android.ShopCartAddFragmentActivity;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 
@@ -81,7 +81,7 @@ public class ShopCartOverviewFragment extends SherlockListFragment implements Lo
     @Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        Intent i = new Intent(mContext, ShopCartDetailActivity.class);
+        Intent i = new Intent(mContext, ShopCartAddFragmentActivity.class);
         Uri cartGroceryItemUri = Uri.parse(GroceryotgProvider.CONTENT_URI_CART_ITEM + "/" + id);
         i.putExtra(GroceryotgProvider.CONTENT_ITEM_TYPE_CART_ITEM, cartGroceryItemUri);
 

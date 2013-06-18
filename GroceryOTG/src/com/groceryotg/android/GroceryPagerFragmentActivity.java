@@ -73,10 +73,6 @@ public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
 
     private void handleIntent(Intent intent) {
         Bundle extras = intent.getExtras();
-        if (extras != null) {
-        	int position = extras.getInt(GroceryPagerFragmentActivity.EXTRA_LAUNCH_PAGE);
-        	mPager.setCurrentItem(position);
-        }
         
 		if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
 			// Gets the search query from the voice recognizer intent
@@ -94,7 +90,10 @@ public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
 			GroceryOTGUtils.copyIntentData(intent, globalSearchIntent);
 			globalSearchIntent.putExtra(GlobalSearchFragmentActivity.GLOBAL_SEARCH, true);
 			startActivity(globalSearchIntent);
-		}
+		} else if (extras != null) {
+        	int position = extras.getInt(GroceryPagerFragmentActivity.EXTRA_LAUNCH_PAGE);
+        	mPager.setCurrentItem(position);
+        }
     }
 
     @Override

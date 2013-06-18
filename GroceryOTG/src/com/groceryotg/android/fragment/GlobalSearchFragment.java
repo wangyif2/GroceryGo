@@ -1,6 +1,7 @@
 package com.groceryotg.android.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,12 +13,12 @@ import com.actionbarsherlock.app.SherlockListFragment;
 import com.groceryotg.android.R;
 
 public class GlobalSearchFragment extends SherlockListFragment {
-    private Activity mActivity;
+    private Context mContext;
     
     @Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
-		this.mActivity = activity;
+		this.mContext = activity;
 	}
     
 	@Override
@@ -32,10 +33,10 @@ public class GlobalSearchFragment extends SherlockListFragment {
     }
 
 	public void setQuery(String query) {
-    	TextView searchTitle = (TextView) mActivity.findViewById(R.id.search_title);
+    	TextView searchTitle = (TextView) ((Activity) mContext).findViewById(R.id.search_title);
     	searchTitle.setText("\"" + query + "\"");
     	
-    	GroceryListFragment frag = (GroceryListFragment) ((SherlockFragmentActivity) mActivity).getSupportFragmentManager().findFragmentById(R.id.search_fragment_list_fragment);
+    	GroceryListFragment frag = (GroceryListFragment) ((SherlockFragmentActivity) mContext).getSupportFragmentManager().findFragmentById(R.id.search_fragment_list_fragment);
     	frag.loadDataWithQuery(false, query);
     }
 }

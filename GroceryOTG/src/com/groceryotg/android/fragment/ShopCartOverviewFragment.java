@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -28,12 +29,12 @@ public class ShopCartOverviewFragment extends SherlockListFragment implements Lo
 	private static final int DELETE_ID = 1;
     private ShopCartCursorAdapter adapter;
 
-    private Activity mActivity;
+    private Context mContext;
     
     @Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
-		this.mActivity = activity;
+		this.mContext = activity;
 		this.setHasOptionsMenu(true);
 	}
     
@@ -70,7 +71,7 @@ public class ShopCartOverviewFragment extends SherlockListFragment implements Lo
             case DELETE_ID:
                 AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
                 Uri uri = Uri.parse(GroceryotgProvider.CONTENT_URI_CART_ITEM + "/" + info.id);
-                mActivity.getContentResolver().delete(uri, null, null);
+                mContext.getContentResolver().delete(uri, null, null);
                 fillData();
                 return true;
         }
@@ -80,7 +81,7 @@ public class ShopCartOverviewFragment extends SherlockListFragment implements Lo
     @Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        Intent i = new Intent(mActivity, ShopCartDetailActivity.class);
+        Intent i = new Intent(mContext, ShopCartDetailActivity.class);
         Uri cartGroceryItemUri = Uri.parse(GroceryotgProvider.CONTENT_URI_CART_ITEM + "/" + id);
         i.putExtra(GroceryotgProvider.CONTENT_ITEM_TYPE_CART_ITEM, cartGroceryItemUri);
 
@@ -98,7 +99,7 @@ public class ShopCartOverviewFragment extends SherlockListFragment implements Lo
         					 R.id.cart_row_in_shopcart};
 
         getLoaderManager().initLoader(0, null, this);
-        adapter = new ShopCartCursorAdapter(mActivity, R.layout.shopcart_fragment_list_row, null, from, to);
+        adapter = new ShopCartCursorAdapter(mContext, R.layout.shopcart_fragment_list_row, null, from, to);
         adapter.setViewBinder(new ShopCartViewBinder());
         setListAdapter(adapter);
     }
@@ -118,7 +119,7 @@ public class ShopCartOverviewFragment extends SherlockListFragment implements Lo
         
         String sortOrder = CartTable.TABLE_CART + "." + CartTable.COLUMN_CART_GROCERY_NAME;
         
-        return new CursorLoader(mActivity, GroceryotgProvider.CONTENT_URI_CART_ITEM, projection, selection, selectionArgsArr, sortOrder);
+        return new CursorLoader(mContext, GroceryotgProvider.CONTENT_URI_CART_ITEM, projection, selection, selectionArgsArr, sortOrder);
     }
 
     @Override

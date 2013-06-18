@@ -1,6 +1,7 @@
 package com.groceryotg.android.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
@@ -19,7 +20,7 @@ import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 import com.groceryotg.android.utils.GroceryOTGUtils;
 
 public class CategoryTopFragment extends SherlockFragment implements LoaderManager.LoaderCallbacks<Cursor> {
-	private Activity mActivity;
+	private Context mContext;
 	private GridView gridview;
     private SimpleCursorAdapter mAdapter;
 
@@ -28,7 +29,7 @@ public class CategoryTopFragment extends SherlockFragment implements LoaderManag
     @Override
     public void onAttach(Activity activity) {
     	super.onAttach(activity);
-    	this.mActivity = activity;
+    	this.mContext = activity;
     }
 
     @Override
@@ -43,7 +44,7 @@ public class CategoryTopFragment extends SherlockFragment implements LoaderManag
         gridview = (GridView) v.findViewById(R.id.gridview);
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-            	GroceryOTGUtils.launchGroceryPagerActivity(mActivity, position);
+            	GroceryOTGUtils.launchGroceryPagerActivity(mContext, position);
             }
         });
         gridview.setEmptyView(v.findViewById(R.id.empty_category_list));

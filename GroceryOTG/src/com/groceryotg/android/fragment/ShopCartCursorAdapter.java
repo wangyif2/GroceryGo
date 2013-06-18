@@ -1,6 +1,5 @@
 package com.groceryotg.android.fragment;
 
-import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -18,15 +17,13 @@ import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 
 public class ShopCartCursorAdapter extends SimpleCursorAdapter {
-	Context context;
-    Activity activity;
+	private Context mContext;
     
     @SuppressWarnings("deprecation")
 	public ShopCartCursorAdapter(Context context, int layout, Cursor c,
             String[] from, int[] to) {
         super(context, layout, c, from, to);
-        this.context=context;
-        this.activity=(Activity) context;
+        this.mContext=context;
     }
 
     @Override
@@ -53,11 +50,11 @@ public class ShopCartCursorAdapter extends SimpleCursorAdapter {
             	
             	if (isChecked) {
             		shopListFlag = CartTable.FLAG_TRUE;
-            		displayMessage = context.getResources().getString(R.string.cart_shoplist_added);
+            		displayMessage = mContext.getResources().getString(R.string.cart_shoplist_added);
             	}
             	else {
             		shopListFlag = CartTable.FLAG_FALSE;
-            		displayMessage = context.getResources().getString(R.string.cart_shoplist_removed);
+            		displayMessage = mContext.getResources().getString(R.string.cart_shoplist_removed);
             	}
             	
             	ContentValues values = new ContentValues();
@@ -71,15 +68,15 @@ public class ShopCartCursorAdapter extends SimpleCursorAdapter {
                 if (!isChecked) {
                 	String whereClause = CartTable.TABLE_CART + "." + CartTable.COLUMN_ID + "=?";
                 	String[] selectionArgs = { tv_id.getText().toString() };
-                	activity.getContentResolver().delete(GroceryotgProvider.CONTENT_URI_CART_ITEM, whereClause, selectionArgs);
+                	mContext.getContentResolver().delete(GroceryotgProvider.CONTENT_URI_CART_ITEM, whereClause, selectionArgs);
                 }
                 else {
                 	String whereClause = CartTable.TABLE_CART + "." + CartTable.COLUMN_ID + "=?";
                 	String[] selectionArgs = { tv_id.getText().toString() };
-                	activity.getContentResolver().update(GroceryotgProvider.CONTENT_URI_CART_ITEM, values, whereClause, selectionArgs);
+                	mContext.getContentResolver().update(GroceryotgProvider.CONTENT_URI_CART_ITEM, values, whereClause, selectionArgs);
                 }
                 
-                Toast t = Toast.makeText(activity, displayMessage, Toast.LENGTH_SHORT);
+                Toast t = Toast.makeText(mContext, displayMessage, Toast.LENGTH_SHORT);
                 t.show();
 				
 			}

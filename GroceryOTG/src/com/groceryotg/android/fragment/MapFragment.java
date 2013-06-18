@@ -22,7 +22,7 @@ import java.util.Locale;
 import java.util.Map;
 
 public class MapFragment extends SupportMapFragment {
-    Activity mActivity;
+    private Context mContext;
     
     private GoogleMap mMap = null;
     private Map<String, Integer> mIconMap = new HashMap<String, Integer>();
@@ -34,14 +34,14 @@ public class MapFragment extends SupportMapFragment {
     @Override
     public void onAttach(Activity activity) {
     	super.onAttach(activity);
-    	this.mActivity = activity;
+    	this.mContext = activity;
     }
     
     @Override
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        Bundle args = mActivity.getIntent().getExtras();
+        Bundle args = ((Activity) mContext).getIntent().getExtras();
         if (args != null) {
 	        this.filterStoreParents = args.getIntegerArrayList(MapFragmentActivity.EXTRA_FILTER_STORE_PARENT);
 	        this.filterStores = args.getIntegerArrayList(MapFragmentActivity.EXTRA_FILTER_STORE);
@@ -52,9 +52,9 @@ public class MapFragment extends SupportMapFragment {
     public void onActivityCreated (Bundle savedInstanceState) {
     	super.onActivityCreated(savedInstanceState);
     	
-	    buildIconMap(mActivity);
-	    Location lastKnownLocation = GroceryOTGUtils.getLastKnownLocation(mActivity);
-	    Cursor storeLocations = GroceryOTGUtils.getFilteredStores(mActivity).loadInBackground();
+	    buildIconMap(mContext);
+	    Location lastKnownLocation = GroceryOTGUtils.getLastKnownLocation(mContext);
+	    Cursor storeLocations = GroceryOTGUtils.getFilteredStores(mContext).loadInBackground();
 	    
 	    mMap = this.getMap();
 	    if (mMap != null) {
@@ -62,12 +62,12 @@ public class MapFragment extends SupportMapFragment {
 	
 	        if (lastKnownLocation != null) {
 	            // add a marker at the current location
-	            buildUserMarker(mActivity, mMap, getString(R.string.map_usermarker), lastKnownLocation);
+	            buildUserMarker(mContext, mMap, getString(R.string.map_usermarker), lastKnownLocation);
 	            // move the camera to the current location
 	            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()), MapFragmentActivity.CAM_ZOOM));
 	        }
 	
-	        buildStoreMarkers(mActivity, storeLocations, mMap);
+	        buildStoreMarkers(mContext, storeLocations, mMap);
 	    }
     }
     
@@ -76,7 +76,7 @@ public class MapFragment extends SupportMapFragment {
     	parents.moveToFirst();
     	while (!parents.isAfterLast()) {
     		String name = parents.getString(parents.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_NAME));
-    		int markerImageID = context.getResources().getIdentifier("ic_mapmarker_" + name.toLowerCase(Locale.CANADA).replace(" ", ""), "drawable", mActivity.getPackageName());
+    		int markerImageID = context.getResources().getIdentifier("ic_mapmarker_" + name.toLowerCase(Locale.CANADA).replace(" ", ""), "drawable", mContext.getPackageName());
     		if (markerImageID != 0) {
     			mIconMap.put(name, markerImageID);
     		}

@@ -11,6 +11,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.util.SparseArray;
 import android.util.SparseBooleanArray;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -30,10 +31,12 @@ import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.FlyerTable;
 import com.groceryotg.android.database.GroceryTable;
 import com.groceryotg.android.database.StoreParentTable;
+import com.groceryotg.android.database.StoreTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 import com.groceryotg.android.services.ServerURL;
 import com.groceryotg.android.settings.SettingsManager;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,7 +56,9 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter implements Loa
 	private ProgressBar progressView;
 	private Integer categoryId;
 	
-    public GroceryListCursorAdapter(Context context, int layout, Cursor c, String[] from, int[] to, int categoryId, View view, ListView listView, String query, LoaderManager loaderManager) {
+	private SparseArray<Float> mDistanceMap;
+	
+    public GroceryListCursorAdapter(Context context, int layout, Cursor c, String[] from, int[] to, int categoryId, View view, ListView listView, String query, LoaderManager loaderManager, SparseArray<Float> distanceMap) {
         super(context, layout, c, from, to, 0);
         
         this.mLoaderManager = loaderManager;
@@ -67,12 +72,43 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter implements Loa
         this.emptyTextView = (TextView) view.findViewById(R.id.empty_grocery_list);
         this.progressView = (ProgressBar) view.findViewById(R.id.refresh_progress);
         this.mQuery = query;
+        
+        this.mDistanceMap = distanceMap;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent){
         final View topView = super.getView(position, convertView, parent);
         
+        // Add text to the distance text view
+        LinearLayout parentLayout = (LinearLayout) topView.findViewById(R.id.grocery_list_row_layout);
+		TextView distanceTextView = (TextView) parentLayout.findViewById(R.id.grocery_row_distance);
+    	final float BIG_FLOAT = (float) 1000000.0;
+    	Float oldDist = Float.valueOf(BIG_FLOAT), newDist;
+    	
+    	TextView storesTextView = (TextView) parentLayout.findViewById(R.id.grocery_row_store_id);
+		String list = storesTextView.getText().toString();
+		if (!list.equals("")) {
+			for (String s : list.split(",")) {
+				newDist = this.mDistanceMap.get(Integer.parseInt(s));
+    			if (newDist != null) {
+    				if (newDist < oldDist) {
+    					oldDist = newDist;
+    				}
+    			}
+			}
+		}
+    	
+    	if (oldDist != BIG_FLOAT) {
+    		// Truncate to a single decimal place
+    		DecimalFormat oneD = new DecimalFormat("#.#");
+    		Float truc = Float.valueOf(oneD.format((float) (oldDist/1000.0)));
+    		distanceTextView.setText(truc.toString() + "km");
+    	} else {
+    		distanceTextView.setText("No distance info available");
+    	}
+        
+    	// Now add listeners for the different buttons
         CheckBox cb_inshoplist = (CheckBox) topView.findViewById(R.id.grocery_row_in_shopcart);
         cb_inshoplist.setOnClickListener(new OnClickListener() {
 			@Override
@@ -138,7 +174,8 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter implements Loa
 			@Override
 			public void onClick(View v) {
 				// Go to the map view, filtering by the stores that contain this item
-				TextView text = (TextView) ((LinearLayout) v.getParent().getParent().getParent()).findViewById(R.id.grocery_row_store_id);
+				LinearLayout parentLayout = (LinearLayout) topView.findViewById(R.id.grocery_list_row_layout);
+				TextView text = (TextView) parentLayout.findViewById(R.id.grocery_row_store_id);
 				ArrayList<Integer> ids = new ArrayList<Integer>();
 				String list = text.getText().toString();
 				if (!list.equals("")) {
@@ -161,9 +198,10 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter implements Loa
 			@Override
 			public void onClick(View v) {
 				// Share
-				TextView label = (TextView) ((LinearLayout) v.getParent().getParent().getParent()).findViewById(R.id.grocery_row_label);
-				TextView price = (TextView) ((LinearLayout) v.getParent().getParent().getParent()).findViewById(R.id.grocery_row_price);
-				TextView storeParent = (TextView) ((LinearLayout) v.getParent().getParent().getParent()).findViewById(R.id.grocery_row_store);
+				LinearLayout parentLayout = (LinearLayout) topView.findViewById(R.id.grocery_list_row_layout);
+				TextView label = (TextView) parentLayout.findViewById(R.id.grocery_row_label);
+				TextView price = (TextView) parentLayout.findViewById(R.id.grocery_row_price);
+				TextView storeParent = (TextView) parentLayout.findViewById(R.id.grocery_row_store_parent_name);
 				
 				Intent shareIntent = new Intent();
 				shareIntent.setAction(Intent.ACTION_SEND);
@@ -185,7 +223,8 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter implements Loa
         	@Override
         	public void onClick(View v) {
         		// view flyers
-				TextView text = (TextView) ((LinearLayout) v.getParent().getParent().getParent()).findViewById(R.id.grocery_row_flyer_url);
+        		LinearLayout parentLayout = (LinearLayout) topView.findViewById(R.id.grocery_list_row_layout);
+				TextView text = (TextView) parentLayout.findViewById(R.id.grocery_row_flyer_url);
 				String url = text.getText().toString();
 				
 				Uri uri = Uri.parse(url);
@@ -302,7 +341,7 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter implements Loa
         	}
         }
         
-        // Now in the event we are searching, set the number of founc items
+        // Now in the event we are searching, set the number of found items
     	Integer cnt = this.getCount();
     	TextView numResults = (TextView) mActivity.findViewById(R.id.search_num_results);
     	if (numResults != null) {

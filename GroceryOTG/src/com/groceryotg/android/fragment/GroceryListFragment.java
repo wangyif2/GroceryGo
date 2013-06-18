@@ -18,6 +18,7 @@ import com.groceryotg.android.*;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.FlyerTable;
 import com.groceryotg.android.database.GroceryTable;
+import com.groceryotg.android.database.StoreParentTable;
 import com.groceryotg.android.database.StoreTable;
 import com.groceryotg.android.settings.SettingsManager;
 import com.groceryotg.android.utils.GroceryOTGUtils;
@@ -96,7 +97,7 @@ public class GroceryListFragment extends SherlockListFragment {
                 GroceryTable.COLUMN_GROCERY_NAME,
                 GroceryTable.COLUMN_GROCERY_NAME,
                 GroceryTable.COLUMN_GROCERY_PRICE,
-                FlyerTable.COLUMN_FLYER_ID,
+                StoreParentTable.COLUMN_STORE_PARENT_NAME,
                 FlyerTable.COLUMN_FLYER_ID,
                 FlyerTable.COLUMN_FLYER_URL,
                 CartTable.COLUMN_CART_FLAG_SHOPLIST};
@@ -104,7 +105,7 @@ public class GroceryListFragment extends SherlockListFragment {
                 R.id.grocery_row_label,
                 R.id.grocery_row_details,
                 R.id.grocery_row_price,
-                R.id.grocery_row_store,
+                R.id.grocery_row_store_parent_name,
                 R.id.grocery_row_store_id,
                 R.id.grocery_row_flyer_url,
                 R.id.grocery_row_in_shopcart};
@@ -121,8 +122,8 @@ public class GroceryListFragment extends SherlockListFragment {
         int layoutId = R.layout.grocery_fragment_list_row;
         // Uncomment this to use alternate layout
         //layoutId = R.layout.grocery_fragment_list_row_alt;
-        adapter = new GroceryListCursorAdapter(getActivity(), layoutId, null, from, to, this.categoryId, this.getView(), this.getListView(), mQuery, getLoaderManager());
-        adapter.setViewBinder(new GroceryViewBinder(this.mDistanceMap));
+        adapter = new GroceryListCursorAdapter(getActivity(), layoutId, null, from, to, this.categoryId, this.getView(), this.getListView(), mQuery, getLoaderManager(), this.mDistanceMap);
+        adapter.setViewBinder(new GroceryViewBinder());
         
         SlideExpandableListAdapter wrappedAdapter = new SlideExpandableListAdapter(adapter, R.id.expandable_toggle_button, R.id.expandable);
         // Make a VERY short animation duration

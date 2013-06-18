@@ -8,6 +8,15 @@
         android:minSdkVersion="10"
         android:targetSdkVersion="17"/>
 
+	<!-- We have to explicitly declare we support larger screen sizes -->
+	<!-- We don't really care or want to support small screens, since those are generally run Donut or lower -->
+	<supports-screens
+		android:smallScreens="false"
+		android:normalScreens="true"
+		android:largeScreens="true"
+		android:xlargeScreens="true" >
+	</supports-screens>
+
     <permission
         android:name="com.groceryotg.android.GroceryMapView.permission.MAPS_RECEIVE"
         android:protectionLevel="signature"/>

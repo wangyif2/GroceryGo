@@ -7,17 +7,35 @@
 
 	 <EditText
 		android:id="@+id/cart_grocery_edit_name"
-		android:layout_width="fill_parent"
-		android:layout_height="0dip"
-		android:layout_weight="1"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:paddingTop="30dp"
+		android:paddingBottom="30dp"
 		android:inputType="textAutoCorrect"
-		android:hint="@string/cart_grocery_edit_name" >
+		android:hint="@string/cart_grocery_edit_name"
+		android:imeOptions="actionGo" >
 	</EditText>
 	
-	<Button
-		android:id="@+id/cart_confirm_button"
-		android:layout_width="wrap_content"
+	<LinearLayout
+		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:text="@string/cart_confirm_button" >
-	</Button>
+		android:orientation="horizontal" >
+		
+		<Button
+			android:id="@+id/negative_button"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="@string/cart_add_negative_button" >
+		</Button>
+		
+		<Button
+			android:id="@+id/positive_button"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="@string/cart_add_positive_button" >
+		</Button>
+	</LinearLayout>
+	
 </LinearLayout>

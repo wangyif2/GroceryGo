@@ -20,7 +20,7 @@
         android:id="@+id/cart_confirm_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/cart_confirm_button">
+        android:text="@string/cart_add_positive_button">
     </Button>
 
 </LinearLayout>

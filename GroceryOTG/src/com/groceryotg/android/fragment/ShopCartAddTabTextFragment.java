@@ -3,15 +3,17 @@ package com.groceryotg.android.fragment;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.groceryotg.android.R;
@@ -21,9 +23,7 @@ import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 public class ShopCartAddTabTextFragment extends SherlockFragment {
 	private Context mContext;
 	
-    private EditText mCartGroceryName;
-
-    private Uri cartGroceryItemUri;
+    private EditText mEditText;
 
     @Override
     public void onAttach(Activity activity) {
@@ -40,63 +40,67 @@ public class ShopCartAddTabTextFragment extends SherlockFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     	View v = inflater.inflate(R.layout.shopcart_add_tab_text, container, false);
     	
-        mCartGroceryName = (EditText) v.findViewById(R.id.cart_grocery_edit_name);
-        Button confirmButton = (Button) v.findViewById(R.id.cart_confirm_button);
+    	mEditText = (EditText) v.findViewById(R.id.cart_grocery_edit_name);
+    	mEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+			@Override
+			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+				if (actionId == EditorInfo.IME_ACTION_GO) {
+					addItem();
+					return true;
+				}
+				return false;
+			}
+		});
 
-        Bundle extras = ((Activity) mContext).getIntent().getExtras();
-
-        cartGroceryItemUri = (savedInstanceState == null) ? null : (Uri) savedInstanceState.getParcelable(GroceryotgProvider.CONTENT_ITEM_TYPE_CART_ITEM);
-
-        if (extras != null) {
-            cartGroceryItemUri = extras.getParcelable(GroceryotgProvider.CONTENT_ITEM_TYPE_CART_ITEM);
-            fillData(cartGroceryItemUri);
-        }
-
+        Button confirmButton = (Button) v.findViewById(R.id.positive_button);
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (TextUtils.isEmpty(mCartGroceryName.getText().toString())) {
-                    makeToast();
-                } else {
-                    //setResult(Activity.RESULT_OK);
-                    saveState();
-                    ((Activity) mContext).finish();
-                }
+            	addItem();
+            }
+        });
+        
+        Button clearButton = (Button) v.findViewById(R.id.negative_button);
+        clearButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            	clearFocus();
             }
         });
         
         return v;
     }
-    
-    private void fillData(Uri cartGroceryItemUri) {
-        String[] projection = {CartTable.COLUMN_CART_GROCERY_NAME};
-        Cursor cursor = mContext.getContentResolver().query(cartGroceryItemUri, projection, null, null, null);
 
-        if (cursor != null) {
-            cursor.moveToFirst();
-            mCartGroceryName.setText(cursor.getString(cursor.getColumnIndexOrThrow(CartTable.COLUMN_CART_GROCERY_NAME)));
-            cursor.close();
-        }
-    }
-
-    private void makeToast() {
-        Toast.makeText(mContext, "Please enter a name", Toast.LENGTH_LONG).show();
+    private void makeToast(String text) {
+        Toast.makeText(mContext, text, Toast.LENGTH_LONG).show();
     }
     
-    private void saveState() {
-        String name = mCartGroceryName.getText().toString();
-
-        if (!name.isEmpty()) {
-            ContentValues values = new ContentValues();
-            values.put(CartTable.COLUMN_CART_GROCERY_NAME, name);
-            values.put(CartTable.COLUMN_CART_FLAG_SHOPLIST, CartTable.FLAG_TRUE);
-            values.put(CartTable.COLUMN_CART_FLAG_WATCHLIST, CartTable.FLAG_FALSE);
-
-            if (cartGroceryItemUri == null) {
-                cartGroceryItemUri = mContext.getContentResolver().insert(GroceryotgProvider.CONTENT_URI_CART_ITEM, values);
-            } else {
-            	mContext.getContentResolver().update(cartGroceryItemUri, values, null, null);
-            }
+    private void clearFocus() {
+    	// close the soft keyboard
+    	InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+		imm.hideSoftInputFromWindow(mEditText.getWindowToken(), 0);
+		// clear the next in the edit box
+    	mEditText.setText("");
+        mEditText.clearFocus();
+    }
+    
+    private void addItem() {
+        String name = mEditText.getText().toString();
+        
+        clearFocus();
+        
+        if (TextUtils.isEmpty(name)) {
+            makeToast("Please enter a name");
+            return;
         }
+        
+        makeToast(getString(R.string.cart_shoplist_added));
+
+        ContentValues values = new ContentValues();
+        values.put(CartTable.COLUMN_CART_GROCERY_NAME, name);
+        values.put(CartTable.COLUMN_CART_FLAG_SHOPLIST, CartTable.FLAG_TRUE);
+        values.put(CartTable.COLUMN_CART_FLAG_WATCHLIST, CartTable.FLAG_FALSE);
+
+        mContext.getContentResolver().insert(GroceryotgProvider.CONTENT_URI_CART_ITEM, values);
     }
 }

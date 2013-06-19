@@ -1,9 +1,11 @@
 package com.groceryotg.android;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ListView;
 
 import com.actionbarsherlock.app.ActionBar;
@@ -70,6 +72,9 @@ public class ShopCartAddFragmentActivity extends SherlockFragmentActivity implem
 	@Override
 	public void onTabSelected(Tab tab, FragmentTransaction ft) {
 		String title = (String) tab.getText();
+		
+		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+		imm.hideSoftInputFromWindow(findViewById(R.id.content).getWindowToken(), 0);
 		
 		if (title == getString(R.string.title_cart_add_tab_text)) {
 			ft.replace(R.id.content, new ShopCartAddTabTextFragment());

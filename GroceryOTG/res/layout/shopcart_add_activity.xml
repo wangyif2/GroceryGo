@@ -6,18 +6,6 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent" >
 
-	<LinearLayout
-		android:orientation="vertical"
-		android:layout_width="match_parent"
-		android:layout_height="match_parent">
-	              
-		<fragment
-			android:name="com.groceryotg.android.fragment.ShopCartAddFragment"
-			android:id="@+id/shopcart_add_activity_fragment"
-			android:layout_width="match_parent"
-			android:layout_height="match_parent" />
-	</LinearLayout>
-
 	<ListView
 		android:id="@+id/navigation_drawer_view"
 		android:layout_width="240dp"

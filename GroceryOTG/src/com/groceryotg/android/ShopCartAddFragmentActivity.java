@@ -2,16 +2,21 @@ package com.groceryotg.android;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.ListView;
 
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.ActionBar.Tab;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+
+import com.groceryotg.android.fragment.ShopCartAddTabTextFragment;
 import com.groceryotg.android.utils.GroceryOTGUtils;
 
-public class ShopCartAddFragmentActivity extends SherlockFragmentActivity {
+public class ShopCartAddFragmentActivity extends SherlockFragmentActivity implements ActionBar.TabListener {
 	private DrawerLayout mDrawerLayout;
 	private ListView mDrawerList;
 	
@@ -24,6 +29,16 @@ public class ShopCartAddFragmentActivity extends SherlockFragmentActivity {
         GroceryOTGUtils.NavigationDrawerBundle drawerBundle = GroceryOTGUtils.configNavigationDrawer(this, false, R.string.title_cart_detail);
         this.mDrawerLayout = drawerBundle.getDrawerLayout();
         this.mDrawerList = drawerBundle.getDrawerList();
+        
+		// set up action bar tabs
+		ActionBar actionBar = getSupportActionBar();
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+		
+		actionBar.addTab(actionBar.newTab().setText(R.string.title_cart_add_tab_text).setTabListener(this));
+		actionBar.addTab(actionBar.newTab().setText(R.string.title_cart_add_tab_voice).setTabListener(this));
+		actionBar.addTab(actionBar.newTab().setText(R.string.title_cart_add_tab_code).setTabListener(this));
+		
+		//actionBar.selectTab(textTab);
     }
     
     @Override
@@ -51,5 +66,26 @@ public class ShopCartAddFragmentActivity extends SherlockFragmentActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+	@Override
+	public void onTabSelected(Tab tab, FragmentTransaction ft) {
+		String title = (String) tab.getText();
+		
+		if (title == getString(R.string.title_cart_add_tab_text)) {
+			ft.replace(android.R.id.content, new ShopCartAddTabTextFragment());
+		} else if (title == getString(R.string.title_cart_add_tab_voice)) {
+			ft.replace(android.R.id.content, new ShopCartAddTabTextFragment());
+		} else if (title == getString(R.string.title_cart_add_tab_code)) {
+			ft.replace(android.R.id.content, new ShopCartAddTabTextFragment());
+		}
+	}
+
+	@Override
+	public void onTabUnselected(Tab tab, FragmentTransaction ft) {
+	}
+
+	@Override
+	public void onTabReselected(Tab tab, FragmentTransaction ft) {
+	}
 }
 

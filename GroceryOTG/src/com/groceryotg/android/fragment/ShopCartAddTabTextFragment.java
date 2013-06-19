@@ -18,7 +18,7 @@ import com.groceryotg.android.R;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 
-public class ShopCartAddFragment extends SherlockFragment {
+public class ShopCartAddTabTextFragment extends SherlockFragment {
 	private Context mContext;
 	
     private EditText mCartGroceryName;
@@ -38,7 +38,7 @@ public class ShopCartAddFragment extends SherlockFragment {
     
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    	View v = inflater.inflate(R.layout.shopcart_add_fragment, container, false);
+    	View v = inflater.inflate(R.layout.shopcart_add_tab_text, container, false);
     	
         mCartGroceryName = (EditText) v.findViewById(R.id.cart_grocery_edit_name);
         Button confirmButton = (Button) v.findViewById(R.id.cart_confirm_button);

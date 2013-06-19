@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <array name="icons_arr">
-        <item>@drawable/icon_dairy</item>
-        <item>@drawable/icon_meat</item>
-        <item>@drawable/icon_fruit</item>
-        <item>@drawable/icon_seafood</item>
-        <item>@drawable/icon_bread</item>
-        <item>@drawable/icon_drinks</item>
-        <item>@drawable/icon_misc</item>
-    </array>
+	<array name="icons_arr">
+		<item>@drawable/icon_dairy</item>
+		<item>@drawable/icon_meat</item>
+		<item>@drawable/icon_fruit</item>
+		<item>@drawable/icon_seafood</item>
+		<item>@drawable/icon_bread</item>
+		<item>@drawable/icon_drinks</item>
+		<item>@drawable/icon_misc</item>
+	</array>
 </resources>

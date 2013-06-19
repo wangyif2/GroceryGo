@@ -1,70 +1,70 @@
 <resources>
-    <string name="app_name">Grocery OTG</string>
-    <string name="version_name">1.0.0</string>
-    
-    <string name="no_content">Currently no content, please refresh</string>
-    <string name="no_new_content">There is no new available data. Last checked: %1$s</string>
-    <string name="no_search_results">No results match your search criteria</string>
-    <string name="search_results">Results</string>
-    <string name="search_results_num">0</string>
-    <string name="fresh_action">Refreshing…</string>
-    <string name="no_cart_item">Your shopping cart is currently empty</string>
-    <string name="cart_grocery_edit_name">Grocery item name</string>
-    <string name="cart_add_positive_button">Add item</string>
-    <string name="cart_add_negative_button">Clear</string>
-    <string name="cart_item_delete">Delete this item</string>
-    <string name="cart_shoplist_add">Add new item to shopping cart</string>
-    <string name="cart_shoplist_added">Item added to shopping cart</string>
-    <string name="cart_shoplist_removed">Item removed from shopping cart</string>
-    
-    <string name="navdrawer_heading_places">PLACES</string>
-    <string name="navdrawer_item_cat">Home</string>
-    <string name="navdrawer_item_cart">Shopping Cart</string>
-    <string name="navdrawer_item_map">Map</string>
-    <string name="navdrawer_heading_tools">TOOLS</string>
-    <string name="navdrawer_item_settings">Settings</string>
-    <string name="navdrawer_item_about">About</string>
-    <string name="navdrawer_item_changelog">Changelog</string>
-    
-    <string name="navdrawer_item_sync">Sync</string>
-    
-    <string name="navdrawer_open">Open</string>
-    <string name="navdrawer_closed">Closed</string>
-    
-    <string name="title_main">Home</string>
-    <string name="title_grocery_pager">Sales</string>
-    <string name="title_search">Search</string>
-    <string name="title_map">Map</string>
-    <string name="title_settings">Settings</string>
-    <string name="title_cart">Shopping Cart</string>
-    <string name="title_cart_detail">Add Item</string>
-    <string name="title_cart_add_tab_text">MANUAL</string>
-    <string name="title_cart_add_tab_voice">VOICE</string>
-    <string name="title_cart_add_tab_code">UPC</string>
-    
-    <string name="groceryoverview_menu_item_search">Search</string>
-    <string name="groceryoverview_menu_item_select">Select Mode</string>
-    <string name="groceryoverview_menu_item_refresh">Refresh</string>
-    
-    <string name="groceryoverview_row_imagedesc">Subcategory</string>
-    
-    <string name="search_hint">Search</string>
+	<string name="app_name">Grocery OTG</string>
+	<string name="version_name">1.0.0</string>
+	
+	<string name="no_content">Currently no content, please refresh</string>
+	<string name="no_new_content">There is no new available data. Last checked: %1$s</string>
+	<string name="no_search_results">No results match your search criteria</string>
+	<string name="search_results">Results</string>
+	<string name="search_results_num">0</string>
+	<string name="fresh_action">Refreshing…</string>
+	<string name="no_cart_item">Your shopping cart is currently empty</string>
+	<string name="cart_grocery_edit_name">Grocery item name</string>
+	<string name="cart_add_positive_button">Add item</string>
+	<string name="cart_add_negative_button">Clear</string>
+	<string name="cart_item_delete">Delete this item</string>
+	<string name="cart_shoplist_add">Add new item to shopping cart</string>
+	<string name="cart_shoplist_added">Item added to shopping cart</string>
+	<string name="cart_shoplist_removed">Item removed from shopping cart</string>
+	
+	<string name="navdrawer_heading_places">PLACES</string>
+	<string name="navdrawer_item_cat">Home</string>
+	<string name="navdrawer_item_cart">Shopping Cart</string>
+	<string name="navdrawer_item_map">Map</string>
+	<string name="navdrawer_heading_tools">TOOLS</string>
+	<string name="navdrawer_item_settings">Settings</string>
+	<string name="navdrawer_item_about">About</string>
+	<string name="navdrawer_item_changelog">Changelog</string>
+	
+	<string name="navdrawer_item_sync">Sync</string>
+	
+	<string name="navdrawer_open">Open</string>
+	<string name="navdrawer_closed">Closed</string>
+	
+	<string name="title_main">Home</string>
+	<string name="title_grocery_pager">Sales</string>
+	<string name="title_search">Search</string>
+	<string name="title_map">Map</string>
+	<string name="title_settings">Settings</string>
+	<string name="title_cart">Shopping Cart</string>
+	<string name="title_cart_detail">Add Item</string>
+	<string name="title_cart_add_tab_text">MANUAL</string>
+	<string name="title_cart_add_tab_voice">VOICE</string>
+	<string name="title_cart_add_tab_code">UPC</string>
+	
+	<string name="groceryoverview_menu_item_search">Search</string>
+	<string name="groceryoverview_menu_item_select">Select Mode</string>
+	<string name="groceryoverview_menu_item_refresh">Refresh</string>
+	
+	<string name="groceryoverview_row_imagedesc">Subcategory</string>
+	
+	<string name="search_hint">Search</string>
 
-    <string name="map_usermarker">You are here</string>
-    <string name="setting_store_title">Select stores</string>
-    <string name="setting_store_summary">Filter by your favourite stores</string>
-    <string name="setting_notification_enable_title">Enable notifications</string>
-    <string name="setting_notification_enable_summary">Turn location-based notifications on or off</string>
-    <string name="setting_notification_freq_title">Frequency</string>
-    <string name="setting_notification_freq_summary">Set notification interval</string>
-    
-    <string name="legacy_store_filter_ids">1|2|3|4|5</string>
-    
-    <string name="no_price_available">N/A</string>
-    
-    <string name="about_text">Send feedback to grocery.otg+support@gmail.com"</string>
-    <string name="about_title">GroceryOTG</string>
-    <string name="expanded_row_map">Map</string>
-    <string name="expanded_row_share">Share</string>
-    <string name="expanded_row_flyerview">View in flyer</string>
+	<string name="map_usermarker">You are here</string>
+	<string name="setting_store_title">Select stores</string>
+	<string name="setting_store_summary">Filter by your favourite stores</string>
+	<string name="setting_notification_enable_title">Enable notifications</string>
+	<string name="setting_notification_enable_summary">Turn location-based notifications on or off</string>
+	<string name="setting_notification_freq_title">Frequency</string>
+	<string name="setting_notification_freq_summary">Set notification interval</string>
+	
+	<string name="legacy_store_filter_ids">1|2|3|4|5</string>
+	
+	<string name="no_price_available">N/A</string>
+	
+	<string name="about_text">Send feedback to grocery.otg+support@gmail.com"</string>
+	<string name="about_title">GroceryOTG</string>
+	<string name="expanded_row_map">Map</string>
+	<string name="expanded_row_share">Share</string>
+	<string name="expanded_row_flyerview">View in flyer</string>
 </resources>

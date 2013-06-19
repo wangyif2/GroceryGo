@@ -14,7 +14,7 @@
 	</View>
 
 	<LinearLayout
-	    android:id="@+id/grocery_list_expanded_row_layout"
+		android:id="@+id/grocery_list_expanded_row_layout"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 		android:layout_gravity="center_vertical"
@@ -31,7 +31,7 @@
 			android:background="?android:attr/selectableItemBackground"
 			android:contentDescription="@string/expanded_row_flyerview">
 		</ImageButton>
-	    
+		
 		<ImageButton
 			android:id="@+id/expand_button_map"
 			android:layout_width="wrap_content"

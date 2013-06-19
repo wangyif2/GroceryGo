@@ -23,15 +23,15 @@ public class ShopCartAddFragmentActivity extends SherlockFragmentActivity implem
 	private ListView mDrawerList;
 	
 	@Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        
-        setContentView(R.layout.shopcart_add_activity);
-        
-        GroceryOTGUtils.NavigationDrawerBundle drawerBundle = GroceryOTGUtils.configNavigationDrawer(this, false, R.string.title_cart_detail);
-        this.mDrawerLayout = drawerBundle.getDrawerLayout();
-        this.mDrawerList = drawerBundle.getDrawerList();
-        
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		
+		setContentView(R.layout.shopcart_add_activity);
+		
+		GroceryOTGUtils.NavigationDrawerBundle drawerBundle = GroceryOTGUtils.configNavigationDrawer(this, false, R.string.title_cart_detail);
+		this.mDrawerLayout = drawerBundle.getDrawerLayout();
+		this.mDrawerList = drawerBundle.getDrawerList();
+		
 		// set up action bar tabs
 		ActionBar actionBar = getSupportActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -41,33 +41,33 @@ public class ShopCartAddFragmentActivity extends SherlockFragmentActivity implem
 		actionBar.addTab(actionBar.newTab().setText(R.string.title_cart_add_tab_code).setTabListener(this));
 		
 		//actionBar.selectTab(textTab);
-    }
-    
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-    	MenuInflater inflater = getSupportMenuInflater();
-        inflater.inflate(R.menu.shopcart_add_activity_menu, menu);
-        return true;
-    }
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getSupportMenuInflater();
+		inflater.inflate(R.menu.shopcart_add_activity_menu, menu);
+		return true;
+	}
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-            	if (mDrawerLayout.isDrawerOpen(mDrawerList))
-            		mDrawerLayout.closeDrawer(mDrawerList);
-            	else {
-            		// Specify the parent activity
-                	Intent parentActivityIntent = new Intent(this, ShopCartOverviewFragmentActivity.class);
-                	parentActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | 
-                								Intent.FLAG_ACTIVITY_NEW_TASK);
-                	startActivity(parentActivityIntent);
-                	this.finish();
-            	}
-            	return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+			case android.R.id.home:
+				if (mDrawerLayout.isDrawerOpen(mDrawerList))
+					mDrawerLayout.closeDrawer(mDrawerList);
+				else {
+					// Specify the parent activity
+					Intent parentActivityIntent = new Intent(this, ShopCartOverviewFragmentActivity.class);
+					parentActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | 
+												Intent.FLAG_ACTIVITY_NEW_TASK);
+					startActivity(parentActivityIntent);
+					this.finish();
+				}
+				return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
 
 	@Override
 	public void onTabSelected(Tab tab, FragmentTransaction ft) {

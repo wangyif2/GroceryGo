@@ -31,49 +31,49 @@ public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
 	
 	private Context mContext;
 	
-    public static SparseArray<String> categories;
-    public static SparseArray<String> storeNames;
+	public static SparseArray<String> categories;
+	public static SparseArray<String> storeNames;
 
-    public static ViewPager mPager;
-    private Menu mMenu;
-    
-    private DrawerLayout mDrawerLayout;
-    private ListView mDrawerList;
-    
-    GroceryAdapter mAdapter;
-    RefreshStatusReceiver mRefreshStatusReceiver;
-    MenuItem refreshItem;
+	public static ViewPager mPager;
+	private Menu mMenu;
+	
+	private DrawerLayout mDrawerLayout;
+	private ListView mDrawerList;
+	
+	GroceryAdapter mAdapter;
+	RefreshStatusReceiver mRefreshStatusReceiver;
+	MenuItem refreshItem;
 
-    private final int OFFPAGE_LIMIT = 0;
+	private final int OFFPAGE_LIMIT = 0;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.grocery_pager_activity);
-        this.mContext = this;
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.grocery_pager_activity);
+		this.mContext = this;
 
-        categories = GroceryOTGUtils.getCategorySets(this);
-        storeNames = GroceryOTGUtils.getStoreParentNameSets(this);
+		categories = GroceryOTGUtils.getCategorySets(this);
+		storeNames = GroceryOTGUtils.getStoreParentNameSets(this);
 
-        GroceryOTGUtils.NavigationDrawerBundle drawerBundle = GroceryOTGUtils.configNavigationDrawer(this, false, R.string.title_grocery_pager);
-        this.mDrawerLayout = drawerBundle.getDrawerLayout();
-        this.mDrawerList = drawerBundle.getDrawerList();
+		GroceryOTGUtils.NavigationDrawerBundle drawerBundle = GroceryOTGUtils.configNavigationDrawer(this, false, R.string.title_grocery_pager);
+		this.mDrawerLayout = drawerBundle.getDrawerLayout();
+		this.mDrawerList = drawerBundle.getDrawerList();
 
-        configViewPager();
-        
-        handleIntent(getIntent());
-    }
-    
-    @Override
-    public void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        setIntent(intent);
-        handleIntent(intent);
-    }
+		configViewPager();
+		
+		handleIntent(getIntent());
+	}
+	
+	@Override
+	public void onNewIntent(Intent intent) {
+		super.onNewIntent(intent);
+		setIntent(intent);
+		handleIntent(intent);
+	}
 
-    private void handleIntent(Intent intent) {
-        Bundle extras = intent.getExtras();
-        
+	private void handleIntent(Intent intent) {
+		Bundle extras = intent.getExtras();
+		
 		if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
 			// Gets the search query from the voice recognizer intent
 			//String query = intent.getStringExtra(SearchManager.QUERY);
@@ -91,156 +91,156 @@ public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
 			globalSearchIntent.putExtra(GlobalSearchFragmentActivity.GLOBAL_SEARCH, true);
 			startActivity(globalSearchIntent);
 		} else if (extras != null) {
-        	int position = extras.getInt(GroceryPagerFragmentActivity.EXTRA_LAUNCH_PAGE);
-        	mPager.setCurrentItem(position);
-        }
-    }
+			int position = extras.getInt(GroceryPagerFragmentActivity.EXTRA_LAUNCH_PAGE);
+			mPager.setCurrentItem(position);
+		}
+	}
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mRefreshStatusReceiver = new RefreshStatusReceiver();
-        IntentFilter mStatusIntentFilter = new IntentFilter(NetworkHandler.REFRESH_COMPLETED_ACTION);
-        mStatusIntentFilter.addCategory(Intent.CATEGORY_DEFAULT);
-        LocalBroadcastManager.getInstance(this).registerReceiver(mRefreshStatusReceiver, mStatusIntentFilter);
-    }
+	@Override
+	protected void onResume() {
+		super.onResume();
+		mRefreshStatusReceiver = new RefreshStatusReceiver();
+		IntentFilter mStatusIntentFilter = new IntentFilter(NetworkHandler.REFRESH_COMPLETED_ACTION);
+		mStatusIntentFilter.addCategory(Intent.CATEGORY_DEFAULT);
+		LocalBroadcastManager.getInstance(this).registerReceiver(mRefreshStatusReceiver, mStatusIntentFilter);
+	}
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mRefreshStatusReceiver);
-    }
+	@Override
+	protected void onPause() {
+		super.onPause();
+		LocalBroadcastManager.getInstance(this).unregisterReceiver(mRefreshStatusReceiver);
+	}
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getSupportMenuInflater();
-        inflater.inflate(R.menu.grocery_pager_activity_menu, menu);
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getSupportMenuInflater();
+		inflater.inflate(R.menu.grocery_pager_activity_menu, menu);
 
-        this.mMenu = menu;
-        
-        // Get the SearchView and set the searchable configuration
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        searchView.setIconifiedByDefault(true);
-        
-        return true;
-    }
+		this.mMenu = menu;
+		
+		// Get the SearchView and set the searchable configuration
+		SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+		SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+		searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+		searchView.setIconifiedByDefault(true);
+		
+		return true;
+	}
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.refresh:
-                refreshCurrentPager();
-                return true;
-            case android.R.id.home:
-            	if (mDrawerLayout.isDrawerOpen(mDrawerList))
-            		mDrawerLayout.closeDrawer(mDrawerList);
-            	else {
-            		// Specify the parent activity
-                	Intent parentActivityIntent = new Intent(this, CategoryTopFragmentActivity.class);
-                	parentActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | 
-                								Intent.FLAG_ACTIVITY_NEW_TASK);
-                	startActivity(parentActivityIntent);
-                	this.finish();
-            	}
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+			case R.id.refresh:
+				refreshCurrentPager();
+				return true;
+			case android.R.id.home:
+				if (mDrawerLayout.isDrawerOpen(mDrawerList))
+					mDrawerLayout.closeDrawer(mDrawerList);
+				else {
+					// Specify the parent activity
+					Intent parentActivityIntent = new Intent(this, CategoryTopFragmentActivity.class);
+					parentActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | 
+												Intent.FLAG_ACTIVITY_NEW_TASK);
+					startActivity(parentActivityIntent);
+					this.finish();
+				}
+				return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
 
-    private void configViewPager() {
-        mPager = (ViewPager) findViewById(R.id.pager);
+	private void configViewPager() {
+		mPager = (ViewPager) findViewById(R.id.pager);
 
-        mAdapter = new GroceryAdapter(getSupportFragmentManager());
-        mPager.setAdapter(mAdapter);
-        mPager.setOffscreenPageLimit(OFFPAGE_LIMIT);
-    }
-    
-    private void refreshCurrentPager() {
-        Toast t = Toast.makeText(this, "Fetching new items...", Toast.LENGTH_LONG);
-        t.show();
+		mAdapter = new GroceryAdapter(getSupportFragmentManager());
+		mPager.setAdapter(mAdapter);
+		mPager.setOffscreenPageLimit(OFFPAGE_LIMIT);
+	}
+	
+	private void refreshCurrentPager() {
+		Toast t = Toast.makeText(this, "Fetching new items...", Toast.LENGTH_LONG);
+		t.show();
 
-        Intent intent = new Intent(mContext, NetworkHandler.class);
-        intent.putExtra(NetworkHandler.REFRESH_CONTENT, NetworkHandler.GRO);
-        startService(intent);
-    }
+		Intent intent = new Intent(mContext, NetworkHandler.class);
+		intent.putExtra(NetworkHandler.REFRESH_CONTENT, NetworkHandler.GRO);
+		startService(intent);
+	}
 
-    private class RefreshStatusReceiver extends BroadcastReceiver {
-        private RefreshStatusReceiver() {
+	private class RefreshStatusReceiver extends BroadcastReceiver {
+		private RefreshStatusReceiver() {
 
-        }
+		}
 
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            int resultCode = intent.getBundleExtra("bundle").getInt(NetworkHandler.CONNECTION_STATE);
-            int requestType = intent.getBundleExtra("bundle").getInt(NetworkHandler.REQUEST_TYPE);
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			int resultCode = intent.getBundleExtra("bundle").getInt(NetworkHandler.CONNECTION_STATE);
+			int requestType = intent.getBundleExtra("bundle").getInt(NetworkHandler.REQUEST_TYPE);
 
-            Toast toast = null;
-            if (requestType == NetworkHandler.CAT) {
-                RefreshAnimation.refreshIcon(context, false, refreshItem);
-            }
-            if (resultCode == NetworkHandler.CONNECTION) {
-                toast = Toast.makeText(mContext, "Groceries Updated", Toast.LENGTH_LONG);
-            } else if (resultCode == NetworkHandler.NO_CONNECTION) {
-                RefreshAnimation.refreshIcon(context, false, refreshItem);
-                toast = Toast.makeText(mContext, "No Internet Connection", Toast.LENGTH_LONG);
-            }
-            assert toast != null;
-            toast.show();
-        }
-    }
+			Toast toast = null;
+			if (requestType == NetworkHandler.CAT) {
+				RefreshAnimation.refreshIcon(context, false, refreshItem);
+			}
+			if (resultCode == NetworkHandler.CONNECTION) {
+				toast = Toast.makeText(mContext, "Groceries Updated", Toast.LENGTH_LONG);
+			} else if (resultCode == NetworkHandler.NO_CONNECTION) {
+				RefreshAnimation.refreshIcon(context, false, refreshItem);
+				toast = Toast.makeText(mContext, "No Internet Connection", Toast.LENGTH_LONG);
+			}
+			assert toast != null;
+			toast.show();
+		}
+	}
 
-    public class GroceryAdapter extends FragmentStatePagerAdapter implements ViewPager.OnPageChangeListener {
-        private SparseArray<GroceryListFragment> mPageReferenceMap;
-        private SparseArray<Float> mDistanceMap = GroceryOTGUtils.buildDistanceMap(mContext);
-        
-        int mCurrentPage = 0;
+	public class GroceryAdapter extends FragmentStatePagerAdapter implements ViewPager.OnPageChangeListener {
+		private SparseArray<GroceryListFragment> mPageReferenceMap;
+		private SparseArray<Float> mDistanceMap = GroceryOTGUtils.buildDistanceMap(mContext);
+		
+		int mCurrentPage = 0;
 
-        public GroceryAdapter(FragmentManager fm) {
-            super(fm);
-            mPageReferenceMap = new SparseArray<GroceryListFragment>();
-            mPager.setOnPageChangeListener(this);
-        }
-        
-        @Override
-        public CharSequence getPageTitle(int position) {
-            // The hashmap is offset by one
-            return categories.valueAt(position);
-        }
+		public GroceryAdapter(FragmentManager fm) {
+			super(fm);
+			mPageReferenceMap = new SparseArray<GroceryListFragment>();
+			mPager.setOnPageChangeListener(this);
+		}
+		
+		@Override
+		public CharSequence getPageTitle(int position) {
+			// The hashmap is offset by one
+			return categories.valueAt(position);
+		}
 
-        @Override
-        public GroceryListFragment getItem(int position) {
-            GroceryListFragment myFragment;
-            if (mPageReferenceMap.get(position) == null) {
-                myFragment = GroceryListFragment.newInstance(categories.keyAt(position), mDistanceMap);
-                mPageReferenceMap.put(position, myFragment);
-                return myFragment;
-            } else
-                return mPageReferenceMap.get(position);
-        }
+		@Override
+		public GroceryListFragment getItem(int position) {
+			GroceryListFragment myFragment;
+			if (mPageReferenceMap.get(position) == null) {
+				myFragment = GroceryListFragment.newInstance(categories.keyAt(position), mDistanceMap);
+				mPageReferenceMap.put(position, myFragment);
+				return myFragment;
+			} else
+				return mPageReferenceMap.get(position);
+		}
 
-        @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
-            super.destroyItem(container, position, object);
-            mPageReferenceMap.remove(position);
-        }
+		@Override
+		public void destroyItem(ViewGroup container, int position, Object object) {
+			super.destroyItem(container, position, object);
+			mPageReferenceMap.remove(position);
+		}
 
-        @Override
-        public int getCount() {
-            return categories.size();
-        }
+		@Override
+		public int getCount() {
+			return categories.size();
+		}
 
-        @Override
+		@Override
 		public void onPageScrollStateChanged(int state) {
 		}
-        @Override
-        public void onPageScrolled(int i, float v, int i2) {
-        }
+		@Override
+		public void onPageScrolled(int i, float v, int i2) {
+		}
 
-        @Override
-        public void onPageSelected(int position) {
-        	mCurrentPage = position;
-        }
-    }
+		@Override
+		public void onPageSelected(int position) {
+			mCurrentPage = position;
+		}
+	}
 }

@@ -3,35 +3,35 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
 	android:id="@+id/preference_screen" >
 
-    <PreferenceCategory
-        android:title="NOTIFICATIONS">
+	<PreferenceCategory
+		android:title="NOTIFICATIONS">
 
-        <CheckBoxPreference
-            android:key="notification_enabled"
-            android:title="@string/setting_notification_enable_title"
-            android:summary="@string/setting_notification_enable_summary"
-            android:defaultValue="true" />
+		<CheckBoxPreference
+			android:key="notification_enabled"
+			android:title="@string/setting_notification_enable_title"
+			android:summary="@string/setting_notification_enable_summary"
+			android:defaultValue="true" />
 
-        <ListPreference
-            android:key="notification_freq"
-            android:title="@string/setting_notification_freq_title"
-            android:summary="@string/setting_notification_freq_summary"
-            android:entries="@array/freq_entry"
-            android:entryValues="@array/freq_value"
-            android:defaultValue="3" />
-    </PreferenceCategory>
+		<ListPreference
+			android:key="notification_freq"
+			android:title="@string/setting_notification_freq_title"
+			android:summary="@string/setting_notification_freq_summary"
+			android:entries="@array/freq_entry"
+			android:entryValues="@array/freq_value"
+			android:defaultValue="3" />
+	</PreferenceCategory>
 
-    <PreferenceCategory
-        android:title="CONTENT">
+	<PreferenceCategory
+		android:title="CONTENT">
 
-        <com.groceryotg.android.utils.MultiSelectListPreference
-            android:key="store_select"
-            android:title="@string/setting_store_title"
-            android:summary="@string/setting_store_summary"
-            android:dialogTitle="@string/setting_store_title"
-            android:entries="@array/store_names"
-            android:entryValues="@array/store_ids"
-            android:defaultValue="@string/legacy_store_filter_ids"
-            />
-    </PreferenceCategory>
+		<com.groceryotg.android.utils.MultiSelectListPreference
+			android:key="store_select"
+			android:title="@string/setting_store_title"
+			android:summary="@string/setting_store_summary"
+			android:dialogTitle="@string/setting_store_title"
+			android:entries="@array/store_names"
+			android:entryValues="@array/store_ids"
+			android:defaultValue="@string/legacy_store_filter_ids"
+			/>
+	</PreferenceCategory>
 </PreferenceScreen>

@@ -10,71 +10,71 @@ import android.util.Log;
  * accomplish this end.
  */
 public class WakefulThread extends HandlerThread {
-    private PowerManager.WakeLock lock = null;
+	private PowerManager.WakeLock lock = null;
 
-    /**
-     * Constructor
-     *
-     * @param lock Already-acquired WakeLock to be released when
-     *             work done
-     * @param name Name to supply to HandlerThread
-     */
-    WakefulThread(PowerManager.WakeLock lock, String name) {
-        super(name);
+	/**
+	 * Constructor
+	 *
+	 * @param lock Already-acquired WakeLock to be released when
+	 *			 work done
+	 * @param name Name to supply to HandlerThread
+	 */
+	WakefulThread(PowerManager.WakeLock lock, String name) {
+		super(name);
 
-        this.lock = lock;
-    }
+		this.lock = lock;
+	}
 
-    /**
-     * Override this method if you want to do something before
-     * looping begins
-     */
-    protected void onPreExecute() {
-        // no-op by default
-    }
+	/**
+	 * Override this method if you want to do something before
+	 * looping begins
+	 */
+	protected void onPreExecute() {
+		// no-op by default
+	}
 
-    /**
-     * Override this method if you want to do something before
-     * the WakeLock is released when the thread's work is done
-     * or if an unhandled exception is raised while the thread
-     * runs
-     */
-    protected void onPostExecute() {
-        if (lock.isHeld()) {
-            lock.release();
-        }
+	/**
+	 * Override this method if you want to do something before
+	 * the WakeLock is released when the thread's work is done
+	 * or if an unhandled exception is raised while the thread
+	 * runs
+	 */
+	protected void onPostExecute() {
+		if (lock.isHeld()) {
+			lock.release();
+		}
 
-        if (!lock.isHeld()) {
-            onUnlocked();
-        }
-    }
+		if (!lock.isHeld()) {
+			onUnlocked();
+		}
+	}
 
-    /**
-     * Override this method if you want to do something when
-     * the WakeLock is fully unlocked (e.g., shut down a
-     * service)
-     */
-    protected void onUnlocked() {
-        // no-op by default
-    }
+	/**
+	 * Override this method if you want to do something when
+	 * the WakeLock is fully unlocked (e.g., shut down a
+	 * service)
+	 */
+	protected void onUnlocked() {
+		// no-op by default
+	}
 
-    @Override
-    protected void onLooperPrepared() {
-        try {
-            onPreExecute();
-        } catch (RuntimeException e) {
-            Log.e("WakefulThread", "Exception onLooperPrepared()", e);
-            onPostExecute();
-            throw (e);
-        }
-    }
+	@Override
+	protected void onLooperPrepared() {
+		try {
+			onPreExecute();
+		} catch (RuntimeException e) {
+			Log.e("WakefulThread", "Exception onLooperPrepared()", e);
+			onPostExecute();
+			throw (e);
+		}
+	}
 
-    @Override
-    public void run() {
-        try {
-            super.run();
-        } finally {
-            onPostExecute();
-        }
-    }
+	@Override
+	public void run() {
+		try {
+			super.run();
+		} finally {
+			onPostExecute();
+		}
+	}
 }

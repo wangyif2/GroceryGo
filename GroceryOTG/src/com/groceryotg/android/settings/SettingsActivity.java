@@ -14,45 +14,45 @@ import android.preference.PreferenceManager;
 
 public class SettingsActivity extends SherlockPreferenceActivity {
 	Activity mActivity;
-    
-    @SuppressWarnings("deprecation")
+	
+	@SuppressWarnings("deprecation")
 	@Override
-    public void onCreate(Bundle savedInstanceState) {
-    	super.onCreate(savedInstanceState);
-    	addPreferencesFromResource(R.xml.preferences);
-    	
-    	this.mActivity = this;
-    	
-    	getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    	getSupportActionBar().setHomeButtonEnabled(true);
-    	
-    	// Register preference actions
-    	registerActions();
-    }
-    
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-        		Intent parentActivityIntent = new Intent(this, CategoryTopFragmentActivity.class);
-            	parentActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | 
-            								Intent.FLAG_ACTIVITY_NEW_TASK);
-            	startActivity(parentActivityIntent);
-            	this.finish();
-            	
-            	return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-    
-    @SuppressWarnings("deprecation")
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		addPreferencesFromResource(R.xml.preferences);
+		
+		this.mActivity = this;
+		
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setHomeButtonEnabled(true);
+		
+		// Register preference actions
+		registerActions();
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+			case android.R.id.home:
+				Intent parentActivityIntent = new Intent(this, CategoryTopFragmentActivity.class);
+				parentActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | 
+											Intent.FLAG_ACTIVITY_NEW_TASK);
+				startActivity(parentActivityIntent);
+				this.finish();
+				
+				return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+	
+	@SuppressWarnings("deprecation")
 	private void registerActions() {
-    	PreferenceManager pm = this.getPreferenceManager();
-    	
-    	Preference notificationEnabledPreference = pm.findPreference("notification_enabled");
-    	assert (notificationEnabledPreference != null);
-    	
-    	notificationEnabledPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+		PreferenceManager pm = this.getPreferenceManager();
+		
+		Preference notificationEnabledPreference = pm.findPreference("notification_enabled");
+		assert (notificationEnabledPreference != null);
+		
+		notificationEnabledPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 			@Override
 			public boolean onPreferenceClick(Preference preference) {
 				CheckBoxPreference cb = (CheckBoxPreference) preference;
@@ -71,6 +71,6 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 				
 				return true;
 			}
-    	});
-    }
+		});
+	}
 }

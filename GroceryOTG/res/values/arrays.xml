@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="colours">
-        <item>#dc725e</item>
-        <item>#ec8824</item>
-        <item>#9dd200</item>
-        <item>#21a3db</item>
-        <item>#a8220f</item>
-        <item>#e46414</item>
-        <item>#ef0588</item>
-    </string-array>
+	<string-array name="colours">
+		<item>#dc725e</item>
+		<item>#ec8824</item>
+		<item>#9dd200</item>
+		<item>#21a3db</item>
+		<item>#a8220f</item>
+		<item>#e46414</item>
+		<item>#ef0588</item>
+	</string-array>
 </resources>

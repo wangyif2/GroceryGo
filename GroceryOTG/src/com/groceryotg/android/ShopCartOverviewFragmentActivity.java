@@ -16,48 +16,48 @@ public class ShopCartOverviewFragmentActivity extends SherlockFragmentActivity {
 	private ListView mDrawerList;
 	
 	@Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        
-        setContentView(R.layout.shopcart_activity);
-        
-        GroceryOTGUtils.NavigationDrawerBundle drawerBundle = GroceryOTGUtils.configNavigationDrawer(this, false, R.string.title_cart);
-        this.mDrawerLayout = drawerBundle.getDrawerLayout();
-        this.mDrawerList = drawerBundle.getDrawerList();
-    }
-    
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-    	MenuInflater inflater = getSupportMenuInflater();
-        inflater.inflate(R.menu.shopcart_activity_menu, menu);
-        return true;
-    }
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		
+		setContentView(R.layout.shopcart_activity);
+		
+		GroceryOTGUtils.NavigationDrawerBundle drawerBundle = GroceryOTGUtils.configNavigationDrawer(this, false, R.string.title_cart);
+		this.mDrawerLayout = drawerBundle.getDrawerLayout();
+		this.mDrawerList = drawerBundle.getDrawerList();
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getSupportMenuInflater();
+		inflater.inflate(R.menu.shopcart_activity_menu, menu);
+		return true;
+	}
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.cart_add:
-                createCartGroceryItem();
-                return true;
-            case android.R.id.home:
-            	if (mDrawerLayout.isDrawerOpen(mDrawerList))
-            		mDrawerLayout.closeDrawer(mDrawerList);
-            	else {
-            		// Specify the parent activity
-                	Intent parentActivityIntent = new Intent(this, CategoryTopFragmentActivity.class);
-                	parentActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | 
-                								Intent.FLAG_ACTIVITY_NEW_TASK);
-                	startActivity(parentActivityIntent);
-                	this.finish();
-            	}
-            	return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-    
-    private void createCartGroceryItem() {
-        Intent i = new Intent(this, ShopCartAddFragmentActivity.class);
-        startActivity(i);
-    }
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+			case R.id.cart_add:
+				createCartGroceryItem();
+				return true;
+			case android.R.id.home:
+				if (mDrawerLayout.isDrawerOpen(mDrawerList))
+					mDrawerLayout.closeDrawer(mDrawerList);
+				else {
+					// Specify the parent activity
+					Intent parentActivityIntent = new Intent(this, CategoryTopFragmentActivity.class);
+					parentActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | 
+												Intent.FLAG_ACTIVITY_NEW_TASK);
+					startActivity(parentActivityIntent);
+					this.finish();
+				}
+				return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+	
+	private void createCartGroceryItem() {
+		Intent i = new Intent(this, ShopCartAddFragmentActivity.class);
+		startActivity(i);
+	}
 }
 

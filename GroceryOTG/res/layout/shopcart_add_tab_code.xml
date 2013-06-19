@@ -6,21 +6,21 @@
 	android:layout_height="match_parent"
 	android:padding="20dp">
 
-    <EditText
-        android:id="@+id/cart_grocery_edit_name"
-        android:layout_width="fill_parent"
-        android:layout_height="0dip"
-        android:layout_weight="1"
-        android:inputType="textAutoCorrect"
-        android:hint="@string/cart_grocery_edit_name"
-        >
-    </EditText>
+	<EditText
+		android:id="@+id/cart_grocery_edit_name"
+		android:layout_width="fill_parent"
+		android:layout_height="0dip"
+		android:layout_weight="1"
+		android:inputType="textAutoCorrect"
+		android:hint="@string/cart_grocery_edit_name"
+		>
+	</EditText>
 
-    <Button
-        android:id="@+id/cart_confirm_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/cart_add_positive_button">
-    </Button>
+	<Button
+		android:id="@+id/cart_confirm_button"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="@string/cart_add_positive_button">
+	</Button>
 
 </LinearLayout>

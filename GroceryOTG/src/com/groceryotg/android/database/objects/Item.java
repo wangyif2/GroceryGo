@@ -1,21 +1,21 @@
 package com.groceryotg.android.database.objects;
 
 public class Item {
-    private Integer itemId;
+	private Integer itemId;
 
-    private String itemName;
+	private String itemName;
 
-    private Subcategory subcategory;
+	private Subcategory subcategory;
 
-    public Item(String itemName, Subcategory subcategory) {
-        this.itemName = itemName;
-        this.subcategory = subcategory;
-    }
+	public Item(String itemName, Subcategory subcategory) {
+		this.itemName = itemName;
+		this.subcategory = subcategory;
+	}
 
-    public Item() {
-    }
+	public Item() {
+	}
 
-    /**
+	/**
 	 * @return the itemId
 	 */
 	public Integer getItemId() {
@@ -30,18 +30,18 @@ public class Item {
 	}
 
 	public String getItemName() {
-        return itemName;
-    }
+		return itemName;
+	}
 
-    public void setItemName(String itemName) {
-        this.itemName = itemName;
-    }
+	public void setItemName(String itemName) {
+		this.itemName = itemName;
+	}
 
-    public Subcategory getSubcategory() {
-        return subcategory;
-    }
+	public Subcategory getSubcategory() {
+		return subcategory;
+	}
 
-    public void setSubcategory(Subcategory subcategory) {
-        this.subcategory = subcategory;
-    }
+	public void setSubcategory(Subcategory subcategory) {
+		this.subcategory = subcategory;
+	}
 }

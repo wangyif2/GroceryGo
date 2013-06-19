@@ -72,11 +72,11 @@ public class ShopCartAddFragmentActivity extends SherlockFragmentActivity implem
 		String title = (String) tab.getText();
 		
 		if (title == getString(R.string.title_cart_add_tab_text)) {
-			ft.replace(android.R.id.content, new ShopCartAddTabTextFragment());
+			ft.replace(R.id.content, new ShopCartAddTabTextFragment());
 		} else if (title == getString(R.string.title_cart_add_tab_voice)) {
-			ft.replace(android.R.id.content, new ShopCartAddTabTextFragment());
+			ft.replace(R.id.content, new ShopCartAddTabTextFragment());
 		} else if (title == getString(R.string.title_cart_add_tab_code)) {
-			ft.replace(android.R.id.content, new ShopCartAddTabTextFragment());
+			ft.replace(R.id.content, new ShopCartAddTabTextFragment());
 		}
 	}
 

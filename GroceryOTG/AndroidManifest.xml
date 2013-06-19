@@ -90,7 +90,7 @@
         </activity>
 
         <activity
-            android:name=".ShopCartDetailActivity"
+            android:name=".ShopCartAddFragmentActivity"
             android:label="@string/title_cart_detail" >
         </activity>
 

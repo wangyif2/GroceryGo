@@ -56,7 +56,7 @@ public class ShopCartOverviewFragmentActivity extends SherlockFragmentActivity {
     }
     
     private void createCartGroceryItem() {
-        Intent i = new Intent(this, ShopCartDetailActivity.class);
+        Intent i = new Intent(this, ShopCartAddFragmentActivity.class);
         startActivity(i);
     }
 }

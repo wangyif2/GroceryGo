@@ -338,8 +338,6 @@ def getFlyer():
                         for item in data_list:
                             line_number += 1
                             raw_item = item['title'] + ", " + item['description'] 
-                            if "Farmer" in raw_item:
-                                print("FOUND ITEM: %s\n" % raw_item)
                             
                             # Price format:
                             # 1) $1.50              (dollars)
@@ -1197,9 +1195,10 @@ try:
                 raise RuntimeError("item data could not be added to the item table handler")
             
         # Evaluate classification accuraucy for each store flyer based on hand-labelled subcategories
-        #classification_rates = evaluateAccuracy(store_id, predictions, category_map, item_list, noun_table)
-        #if classification_rates:
-        #    logging.info("CATEGORY CLASSIFICATION RATE = %.2f for store %d" % (classification_rates[1],store_id))
+        classification_rates = evaluateAccuracy(store_id, predictions, category_map, item_list, noun_table)
+        if classification_rates:
+            logging.info("CATEGORY CLASSIFICATION RATE = %.2f for store %d" % (classification_rates[1],store_id))
+        
         # Step 4: Write to Item
         item_ids = item_table.write_data()
         grocery_data = [tuple(item_ids)] + zip(*item_list)

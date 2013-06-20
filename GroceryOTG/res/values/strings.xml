@@ -49,6 +49,8 @@
 	<string name="groceryoverview_row_imagedesc">Subcategory</string>
 	
 	<string name="search_hint">Search</string>
+	<string name="search_voice_prompt">Speak item name</string>
+	<string name="search_voice_hint">Click mic to begin</string>
 
 	<string name="map_usermarker">You are here</string>
 	<string name="setting_store_title">Select stores</string>

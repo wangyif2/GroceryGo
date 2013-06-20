@@ -7,7 +7,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ListView;
-
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.Tab;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -16,6 +15,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 
 import com.groceryotg.android.fragment.ShopCartAddTabTextFragment;
+import com.groceryotg.android.fragment.ShopCartAddTabVoiceFragment;
 import com.groceryotg.android.utils.GroceryOTGUtils;
 
 public class ShopCartAddFragmentActivity extends SherlockFragmentActivity implements ActionBar.TabListener {
@@ -79,7 +79,7 @@ public class ShopCartAddFragmentActivity extends SherlockFragmentActivity implem
 		if (title == getString(R.string.title_cart_add_tab_text)) {
 			ft.replace(R.id.content, new ShopCartAddTabTextFragment());
 		} else if (title == getString(R.string.title_cart_add_tab_voice)) {
-			ft.replace(R.id.content, new ShopCartAddTabTextFragment());
+			ft.replace(R.id.content, new ShopCartAddTabVoiceFragment());
 		} else if (title == getString(R.string.title_cart_add_tab_code)) {
 			ft.replace(R.id.content, new ShopCartAddTabTextFragment());
 		}

@@ -338,6 +338,8 @@ def getFlyer():
                         for item in data_list:
                             line_number += 1
                             raw_item = item['title'] + ", " + item['description'] 
+                            if "Farmer" in raw_item:
+                                print("FOUND ITEM: %s\n" % raw_item)
                             
                             # Price format:
                             # 1) $1.50              (dollars)
@@ -937,10 +939,38 @@ def evaluateAccuracy(store_id, labels,  category_map, item_list = None, noun_lis
     return [float(correctly_classified) / float(len(targets)), float(correctly_classified_category) / float(len(targets))]            
 
 def stripAllTags(html):
+    '''Cleans incoming text by removing HTML tags, and capitalizing after periods'''
     if html is None:
         return None
     html = html.replace('<br />', '. ')
-    return (''.join(BeautifulSoup(html).findAll(text=True))).title()
+    return toTitlecase((''.join(BeautifulSoup(html).findAll(text=True))), ["."])
+
+def toTitlecase(text, chars):
+    '''Custom implementation to replace Python's built-in "str.title()" because 
+    the latter capitalizes after apostrophes, which is not desirable. The toTitlecase() function
+    takes a list of characters, and capitalizes the first non-blank character after those 
+    characters if it is an alpha character.'''
+    
+    ixs = [text.find(c) for c in chars]
+    valid = filter(lambda k: k!=-1, ixs)
+    ix = min(valid) if valid else -1
+    
+    while ix != -1:
+        
+        # Capitalize next non-whitespace character
+        if ix < len(text)-1:
+            nextPart = text[ix+1:]
+            nextCharIx = len(nextPart) - len(nextPart.lstrip()) 
+            if nextCharIx < len(nextPart):
+                text = text[:ix+1] + nextPart[:nextCharIx] + \
+                    nextPart[nextCharIx].upper() + nextPart[nextCharIx+1:] 
+        
+        # Look for next delimiter
+        ixs = [text.find(c, ix+1) for c in chars]
+        valid = filter(lambda k: k!=-1, ixs)
+        ix = min(valid) if valid else -1
+    
+    return text
 
 def getFlyerDates(tag_dates):
     '''Get the start and end day,month,year for a flyer'''
@@ -1167,9 +1197,9 @@ try:
                 raise RuntimeError("item data could not be added to the item table handler")
             
         # Evaluate classification accuraucy for each store flyer based on hand-labelled subcategories
-        classification_rates = evaluateAccuracy(store_id, predictions, category_map, item_list, noun_table)
-        if classification_rates:
-            logging.info("CATEGORY CLASSIFICATION RATE = %.2f for store %d" % (classification_rates[1],store_id))
+        #classification_rates = evaluateAccuracy(store_id, predictions, category_map, item_list, noun_table)
+        #if classification_rates:
+        #    logging.info("CATEGORY CLASSIFICATION RATE = %.2f for store %d" % (classification_rates[1],store_id))
         # Step 4: Write to Item
         item_ids = item_table.write_data()
         grocery_data = [tuple(item_ids)] + zip(*item_list)

@@ -1,9 +1,25 @@
 package com.groceryotg.android.fragment;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -20,6 +36,7 @@ import com.google.zxing.integration.android.IntentResult;
 import com.groceryotg.android.R;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
+import com.groceryotg.android.services.QueryUPCDatabase;
 
 public class ShopCartAddTabCodeFragment extends SherlockFragment {
 	private Context mContext;
@@ -72,13 +89,15 @@ public class ShopCartAddTabCodeFragment extends SherlockFragment {
 	
 	public void setCode(String code) {
 		TextView textView = (TextView) ((Activity) mContext).findViewById(R.id.code_text);
-		textView.setText(getNameFromCode(code));
+		String oldHint = (String) textView.getHint();
+		textView.setHint("Searching for item " + code + " in the database...");
+		
+		QueryUPCDatabase q = new QueryUPCDatabase(mContext, mText);
+		q.execute(getString(R.string.upcdatabase_key), code);
+		
+		textView.setHint(oldHint);
 	}
 	
-	private String getNameFromCode(String code) {
-		return code;
-	}
-		
 	private void makeToast(String text) {
 		Toast.makeText(mContext, text, Toast.LENGTH_SHORT).show();
 	}

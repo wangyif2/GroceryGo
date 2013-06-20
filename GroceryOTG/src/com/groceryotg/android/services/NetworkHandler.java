@@ -18,10 +18,6 @@ import com.groceryotg.android.database.objects.*;
 import com.groceryotg.android.utils.GroceryOTGUtils;
 import com.groceryotg.android.utils.JSONParser;
 
-/**
- * User: robert
- * Date: 06/02/13
- */
 public class NetworkHandler extends IntentService {
 	public static final String REFRESH_COMPLETED_ACTION = "com.groceryotg.android.service.REFRESH_COMPLETE";
 

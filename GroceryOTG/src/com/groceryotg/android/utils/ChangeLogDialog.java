@@ -33,6 +33,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import com.groceryotg.android.R;
+import com.groceryotg.android.settings.SettingsManager;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -53,6 +54,8 @@ public class ChangeLogDialog {
 			+ ".date { font-size: 9pt; color: #606060;  display: block; }";
 
 	protected DialogInterface.OnDismissListener mOnDismissListener;
+	
+	private boolean isDisplaying = false;
 
 	public ChangeLogDialog(final Context context) {
 		mContext = context;
@@ -142,6 +145,10 @@ public class ChangeLogDialog {
 					//Check if the version matches the release tag.
 					//When version is 0 every release tag is parsed.
 					final int versioncode = Integer.parseInt(xml.getAttributeValue(null, "versioncode"));
+					if (versioncode > SettingsManager.getChangelogSeen(mContext)) {
+						SettingsManager.setChangelogSeen(mContext, versioncode);
+						isDisplaying = true;
+					}
 					if ((version == 0) || (versioncode == version)) {
 						parseReleaseTag(changelogBuilder, xml);
 						releaseFound = true; //At lease one release tag has been parsed.
@@ -242,7 +249,8 @@ public class ChangeLogDialog {
 				}
 			}
 		});
-		dialog.show();
+		if (isDisplaying)
+			dialog.show();
 	}
 
 }

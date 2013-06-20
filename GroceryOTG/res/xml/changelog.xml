@@ -1,13 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <changelog>
-	<release version="nightly-20130617" versioncode="1">
+	<release version="nightly-20130619" versioncode="5">
+		<change>Feature: Improved About dialog box.</change>
+		<change>Tweak: Reworked how changelogs are displayed.</change>
+	</release>
+	<release version="nightly-20130618" versioncode="4">
+		<change>Feature: Added skeleton for adding custom items to the cart with voice and barcodes.</change>
+		<change>Feature: Code improvements that should slightly improve performance.</change>
+	</release>
+	<release version="nightly-20130617" versioncode="3">
 		<change>Feature: Various performance improvements.</change>
 		<change>Feature: Re-added on-the-fly searching.</change>
 		<change>Bugfix: Fixed problems arising from distance display.</change>
 		<change>Tweak: Played around with the grocery list layout a bit.</change>
 	</release>
-	<release version="nightly-20130616" versioncode="1">
+	<release version="nightly-20130616" versioncode="2">
 		<change>Feature: Added actions for the expandable grocery list drawer.</change>
 		<change>Feature: Added first draft of distance display. Note that this is still in the experimental stage, and will contribute to most of the lag that is experienced in the grocery list view.</change>
 		<change>Bugfix: [Finally] fixed persistence of cart status when list views are recycled.</change>

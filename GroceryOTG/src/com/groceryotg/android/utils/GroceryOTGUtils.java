@@ -259,8 +259,7 @@ public class GroceryOTGUtils {
 				new NavigationDrawerListViewModel(R.string.navdrawer_item_map, R.drawable.ic_menu_map, false),
 				new NavigationDrawerListViewModel(R.string.navdrawer_heading_tools, -1, true),
 				new NavigationDrawerListViewModel(R.string.navdrawer_item_settings, R.drawable.ic_menu_settings, false),
-				new NavigationDrawerListViewModel(R.string.navdrawer_item_about, R.drawable.ic_menu_about, false),
-				new NavigationDrawerListViewModel(R.string.navdrawer_item_changelog, R.drawable.ic_menu_about, false)
+				new NavigationDrawerListViewModel(R.string.navdrawer_item_about, R.drawable.ic_menu_about, false)
 		};
 		
 		drawerLayout = (DrawerLayout) activity.findViewById(R.id.navigation_drawer_layout);
@@ -414,10 +413,6 @@ public class GroceryOTGUtils {
 				break;
 			case 6:
 				launchAboutDialog(mContext);
-				break;
-			case 7:
-				ChangeLogDialog cd = new ChangeLogDialog(mContext);
-				cd.show();
 				break;
 			}
 		}

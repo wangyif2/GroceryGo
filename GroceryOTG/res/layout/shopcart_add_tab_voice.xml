@@ -4,5 +4,40 @@
 	android:orientation="vertical"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent" >
-			  
+	
+	<ImageButton
+		android:id="@+id/voice_button"
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight="1.0"
+		android:src="@drawable/icon_bread" >
+	</ImageButton>
+	
+	<TextView
+		android:id="@+id/voice_text"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content" >
+	</TextView>
+	
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal" >
+		
+		<Button
+			android:id="@+id/negative_button"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="@string/cart_add_negative_button" >
+		</Button>
+		
+		<Button
+			android:id="@+id/positive_button"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="@string/cart_add_positive_button" >
+		</Button>
+	</LinearLayout>
 </LinearLayout>

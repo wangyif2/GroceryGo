@@ -1,26 +1,30 @@
 package com.groceryotg.android.fragment;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
 import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.groceryotg.android.R;
+import com.groceryotg.android.ShopCartAddFragmentActivity;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 
 public class ShopCartAddTabVoiceFragment extends SherlockFragment {
+	private static final int VOICE_RECOGNITION_REQUEST_CODE = 1000;
+	
 	private Context mContext;
 	
 	private TextView mText;
@@ -42,6 +46,19 @@ public class ShopCartAddTabVoiceFragment extends SherlockFragment {
 		
 		mText = (TextView) v.findViewById(R.id.voice_text);
 
+		ImageButton micButton = (ImageButton) v.findViewById(R.id.voice_button);
+		micButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+				intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getClass().getPackage().getName());
+				intent.putExtra(RecognizerIntent.EXTRA_PROMPT, getString(R.string.search_voice_prompt));
+				intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
+				intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 5);
+				startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
+			}
+		});
+		
 		Button confirmButton = (Button) v.findViewById(R.id.positive_button);
 		confirmButton.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -59,9 +76,36 @@ public class ShopCartAddTabVoiceFragment extends SherlockFragment {
 		
 		return v;
 	}
-
+	
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (requestCode == VOICE_RECOGNITION_REQUEST_CODE) {
+			if (resultCode == Activity.RESULT_OK) {
+			
+			ArrayList<String> textMatchList = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+			 
+			if (!textMatchList.isEmpty()) {
+				String text = textMatchList.get(0);
+				TextView textView = (TextView) ((Activity) mContext).findViewById(R.id.voice_text);
+				textView.setText(text);
+			}
+			} else if (resultCode == RecognizerIntent.RESULT_AUDIO_ERROR){
+				makeToast("Audio error");
+			} else if (resultCode == RecognizerIntent.RESULT_CLIENT_ERROR){
+				makeToast("Client error");
+			} else if (resultCode == RecognizerIntent.RESULT_NETWORK_ERROR){
+				makeToast("Network error");
+			} else if (resultCode == RecognizerIntent.RESULT_NO_MATCH){
+				makeToast("Please repeat the item");
+			} else if (resultCode == RecognizerIntent.RESULT_SERVER_ERROR){
+				makeToast("Server error");
+			}
+		}
+		super.onActivityResult(requestCode, resultCode, data);
+	}
+		
 	private void makeToast(String text) {
-		Toast.makeText(mContext, text, Toast.LENGTH_LONG).show();
+		Toast.makeText(mContext, text, Toast.LENGTH_SHORT).show();
 	}
 	
 	private void clearFocus() {

@@ -1,12 +1,16 @@
 package com.groceryotg.android;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ListView;
+import android.widget.TextView;
+
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.Tab;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -14,6 +18,9 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
+import com.groceryotg.android.fragment.ShopCartAddTabCodeFragment;
 import com.groceryotg.android.fragment.ShopCartAddTabTextFragment;
 import com.groceryotg.android.fragment.ShopCartAddTabVoiceFragment;
 import com.groceryotg.android.utils.GroceryOTGUtils;
@@ -81,7 +88,7 @@ public class ShopCartAddFragmentActivity extends SherlockFragmentActivity implem
 		} else if (title == getString(R.string.title_cart_add_tab_voice)) {
 			ft.replace(R.id.content, new ShopCartAddTabVoiceFragment());
 		} else if (title == getString(R.string.title_cart_add_tab_code)) {
-			ft.replace(R.id.content, new ShopCartAddTabTextFragment());
+			ft.replace(R.id.content, new ShopCartAddTabCodeFragment());
 		}
 	}
 
@@ -91,6 +98,19 @@ public class ShopCartAddFragmentActivity extends SherlockFragmentActivity implem
 
 	@Override
 	public void onTabReselected(Tab tab, FragmentTransaction ft) {
+	}
+	
+	// Need to add this here since the ZXing library creates a new activity from activity, not fragment
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+		if (scanResult != null) {
+			String text = scanResult.getContents();
+			TextView textView = (TextView) findViewById(R.id.code_text);
+			textView.setText(text);
+		}
+		
+		super.onActivityResult(requestCode, resultCode, data);
 	}
 }
 

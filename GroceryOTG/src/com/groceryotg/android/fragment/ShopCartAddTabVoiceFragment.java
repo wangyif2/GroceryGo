@@ -51,7 +51,7 @@ public class ShopCartAddTabVoiceFragment extends SherlockFragment {
 			public void onClick(View v) {
 				Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
 				intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getClass().getPackage().getName());
-				intent.putExtra(RecognizerIntent.EXTRA_PROMPT, getString(R.string.search_voice_prompt));
+				intent.putExtra(RecognizerIntent.EXTRA_PROMPT, getString(R.string.cart_add_voice_prompt));
 				intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
 				intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 5);
 				startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);

@@ -106,8 +106,8 @@ public class ShopCartAddFragmentActivity extends SherlockFragmentActivity implem
 		IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
 		if (scanResult != null) {
 			String text = scanResult.getContents();
-			TextView textView = (TextView) findViewById(R.id.code_text);
-			textView.setText(text);
+			ShopCartAddTabCodeFragment frag = (ShopCartAddTabCodeFragment) getSupportFragmentManager().findFragmentById(R.id.content);
+			frag.setCode(text);
 		}
 		
 		super.onActivityResult(requestCode, resultCode, data);

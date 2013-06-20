@@ -69,6 +69,15 @@ public class ShopCartAddTabCodeFragment extends SherlockFragment {
 		
 		return v;
 	}
+	
+	public void setCode(String code) {
+		TextView textView = (TextView) ((Activity) mContext).findViewById(R.id.code_text);
+		textView.setText(getNameFromCode(code));
+	}
+	
+	private String getNameFromCode(String code) {
+		return code;
+	}
 		
 	private void makeToast(String text) {
 		Toast.makeText(mContext, text, Toast.LENGTH_SHORT).show();

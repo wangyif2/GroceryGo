@@ -19,7 +19,6 @@ import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.widget.SearchView;
 
 import com.groceryotg.android.services.NetworkHandler;
-import com.groceryotg.android.settings.SettingsManager;
 import com.groceryotg.android.utils.ChangeLogDialog;
 import com.groceryotg.android.utils.GroceryOTGUtils;
 import com.groceryotg.android.utils.RefreshAnimation;
@@ -92,12 +91,9 @@ public class CategoryTopFragmentActivity extends SherlockFragmentActivity {
 		mStatusIntentFilter.addCategory(Intent.CATEGORY_DEFAULT);
 		LocalBroadcastManager.getInstance(this).registerReceiver(mRefreshStatusReceiver, mStatusIntentFilter);
 		
-		// show a changelog dialog for now
-		if (!SettingsManager.getChangelogSeen(this)) {
-			ChangeLogDialog cd = new ChangeLogDialog(this);
-			cd.show();
-			SettingsManager.setChangelogSeen(this, true);
-		}
+		// show a changelog dialog if it's new
+		ChangeLogDialog cd = new ChangeLogDialog(this);
+		cd.show();
 	}
 
 	@Override

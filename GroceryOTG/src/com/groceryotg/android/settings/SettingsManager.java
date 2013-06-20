@@ -11,7 +11,7 @@ import android.util.SparseBooleanArray;
 public class SettingsManager {
 	public static final String SETTINGS_PREVIOUS_NOTIFICATION = "previous_notification_set";
 	public static final String SETTINGS_NAVIGATION_DRAWER_SEEN = "navigation_drawer_seen";
-	public static final String SETTINGS_CHANGELOG_SEEN = "changelog_seen";
+	public static final String SETTINGS_CHANGELOG_SEEN_VERSION = "changelog_seen_version";
 	
 	public static SharedPreferences getPrefs(Context context) {
 		return PreferenceManager.getDefaultSharedPreferences(context);
@@ -35,13 +35,13 @@ public class SettingsManager {
 		editor.commit();
 	}
 	
-	public static boolean getChangelogSeen(Context context) {
-		return getPrefs(context).getBoolean(SettingsManager.SETTINGS_CHANGELOG_SEEN, false);
+	public static int getChangelogSeen(Context context) {
+		return getPrefs(context).getInt(SettingsManager.SETTINGS_CHANGELOG_SEEN_VERSION, 0);
 	}
 	
-	public static void setChangelogSeen(Context context, boolean state) {
+	public static void setChangelogSeen(Context context, int version) {
 		Editor editor = getPrefs(context).edit();
-		editor.putBoolean(SettingsManager.SETTINGS_CHANGELOG_SEEN, state);
+		editor.putInt(SettingsManager.SETTINGS_CHANGELOG_SEEN_VERSION, version);
 		editor.commit();
 	}
 	

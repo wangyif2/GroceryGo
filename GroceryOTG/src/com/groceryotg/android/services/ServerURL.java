@@ -9,10 +9,6 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * User: robert
- * Date: 23/02/13
- */
 public class ServerURL {
 	private static final String baseUrl = "http://groceryotg.elasticbeanstalk.com/";
 	private static final String cateoryUrl = baseUrl + "/GetGeneralInfo";

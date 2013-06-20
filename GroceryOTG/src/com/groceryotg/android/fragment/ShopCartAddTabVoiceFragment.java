@@ -38,9 +38,9 @@ public class ShopCartAddTabVoiceFragment extends SherlockFragment {
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View v = inflater.inflate(R.layout.shopcart_add_tab_text, container, false);
+		View v = inflater.inflate(R.layout.shopcart_add_tab_voice, container, false);
 		
-		mText = (EditText) v.findViewById(R.id.voice_text);
+		mText = (TextView) v.findViewById(R.id.voice_text);
 
 		Button confirmButton = (Button) v.findViewById(R.id.positive_button);
 		confirmButton.setOnClickListener(new View.OnClickListener() {

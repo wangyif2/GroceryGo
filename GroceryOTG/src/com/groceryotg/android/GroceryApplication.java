@@ -1,15 +1,14 @@
 package com.groceryotg.android;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
 import com.groceryotg.android.database.StoreParentTable;
+import com.groceryotg.android.database.StoreTable;
 import com.groceryotg.android.utils.GroceryOTGUtils;
 
-import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.database.Cursor;
@@ -21,6 +20,7 @@ public class GroceryApplication extends Application {
 	private SparseArray<Float> mStoreDistanceMap;
 	private Map<String, Integer> mMapIconMap = new HashMap<String, Integer>();
 	private Map<String, Integer> mStoreParentIconMap = new HashMap<String, Integer>();
+	private SparseArray<ArrayList<Integer>> mFlyerStoreMap = new SparseArray<ArrayList<Integer>>();
 	
 	public void constructGlobals(final Context context) {
 		ArrayList<Thread> threads = new ArrayList<Thread>();
@@ -80,6 +80,36 @@ public class GroceryApplication extends Application {
 		threads.add(t);
 		t.start();
 		
+		// Calculates mapping between flyer and stores
+		t = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				Looper.prepare();
+				
+				Cursor flyerIDs = GroceryOTGUtils.getStoreFlyerIDs(context);
+				
+				flyerIDs.moveToFirst();
+				while (!flyerIDs.isAfterLast()) {
+					int flyerId = flyerIDs.getInt(flyerIDs.getColumnIndex(StoreTable.COLUMN_STORE_FLYER));
+					int storeId = flyerIDs.getInt(flyerIDs.getColumnIndex(StoreTable.COLUMN_STORE_ID));
+					
+					// Make sure to initialize our lists!
+					if (mFlyerStoreMap.get(flyerId) == null)
+						mFlyerStoreMap.put(flyerId, new ArrayList<Integer>());
+					
+					// Now append the new value onto the end of the appropriate list
+					ArrayList<Integer> n = mFlyerStoreMap.get(flyerId);
+					n.add(storeId);
+					mFlyerStoreMap.put(flyerId, n);
+					
+					flyerIDs.moveToNext();
+				}
+				
+			}
+		});
+		threads.add(t);
+		t.start();
+		
 		for (Thread thread : threads) {
 			try {
 				thread.join();
@@ -108,5 +138,12 @@ public class GroceryApplication extends Application {
 	 */
 	public Map<String, Integer> getStoreParentIconMap() {
 		return mStoreParentIconMap;
+	}
+	
+	/**
+	 * @return the flyerStoreMap
+	 */
+	public SparseArray<ArrayList<Integer>> getFlyerStoreMap() {
+		return mFlyerStoreMap;
 	}
 }

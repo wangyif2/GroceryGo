@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.SimpleCursorAdapter.ViewBinder;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.SimpleCursorAdapter;
@@ -31,9 +32,11 @@ import java.util.Map;
 
 public class GroceryViewBinder implements SimpleCursorAdapter.ViewBinder, ViewBinder {
 	private Map<String, Integer> mStoreParentIconMap;
+	private SparseArray<ArrayList<Integer>> mFlyerStoreMap;
 	
 	public GroceryViewBinder(Context context) {
 		mStoreParentIconMap = ((GroceryApplication) ((Activity) context).getApplication()).getStoreParentIconMap();
+		mFlyerStoreMap = ((GroceryApplication) ((Activity) context).getApplication()).getFlyerStoreMap();
 	}
 	
 	@Override
@@ -155,16 +158,7 @@ public class GroceryViewBinder implements SimpleCursorAdapter.ViewBinder, ViewBi
 				&& viewId == R.id.grocery_row_store_id) {
 			Integer id = cursor.getInt(columnIndex);
 			TextView text = (TextView) view;
-			Cursor flyerIDs = GroceryOTGUtils.getStoreFlyerIDs(view.getContext());
-			ArrayList<Integer> list = new ArrayList<Integer>();
-			
-			flyerIDs.moveToFirst();
-			while (!flyerIDs.isAfterLast()) {
-				if (flyerIDs.getInt(flyerIDs.getColumnIndex(StoreTable.COLUMN_STORE_FLYER)) == id) {
-					list.add(flyerIDs.getInt(flyerIDs.getColumnIndex(StoreTable.COLUMN_STORE_ID)));
-				}
-				flyerIDs.moveToNext();
-			}
+			ArrayList<Integer> list = mFlyerStoreMap.get(id);
 			
 			// Pack the list for store IDs into a string
 			StringBuilder sb = new StringBuilder();

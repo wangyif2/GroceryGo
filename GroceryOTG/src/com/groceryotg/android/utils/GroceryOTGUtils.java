@@ -266,11 +266,13 @@ public class GroceryOTGUtils {
 		drawerLayout.setDrawerListener(new DrawerLayout.SimpleDrawerListener() {
 			public void onDrawerClosed(View view) {
 				((SherlockFragmentActivity) activity).getSupportActionBar().setTitle(activity.getString(titleResId));
+				((SherlockFragmentActivity) activity).supportInvalidateOptionsMenu();
 			}
 			public void onDrawerOpened(View drawerView) {
 				if (!SettingsManager.getNavigationDrawerSeen(activity))
 					SettingsManager.setNavigationDrawerSeen(activity, true);
 				((SherlockFragmentActivity) activity).getSupportActionBar().setTitle(activity.getString(R.string.app_name));
+				((SherlockFragmentActivity) activity).supportInvalidateOptionsMenu();
 			}
 		});
 		
@@ -283,11 +285,13 @@ public class GroceryOTGUtils {
 			drawerToggle = new ActionBarDrawerToggle(activity, drawerLayout, R.drawable.ic_drawer, R.string.navdrawer_open, R.string.navdrawer_closed) {
 				public void onDrawerClosed(View view) {
 					((SherlockFragmentActivity) activity).getSupportActionBar().setTitle(activity.getString(titleResId));
+					((SherlockFragmentActivity) activity).supportInvalidateOptionsMenu();
 				}
 				public void onDrawerOpened(View drawerView) {
 					if (!SettingsManager.getNavigationDrawerSeen(activity))
 						SettingsManager.setNavigationDrawerSeen(activity, true);
 					((SherlockFragmentActivity) activity).getSupportActionBar().setTitle(activity.getString(R.string.app_name));
+					((SherlockFragmentActivity) activity).supportInvalidateOptionsMenu();
 				}
 			};
 			drawerLayout.setDrawerListener(drawerToggle);

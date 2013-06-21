@@ -62,6 +62,17 @@ public class MapFragmentActivity extends SherlockFragmentActivity {
 
 		return true;
 	}
+	
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		if (this.mDrawerLayout != null && this.mDrawerList != null) {
+			for (int i = 0; i < menu.size(); i++) {
+				MenuItem item = menu.getItem(i);
+				item.setVisible(!mDrawerLayout.isDrawerOpen(mDrawerList));
+			}
+		}
+		return super.onPrepareOptionsMenu(menu);
+	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {

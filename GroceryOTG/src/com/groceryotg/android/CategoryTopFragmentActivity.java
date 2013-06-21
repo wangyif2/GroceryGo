@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -115,6 +116,17 @@ public class CategoryTopFragmentActivity extends SherlockFragmentActivity {
 		searchView.setIconifiedByDefault(true);
 		
 		return true;
+	}
+	
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		if (this.mDrawerLayout != null && this.mDrawerList != null) {
+			for (int i = 0; i < menu.size(); i++) {
+				MenuItem item = menu.getItem(i);
+				item.setVisible(!mDrawerLayout.isDrawerOpen(mDrawerList));
+			}
+		}
+		return super.onPrepareOptionsMenu(menu);
 	}
 
 	@Override

@@ -159,7 +159,7 @@ def getFlyer():
                                 total_price = None
                                 
                                 # The price is preceded either by a dollar sign ($) or a cent sign (\\xa2)
-                                pattern = re.compile('([\\xa2]|[$])([0-9.]+)')
+                                pattern = re.compile('([\\xa2]|[$])([0-9]+[.]*[0-9]*)')
                                 if pattern.findall(line):
                                     total_price = pattern.findall(line)[0]
                                     if total_price[0] == "$":
@@ -469,7 +469,7 @@ def getFlyer():
                             #sentences = tokenizer.tokenize(line)
                             
                             # The price is preceded either by a dollar sign ($) or a cent sign (\\xa2)
-                            pattern = re.compile('([\\xa2]|[$])([0-9.]+)')
+                            pattern = re.compile('([\\xa2]|[$])([0-9]+[.]*[0-9]*)')
                             if pattern.findall(line):
                                 total_price = pattern.findall(line)[0]
                                 if total_price[0] == "$":

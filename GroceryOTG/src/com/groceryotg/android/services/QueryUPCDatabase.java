@@ -37,7 +37,7 @@ public class QueryUPCDatabase extends AsyncTask<String, Void, String> {
 		try {
 			URL databaseURL = new URL("http://upcdatabase.org/api/xml/" + params[0] + "/" + params[1]);
 			
-			Log.i("GroceryOTG", "http://upcdatabase.org/api/xml/" + params[0] + "/" + params[1]);
+			//Log.i("GroceryOTG", "http://upcdatabase.org/api/xml/" + params[0] + "/" + params[1]);
 			
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder builder = factory.newDocumentBuilder();
@@ -71,10 +71,12 @@ public class QueryUPCDatabase extends AsyncTask<String, Void, String> {
 	
 	@Override
 	protected void onPostExecute(String name) {
-		if (name == null)
+		if (name == null) {
+			mTextView.setText("");
 			makeToast("Could not find that item in the database");
-		else
+		} else {
 			mTextView.setText(name);
+		}
 	}
 	
 	private void makeToast(String text) {

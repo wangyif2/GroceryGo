@@ -47,13 +47,16 @@ public class AboutDialogFragment extends SherlockDialogFragment {
 					// Get a list of apps that are capable of handling this email intent
 					List<ResolveInfo> pkgAppsList = mContext.getPackageManager().queryIntentActivities(emailIntent, PackageManager.MATCH_DEFAULT_ONLY | PackageManager.GET_RESOLVED_FILTER);
 					
-					// For ease of use, select the first one in the list (i.e. Gmail)
-					ResolveInfo info = pkgAppsList.get(0);
-					String packageName = info.activityInfo.packageName;
-					String className = info.activityInfo.name;
-					
-					// Set the intent to launch that specific app
-					emailIntent.setClassName(packageName, className);
+					for (int i = 0; i < pkgAppsList.size(); i++) {
+						ResolveInfo info = pkgAppsList.get(i);
+						String packageName = info.activityInfo.packageName;
+						String className = info.activityInfo.name;
+						
+						if (packageName.equals("com.google.android.gm")) {
+							// Set the intent to launch that specific app
+							emailIntent.setClassName(packageName, className);
+						}
+					}
 					
 					// Start the app
 					startActivity(emailIntent);

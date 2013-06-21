@@ -1,28 +1,10 @@
 package com.groceryotg.android.fragment;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,17 +14,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
 import com.groceryotg.android.R;
+import com.groceryotg.android.ShopCartAddFragmentActivity;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 import com.groceryotg.android.services.QueryUPCDatabase;
 
 public class ShopCartAddTabCodeFragment extends SherlockFragment {
+	public static final String SHOP_CART_ADD_CODE_TEXT_ARG = "add_code_text";
 	private Context mContext;
 	
 	private TextView mText;
-
+	private String mCodeText;
+	
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
@@ -52,6 +36,11 @@ public class ShopCartAddTabCodeFragment extends SherlockFragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		Bundle args = this.getArguments();
+		if (args != null) {
+			mCodeText = args.getString(SHOP_CART_ADD_CODE_TEXT_ARG);
+		}
 	}
 	
 	@Override
@@ -87,7 +76,15 @@ public class ShopCartAddTabCodeFragment extends SherlockFragment {
 		return v;
 	}
 	
-	public void setCode(String code) {
+	@Override
+	public void onViewCreated (View view, Bundle savedInstanceState) {
+		setCode(mCodeText);
+	}
+	
+	private void setCode(String code) {
+		if (code == null)
+			return;
+		
 		TextView textView = (TextView) ((Activity) mContext).findViewById(R.id.code_text);
 		String oldHint = (String) textView.getHint();
 		textView.setHint("Searching for item " + code + " in the database...");
@@ -105,6 +102,8 @@ public class ShopCartAddTabCodeFragment extends SherlockFragment {
 	private void clearFocus() {
 		// clear the next in the edit box
 		mText.setText("");
+		// clear the saved variable from the activity
+		((ShopCartAddFragmentActivity) mContext).clearCodeText();
 	}
 	
 	private void addItem() {

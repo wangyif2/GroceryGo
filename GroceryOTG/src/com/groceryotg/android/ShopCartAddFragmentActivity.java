@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ListView;
 import com.actionbarsherlock.app.ActionBar;
@@ -27,14 +26,15 @@ public class ShopCartAddFragmentActivity extends SherlockFragmentActivity implem
 	private ListView mDrawerList;
 	private ActionBar mActionBar;
 	
-	private final String SAVE_INSTANCE_TAB_TITLE = "save_instance_tab_title";
-	private int mActionBarTab;
+	private final String SAVE_INSTANCE_TAB_INDEX = "save_instance_tab_index";
+	private final String SAVE_INSTANCE_CODE_TEXT = "save_instance_code_text";
+	private int mIndex;
+	
+	private String mCodeText;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-		Log.i("GroceryOTG", "Creating ShopCartAddFragmentActivity");
 		
 		setContentView(R.layout.shopcart_add_activity);
 		
@@ -50,12 +50,13 @@ public class ShopCartAddFragmentActivity extends SherlockFragmentActivity implem
 		mActionBar.addTab(mActionBar.newTab().setText(R.string.title_cart_add_tab_voice).setTabListener(this));
 		mActionBar.addTab(mActionBar.newTab().setText(R.string.title_cart_add_tab_code).setTabListener(this));
 		
-		mActionBarTab = 0;
+		mIndex = 0;
 	}
 	
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
-		savedInstanceState.putInt(SAVE_INSTANCE_TAB_TITLE, mActionBarTab);
+		savedInstanceState.putInt(SAVE_INSTANCE_TAB_INDEX, mIndex);
+		savedInstanceState.putString(SAVE_INSTANCE_CODE_TEXT, mCodeText);
 		
 		super.onSaveInstanceState(savedInstanceState);
 	}
@@ -64,8 +65,15 @@ public class ShopCartAddFragmentActivity extends SherlockFragmentActivity implem
 	public void onRestoreInstanceState(Bundle savedInstanceState) {
 	    super.onRestoreInstanceState(savedInstanceState);
 	    
-	    mActionBarTab = savedInstanceState.getInt(SAVE_INSTANCE_TAB_TITLE);
-	    mActionBar.setSelectedNavigationItem(mActionBarTab);
+	    mIndex = savedInstanceState.getInt(SAVE_INSTANCE_TAB_INDEX);
+	    mCodeText = savedInstanceState.getString(SAVE_INSTANCE_CODE_TEXT);
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		
+		mActionBar.setSelectedNavigationItem(mIndex);
 	}
 	
 	@Override
@@ -102,23 +110,41 @@ public class ShopCartAddFragmentActivity extends SherlockFragmentActivity implem
 		imm.hideSoftInputFromWindow(findViewById(R.id.content).getWindowToken(), 0);
 		
 		if (title == getString(R.string.title_cart_add_tab_text)) {
+			mIndex = 0;
 			ft.replace(R.id.content, new ShopCartAddTabTextFragment());
-			mActionBarTab = 0;
 		} else if (title == getString(R.string.title_cart_add_tab_voice)) {
 			ft.replace(R.id.content, new ShopCartAddTabVoiceFragment());
-			mActionBarTab = 1;
+			mIndex = 1;
 		} else if (title == getString(R.string.title_cart_add_tab_code)) {
-			ft.replace(R.id.content, new ShopCartAddTabCodeFragment());
-			mActionBarTab = 2;
+			ShopCartAddTabCodeFragment frag = new ShopCartAddTabCodeFragment();
+			
+			Bundle args = new Bundle();
+			args.putString(ShopCartAddTabCodeFragment.SHOP_CART_ADD_CODE_TEXT_ARG, mCodeText);
+			frag.setArguments(args);
+			
+			ft.replace(R.id.content, frag);
+			mIndex = 2;
 		}
 	}
 
 	@Override
 	public void onTabUnselected(Tab tab, FragmentTransaction ft) {
+		if ((String) tab.getText() == getString(R.string.title_cart_add_tab_code)) {
+			mCodeText = null;
+		}
 	}
 
 	@Override
 	public void onTabReselected(Tab tab, FragmentTransaction ft) {
+		if (tab.getText() == getString(R.string.title_cart_add_tab_code)) {
+			ShopCartAddTabCodeFragment frag = new ShopCartAddTabCodeFragment();
+			
+			Bundle args = new Bundle();
+			args.putString(ShopCartAddTabCodeFragment.SHOP_CART_ADD_CODE_TEXT_ARG, mCodeText);
+			frag.setArguments(args);
+			
+			ft.replace(R.id.content, frag);
+		}
 	}
 	
 	// Need to add this here since the ZXing library creates a new activity from activity, not fragment
@@ -126,12 +152,14 @@ public class ShopCartAddFragmentActivity extends SherlockFragmentActivity implem
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
 		if (scanResult != null) {
-			String text = scanResult.getContents();
-			ShopCartAddTabCodeFragment frag = (ShopCartAddTabCodeFragment) getSupportFragmentManager().findFragmentById(R.id.content);
-			frag.setCode(text);
+			mCodeText = scanResult.getContents();
 		}
 		
 		super.onActivityResult(requestCode, resultCode, data);
+	}
+	
+	public void clearCodeText() {
+		mCodeText = null;
 	}
 }
 

@@ -10,6 +10,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.*;
+import com.groceryotg.android.GroceryApplication;
 import com.groceryotg.android.MapFragmentActivity;
 import com.groceryotg.android.R;
 import com.groceryotg.android.database.StoreParentTable;
@@ -17,15 +18,13 @@ import com.groceryotg.android.database.StoreTable;
 import com.groceryotg.android.utils.GroceryOTGUtils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 public class MapFragment extends SupportMapFragment {
 	private Context mContext;
 	
 	private GoogleMap mMap = null;
-	private Map<String, Integer> mIconMap = new HashMap<String, Integer>();
+	private Map<String, Integer> mIconMap;
 	private ArrayList<Marker> mMapMarkers = new ArrayList<Marker>();
 	
 	private ArrayList<Integer> filterStoreParents = null;
@@ -52,7 +51,8 @@ public class MapFragment extends SupportMapFragment {
 	public void onActivityCreated (Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		
-		buildIconMap(mContext);
+		mIconMap = ((GroceryApplication) ((Activity) mContext).getApplication()).getMapIconMap();
+		
 		Location lastKnownLocation = GroceryOTGUtils.getLastKnownLocation(mContext);
 		Cursor storeLocations = GroceryOTGUtils.getFilteredStores(mContext).loadInBackground();
 		
@@ -71,19 +71,6 @@ public class MapFragment extends SupportMapFragment {
 		}
 	}
 	
-	private void buildIconMap(Context context) {
-		Cursor parents = GroceryOTGUtils.getStoreParentNamesCursor(context);
-		parents.moveToFirst();
-		while (!parents.isAfterLast()) {
-			String name = parents.getString(parents.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_NAME));
-			int markerImageID = context.getResources().getIdentifier("ic_mapmarker_" + name.toLowerCase(Locale.CANADA).replace(" ", ""), "drawable", mContext.getPackageName());
-			if (markerImageID != 0) {
-				mIconMap.put(name, markerImageID);
-			}
-			parents.moveToNext();
-		}
-	}
-
 	private void buildUserMarker(Context context, GoogleMap map, String str, Location loc) {
 		LatLng ll = new LatLng(loc.getLatitude(), loc.getLongitude());
 		map.addMarker(new MarkerOptions()

@@ -23,6 +23,8 @@ public class SplashScreenActivity extends Activity {
 	// and avoid opening the next activity
 	private boolean mIsBackButtonPressed;
 	private static final int SPLASH_DURATION = 10; // 10 milliseconds
+	
+	private Context mContext;
 
 	private RefreshStatusReceiver mRefreshStatusReceiver;
 	private static final int PROGRESS_MAX = 100;
@@ -33,6 +35,8 @@ public class SplashScreenActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.splashscreen_activity);
+		
+		this.mContext = this;
 		
 		// Load the default preferences
 		PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
@@ -158,6 +162,8 @@ public class SplashScreenActivity extends Activity {
 				// back when it presses back key
 				finish();
 				if (!mIsBackButtonPressed) {
+					((GroceryApplication) getApplication()).constructGlobals(mContext);
+					
 					// start the home screen if the back button wasn't pressed
 					// already
 					Intent intent = new Intent(SplashScreenActivity.this, CategoryTopFragmentActivity.class);

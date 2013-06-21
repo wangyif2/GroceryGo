@@ -29,13 +29,10 @@ import com.groceryotg.android.database.StoreParentTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 import com.groceryotg.android.services.ServerURL;
 import com.groceryotg.android.settings.SettingsManager;
-import com.groceryotg.android.utils.GroceryOTGUtils;
 import com.tjerkw.slideexpandable.library.SlideExpandableListAdapter;
 
 public class GroceryListFragment extends SherlockListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
 	private static final String CATEGORY_POSITION = "position";
-	private static final String ARGS_DISTANCE_MAP_KEYS = "distance_map_keys";
-	private static final String ARGS_DISTANCE_MAP_VALUES = "distance_map_values";
 	
 	private Context mContext;
 	
@@ -50,7 +47,7 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
 
 	SharedPreferences.OnSharedPreferenceChangeListener mSettingsListener;
 
-	public static GroceryListFragment newInstance(int pos, SparseArray<Float> distanceMap) {
+	public static GroceryListFragment newInstance(int pos) {
 		GroceryListFragment f = new GroceryListFragment();
 
 		// Supply num input as an argument.
@@ -58,15 +55,6 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
 		args.putInt(CATEGORY_POSITION, pos);
 		f.setArguments(args);
 		
-		int[] keyArray = new int[distanceMap.size()];
-		float[] valueArray = new float[distanceMap.size()];
-		for (int index = 0; index < distanceMap.size(); index++) {
-			keyArray[index] = distanceMap.keyAt(index);
-			valueArray[index] = distanceMap.valueAt(index);
-		}
-		args.putIntArray(ARGS_DISTANCE_MAP_KEYS, keyArray);
-		args.putFloatArray(ARGS_DISTANCE_MAP_VALUES, valueArray);
-
 		return f;
 	}
 
@@ -82,13 +70,6 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
 		Bundle args = getArguments();
 		if (args != null) {
 			categoryId = args.getInt(CATEGORY_POSITION);
-			
-			mDistanceMap = new SparseArray<Float>();
-			int[] keyArray = args.getIntArray(ARGS_DISTANCE_MAP_KEYS);
-			float[] valueArray = args.getFloatArray(ARGS_DISTANCE_MAP_VALUES);
-			for (int index = 0; index < keyArray.length; index++) {
-				mDistanceMap.put(keyArray[index], valueArray[index]);
-			}
 		}
 		
 		watchSettings();
@@ -119,9 +100,7 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		
-		if (mDistanceMap == null) {
-			mDistanceMap = GroceryOTGUtils.buildDistanceMap(mContext);
-		}
+		mDistanceMap = ((GroceryApplication) ((Activity) mContext).getApplication()).getStoreDistanceMap();
 		
 		String[] from = new String[]{GroceryTable.COLUMN_GROCERY_ID,
 				GroceryTable.COLUMN_GROCERY_NAME,

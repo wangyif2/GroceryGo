@@ -1,6 +1,5 @@
 package com.groceryotg.android;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,8 +8,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ListView;
-import android.widget.TextView;
-
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.Tab;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -28,10 +25,16 @@ import com.groceryotg.android.utils.GroceryOTGUtils;
 public class ShopCartAddFragmentActivity extends SherlockFragmentActivity implements ActionBar.TabListener {
 	private DrawerLayout mDrawerLayout;
 	private ListView mDrawerList;
+	private ActionBar mActionBar;
+	
+	private final String SAVE_INSTANCE_TAB_TITLE = "save_instance_tab_title";
+	private int mActionBarTab;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		Log.i("GroceryOTG", "Creating ShopCartAddFragmentActivity");
 		
 		setContentView(R.layout.shopcart_add_activity);
 		
@@ -40,14 +43,29 @@ public class ShopCartAddFragmentActivity extends SherlockFragmentActivity implem
 		this.mDrawerList = drawerBundle.getDrawerList();
 		
 		// set up action bar tabs
-		ActionBar actionBar = getSupportActionBar();
-		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+		mActionBar = getSupportActionBar();
+		mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 		
-		actionBar.addTab(actionBar.newTab().setText(R.string.title_cart_add_tab_text).setTabListener(this));
-		actionBar.addTab(actionBar.newTab().setText(R.string.title_cart_add_tab_voice).setTabListener(this));
-		actionBar.addTab(actionBar.newTab().setText(R.string.title_cart_add_tab_code).setTabListener(this));
+		mActionBar.addTab(mActionBar.newTab().setText(R.string.title_cart_add_tab_text).setTabListener(this));
+		mActionBar.addTab(mActionBar.newTab().setText(R.string.title_cart_add_tab_voice).setTabListener(this));
+		mActionBar.addTab(mActionBar.newTab().setText(R.string.title_cart_add_tab_code).setTabListener(this));
 		
-		//actionBar.selectTab(textTab);
+		mActionBarTab = 0;
+	}
+	
+	@Override
+	public void onSaveInstanceState(Bundle savedInstanceState) {
+		savedInstanceState.putInt(SAVE_INSTANCE_TAB_TITLE, mActionBarTab);
+		
+		super.onSaveInstanceState(savedInstanceState);
+	}
+	
+	@Override
+	public void onRestoreInstanceState(Bundle savedInstanceState) {
+	    super.onRestoreInstanceState(savedInstanceState);
+	    
+	    mActionBarTab = savedInstanceState.getInt(SAVE_INSTANCE_TAB_TITLE);
+	    mActionBar.setSelectedNavigationItem(mActionBarTab);
 	}
 	
 	@Override
@@ -75,7 +93,7 @@ public class ShopCartAddFragmentActivity extends SherlockFragmentActivity implem
 		}
 		return super.onOptionsItemSelected(item);
 	}
-
+	
 	@Override
 	public void onTabSelected(Tab tab, FragmentTransaction ft) {
 		String title = (String) tab.getText();
@@ -85,10 +103,13 @@ public class ShopCartAddFragmentActivity extends SherlockFragmentActivity implem
 		
 		if (title == getString(R.string.title_cart_add_tab_text)) {
 			ft.replace(R.id.content, new ShopCartAddTabTextFragment());
+			mActionBarTab = 0;
 		} else if (title == getString(R.string.title_cart_add_tab_voice)) {
 			ft.replace(R.id.content, new ShopCartAddTabVoiceFragment());
+			mActionBarTab = 1;
 		} else if (title == getString(R.string.title_cart_add_tab_code)) {
 			ft.replace(R.id.content, new ShopCartAddTabCodeFragment());
+			mActionBarTab = 2;
 		}
 	}
 

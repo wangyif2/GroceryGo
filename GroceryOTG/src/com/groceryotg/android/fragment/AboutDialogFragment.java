@@ -30,19 +30,19 @@ public class AboutDialogFragment extends SherlockDialogFragment {
 		
 		Dialog dialog = new AlertDialog.Builder(getActivity())
 			.setTitle(titleString)
-			.setPositiveButton("Submit feedback", new DialogInterface.OnClickListener() {
+			.setPositiveButton(R.string.navdrawer_item_about_feedback, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int whichButton) {
 					Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
 					emailIntent.setType("plain/text");
-					emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{"grocery.otg+support@gmail.com"});
-					emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "GroceryOTG feedback");
-					mContext.startActivity(Intent.createChooser(emailIntent, "Send feedback"));
+					emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{getResources().getString(R.string.app_email)});
+					emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getResources().getString(R.string.navdrawer_item_feedback_subject));
+					mContext.startActivity(Intent.createChooser(emailIntent, getResources().getString(R.string.navdrawer_item_about_feedback)));
 					
 					dialog.dismiss();
 				}
 			})
-			.setNegativeButton("Close", new DialogInterface.OnClickListener() {
+			.setNegativeButton(R.string.action_close, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int whichButton) {
 					dialog.dismiss();

@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <changelog>
+	<release version="nightly-20130620" versioncode="6">
+		<change>Feature: Items can now be added to the cart manually by voice.</change>
+		<change>Feature: Items can now be added to the cart manually by barcode.</change>
+	</release>
 	<release version="nightly-20130619" versioncode="5">
 		<change>Feature: Improved About dialog box.</change>
 		<change>Tweak: Reworked how changelogs are displayed.</change>

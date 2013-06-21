@@ -110,7 +110,7 @@ public class NetworkHandler extends IntentService {
 
 					if (++previousIncrement == windowLength) {
 						previousIncrement = 0;
-						SplashScreenActivity.incrementProgressBar(1);
+						updateProgressBar(1);
 					}
 				}
 			} finally {
@@ -163,7 +163,7 @@ public class NetworkHandler extends IntentService {
 
 					if (++previousIncrement == windowLength) {
 						previousIncrement = 0;
-						SplashScreenActivity.incrementProgressBar(1);
+						updateProgressBar(1);
 					}
 				}
 			} finally {
@@ -210,7 +210,7 @@ public class NetworkHandler extends IntentService {
 
 					if (++previousIncrement == windowLength) {
 						previousIncrement = 0;
-						SplashScreenActivity.incrementProgressBar(1);
+						updateProgressBar(1);
 					}
 				}
 			} finally {
@@ -247,7 +247,7 @@ public class NetworkHandler extends IntentService {
 
 					if (++previousIncrement == windowLength) {
 						previousIncrement = 0;
-						SplashScreenActivity.incrementProgressBar(1);
+						updateProgressBar(1);
 					}
 				}
 			} finally {
@@ -298,7 +298,7 @@ public class NetworkHandler extends IntentService {
 
 				if (++previousIncrement == windowLength) {
 					previousIncrement = 0;
-					SplashScreenActivity.incrementProgressBar(1);
+					updateProgressBar(1);
 				}
 			}
 		} finally {
@@ -321,5 +321,11 @@ public class NetworkHandler extends IntentService {
 		return url.toString();
 	}
 
+	private void updateProgressBar(int inc) {
+		Intent intent = new Intent();
+		intent.setAction(SplashScreenActivity.BROADCAST_ACTION_UPDATE_PROGRESS);
+		intent.putExtra(SplashScreenActivity.BROADCAST_ACTION_UPDATE_PROGRESS_INCREMENT, inc);
+		LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+	}
 
 }

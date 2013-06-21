@@ -15,6 +15,9 @@ import com.groceryotg.android.services.location.LocationServiceReceiver;
 import com.groceryotg.android.settings.SettingsManager;
 
 public class SplashScreenActivity extends Activity {
+	public static final String BROADCAST_ACTION_UPDATE_PROGRESS = "com.groceryotg.android.intent_action_update_progress_bar";
+	public static final String BROADCAST_ACTION_UPDATE_PROGRESS_INCREMENT = "intent_action_update_progres_increment";
+	
 	private static final String SETTINGS_IS_DB_POPULATED = "isDBPopulated";
 	// used to know if the back button was pressed in the splash screen activity
 	// and avoid opening the next activity
@@ -24,11 +27,11 @@ public class SplashScreenActivity extends Activity {
 	private RefreshStatusReceiver mRefreshStatusReceiver;
 	private static final int PROGRESS_MAX = 100;
 	
-	public static ProgressBar mProgressBar = null;
+	private ProgressBar mProgressBar = null;
+	private BroadcastReceiver mProgressReceiver;
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
 		setContentView(R.layout.splashscreen_activity);
 		
 		// Load the default preferences
@@ -43,16 +46,33 @@ public class SplashScreenActivity extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
+		
 		mRefreshStatusReceiver = new RefreshStatusReceiver();
 		IntentFilter mStatusIntentFilter = new IntentFilter(NetworkHandler.REFRESH_COMPLETED_ACTION);
 		mStatusIntentFilter.addCategory(Intent.CATEGORY_DEFAULT);
 		LocalBroadcastManager.getInstance(this).registerReceiver(mRefreshStatusReceiver, mStatusIntentFilter);
+		
+		mProgressReceiver = new BroadcastReceiver() {
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				if (intent.getAction().equals(BROADCAST_ACTION_UPDATE_PROGRESS)) {
+					int inc = intent.getExtras().getInt(BROADCAST_ACTION_UPDATE_PROGRESS_INCREMENT);
+					if (inc > 0 && mProgressBar != null)
+						mProgressBar.incrementProgressBy(inc);
+				}
+			}
+		};
+		IntentFilter mProgressIntentFilter = new IntentFilter(BROADCAST_ACTION_UPDATE_PROGRESS);
+		mProgressIntentFilter.addCategory(Intent.CATEGORY_DEFAULT);
+		LocalBroadcastManager.getInstance(this).registerReceiver(mProgressReceiver, mProgressIntentFilter);
 	}
 
 	@Override
 	protected void onPause() {
 		super.onPause();
+		
 		LocalBroadcastManager.getInstance(this).unregisterReceiver(mRefreshStatusReceiver);
+		LocalBroadcastManager.getInstance(this).unregisterReceiver(mProgressReceiver);
 	}
 
 	private void init() {
@@ -177,10 +197,4 @@ public class SplashScreenActivity extends Activity {
 			}
 		}
 	}
-	
-	public static void incrementProgressBar(int inc) {		
-		if (inc > 0 && mProgressBar != null)
-			mProgressBar.incrementProgressBy(inc);
-	}
-
 }

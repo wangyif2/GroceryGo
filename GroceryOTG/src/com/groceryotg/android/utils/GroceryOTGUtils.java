@@ -108,6 +108,22 @@ public class GroceryOTGUtils {
 		return storeNames;
 	}
 	
+	public static CursorLoader getAllStores(Context context) {
+		List<String> selectionArgs = new ArrayList<String>();
+		String[] projection = {StoreTable.TABLE_STORE+"."+StoreTable.COLUMN_STORE_ID,
+				StoreParentTable.TABLE_STORE_PARENT+"."+StoreParentTable.COLUMN_STORE_PARENT_ID,
+				StoreParentTable.TABLE_STORE_PARENT+"."+StoreParentTable.COLUMN_STORE_PARENT_NAME,
+				StoreTable.TABLE_STORE+"."+StoreTable.COLUMN_STORE_ADDR,
+				StoreTable.TABLE_STORE+"."+StoreTable.COLUMN_STORE_LATITUDE,
+				StoreTable.TABLE_STORE+"."+StoreTable.COLUMN_STORE_LONGITUDE};
+		String selection = "";
+		
+		final String[] selectionArgsArr = new String[selectionArgs.size()];
+		selectionArgs.toArray(selectionArgsArr);
+	
+		return new CursorLoader(context, GroceryotgProvider.CONTENT_URI_STO_JOIN_STOREPARENT, projection, selection, selectionArgsArr, null);
+	}
+	
 	public static CursorLoader getFilteredStores(Context context) {
 		List<String> selectionArgs = new ArrayList<String>();
 		String[] projection = {StoreTable.TABLE_STORE+"."+StoreTable.COLUMN_STORE_ID,
@@ -153,7 +169,7 @@ public class GroceryOTGUtils {
 	}
 	
 	public static SparseArray<Float> buildDistanceMap(Context context) {
-		Cursor storeLocations = GroceryOTGUtils.getFilteredStores(context).loadInBackground();
+		Cursor storeLocations = GroceryOTGUtils.getAllStores(context).loadInBackground();
 		
 		SparseArray<Float> map = new SparseArray<Float>();
 		

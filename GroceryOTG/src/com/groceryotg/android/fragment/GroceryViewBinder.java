@@ -1,12 +1,17 @@
 package com.groceryotg.android.fragment;
 
+import android.app.Activity;
+import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.SimpleCursorAdapter.ViewBinder;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+
+import com.groceryotg.android.GroceryApplication;
 import com.groceryotg.android.R;
 import com.groceryotg.android.R.drawable;
 import com.groceryotg.android.database.CartTable;
@@ -20,11 +25,18 @@ import com.groceryotg.android.utils.GroceryOTGUtils;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class GroceryViewBinder implements SimpleCursorAdapter.ViewBinder, ViewBinder {
-	public GroceryViewBinder() {
+	private Map<String, Integer> mStoreParentIconMap;
+	private SparseArray<ArrayList<Integer>> mFlyerStoreMap;
+	
+	public GroceryViewBinder(Context context) {
+		mStoreParentIconMap = ((GroceryApplication) ((Activity) context).getApplication()).getStoreParentIconMap();
+		mFlyerStoreMap = ((GroceryApplication) ((Activity) context).getApplication()).getFlyerStoreMap();
 	}
 	
 	@Override
@@ -137,31 +149,16 @@ public class GroceryViewBinder implements SimpleCursorAdapter.ViewBinder, ViewBi
 			String storeParentName = cursor.getString(columnIndex);
 			TextView textView = (TextView) view;
 			
-			try {
-				Class<drawable> res = R.drawable.class;
-				// Make the store name all lowercase, then chomp off whitespace
-				Field field = res.getField("ic_store_" + storeParentName.toLowerCase(Locale.CANADA).replace(" ", ""));
-				textView.setText(storeParentName);
-				textView.setTag(field.getInt(null));
-			} catch (Exception e) {
-				Log.e("GroceryOTG", "Could not get drawable id for row.", e);
-			}
+			textView.setText(storeParentName);
+			textView.setTag(mStoreParentIconMap.get(storeParentName));
+			
 			return true;
 		}
 		else if (columnIndex == cursor.getColumnIndex(FlyerTable.COLUMN_FLYER_ID) 
 				&& viewId == R.id.grocery_row_store_id) {
 			Integer id = cursor.getInt(columnIndex);
 			TextView text = (TextView) view;
-			Cursor flyerIDs = GroceryOTGUtils.getStoreFlyerIDs(view.getContext());
-			ArrayList<Integer> list = new ArrayList<Integer>();
-			
-			flyerIDs.moveToFirst();
-			while (!flyerIDs.isAfterLast()) {
-				if (flyerIDs.getInt(flyerIDs.getColumnIndex(StoreTable.COLUMN_STORE_FLYER)) == id) {
-					list.add(flyerIDs.getInt(flyerIDs.getColumnIndex(StoreTable.COLUMN_STORE_ID)));
-				}
-				flyerIDs.moveToNext();
-			}
+			ArrayList<Integer> list = mFlyerStoreMap.get(id);
 			
 			// Pack the list for store IDs into a string
 			StringBuilder sb = new StringBuilder();

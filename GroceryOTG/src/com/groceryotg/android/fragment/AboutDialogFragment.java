@@ -1,12 +1,18 @@
 package com.groceryotg.android.fragment;
 
+import java.util.List;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.os.Bundle;
+import android.util.Log;
+
 import com.actionbarsherlock.app.SherlockDialogFragment;
 import com.groceryotg.android.R;
 
@@ -37,7 +43,20 @@ public class AboutDialogFragment extends SherlockDialogFragment {
 					emailIntent.setType("plain/text");
 					emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{getResources().getString(R.string.app_email)});
 					emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getResources().getString(R.string.navdrawer_item_feedback_subject));
-					mContext.startActivity(Intent.createChooser(emailIntent, getResources().getString(R.string.navdrawer_item_about_feedback)));
+					
+					// Get a list of apps that are capable of handling this email intent
+					List<ResolveInfo> pkgAppsList = mContext.getPackageManager().queryIntentActivities(emailIntent, PackageManager.MATCH_DEFAULT_ONLY | PackageManager.GET_RESOLVED_FILTER);
+					
+					// For ease of use, select the first one in the list (i.e. Gmail)
+					ResolveInfo info = pkgAppsList.get(0);
+					String packageName = info.activityInfo.packageName;
+					String className = info.activityInfo.name;
+					
+					// Set the intent to launch that specific app
+					emailIntent.setClassName(packageName, className);
+					
+					// Start the app
+					startActivity(emailIntent);
 					
 					dialog.dismiss();
 				}

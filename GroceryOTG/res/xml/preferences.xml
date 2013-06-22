@@ -18,7 +18,7 @@
 			android:summary="@string/setting_notification_freq_summary"
 			android:entries="@array/freq_entry"
 			android:entryValues="@array/freq_value"
-			android:defaultValue="3" />
+			android:defaultValue="1" />
 	</PreferenceCategory>
 
 	<PreferenceCategory

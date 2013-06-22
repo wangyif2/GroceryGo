@@ -22,7 +22,25 @@ public class SettingsManager {
 	}
 	
 	public static int getNotificationFrequency(Context context) {
-		return getPrefs(context).getInt("notification_freq", 3);
+		int f = getPrefs(context).getInt("notification_freq", 1);
+		int period = 60*60*1000;
+		switch (f) {
+		case 1:
+			// 30 minutes
+			period = 30*60*1000;
+			break;
+		case 2:
+			// 1 hour
+			period = 60*60*1000;
+			break;
+		case 3:
+			// 3 hours
+			period = 3*60*60*1000;
+			break;
+		default:
+			break;
+		}
+		return period;
 	}
 	
 	public static boolean getNavigationDrawerSeen(Context context) {

@@ -113,7 +113,7 @@ public class SplashScreenActivity extends Activity {
 
         if (ServerURL.checkNetworkStatus(getBaseContext()) && !isDBPopulated) {
             populateCategory();
-            populateGrocery();
+//            populateGrocery();
             populateStoreParent();
             populateStore();
             populateFlyer();

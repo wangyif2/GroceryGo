@@ -155,7 +155,7 @@
 				android:layout_width="0dp"
 				android:layout_height="0dp"
 				android:visibility="gone"
-				android:text="0" />
+				android:text="" />
 			<!-- Hold meta for flyer url -->
 			<TextView
 				android:id="@+id/grocery_row_flyer_url"
@@ -166,6 +166,13 @@
 			<!-- Hold meta for store parent name -->
 			<TextView
 				android:id="@+id/grocery_row_store_parent_name"
+				android:layout_width="0dp"
+				android:layout_height="0dp"
+				android:visibility="gone"
+				android:text="" />
+			<!-- Hold meta for cart item id -->
+			<TextView
+				android:id="@+id/grocery_row_cart_item_id"
 				android:layout_width="0dp"
 				android:layout_height="0dp"
 				android:visibility="gone"

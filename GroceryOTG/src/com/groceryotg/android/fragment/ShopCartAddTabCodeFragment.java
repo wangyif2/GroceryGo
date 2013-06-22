@@ -19,6 +19,7 @@ import com.groceryotg.android.ShopCartAddFragmentActivity;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 import com.groceryotg.android.services.QueryUPCDatabase;
+import com.groceryotg.android.utils.GroceryOTGUtils;
 
 public class ShopCartAddTabCodeFragment extends SherlockFragment {
 	public static final String SHOP_CART_ADD_CODE_TEXT_ARG = "add_code_text";
@@ -124,5 +125,7 @@ public class ShopCartAddTabCodeFragment extends SherlockFragment {
 		values.put(CartTable.COLUMN_CART_FLAG_WATCHLIST, CartTable.FLAG_FALSE);
 
 		mContext.getContentResolver().insert(GroceryotgProvider.CONTENT_URI_CART_ITEM, values);
+		
+		GroceryOTGUtils.restartGroceryLoaders(mContext);
 	}
 }

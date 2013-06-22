@@ -16,6 +16,7 @@ public class SettingsManager {
 	public static final String SETTINGS_CHANGELOG_SEEN_VERSION = "changelog_seen_version";
 	public static final String SETTINGS_NOTIFICATION_ENABLED = "notification_enabled";
 	public static final String SETTINGS_NOTIFICATION_FREQUENCY = "notification_freq";
+	public static final String SETTINGS_STORE_FILTER = "store_select";
 	
 	public static SharedPreferences getPrefs(Context context) {
 		return PreferenceManager.getDefaultSharedPreferences(context);

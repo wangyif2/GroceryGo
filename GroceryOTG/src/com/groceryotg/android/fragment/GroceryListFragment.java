@@ -88,6 +88,23 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
 		if (mEmptyTextView != null)
 			mEmptyTextView.setVisibility(View.INVISIBLE);
 		
+		final GroceryListFragment frag = this;
+		mRestartReceiver = new BroadcastReceiver() {
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				if (intent.getAction().equals(GroceryOTGUtils.BROADCAST_ACTION_RELOAD_GROCERY_LIST)) {
+					// Restart the loader, refreshing all views
+					Bundle b = new Bundle();
+					b.putString("query", mQuery);
+					b.putBoolean("reload", false);
+					getLoaderManager().restartLoader(0, b, frag);
+				}
+			}
+		};
+		IntentFilter mRestartIntentFilter = new IntentFilter(GroceryOTGUtils.BROADCAST_ACTION_RELOAD_GROCERY_LIST);
+		mRestartIntentFilter.addCategory(Intent.CATEGORY_DEFAULT);
+		LocalBroadcastManager.getInstance(mContext).registerReceiver(mRestartReceiver, mRestartIntentFilter);
+		
 		return v;
 	}
 
@@ -167,33 +184,20 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
 	@Override
 	public void onResume() {
 		super.onResume();
-		
-		final GroceryListFragment frag = this;
-		
-		mRestartReceiver = new BroadcastReceiver() {
-			@Override
-			public void onReceive(Context context, Intent intent) {
-				if (intent.getAction().equals(GroceryOTGUtils.BROADCAST_ACTION_RELOAD_GROCERY_LIST)) {
-					// Restart the loader, refreshing all views
-					Bundle b = new Bundle();
-					b.putString("query", mQuery);
-					b.putBoolean("reload", false);
-					getLoaderManager().restartLoader(0, b, frag);
-				}
-			}
-		};
-		IntentFilter mRestartIntentFilter = new IntentFilter(GroceryOTGUtils.BROADCAST_ACTION_RELOAD_GROCERY_LIST);
-		mRestartIntentFilter.addCategory(Intent.CATEGORY_DEFAULT);
-		LocalBroadcastManager.getInstance(mContext).registerReceiver(mRestartReceiver, mRestartIntentFilter);
 	}
 	
 	@Override
 	public void onPause() {
 		super.onPause();
+	}
+
+	@Override
+	public void onDestroyView() {
+		super.onDestroyView();
 		
 		LocalBroadcastManager.getInstance(mContext).unregisterReceiver(mRestartReceiver);
 	}
-
+	
 	@Override
 	public void onDestroy() {
 		super.onDestroy();

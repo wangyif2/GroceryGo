@@ -5,6 +5,8 @@ import com.actionbarsherlock.view.MenuItem;
 import com.groceryotg.android.CategoryTopFragmentActivity;
 import com.groceryotg.android.R;
 import com.groceryotg.android.services.location.LocationServiceReceiver;
+import com.groceryotg.android.utils.GroceryOTGUtils;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -71,6 +73,15 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 				
 				mActivity.sendBroadcast(intent);
 				
+				return true;
+			}
+		});
+		
+		Preference storeFilterPreference = pm.findPreference(SettingsManager.SETTINGS_STORE_FILTER);
+		storeFilterPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+			@Override
+			public boolean onPreferenceChange(Preference preference, Object newValue) {
+				GroceryOTGUtils.restartGroceryLoaders(mActivity);
 				return true;
 			}
 		});

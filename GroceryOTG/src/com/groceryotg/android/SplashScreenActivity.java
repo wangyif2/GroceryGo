@@ -111,7 +111,7 @@ public class SplashScreenActivity extends Activity {
 	
 	private void configDefaultSettings() {
 		// Sets up up the settings defaults
-		PreferenceManager.setDefaultValues(this, R.id.preference_screen, false);
+		PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 	}
 	
 	private void configLocationPoll() {

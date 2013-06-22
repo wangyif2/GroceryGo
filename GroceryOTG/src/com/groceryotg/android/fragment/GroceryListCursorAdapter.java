@@ -181,7 +181,11 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
 				if (price.getText() != mContext.getString(R.string.no_price_available)) {
 					shareText += " for " + price.getText();
 				}
-				shareText += " at " + storeParent.getText() + "! - via " + mContext.getString(R.string.app_name);
+				if (storeParent.getText() != "") {
+					shareText += " at " + storeParent.getText();
+				}
+				
+				shareText += "! - via " + mContext.getString(R.string.app_name);
 				
 				shareIntent.putExtra(Intent.EXTRA_TEXT, shareText);
 				shareIntent.setType("text/plain");
@@ -197,6 +201,11 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
 				LinearLayout parentLayout = (LinearLayout) topView.findViewById(R.id.grocery_list_row_layout);
 				TextView text = (TextView) parentLayout.findViewById(R.id.grocery_row_flyer_url);
 				String url = text.getText().toString();
+				
+				if (url.equals("")) {
+					// If there is no link, then don't do anything
+					return;
+				}
 				
 				Uri uri = Uri.parse(url);
 				Intent intent = new Intent(Intent.ACTION_VIEW, uri);

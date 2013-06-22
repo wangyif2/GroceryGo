@@ -119,14 +119,14 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
 		
 		mDistanceMap = ((GroceryApplication) ((Activity) mContext).getApplication()).getStoreDistanceMap();
 		
-		String[] from = new String[]{GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_GROCERY_ID,
-				GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_GROCERY_NAME,
-				GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_GROCERY_NAME,
-				GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_GROCERY_PRICE,
+		String[] from = new String[]{GroceryTable.COLUMN_GROCERY_ID,
+				GroceryTable.COLUMN_GROCERY_NAME,
+				GroceryTable.COLUMN_GROCERY_NAME,
+				GroceryTable.COLUMN_GROCERY_PRICE,
 				StoreParentTable.COLUMN_STORE_PARENT_NAME,
 				FlyerTable.COLUMN_FLYER_ID,
 				FlyerTable.COLUMN_FLYER_URL,
-				CartTable.TABLE_CART + "." + CartTable.COLUMN_CART_FLAG_SHOPLIST};
+				CartTable.COLUMN_CART_FLAG_SHOPLIST};
 		int[] to = new int[]{R.id.grocery_row_id,
 				R.id.grocery_row_label,
 				R.id.grocery_row_details,

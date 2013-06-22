@@ -98,7 +98,6 @@ public class GroceryViewBinder implements SimpleCursorAdapter.ViewBinder, ViewBi
 			if (itemText == null) {
 				return true;
 			}
-			//Log.i("GroceryOTG", itemText);
 			
 			String delim_period = ". ";
 			String delim_comma = ", ";
@@ -180,15 +179,20 @@ public class GroceryViewBinder implements SimpleCursorAdapter.ViewBinder, ViewBi
 		}
 		else if (columnIndex == cursor.getColumnIndex(FlyerTable.COLUMN_FLYER_ID) 
 				&& viewId == R.id.grocery_row_store_id) {
-			Integer id = cursor.getInt(columnIndex);
+			String itemText = cursor.getString(columnIndex);
 			TextView text = (TextView) view;
 			
-			if (id == null || id == 0) {
+			if (itemText == null) {
 				text.setText("");
 				return true;
 			}
 			
-			ArrayList<Integer> list = mFlyerStoreMap.get(id);
+			ArrayList<Integer> list = mFlyerStoreMap.get(Integer.parseInt(itemText));
+			
+			if (list == null) {
+				text.setText("");
+				return true;
+			}
 			
 			// Pack the list for store IDs into a string
 			StringBuilder sb = new StringBuilder();

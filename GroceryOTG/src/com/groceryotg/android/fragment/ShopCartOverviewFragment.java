@@ -70,7 +70,7 @@ public class ShopCartOverviewFragment extends SherlockListFragment implements Lo
 			public void onReceive(Context context, Intent intent) {
 				if (intent.getAction().equals(GroceryOTGUtils.BROADCAST_ACTION_RELOAD_GROCERY_LIST)) {
 					// Restart the loader, refreshing all views
-					reloadData(false);
+					reloadData(true);
 				}
 			}
 		};
@@ -92,17 +92,17 @@ public class ShopCartOverviewFragment extends SherlockListFragment implements Lo
 		
 		mDistanceMap = ((GroceryApplication) ((Activity) mContext).getApplication()).getStoreDistanceMap();
 		
-		String[] from = new String[]{GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_GROCERY_ID,
-				GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_GROCERY_NAME,
-				GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_GROCERY_NAME,
-				GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_GROCERY_PRICE,
+		String[] from = new String[]{GroceryTable.COLUMN_GROCERY_ID,
+				GroceryTable.COLUMN_GROCERY_NAME,
+				GroceryTable.COLUMN_GROCERY_NAME,
+				GroceryTable.COLUMN_GROCERY_PRICE,
 				StoreParentTable.COLUMN_STORE_PARENT_NAME,
 				FlyerTable.COLUMN_FLYER_ID,
 				FlyerTable.COLUMN_FLYER_URL,
-				CartTable.TABLE_CART + "." + CartTable.COLUMN_CART_FLAG_SHOPLIST,
-				CartTable.TABLE_CART + "." + CartTable.COLUMN_CART_GROCERY_ID,
-				CartTable.TABLE_CART + "." + CartTable.COLUMN_CART_GROCERY_NAME,
-				CartTable.TABLE_CART + "." + CartTable.COLUMN_CART_GROCERY_NAME};
+				CartTable.COLUMN_CART_FLAG_SHOPLIST,
+				CartTable.COLUMN_CART_GROCERY_ID,
+				CartTable.COLUMN_CART_GROCERY_NAME,
+				CartTable.COLUMN_CART_GROCERY_NAME};
 		int[] to = new int[]{R.id.grocery_row_id,
 				R.id.grocery_row_label,
 				R.id.grocery_row_details,
@@ -195,7 +195,6 @@ public class ShopCartOverviewFragment extends SherlockListFragment implements Lo
 	@Override
 	public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
 		mAdapter.swapCursor(cursor);
-		Log.i("GroceryOTG", Integer.toString(cursor.getCount()));
 		if (mProgressView != null)
 			mProgressView.setVisibility(View.GONE);
 	}

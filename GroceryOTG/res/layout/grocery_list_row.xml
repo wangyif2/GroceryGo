@@ -32,7 +32,7 @@
 			android:id="@+id/expandable_toggle_button"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
-			android:background="?android:attr/selectableItemBackground" >
+			android:background="@drawable/empty_background_selectable" >
 		</ImageButton>
 		
 		<LinearLayout

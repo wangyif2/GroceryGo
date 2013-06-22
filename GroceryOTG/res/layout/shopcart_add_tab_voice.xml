@@ -10,7 +10,7 @@
 		android:layout_width="match_parent"
 		android:layout_height="0dp"
 		android:layout_weight="1.0"
-		android:background="?android:attr/selectableItemBackground"
+		android:background="@drawable/empty_background_selectable"
 		android:src="@drawable/ic_cart_add_mic_button" >
 	</ImageButton>
 	

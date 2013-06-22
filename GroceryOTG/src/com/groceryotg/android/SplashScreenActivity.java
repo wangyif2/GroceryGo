@@ -9,8 +9,10 @@ import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.ProgressBar;
+import com.google.android.gcm.GCMRegistrar;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
+import com.groceryotg.android.gcm.GCMServerUtils;
 import com.groceryotg.android.gcm.GCMUtils;
 import com.groceryotg.android.services.NetworkHandler;
 import com.groceryotg.android.services.ServerURL;
@@ -131,6 +133,19 @@ public class SplashScreenActivity extends Activity {
         if (regId.length() == 0) {
             registerGCM();
         }
+        else {
+            if (!GCMRegistrar.isRegisteredOnServer(mContext)) {
+                new AsyncTask<Void, Void, Void>() {
+
+                    @Override
+                    protected Void doInBackground(Void... params) {
+                        GCMServerUtils.register(mContext, regId);
+                        return null;
+                    }
+                }.execute(null, null, null);
+            }
+        }
+        gcm = GoogleCloudMessaging.getInstance(mContext);
     }
 
     private void registerGCM() {
@@ -154,6 +169,8 @@ public class SplashScreenActivity extends Activity {
 
                     // Save the regid - no need to register again.
                     GCMUtils.setRegistrationId(mContext, regid);
+
+                    GCMServerUtils.register(mContext, regid);
                 } catch (IOException ex) {
                     msg = "Error :" + ex.getMessage();
                 }

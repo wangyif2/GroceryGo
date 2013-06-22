@@ -14,7 +14,6 @@ import java.sql.Timestamp;
  * Date: 21/06/13
  */
 public class GCMUtils {
-    public static final String SERVER_URL = "http://groceryotg-test.appspot.com/";
     public static final String SENDER_ID = "554701520307";
 
     public static final String PROPERTY_REG_ID = "registration_id";

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
-import android.app.SearchManager;
 import android.content.*;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -12,12 +11,11 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.util.SparseArray;
-import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -28,8 +26,6 @@ import com.groceryotg.android.database.FlyerTable;
 import com.groceryotg.android.database.GroceryTable;
 import com.groceryotg.android.database.StoreParentTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
-import com.groceryotg.android.services.ServerURL;
-import com.groceryotg.android.settings.SettingsManager;
 import com.groceryotg.android.utils.GroceryOTGUtils;
 import com.tjerkw.slideexpandable.library.SlideExpandableListAdapter;
 
@@ -96,16 +92,17 @@ public class ShopCartOverviewFragment extends SherlockListFragment implements Lo
 		
 		mDistanceMap = ((GroceryApplication) ((Activity) mContext).getApplication()).getStoreDistanceMap();
 		
-		String[] from = new String[]{GroceryTable.COLUMN_GROCERY_ID,
-				GroceryTable.COLUMN_GROCERY_NAME,
-				GroceryTable.COLUMN_GROCERY_NAME,
-				GroceryTable.COLUMN_GROCERY_PRICE,
+		String[] from = new String[]{GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_GROCERY_ID,
+				GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_GROCERY_NAME,
+				GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_GROCERY_NAME,
+				GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_GROCERY_PRICE,
 				StoreParentTable.COLUMN_STORE_PARENT_NAME,
 				FlyerTable.COLUMN_FLYER_ID,
 				FlyerTable.COLUMN_FLYER_URL,
-				CartTable.COLUMN_CART_FLAG_SHOPLIST,
-				CartTable.COLUMN_ID,
-				CartTable.COLUMN_CART_GROCERY_NAME};
+				CartTable.TABLE_CART + "." + CartTable.COLUMN_CART_FLAG_SHOPLIST,
+				CartTable.TABLE_CART + "." + CartTable.COLUMN_CART_GROCERY_ID,
+				CartTable.TABLE_CART + "." + CartTable.COLUMN_CART_GROCERY_NAME,
+				CartTable.TABLE_CART + "." + CartTable.COLUMN_CART_GROCERY_NAME};
 		int[] to = new int[]{R.id.grocery_row_id,
 				R.id.grocery_row_label,
 				R.id.grocery_row_details,
@@ -114,8 +111,9 @@ public class ShopCartOverviewFragment extends SherlockListFragment implements Lo
 				R.id.grocery_row_store_id,
 				R.id.grocery_row_flyer_url,
 				R.id.grocery_row_in_shopcart,
-				R.id.grocery_row_cart_item_id,
-				R.id.grocery_row_cart_grocery_name};
+				R.id.grocery_row_id,
+				R.id.grocery_row_label,
+				R.id.grocery_row_details};
 		
 		mAdapter = new GroceryListCursorAdapter(mContext, R.layout.grocery_fragment_list_row, null, from, to, this.mDistanceMap);
 		mAdapter.setViewBinder(new GroceryViewBinder(mContext));
@@ -197,6 +195,7 @@ public class ShopCartOverviewFragment extends SherlockListFragment implements Lo
 	@Override
 	public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
 		mAdapter.swapCursor(cursor);
+		Log.i("GroceryOTG", Integer.toString(cursor.getCount()));
 		if (mProgressView != null)
 			mProgressView.setVisibility(View.GONE);
 	}

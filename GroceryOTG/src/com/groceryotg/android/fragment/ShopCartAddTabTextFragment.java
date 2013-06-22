@@ -98,6 +98,7 @@ public class ShopCartAddTabTextFragment extends SherlockFragment {
 
 		ContentValues values = new ContentValues();
 		values.put(CartTable.COLUMN_CART_GROCERY_NAME, name);
+		values.putNull(CartTable.COLUMN_CART_GROCERY_ID);
 		values.put(CartTable.COLUMN_CART_FLAG_SHOPLIST, CartTable.FLAG_TRUE);
 		values.put(CartTable.COLUMN_CART_FLAG_WATCHLIST, CartTable.FLAG_FALSE);
 

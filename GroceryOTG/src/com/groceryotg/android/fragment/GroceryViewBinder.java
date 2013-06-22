@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.SimpleCursorAdapter.ViewBinder;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.CheckBox;
@@ -45,11 +46,32 @@ public class GroceryViewBinder implements SimpleCursorAdapter.ViewBinder, ViewBi
 				textView.setText(R.string.no_price_available);
 			}
 			return true;
-		} 
-		
-		else if (columnIndex == cursor.getColumnIndex(GroceryTable.COLUMN_GROCERY_NAME)
-				&& viewId == R.id.grocery_row_label) {
+		}
+		else if ((columnIndex == cursor.getColumnIndex(GroceryTable.COLUMN_GROCERY_ID)
+				|| columnIndex == cursor.getColumnIndex(CartTable.COLUMN_CART_GROCERY_ID))
+				&& viewId == R.id.grocery_row_id) {
 			String itemText = cursor.getString(columnIndex);
+			TextView textView = (TextView) view;
+			
+			if (itemText == null) {
+				return true;
+			}
+			
+			textView.setText(itemText);
+	
+			return true;
+		}
+		else if ((columnIndex == cursor.getColumnIndex(GroceryTable.COLUMN_GROCERY_NAME)
+					|| columnIndex == cursor.getColumnIndex(CartTable.COLUMN_CART_GROCERY_NAME))
+					&& viewId == R.id.grocery_row_label) {
+			String itemText = cursor.getString(columnIndex);
+			TextView textView = (TextView) view;
+			
+			if (itemText == null) {
+				return true;
+			}
+			
+			itemText = cursor.getString(columnIndex);
 			String delim_period = ". ";
 			String delim_comma = ", ";
 			String regex_period = "\\.\\s";
@@ -57,21 +79,27 @@ public class GroceryViewBinder implements SimpleCursorAdapter.ViewBinder, ViewBi
 			if (itemText.indexOf(delim_period) != -1) {
 				String[] itemArray = itemText.split(regex_period);
 				itemText = itemArray[0];
-			} 
-			else if (itemText.indexOf(delim_comma) != -1) {
+			} else if (itemText.indexOf(delim_comma) != -1) {
 				String[] itemArray = itemText.split(regex_comma);
 				itemText = itemArray[0];
 			}
-
-			TextView textView = (TextView) view;
+			
 			textView.setText(itemText);
 
 			return true;
-		} 
-		else if (columnIndex == cursor.getColumnIndex(GroceryTable.COLUMN_GROCERY_NAME)
-				&& viewId == R.id.grocery_row_details) {
+		}
+		else if ((columnIndex == cursor.getColumnIndex(GroceryTable.COLUMN_GROCERY_NAME)
+					|| columnIndex == cursor.getColumnIndex(CartTable.COLUMN_CART_GROCERY_NAME))
+					&& viewId == R.id.grocery_row_details) {
 			String itemText = cursor.getString(columnIndex);
 			String itemDetails = "";
+			TextView textView = (TextView) view;
+			
+			if (itemText == null) {
+				return true;
+			}
+			//Log.i("GroceryOTG", itemText);
+			
 			String delim_period = ". ";
 			String delim_comma = ", ";
 			String regex_period = "\\.\\s";
@@ -116,8 +144,7 @@ public class GroceryViewBinder implements SimpleCursorAdapter.ViewBinder, ViewBi
 					itemDetails = sb.toString();
 				}
 			}
-
-			TextView textView = (TextView) view;
+			
 			textView.setText(itemDetails);
 
 			return true;
@@ -141,6 +168,11 @@ public class GroceryViewBinder implements SimpleCursorAdapter.ViewBinder, ViewBi
 			String storeParentName = cursor.getString(columnIndex);
 			TextView textView = (TextView) view;
 			
+			if (storeParentName == null) {
+				textView.setText("");
+				return true;
+			}
+			
 			textView.setText(storeParentName);
 			textView.setTag(mStoreParentIconMap.get(storeParentName));
 			
@@ -150,6 +182,12 @@ public class GroceryViewBinder implements SimpleCursorAdapter.ViewBinder, ViewBi
 				&& viewId == R.id.grocery_row_store_id) {
 			Integer id = cursor.getInt(columnIndex);
 			TextView text = (TextView) view;
+			
+			if (id == null || id == 0) {
+				text.setText("");
+				return true;
+			}
+			
 			ArrayList<Integer> list = mFlyerStoreMap.get(id);
 			
 			// Pack the list for store IDs into a string

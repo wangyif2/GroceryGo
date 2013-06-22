@@ -76,8 +76,11 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
 		
 		// Replace the default map icon next to the distance text with the store parent's icon
 		TextView storeParentTextView = (TextView) parentLayout.findViewById(R.id.grocery_row_store_parent_name);
-		Drawable iconDrawable = mContext.getResources().getDrawable((Integer) storeParentTextView.getTag());
-		distanceTextView.setCompoundDrawablesWithIntrinsicBounds(iconDrawable, null, null, null);
+		Integer iconId = (Integer) storeParentTextView.getTag();
+		if (iconId != null) {
+			Drawable iconDrawable = mContext.getResources().getDrawable((Integer) storeParentTextView.getTag());
+			distanceTextView.setCompoundDrawablesWithIntrinsicBounds(iconDrawable, null, null, null);
+		}
 		
 		// Now add listeners for the different buttons
 		CheckBox cb_inshoplist = (CheckBox) topView.findViewById(R.id.grocery_row_in_shopcart);

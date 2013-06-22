@@ -187,7 +187,7 @@ public class GroceryotgProvider extends ContentProvider {
 				break;
 			case CART_JOIN_GROCERIES:
 				queryBuilder.setTables(CartTable.TABLE_CART
-						+ " INNER JOIN " + GroceryTable.TABLE_GROCERY
+						+ " LEFT OUTER JOIN " + GroceryTable.TABLE_GROCERY
 							+ " ON " + CartTable.TABLE_CART + "." + CartTable.COLUMN_CART_GROCERY_ID
 							+ " = " + GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_GROCERY_ID
 						+ " LEFT OUTER JOIN " + FlyerTable.TABLE_FLYER

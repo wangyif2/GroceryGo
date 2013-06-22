@@ -170,6 +170,20 @@
 				android:layout_height="0dp"
 				android:visibility="gone"
 				android:text="" />
+			<!-- Hold meta for cart item id -->
+			<TextView
+				android:id="@+id/grocery_row_cart_item_id"
+				android:layout_width="0dp"
+				android:layout_height="0dp"
+				android:visibility="gone"
+				android:text="" />
+			<!-- Hold meta for cart grocery name -->
+			<TextView
+				android:id="@+id/grocery_row_cart_grocery_name"
+				android:layout_width="0dp"
+				android:layout_height="0dp"
+				android:visibility="gone"
+				android:text="" />
 		</LinearLayout>
 	</RelativeLayout>
 </LinearLayout>

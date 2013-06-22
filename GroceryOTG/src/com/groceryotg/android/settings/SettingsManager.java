@@ -3,7 +3,6 @@ package com.groceryotg.android.settings;
 import com.groceryotg.android.R;
 import com.groceryotg.android.utils.MultiSelectListPreference;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;

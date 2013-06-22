@@ -146,7 +146,7 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
 		}
 
 		int layoutId = R.layout.grocery_fragment_list_row;
-		mAdapter = new GroceryListCursorAdapter(mContext, layoutId, null, from, to, mQuery, getLoaderManager(), this, this.mDistanceMap);
+		mAdapter = new GroceryListCursorAdapter(mContext, layoutId, null, from, to, this.mDistanceMap);
 		mAdapter.setViewBinder(new GroceryViewBinder(mContext));
 		
 		SlideExpandableListAdapter wrappedAdapter = new SlideExpandableListAdapter(mAdapter, R.id.expandable_toggle_button, R.id.expandable);

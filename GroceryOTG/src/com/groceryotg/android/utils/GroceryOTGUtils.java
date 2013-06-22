@@ -28,7 +28,6 @@ import com.groceryotg.android.GroceryPagerFragmentActivity;
 import com.groceryotg.android.MapFragmentActivity;
 import com.groceryotg.android.R;
 import com.groceryotg.android.ShopCartOverviewFragmentActivity;
-import com.groceryotg.android.SplashScreenActivity;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.CategoryTable;
 import com.groceryotg.android.database.GroceryTable;

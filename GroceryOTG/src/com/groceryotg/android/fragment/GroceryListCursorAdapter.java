@@ -93,6 +93,7 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
 				// Get the row ID and grocery name from the parent view
 				LinearLayout parentLayout = (LinearLayout) topView.findViewById(R.id.grocery_list_row_layout);
 				TextView tv_id = (TextView) parentLayout.findViewById(R.id.grocery_row_id);
+				TextView tv_cart_id = (TextView) parentLayout.findViewById(R.id.grocery_row_cart_item_id);
 				TextView tv_name = (TextView) parentLayout.findViewById(R.id.grocery_row_label);
 				
 				// Toggle shoplist flag
@@ -108,16 +109,14 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
 					displayMessage = mContext.getResources().getString(R.string.cart_shoplist_removed);
 				}
 				
-				ContentValues values = new ContentValues();
-				values.put(CartTable.COLUMN_CART_GROCERY_ID, tv_id.getText().toString());
-				values.put(CartTable.COLUMN_CART_GROCERY_NAME, tv_name.getText().toString());
-				values.put(CartTable.COLUMN_CART_FLAG_SHOPLIST, shopListFlag);
-				values.put(CartTable.COLUMN_CART_FLAG_WATCHLIST, CartTable.FLAG_FALSE);
-				
-				boolean existsInDatabase = !isChecked;
-				
 				// Determine whether to insert, update, or delete the CartTable entry
-				if (!existsInDatabase && isChecked) {
+				if (isChecked) {
+					ContentValues values = new ContentValues();
+					values.put(CartTable.COLUMN_CART_GROCERY_ID, tv_id.getText().toString());
+					values.put(CartTable.COLUMN_CART_GROCERY_NAME, tv_name.getText().toString());
+					values.put(CartTable.COLUMN_CART_FLAG_SHOPLIST, shopListFlag);
+					values.put(CartTable.COLUMN_CART_FLAG_WATCHLIST, CartTable.FLAG_FALSE);
+					
 					mContext.getContentResolver().insert(GroceryotgProvider.CONTENT_URI_CART_ITEM, values);
 				}
 				/*else if (existsInDatabase && watchListFlag==CartTable.FLAG_TRUE) {
@@ -125,9 +124,19 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
 					String[] selectionArgs = { tv_id.getText().toString() };
 					activity.getContentResolver().update(GroceryotgProvider.CONTENT_URI_CART_ITEM, values, whereClause, selectionArgs);
 				}*/
-				else if (existsInDatabase && !isChecked) {
-					String whereClause = CartTable.TABLE_CART + "." + CartTable.COLUMN_CART_GROCERY_ID + "=?";
-					String[] selectionArgs = { tv_id.getText().toString() };
+				else if (!isChecked) {
+					String whereClause;
+					String arg = "";
+					
+					if (tv_id.getText().toString() == "") {
+						whereClause = CartTable.TABLE_CART + "." + CartTable.COLUMN_ID + "=?";
+						arg = tv_cart_id.getText().toString();
+					} else {
+						whereClause = CartTable.TABLE_CART + "." + CartTable.COLUMN_CART_GROCERY_ID + "=?";
+						arg = tv_id.getText().toString();
+					}
+					
+					String[] selectionArgs = { arg };
 					mContext.getContentResolver().delete(GroceryotgProvider.CONTENT_URI_CART_ITEM, whereClause, selectionArgs);
 				}
 				

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.SimpleCursorAdapter.ViewBinder;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.CheckBox;
@@ -47,13 +46,27 @@ public class GroceryViewBinder implements SimpleCursorAdapter.ViewBinder, ViewBi
 			}
 			return true;
 		}
-		else if ((columnIndex == cursor.getColumnIndex(GroceryTable.COLUMN_GROCERY_ID)
-				|| columnIndex == cursor.getColumnIndex(CartTable.COLUMN_CART_GROCERY_ID))
+		else if (columnIndex == cursor.getColumnIndex(GroceryTable.COLUMN_GROCERY_ID)
 				&& viewId == R.id.grocery_row_id) {
 			String itemText = cursor.getString(columnIndex);
 			TextView textView = (TextView) view;
 			
 			if (itemText == null) {
+				textView.setText("");
+				return true;
+			}
+			
+			textView.setText(itemText);
+	
+			return true;
+		}
+		else if (columnIndex == cursor.getColumnIndex(CartTable.COLUMN_CART_GROCERY_ID)
+				&& viewId == R.id.grocery_row_cart_item_id) {
+			String itemText = cursor.getString(columnIndex);
+			TextView textView = (TextView) view;
+			
+			if (itemText == null) {
+				textView.setText("");
 				return true;
 			}
 			

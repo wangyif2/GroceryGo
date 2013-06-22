@@ -11,7 +11,6 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -70,7 +69,7 @@ public class ShopCartOverviewFragment extends SherlockListFragment implements Lo
 			public void onReceive(Context context, Intent intent) {
 				if (intent.getAction().equals(GroceryOTGUtils.BROADCAST_ACTION_RELOAD_GROCERY_LIST)) {
 					// Restart the loader, refreshing all views
-					reloadData(true);
+					reloadData(false);
 				}
 			}
 		};
@@ -100,7 +99,7 @@ public class ShopCartOverviewFragment extends SherlockListFragment implements Lo
 				FlyerTable.COLUMN_FLYER_ID,
 				FlyerTable.COLUMN_FLYER_URL,
 				CartTable.COLUMN_CART_FLAG_SHOPLIST,
-				CartTable.COLUMN_CART_GROCERY_ID,
+				CartTable.COLUMN_ID,
 				CartTable.COLUMN_CART_GROCERY_NAME,
 				CartTable.COLUMN_CART_GROCERY_NAME};
 		int[] to = new int[]{R.id.grocery_row_id,
@@ -111,7 +110,7 @@ public class ShopCartOverviewFragment extends SherlockListFragment implements Lo
 				R.id.grocery_row_store_id,
 				R.id.grocery_row_flyer_url,
 				R.id.grocery_row_in_shopcart,
-				R.id.grocery_row_id,
+				R.id.grocery_row_cart_item_id,
 				R.id.grocery_row_label,
 				R.id.grocery_row_details};
 		

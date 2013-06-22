@@ -1,21 +1,22 @@
 package com.groceryotg.android;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-
-import com.groceryotg.android.database.StoreParentTable;
-import com.groceryotg.android.database.StoreTable;
-import com.groceryotg.android.utils.GroceryOTGUtils;
-
 import android.app.Application;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Looper;
 import android.util.SparseArray;
+import com.groceryotg.android.database.StoreParentTable;
+import com.groceryotg.android.database.StoreTable;
+import com.groceryotg.android.utils.GroceryOTGUtils;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 public class GroceryApplication extends Application {
+
+    public static final String TAG = "GroceryOTG";
 	
 	private SparseArray<Float> mStoreDistanceMap;
 	private Map<String, Integer> mMapIconMap = new HashMap<String, Integer>();

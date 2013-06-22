@@ -45,8 +45,6 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
 	
 	private SparseArray<Float> mDistanceMap;
 
-	SharedPreferences.OnSharedPreferenceChangeListener mSettingsListener;
-
 	public static GroceryListFragment newInstance(int pos) {
 		GroceryListFragment f = new GroceryListFragment();
 
@@ -71,8 +69,6 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
 		if (args != null) {
 			categoryId = args.getInt(CATEGORY_POSITION);
 		}
-		
-		watchSettings();
 	}
 
 	@Override
@@ -163,20 +159,21 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
 		b.putBoolean("reload", false);
 		getLoaderManager().initLoader(0, b, this);
 	}
-
-	private void watchSettings() {
-		mSettingsListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
-			public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-				loadDataWithQuery(true, mQuery);
-			}
-		};
-		SettingsManager.getPrefs(mContext).registerOnSharedPreferenceChangeListener(mSettingsListener);
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		
+	}
+	
+	@Override
+	public void onPause() {
+		super.onPause();
 	}
 
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		SettingsManager.getPrefs(mContext).unregisterOnSharedPreferenceChangeListener(mSettingsListener);
 	}
 	
 	@Override

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.SimpleCursorAdapter.ViewBinder;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.CheckBox;
@@ -13,21 +12,14 @@ import android.widget.TextView;
 
 import com.groceryotg.android.GroceryApplication;
 import com.groceryotg.android.R;
-import com.groceryotg.android.R.drawable;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.FlyerTable;
 import com.groceryotg.android.database.GroceryTable;
 import com.groceryotg.android.database.StoreParentTable;
-import com.groceryotg.android.database.StoreTable;
 import com.groceryotg.android.services.ServerURL;
-import com.groceryotg.android.utils.GroceryOTGUtils;
-
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 public class GroceryViewBinder implements SimpleCursorAdapter.ViewBinder, ViewBinder {

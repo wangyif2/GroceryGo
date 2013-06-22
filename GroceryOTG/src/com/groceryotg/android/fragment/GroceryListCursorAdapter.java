@@ -78,7 +78,7 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
 		TextView storeParentTextView = (TextView) parentLayout.findViewById(R.id.grocery_row_store_parent_name);
 		Integer iconId = (Integer) storeParentTextView.getTag();
 		if (iconId != null) {
-			Drawable iconDrawable = mContext.getResources().getDrawable((Integer) storeParentTextView.getTag());
+			Drawable iconDrawable = mContext.getResources().getDrawable(iconId);
 			distanceTextView.setCompoundDrawablesWithIntrinsicBounds(iconDrawable, null, null, null);
 		}
 		

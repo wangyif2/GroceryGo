@@ -182,6 +182,7 @@ public class GroceryViewBinder implements SimpleCursorAdapter.ViewBinder, ViewBi
 			
 			if (storeParentName == null) {
 				textView.setText("");
+				textView.setTag(null);
 				return true;
 			}
 			

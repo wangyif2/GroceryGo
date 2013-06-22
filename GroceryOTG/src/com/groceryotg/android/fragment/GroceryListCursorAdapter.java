@@ -7,7 +7,6 @@ import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.LoaderManager;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.SparseArray;
 import android.view.View;
@@ -23,6 +22,8 @@ import com.groceryotg.android.MapFragmentActivity;
 import com.groceryotg.android.R;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
+import com.groceryotg.android.utils.GroceryOTGUtils;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
@@ -31,22 +32,14 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
 	
 	private Context mContext;
 	
-	private LoaderManager mLoaderManager;
-	private LoaderManager.LoaderCallbacks<Cursor> mCallbacks;
-	
-	private String mQuery = "";
 	private SparseArray<Float> mDistanceMap;
 	
-	public GroceryListCursorAdapter(Context context, int layout, Cursor c, String[] from, int[] to, String query, LoaderManager loaderManager, LoaderManager.LoaderCallbacks<Cursor> callbacks, SparseArray<Float> distanceMap) {
+	public GroceryListCursorAdapter(Context context, int layout, Cursor c, String[] from, int[] to, SparseArray<Float> distanceMap) {
 		super(context, layout, c, from, to, 0);
 		
 		this.mContext = context;
 		
-		this.mQuery = query;
 		this.mDistanceMap = distanceMap;
-		
-		this.mLoaderManager = loaderManager;
-		this.mCallbacks = callbacks;
 	}
 
 	@Override
@@ -136,10 +129,7 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
 				}
 				
 				// Restart the loader, refreshing all views
-				Bundle b = new Bundle();
-				b.putString("query", mQuery);
-				b.putBoolean("reload", false);
-				mLoaderManager.restartLoader(0, b, mCallbacks);
+				GroceryOTGUtils.restartGroceryLoaders(mContext);
 				
 				Toast t = Toast.makeText(mContext, displayMessage, Toast.LENGTH_SHORT);
 				t.show();

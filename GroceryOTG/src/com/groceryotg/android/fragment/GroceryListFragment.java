@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.SparseArray;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -29,6 +30,7 @@ import com.groceryotg.android.database.StoreParentTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 import com.groceryotg.android.services.ServerURL;
 import com.groceryotg.android.settings.SettingsManager;
+import com.groceryotg.android.utils.GroceryOTGUtils;
 import com.tjerkw.slideexpandable.library.SlideExpandableListAdapter;
 
 public class GroceryListFragment extends SherlockListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -44,6 +46,8 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
 	private Integer categoryId = GroceryListCursorAdapter.GLOBAL_SEARCH_CATEGORY;
 	
 	private SparseArray<Float> mDistanceMap;
+	
+	private BroadcastReceiver mRestartReceiver;
 
 	public static GroceryListFragment newInstance(int pos) {
 		GroceryListFragment f = new GroceryListFragment();
@@ -83,6 +87,23 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
 		
 		if (mEmptyTextView != null)
 			mEmptyTextView.setVisibility(View.INVISIBLE);
+		
+		final GroceryListFragment frag = this;
+		mRestartReceiver = new BroadcastReceiver() {
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				if (intent.getAction().equals(GroceryOTGUtils.BROADCAST_ACTION_RELOAD_GROCERY_LIST)) {
+					// Restart the loader, refreshing all views
+					Bundle b = new Bundle();
+					b.putString("query", mQuery);
+					b.putBoolean("reload", false);
+					getLoaderManager().restartLoader(0, b, frag);
+				}
+			}
+		};
+		IntentFilter mRestartIntentFilter = new IntentFilter(GroceryOTGUtils.BROADCAST_ACTION_RELOAD_GROCERY_LIST);
+		mRestartIntentFilter.addCategory(Intent.CATEGORY_DEFAULT);
+		LocalBroadcastManager.getInstance(mContext).registerReceiver(mRestartReceiver, mRestartIntentFilter);
 		
 		return v;
 	}
@@ -125,7 +146,7 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
 		}
 
 		int layoutId = R.layout.grocery_fragment_list_row;
-		mAdapter = new GroceryListCursorAdapter(mContext, layoutId, null, from, to, mQuery, getLoaderManager(), this, this.mDistanceMap);
+		mAdapter = new GroceryListCursorAdapter(mContext, layoutId, null, from, to, this.mDistanceMap);
 		mAdapter.setViewBinder(new GroceryViewBinder(mContext));
 		
 		SlideExpandableListAdapter wrappedAdapter = new SlideExpandableListAdapter(mAdapter, R.id.expandable_toggle_button, R.id.expandable);
@@ -163,7 +184,6 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
 	@Override
 	public void onResume() {
 		super.onResume();
-		
 	}
 	
 	@Override
@@ -171,6 +191,13 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
 		super.onPause();
 	}
 
+	@Override
+	public void onDestroyView() {
+		super.onDestroyView();
+		
+		LocalBroadcastManager.getInstance(mContext).unregisterReceiver(mRestartReceiver);
+	}
+	
 	@Override
 	public void onDestroy() {
 		super.onDestroy();

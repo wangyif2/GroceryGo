@@ -1,11 +1,20 @@
 package com.groceryotg.android;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
 import android.app.Activity;
 import android.content.*;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.widget.ProgressBar;
 
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
@@ -13,6 +22,7 @@ import com.groceryotg.android.services.NetworkHandler;
 import com.groceryotg.android.services.ServerURL;
 import com.groceryotg.android.services.location.LocationServiceReceiver;
 import com.groceryotg.android.settings.SettingsManager;
+import com.groceryotg.android.utils.GroceryOTGUtils;
 
 public class SplashScreenActivity extends Activity {
 	public static final String BROADCAST_ACTION_UPDATE_PROGRESS = "com.groceryotg.android.intent_action_update_progress_bar";
@@ -82,7 +92,7 @@ public class SplashScreenActivity extends Activity {
 	private void init() {
 		configProgressBar();
 
-		configDatabase();
+		configLocale();
 		
 		configDefaultSettings();
 	}
@@ -92,6 +102,37 @@ public class SplashScreenActivity extends Activity {
 		mProgressBar = (ProgressBar)findViewById(R.id.loading_progress_bar);
 		mProgressBar.setProgress(0);
 		mProgressBar.setMax(PROGRESS_MAX);
+	}
+	
+	private void configLocale() {
+		// configure locale settings
+		Location lastKnownLocation = GroceryOTGUtils.getLastKnownLocation(mContext);
+		
+		Geocoder gcd = new Geocoder(this, Locale.getDefault());
+		List<Address> addresses = new ArrayList<Address>();
+		try {
+			addresses = gcd.getFromLocation(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude(), 1);
+		} catch (IOException e) {
+			Log.i("GroceryOTG", "Could not get location");
+			e.printStackTrace();
+		}
+		if (addresses.size() > 0) {
+			String locality = addresses.get(0).getLocality();
+			String adminArea = addresses.get(0).getAdminArea();
+			String countryCode = addresses.get(0).getCountryCode();
+			
+			// TODO: Have a db of supported areas
+			Log.i("GroceryOTG", locality + "." + adminArea + "." + countryCode);
+			if (locality.equals("Toronto") && adminArea.equals("Ontario") && countryCode.equals("CA")) {
+				// If the location is among supported areas, then populate the db
+				configDatabase();
+			} else {
+				configHandler();
+			}
+		} else {
+			Log.i("GroceryOTG", "Could not determine location");
+			configHandler();
+		}
 	}
 
 	private void configDatabase() {

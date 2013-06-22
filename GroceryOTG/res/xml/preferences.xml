@@ -17,8 +17,8 @@
 			android:title="@string/setting_notification_freq_title"
 			android:summary="@string/setting_notification_freq_summary"
 			android:dependency="notification_enabled"
-			android:entries="@array/notification_freq_value"
-			android:entryValues="@array/notification_freq_entry"
+			android:entries="@array/notification_freq_entry"
+			android:entryValues="@array/notification_freq_value"
 			android:defaultValue="1" />
 	</PreferenceCategory>
 

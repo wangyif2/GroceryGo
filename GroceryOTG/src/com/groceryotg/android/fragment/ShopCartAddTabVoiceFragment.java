@@ -20,6 +20,7 @@ import com.actionbarsherlock.app.SherlockFragment;
 import com.groceryotg.android.R;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
+import com.groceryotg.android.utils.GroceryOTGUtils;
 
 public class ShopCartAddTabVoiceFragment extends SherlockFragment {
 	private static final int VOICE_RECOGNITION_REQUEST_CODE = 1000;
@@ -130,5 +131,7 @@ public class ShopCartAddTabVoiceFragment extends SherlockFragment {
 		values.put(CartTable.COLUMN_CART_FLAG_WATCHLIST, CartTable.FLAG_FALSE);
 
 		mContext.getContentResolver().insert(GroceryotgProvider.CONTENT_URI_CART_ITEM, values);
+		
+		GroceryOTGUtils.restartGroceryLoaders(mContext);
 	}
 }

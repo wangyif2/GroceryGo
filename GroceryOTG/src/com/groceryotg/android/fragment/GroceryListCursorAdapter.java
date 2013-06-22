@@ -23,6 +23,8 @@ import com.groceryotg.android.MapFragmentActivity;
 import com.groceryotg.android.R;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
+import com.groceryotg.android.utils.GroceryOTGUtils;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
@@ -136,10 +138,7 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
 				}
 				
 				// Restart the loader, refreshing all views
-				Bundle b = new Bundle();
-				b.putString("query", mQuery);
-				b.putBoolean("reload", false);
-				mLoaderManager.restartLoader(0, b, mCallbacks);
+				GroceryOTGUtils.restartGroceryLoaders(mContext);
 				
 				Toast t = Toast.makeText(mContext, displayMessage, Toast.LENGTH_SHORT);
 				t.show();

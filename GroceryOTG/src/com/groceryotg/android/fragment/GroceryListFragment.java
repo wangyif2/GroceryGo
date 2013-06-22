@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.SparseArray;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -29,6 +30,7 @@ import com.groceryotg.android.database.StoreParentTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
 import com.groceryotg.android.services.ServerURL;
 import com.groceryotg.android.settings.SettingsManager;
+import com.groceryotg.android.utils.GroceryOTGUtils;
 import com.tjerkw.slideexpandable.library.SlideExpandableListAdapter;
 
 public class GroceryListFragment extends SherlockListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -44,6 +46,8 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
 	private Integer categoryId = GroceryListCursorAdapter.GLOBAL_SEARCH_CATEGORY;
 	
 	private SparseArray<Float> mDistanceMap;
+	
+	private BroadcastReceiver mRestartReceiver;
 
 	public static GroceryListFragment newInstance(int pos) {
 		GroceryListFragment f = new GroceryListFragment();
@@ -164,11 +168,30 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
 	public void onResume() {
 		super.onResume();
 		
+		final GroceryListFragment frag = this;
+		
+		mRestartReceiver = new BroadcastReceiver() {
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				if (intent.getAction().equals(GroceryOTGUtils.BROADCAST_ACTION_RELOAD_GROCERY_LIST)) {
+					// Restart the loader, refreshing all views
+					Bundle b = new Bundle();
+					b.putString("query", mQuery);
+					b.putBoolean("reload", false);
+					getLoaderManager().restartLoader(0, b, frag);
+				}
+			}
+		};
+		IntentFilter mRestartIntentFilter = new IntentFilter(GroceryOTGUtils.BROADCAST_ACTION_RELOAD_GROCERY_LIST);
+		mRestartIntentFilter.addCategory(Intent.CATEGORY_DEFAULT);
+		LocalBroadcastManager.getInstance(mContext).registerReceiver(mRestartReceiver, mRestartIntentFilter);
 	}
 	
 	@Override
 	public void onPause() {
 		super.onPause();
+		
+		LocalBroadcastManager.getInstance(mContext).unregisterReceiver(mRestartReceiver);
 	}
 
 	@Override

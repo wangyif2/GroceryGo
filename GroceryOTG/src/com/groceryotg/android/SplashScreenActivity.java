@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Locale;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.*;
 import android.location.Address;
 import android.location.Geocoder;
@@ -29,6 +30,7 @@ public class SplashScreenActivity extends Activity {
 	public static final String BROADCAST_ACTION_UPDATE_PROGRESS_INCREMENT = "intent_action_update_progres_increment";
 	
 	private static final String SETTINGS_IS_DB_POPULATED = "isDBPopulated";
+	private static final String SETTINGS_IS_LOCATION_FOUND = "isLocationFound";
 	// used to know if the back button was pressed in the splash screen activity
 	// and avoid opening the next activity
 	private boolean mIsBackButtonPressed;
@@ -105,33 +107,59 @@ public class SplashScreenActivity extends Activity {
 	}
 	
 	private void configLocale() {
-		// configure locale settings
-		Location lastKnownLocation = GroceryOTGUtils.getLastKnownLocation(mContext);
+		SharedPreferences settings = getPreferences(0);
+		boolean isLocationFound = settings.getBoolean(SETTINGS_IS_LOCATION_FOUND, false);
 		
-		Geocoder gcd = new Geocoder(this, Locale.getDefault());
-		List<Address> addresses = new ArrayList<Address>();
-		try {
-			addresses = gcd.getFromLocation(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude(), 1);
-		} catch (IOException e) {
-			Log.i("GroceryOTG", "Could not get location");
-			e.printStackTrace();
-		}
-		if (addresses.size() > 0) {
-			String locality = addresses.get(0).getLocality();
-			String adminArea = addresses.get(0).getAdminArea();
-			String countryCode = addresses.get(0).getCountryCode();
+		if (!isLocationFound) {
+			// configure locale settings
+			Location lastKnownLocation = GroceryOTGUtils.getLastKnownLocation(mContext);
 			
-			// TODO: Have a db of supported areas
-			Log.i("GroceryOTG", locality + "." + adminArea + "." + countryCode);
-			if (locality.equals("Toronto") && adminArea.equals("Ontario") && countryCode.equals("CA")) {
-				// If the location is among supported areas, then populate the db
-				configDatabase();
+			Geocoder gcd = new Geocoder(this, Locale.getDefault());
+			List<Address> addresses = new ArrayList<Address>();
+			try {
+				addresses = gcd.getFromLocation(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude(), 1);
+			} catch (IOException e) {
+				Log.i("GroceryOTG", "Could not get location");
+				e.printStackTrace();
+			}
+			if (addresses.size() > 0) {
+				String locality = addresses.get(0).getLocality();
+				String adminArea = addresses.get(0).getAdminArea();
+				String countryCode = addresses.get(0).getCountryCode();
+				
+				// TODO: Have a db of supported areas
+				Log.i("GroceryOTG", locality + "." + adminArea + "." + countryCode);
+				if (locality.equals("Toronto1") && adminArea.equals("Ontario") && countryCode.equals("CA")) {
+					// If the location is among supported areas, then populate the db
+					SharedPreferences.Editor settingsEditor = settings.edit();
+					settingsEditor.putBoolean(SETTINGS_IS_LOCATION_FOUND, true);
+					settingsEditor.commit();
+					
+					configDatabase();
+				} else {
+					AlertDialog.Builder builder = new AlertDialog.Builder(this);
+					builder.setMessage("Location " + locality + "," + adminArea + "," + countryCode + " is not fully supported. Sales data will not be available.").setTitle("WARNING");
+					builder.setPositiveButton("Continue", new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int id) {
+						}
+					});
+					AlertDialog dialog = builder.create();
+					dialog.show();
+					
+					configHandler();
+				}
 			} else {
+				AlertDialog.Builder builder = new AlertDialog.Builder(this);
+				builder.setMessage("Could not determine location. Sales data will not be available.").setTitle("WARNING");
+				builder.setPositiveButton("Continue", null);
+				AlertDialog dialog = builder.create();
+				dialog.show();
+				
 				configHandler();
 			}
 		} else {
-			Log.i("GroceryOTG", "Could not determine location");
-			configHandler();
+			configDatabase();
 		}
 	}
 
@@ -141,10 +169,10 @@ public class SplashScreenActivity extends Activity {
 		
 		if (ServerURL.checkNetworkStatus(getBaseContext()) && !isDBPopulated) {
 			populateCategory();
-			populateGrocery();
 			populateStoreParent();
 			populateStore();
 			populateFlyer();
+			populateGrocery();
 		} else {
 			configHandler();
 		}
@@ -231,7 +259,7 @@ public class SplashScreenActivity extends Activity {
 			int requestType = intent.getBundleExtra("bundle").getInt(NetworkHandler.REQUEST_TYPE);
 
 			// Network handler services are processed in the order they are called in
-			if (requestType == NetworkHandler.FLY) {
+			if (requestType == NetworkHandler.GRO) {
 				SharedPreferences settings = getPreferences(0);
 				SharedPreferences.Editor settingsEditor = settings.edit();
 				settingsEditor.putBoolean(SETTINGS_IS_DB_POPULATED, true);

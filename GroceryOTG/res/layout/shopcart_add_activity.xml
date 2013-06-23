@@ -6,11 +6,12 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent" >
 	
-	<RelativeLayout
-		android:id="@+id/content"
+	<fragment
+		android:name="com.groceryotg.android.fragment.ShopCartAddFragment"
+		android:id="@+id/shopcart_add_content_fragment"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent" >
-	</RelativeLayout>
+	</fragment>	
 
 	<ListView
 		android:id="@+id/navigation_drawer_view"

@@ -8,6 +8,7 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class ServerURL {
 	private static final String baseUrl = "http://groceryotg.elasticbeanstalk.com/";
@@ -17,7 +18,7 @@ public class ServerURL {
 	private static final String storeParentUrl = baseUrl + "/GetStoreParentInfo";
 	private static final String flyerUrl = baseUrl + "/GetFlyerInfo";
 
-	private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.CANADA);
 	private static final DecimalFormat getDecimalFormat = new DecimalFormat("0.00");
 
 	private static String lastRefreshed = null;

@@ -5,6 +5,8 @@ import com.actionbarsherlock.view.MenuItem;
 import com.groceryotg.android.CategoryTopFragmentActivity;
 import com.groceryotg.android.R;
 import com.groceryotg.android.services.location.LocationServiceReceiver;
+import com.groceryotg.android.utils.GroceryOTGUtils;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -49,7 +51,7 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 	private void registerActions() {
 		PreferenceManager pm = this.getPreferenceManager();
 		
-		Preference notificationEnabledPreference = pm.findPreference("notification_enabled");
+		Preference notificationEnabledPreference = pm.findPreference(SettingsManager.SETTINGS_NOTIFICATION_ENABLED);
 		assert (notificationEnabledPreference != null);
 		
 		notificationEnabledPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -61,14 +63,25 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 				Intent intent = new Intent(mActivity, LocationServiceReceiver.class);
 				
 				if (isChecked) {
+					SettingsManager.setNotificationsEnabled(mActivity, true);
 					intent.setAction(LocationServiceReceiver.LOCATION_SERVICE_RECEIVER_ENABLE);
 					
 				} else {
+					SettingsManager.setNotificationsEnabled(mActivity, false);
 					intent.setAction(LocationServiceReceiver.LOCATION_SERVICE_RECEIVER_DISABLE);
 				}
 				
 				mActivity.sendBroadcast(intent);
 				
+				return true;
+			}
+		});
+		
+		Preference storeFilterPreference = pm.findPreference(SettingsManager.SETTINGS_STORE_FILTER);
+		storeFilterPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+			@Override
+			public boolean onPreferenceChange(Preference preference, Object newValue) {
+				GroceryOTGUtils.restartGroceryLoaders(mActivity);
 				return true;
 			}
 		});

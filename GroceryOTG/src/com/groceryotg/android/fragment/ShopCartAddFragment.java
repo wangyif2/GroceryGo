@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,8 +21,9 @@ import com.actionbarsherlock.app.SherlockFragment;
 import com.groceryotg.android.R;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
+import com.groceryotg.android.utils.GroceryOTGUtils;
 
-public class ShopCartAddTabTextFragment extends SherlockFragment {
+public class ShopCartAddFragment extends SherlockFragment {
 	private Context mContext;
 	
 	private EditText mEditText;
@@ -38,7 +41,27 @@ public class ShopCartAddTabTextFragment extends SherlockFragment {
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View v = inflater.inflate(R.layout.shopcart_add_tab_text, container, false);
+		View v = inflater.inflate(R.layout.shopcart_add_fragment, container, false);
+		
+		final Button confirmButton = (Button) v.findViewById(R.id.positive_button);
+		confirmButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				addItem();
+			}
+		});
+		
+		final Button clearButton = (Button) v.findViewById(R.id.negative_button);
+		clearButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				clearFocus();
+			}
+		});
+		
+		// Disable both buttons by default
+		confirmButton.setEnabled(false);
+		clearButton.setEnabled(false);
 		
 		mEditText = (EditText) v.findViewById(R.id.cart_grocery_edit_name);
 		mEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -51,23 +74,27 @@ public class ShopCartAddTabTextFragment extends SherlockFragment {
 				return false;
 			}
 		});
+		mEditText.addTextChangedListener(new TextWatcher() {
+			@Override
+			public void afterTextChanged(Editable s) {
+				if (s == null || s.length() == 0) {
+					confirmButton.setEnabled(false);
+					clearButton.setEnabled(false);
+				} else {
+					confirmButton.setEnabled(true);
+					clearButton.setEnabled(true);
+				}
+			}
 
-		Button confirmButton = (Button) v.findViewById(R.id.positive_button);
-		confirmButton.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(View v) {
-				addItem();
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+			}
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
 			}
 		});
-		
-		Button clearButton = (Button) v.findViewById(R.id.negative_button);
-		clearButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				clearFocus();
-			}
-		});
-		
+
 		return v;
 	}
 
@@ -98,9 +125,12 @@ public class ShopCartAddTabTextFragment extends SherlockFragment {
 
 		ContentValues values = new ContentValues();
 		values.put(CartTable.COLUMN_CART_GROCERY_NAME, name);
+		values.putNull(CartTable.COLUMN_CART_GROCERY_ID);
 		values.put(CartTable.COLUMN_CART_FLAG_SHOPLIST, CartTable.FLAG_TRUE);
 		values.put(CartTable.COLUMN_CART_FLAG_WATCHLIST, CartTable.FLAG_FALSE);
 
 		mContext.getContentResolver().insert(GroceryotgProvider.CONTENT_URI_CART_ITEM, values);
+		
+		GroceryOTGUtils.restartGroceryLoaders(mContext);
 	}
 }

@@ -28,6 +28,7 @@
 	<color name="semi_transparent">#0c000000</color>
 	
 	<color name="holo_blue_very_light">#8033b5e5</color>
+	<color name="t_holo_blue_light">#8033b5e5</color>
 	
 	<color name="navdrawer_gray">#ffe7e8e9</color>
 </resources>

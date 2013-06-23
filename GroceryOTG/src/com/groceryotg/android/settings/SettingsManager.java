@@ -1,5 +1,6 @@
 package com.groceryotg.android.settings;
 
+import com.groceryotg.android.R;
 import com.groceryotg.android.utils.MultiSelectListPreference;
 
 import android.content.Context;
@@ -12,17 +13,40 @@ public class SettingsManager {
 	public static final String SETTINGS_PREVIOUS_NOTIFICATION = "previous_notification_set";
 	public static final String SETTINGS_NAVIGATION_DRAWER_SEEN = "navigation_drawer_seen";
 	public static final String SETTINGS_CHANGELOG_SEEN_VERSION = "changelog_seen_version";
+	public static final String SETTINGS_NOTIFICATION_ENABLED = "notification_enabled";
+	public static final String SETTINGS_NOTIFICATION_FREQUENCY = "notification_freq";
+	public static final String SETTINGS_STORE_FILTER = "store_select";
 	
 	public static SharedPreferences getPrefs(Context context) {
 		return PreferenceManager.getDefaultSharedPreferences(context);
 	}
 	
 	public static boolean getNotificationsEnabled(Context context) {
-		return getPrefs(context).getBoolean("notification_enabled", true);
+		return getPrefs(context).getBoolean(SETTINGS_NOTIFICATION_ENABLED, true);
+	}
+	
+	public static void setNotificationsEnabled(Context context, boolean state) {
+		Editor editor = getPrefs(context).edit();
+		editor.putBoolean(SETTINGS_NOTIFICATION_ENABLED, state);
+		editor.commit();
 	}
 	
 	public static int getNotificationFrequency(Context context) {
-		return getPrefs(context).getInt("notification_freq", 3);
+		String f = getPrefs(context).getString(SETTINGS_NOTIFICATION_FREQUENCY, null);
+		String[] freqArray = context.getResources().getStringArray(R.array.notification_freq_value);
+		
+		int period = 60*60*1000;
+		if (f.equals(freqArray[0])) {
+			// 30 minutes
+			period = 30*60*1000;
+		} else if (f.equals(freqArray[1])) {
+			// 1 hour
+			period = 60*60*1000;
+		} else if (f.equals(freqArray[2])) {
+			// 3 hours
+			period = 3*60*60*1000;
+		}
+		return period;
 	}
 	
 	public static boolean getNavigationDrawerSeen(Context context) {

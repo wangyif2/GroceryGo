@@ -91,6 +91,8 @@ public class NetworkHandler extends IntentService {
 
 		if (categoryArray != null) {
 			try {
+				db.beginTransaction();
+				
 				int previousIncrement = 0;
 				int windowLength = categoryArray.size() / 10;
 				if (windowLength == 0)
@@ -113,7 +115,9 @@ public class NetworkHandler extends IntentService {
 						updateProgressBar(1);
 					}
 				}
+				db.setTransactionSuccessful();
 			} finally {
+				db.endTransaction();
 				ih.close();
 			}
 		}
@@ -145,6 +149,8 @@ public class NetworkHandler extends IntentService {
 
 		if (storeParentArray != null) {
 			try {
+				db.beginTransaction();
+				
 				int previousIncrement = 0;
 				int windowLength = storeParentArray.size() / 10;
 				if (windowLength == 0)
@@ -166,7 +172,9 @@ public class NetworkHandler extends IntentService {
 						updateProgressBar(1);
 					}
 				}
+				db.setTransactionSuccessful();
 			} finally {
+				db.endTransaction();
 				ih.close();
 			}
 		}
@@ -180,6 +188,8 @@ public class NetworkHandler extends IntentService {
 
 		if (storeArray != null) {
 			try {
+				db.beginTransaction();
+				
 				int previousIncrement = 0;
 				int windowLength = storeArray.size() / 10;
 				if (windowLength == 0)
@@ -213,7 +223,9 @@ public class NetworkHandler extends IntentService {
 						updateProgressBar(1);
 					}
 				}
+				db.setTransactionSuccessful();
 			} finally {
+				db.endTransaction();
 				ih.close();
 			}
 		}
@@ -227,6 +239,8 @@ public class NetworkHandler extends IntentService {
 
 		if (flyerArray != null) {
 			try {
+				db.beginTransaction();
+				
 				int previousIncrement = 0;
 				int windowLength = flyerArray.size() / 10;
 				if (windowLength == 0)
@@ -250,7 +264,9 @@ public class NetworkHandler extends IntentService {
 						updateProgressBar(1);
 					}
 				}
+				db.setTransactionSuccessful();
 			} finally {
+				db.endTransaction();
 				ih.close();
 			}
 		}
@@ -264,6 +280,8 @@ public class NetworkHandler extends IntentService {
 
 		int maxGroceryIdBefore = GroceryOTGUtils.getMaxGroceryId(this);
 		try {
+			db.beginTransaction();
+			
 			int previousIncrement = 0;
 			int windowLength = groceryArray.size() / 50;
 			if (windowLength == 0)
@@ -301,7 +319,9 @@ public class NetworkHandler extends IntentService {
 					updateProgressBar(1);
 				}
 			}
+			db.setTransactionSuccessful();
 		} finally {
+			db.endTransaction();
 			ih.close();
 		}
 

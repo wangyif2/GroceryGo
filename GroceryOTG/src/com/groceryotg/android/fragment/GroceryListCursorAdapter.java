@@ -7,13 +7,14 @@ import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.LoaderManager;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -23,6 +24,8 @@ import com.groceryotg.android.MapFragmentActivity;
 import com.groceryotg.android.R;
 import com.groceryotg.android.database.CartTable;
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
+import com.groceryotg.android.utils.GroceryOTGUtils;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
@@ -31,22 +34,14 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
 	
 	private Context mContext;
 	
-	private LoaderManager mLoaderManager;
-	private LoaderManager.LoaderCallbacks<Cursor> mCallbacks;
-	
-	private String mQuery = "";
 	private SparseArray<Float> mDistanceMap;
 	
-	public GroceryListCursorAdapter(Context context, int layout, Cursor c, String[] from, int[] to, String query, LoaderManager loaderManager, LoaderManager.LoaderCallbacks<Cursor> callbacks, SparseArray<Float> distanceMap) {
+	public GroceryListCursorAdapter(Context context, int layout, Cursor c, String[] from, int[] to, SparseArray<Float> distanceMap) {
 		super(context, layout, c, from, to, 0);
 		
 		this.mContext = context;
 		
-		this.mQuery = query;
 		this.mDistanceMap = distanceMap;
-		
-		this.mLoaderManager = loaderManager;
-		this.mCallbacks = callbacks;
 	}
 
 	@Override
@@ -83,8 +78,11 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
 		
 		// Replace the default map icon next to the distance text with the store parent's icon
 		TextView storeParentTextView = (TextView) parentLayout.findViewById(R.id.grocery_row_store_parent_name);
-		Drawable iconDrawable = mContext.getResources().getDrawable((Integer) storeParentTextView.getTag());
-		distanceTextView.setCompoundDrawablesWithIntrinsicBounds(iconDrawable, null, null, null);
+		Integer iconId = (Integer) storeParentTextView.getTag();
+		if (iconId != null) {
+			Drawable iconDrawable = mContext.getResources().getDrawable(iconId);
+			distanceTextView.setCompoundDrawablesWithIntrinsicBounds(iconDrawable, null, null, null);
+		}
 		
 		// Now add listeners for the different buttons
 		CheckBox cb_inshoplist = (CheckBox) topView.findViewById(R.id.grocery_row_in_shopcart);
@@ -97,6 +95,7 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
 				// Get the row ID and grocery name from the parent view
 				LinearLayout parentLayout = (LinearLayout) topView.findViewById(R.id.grocery_list_row_layout);
 				TextView tv_id = (TextView) parentLayout.findViewById(R.id.grocery_row_id);
+				TextView tv_cart_id = (TextView) parentLayout.findViewById(R.id.grocery_row_cart_item_id);
 				TextView tv_name = (TextView) parentLayout.findViewById(R.id.grocery_row_label);
 				
 				// Toggle shoplist flag
@@ -112,16 +111,14 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
 					displayMessage = mContext.getResources().getString(R.string.cart_shoplist_removed);
 				}
 				
-				ContentValues values = new ContentValues();
-				values.put(CartTable.COLUMN_CART_GROCERY_ID, tv_id.getText().toString());
-				values.put(CartTable.COLUMN_CART_GROCERY_NAME, tv_name.getText().toString());
-				values.put(CartTable.COLUMN_CART_FLAG_SHOPLIST, shopListFlag);
-				values.put(CartTable.COLUMN_CART_FLAG_WATCHLIST, CartTable.FLAG_FALSE);
-				
-				boolean existsInDatabase = !isChecked;
-				
 				// Determine whether to insert, update, or delete the CartTable entry
-				if (!existsInDatabase && isChecked) {
+				if (isChecked) {
+					ContentValues values = new ContentValues();
+					values.put(CartTable.COLUMN_CART_GROCERY_ID, tv_id.getText().toString());
+					values.put(CartTable.COLUMN_CART_GROCERY_NAME, tv_name.getText().toString());
+					values.put(CartTable.COLUMN_CART_FLAG_SHOPLIST, shopListFlag);
+					values.put(CartTable.COLUMN_CART_FLAG_WATCHLIST, CartTable.FLAG_FALSE);
+					
 					mContext.getContentResolver().insert(GroceryotgProvider.CONTENT_URI_CART_ITEM, values);
 				}
 				/*else if (existsInDatabase && watchListFlag==CartTable.FLAG_TRUE) {
@@ -129,20 +126,38 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
 					String[] selectionArgs = { tv_id.getText().toString() };
 					activity.getContentResolver().update(GroceryotgProvider.CONTENT_URI_CART_ITEM, values, whereClause, selectionArgs);
 				}*/
-				else if (existsInDatabase && !isChecked) {
-					String whereClause = CartTable.TABLE_CART + "." + CartTable.COLUMN_CART_GROCERY_ID + "=?";
-					String[] selectionArgs = { tv_id.getText().toString() };
+				else if (!isChecked) {
+					String whereClause;
+					String arg = "";
+					
+					if (tv_id.getText().toString() == "") {
+						whereClause = CartTable.TABLE_CART + "." + CartTable.COLUMN_ID + "=?";
+						arg = tv_cart_id.getText().toString();
+					} else {
+						whereClause = CartTable.TABLE_CART + "." + CartTable.COLUMN_CART_GROCERY_ID + "=?";
+						arg = tv_id.getText().toString();
+					}
+					
+					String[] selectionArgs = { arg };
 					mContext.getContentResolver().delete(GroceryotgProvider.CONTENT_URI_CART_ITEM, whereClause, selectionArgs);
 				}
 				
 				// Restart the loader, refreshing all views
-				Bundle b = new Bundle();
-				b.putString("query", mQuery);
-				b.putBoolean("reload", false);
-				mLoaderManager.restartLoader(0, b, mCallbacks);
+				GroceryOTGUtils.restartGroceryLoaders(mContext);
 				
 				Toast t = Toast.makeText(mContext, displayMessage, Toast.LENGTH_SHORT);
 				t.show();
+			}
+		});
+		cb_inshoplist.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton button, boolean isChecked) {
+				if (isChecked) {
+					button.setBackgroundColor(mContext.getResources().getColor(R.color.holo_blue_very_light));
+				} else {
+					button.setBackgroundColor(mContext.getResources().getColor(R.color.semi_transparent));
+				}
+				
 			}
 		});
 		
@@ -188,7 +203,11 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
 				if (price.getText() != mContext.getString(R.string.no_price_available)) {
 					shareText += " for " + price.getText();
 				}
-				shareText += " at " + storeParent.getText() + "! - via " + mContext.getString(R.string.app_name);
+				if (storeParent.getText() != "") {
+					shareText += " at " + storeParent.getText();
+				}
+				
+				shareText += "! - via " + mContext.getString(R.string.app_name);
 				
 				shareIntent.putExtra(Intent.EXTRA_TEXT, shareText);
 				shareIntent.setType("text/plain");
@@ -204,6 +223,11 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
 				LinearLayout parentLayout = (LinearLayout) topView.findViewById(R.id.grocery_list_row_layout);
 				TextView text = (TextView) parentLayout.findViewById(R.id.grocery_row_flyer_url);
 				String url = text.getText().toString();
+				
+				if (url.equals("")) {
+					// If there is no link, then don't do anything
+					return;
+				}
 				
 				Uri uri = Uri.parse(url);
 				Intent intent = new Intent(Intent.ACTION_VIEW, uri);

@@ -16,7 +16,9 @@
 		android:gravity="center"
 		android:padding="5dp"
 		android:paddingTop="10dp"
-		android:stretchMode="spacingWidthUniform" />
+		android:stretchMode="spacingWidthUniform"
+		android:listSelector="@drawable/non_empty_background_selectable"
+		android:drawSelectorOnTop="true" />
 
 	<TextView
 		android:id="@+id/empty_category_list"

@@ -9,6 +9,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.content.CursorLoader;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.util.SparseArray;
 import android.util.SparseBooleanArray;
@@ -42,6 +43,7 @@ import java.util.List;
 import java.util.Set;
 
 public class GroceryOTGUtils {
+	public static final String BROADCAST_ACTION_RELOAD_GROCERY_LIST = "com.groceryotg.android.intent_action_reload_grocery_list";
 
 	public static Cursor getStoreLocations(Context context) {
 		String[] projection = {StoreTable.TABLE_STORE+"."+StoreTable.COLUMN_STORE_ID,
@@ -180,6 +182,10 @@ public class GroceryOTGUtils {
 		float distance;
 		
 		Location loc = GroceryOTGUtils.getLastKnownLocation(context);
+		// Set up mock location for emulator
+		//Location loc = new Location("Mock Location");
+		//loc.setLatitude(43.6481);
+		//loc.setLongitude(-79.4042);
 		
 		storeLocations.moveToFirst();
 		while (!storeLocations.isAfterLast()) {
@@ -475,5 +481,11 @@ public class GroceryOTGUtils {
 	public static void launchAboutDialog(Context context) {
 		AboutDialogFragment dialog = new AboutDialogFragment();
 		dialog.show(((SherlockFragmentActivity) context).getSupportFragmentManager(), "about_dialog");
+	}
+	
+	public static void restartGroceryLoaders(Context context) {
+		Intent intent = new Intent();
+		intent.setAction(BROADCAST_ACTION_RELOAD_GROCERY_LIST);
+		LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
 	}
 }

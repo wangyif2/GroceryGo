@@ -1,11 +1,19 @@
 package com.groceryotg.android;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
 import android.app.Activity;
 import android.content.*;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.widget.ProgressBar;
 
 import com.groceryotg.android.database.contentprovider.GroceryotgProvider;
@@ -13,18 +21,22 @@ import com.groceryotg.android.services.NetworkHandler;
 import com.groceryotg.android.services.ServerURL;
 import com.groceryotg.android.services.location.LocationServiceReceiver;
 import com.groceryotg.android.settings.SettingsManager;
+import com.groceryotg.android.utils.GroceryOTGUtils;
 
 public class SplashScreenActivity extends Activity {
 	public static final String BROADCAST_ACTION_UPDATE_PROGRESS = "com.groceryotg.android.intent_action_update_progress_bar";
 	public static final String BROADCAST_ACTION_UPDATE_PROGRESS_INCREMENT = "intent_action_update_progres_increment";
 	
 	private static final String SETTINGS_IS_DB_POPULATED = "isDBPopulated";
+	private static final String SETTINGS_IS_LOCATION_FOUND = "isLocationFound";
 	// used to know if the back button was pressed in the splash screen activity
 	// and avoid opening the next activity
 	private boolean mIsBackButtonPressed;
 	private static final int SPLASH_DURATION = 10; // 10 milliseconds
 	
 	private Context mContext;
+	
+	private String mLocalizationWarningDialogIntentExtra = null;
 
 	private RefreshStatusReceiver mRefreshStatusReceiver;
 	private static final int PROGRESS_MAX = 100;
@@ -82,7 +94,7 @@ public class SplashScreenActivity extends Activity {
 	private void init() {
 		configProgressBar();
 
-		configDatabase();
+		configLocale();
 		
 		configDefaultSettings();
 	}
@@ -93,6 +105,53 @@ public class SplashScreenActivity extends Activity {
 		mProgressBar.setProgress(0);
 		mProgressBar.setMax(PROGRESS_MAX);
 	}
+	
+	private void configLocale() {
+		SharedPreferences settings = getPreferences(0);
+		boolean isLocationFound = settings.getBoolean(SETTINGS_IS_LOCATION_FOUND, false);
+		
+		if (!isLocationFound) {
+			// configure locale settings
+			Location lastKnownLocation = GroceryOTGUtils.getLastKnownLocation(mContext);
+			
+			Geocoder gcd = new Geocoder(this, Locale.getDefault());
+			List<Address> addresses = new ArrayList<Address>();
+			try {
+				addresses = gcd.getFromLocation(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude(), 1);
+			} catch (Exception e) {
+				Log.i("GroceryOTG", "Could not get location");
+				e.printStackTrace();
+			}
+			if (addresses.size() > 0) {
+				String locality = addresses.get(0).getLocality();
+				String adminArea = addresses.get(0).getAdminArea();
+				String countryCode = addresses.get(0).getCountryCode();
+				
+				SharedPreferences.Editor settingsEditor = settings.edit();
+				settingsEditor.putBoolean(SETTINGS_IS_LOCATION_FOUND, true);
+				settingsEditor.commit();
+				
+				// TODO: Have a db of supported areas
+				Log.i("GroceryOTG", locality + "." + adminArea + "." + countryCode);
+				if (locality.equals("Toronto") && adminArea.equals("Ontario") && countryCode.equals("CA")) {
+					// If the location is among supported areas, then populate the db
+					configDatabase();
+				} else {
+					// If is not supported, then warn the user their location is not supported fully
+					mLocalizationWarningDialogIntentExtra = CategoryTopFragmentActivity.INTENT_EXTRA_FLAG_LOCATION_NOT_SUPPORTED;
+					configHandler();
+				}
+			} else {
+				// If the location service isn't working, then warn the user
+				mLocalizationWarningDialogIntentExtra = CategoryTopFragmentActivity.INTENT_EXTRA_FLAG_LOCATION_SERVICE_BAD;
+				configHandler();
+				// switch when using emulator
+				//configDatabase();
+			}
+		} else {
+			configDatabase();
+		}
+	}
 
 	private void configDatabase() {
 		SharedPreferences settings = getPreferences(0);
@@ -100,10 +159,10 @@ public class SplashScreenActivity extends Activity {
 		
 		if (ServerURL.checkNetworkStatus(getBaseContext()) && !isDBPopulated) {
 			populateCategory();
-			populateGrocery();
 			populateStoreParent();
 			populateStore();
 			populateFlyer();
+			populateGrocery();
 		} else {
 			configHandler();
 		}
@@ -167,6 +226,9 @@ public class SplashScreenActivity extends Activity {
 					// start the home screen if the back button wasn't pressed
 					// already
 					Intent intent = new Intent(SplashScreenActivity.this, CategoryTopFragmentActivity.class);
+					if (mLocalizationWarningDialogIntentExtra != null) {
+						intent.putExtra(mLocalizationWarningDialogIntentExtra, true);
+					}
 					SplashScreenActivity.this.startActivity(intent);
 				}
 			}
@@ -190,7 +252,7 @@ public class SplashScreenActivity extends Activity {
 			int requestType = intent.getBundleExtra("bundle").getInt(NetworkHandler.REQUEST_TYPE);
 
 			// Network handler services are processed in the order they are called in
-			if (requestType == NetworkHandler.FLY) {
+			if (requestType == NetworkHandler.GRO) {
 				SharedPreferences settings = getPreferences(0);
 				SharedPreferences.Editor settingsEditor = settings.edit();
 				settingsEditor.putBoolean(SETTINGS_IS_DB_POPULATED, true);

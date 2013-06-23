@@ -37,6 +37,8 @@ public class SplashScreenActivity extends Activity {
 	private static final int SPLASH_DURATION = 10; // 10 milliseconds
 	
 	private Context mContext;
+	
+	private String mLocalizationWarningDialogIntentExtra = null;
 
 	private RefreshStatusReceiver mRefreshStatusReceiver;
 	private static final int PROGRESS_MAX = 100;
@@ -127,35 +129,23 @@ public class SplashScreenActivity extends Activity {
 				String adminArea = addresses.get(0).getAdminArea();
 				String countryCode = addresses.get(0).getCountryCode();
 				
+				SharedPreferences.Editor settingsEditor = settings.edit();
+				settingsEditor.putBoolean(SETTINGS_IS_LOCATION_FOUND, true);
+				settingsEditor.commit();
+				
 				// TODO: Have a db of supported areas
 				Log.i("GroceryOTG", locality + "." + adminArea + "." + countryCode);
-				if (locality.equals("Toronto1") && adminArea.equals("Ontario") && countryCode.equals("CA")) {
+				if (locality.equals("Toronto") && adminArea.equals("Ontario") && countryCode.equals("CA")) {
 					// If the location is among supported areas, then populate the db
-					SharedPreferences.Editor settingsEditor = settings.edit();
-					settingsEditor.putBoolean(SETTINGS_IS_LOCATION_FOUND, true);
-					settingsEditor.commit();
-					
 					configDatabase();
 				} else {
-					AlertDialog.Builder builder = new AlertDialog.Builder(this);
-					builder.setMessage("Location " + locality + "," + adminArea + "," + countryCode + " is not fully supported. Sales data will not be available.").setTitle("WARNING");
-					builder.setPositiveButton("Continue", new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int id) {
-						}
-					});
-					AlertDialog dialog = builder.create();
-					dialog.show();
-					
+					// If is not supported, then warn the user their location is not supported fully
+					mLocalizationWarningDialogIntentExtra = CategoryTopFragmentActivity.INTENT_EXTRA_FLAG_LOCATION_NOT_SUPPORTED;
 					configHandler();
 				}
 			} else {
-				AlertDialog.Builder builder = new AlertDialog.Builder(this);
-				builder.setMessage("Could not determine location. Sales data will not be available.").setTitle("WARNING");
-				builder.setPositiveButton("Continue", null);
-				AlertDialog dialog = builder.create();
-				dialog.show();
-				
+				// If the location service isn't working, then warn the user
+				mLocalizationWarningDialogIntentExtra = CategoryTopFragmentActivity.INTENT_EXTRA_FLAG_LOCATION_SERVICE_BAD;
 				configHandler();
 			}
 		} else {
@@ -236,6 +226,9 @@ public class SplashScreenActivity extends Activity {
 					// start the home screen if the back button wasn't pressed
 					// already
 					Intent intent = new Intent(SplashScreenActivity.this, CategoryTopFragmentActivity.class);
+					if (mLocalizationWarningDialogIntentExtra != null) {
+						intent.putExtra(mLocalizationWarningDialogIntentExtra, true);
+					}
 					SplashScreenActivity.this.startActivity(intent);
 				}
 			}

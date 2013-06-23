@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,6 +43,26 @@ public class ShopCartAddFragment extends SherlockFragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.shopcart_add_fragment, container, false);
 		
+		final Button confirmButton = (Button) v.findViewById(R.id.positive_button);
+		confirmButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				addItem();
+			}
+		});
+		
+		final Button clearButton = (Button) v.findViewById(R.id.negative_button);
+		clearButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				clearFocus();
+			}
+		});
+		
+		// Disable both buttons by default
+		confirmButton.setEnabled(false);
+		clearButton.setEnabled(false);
+		
 		mEditText = (EditText) v.findViewById(R.id.cart_grocery_edit_name);
 		mEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 			@Override
@@ -52,23 +74,27 @@ public class ShopCartAddFragment extends SherlockFragment {
 				return false;
 			}
 		});
+		mEditText.addTextChangedListener(new TextWatcher() {
+			@Override
+			public void afterTextChanged(Editable s) {
+				if (s == null || s.length() == 0) {
+					confirmButton.setEnabled(false);
+					clearButton.setEnabled(false);
+				} else {
+					confirmButton.setEnabled(true);
+					clearButton.setEnabled(true);
+				}
+			}
 
-		Button confirmButton = (Button) v.findViewById(R.id.positive_button);
-		confirmButton.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(View v) {
-				addItem();
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+			}
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
 			}
 		});
-		
-		Button clearButton = (Button) v.findViewById(R.id.negative_button);
-		clearButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				clearFocus();
-			}
-		});
-		
+
 		return v;
 	}
 

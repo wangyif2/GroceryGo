@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <changelog>
+	<release version="nightly-20130622" versioncode="8">
+		<change>Feature: Improved layout for adding custom items to the cart.</change>
+		<change>Feature: Implemented shopping cart as a wrapper of the basic grocery list. Code reuse ftw.</change>
+		<change>Feature: Added basic client-side localization. The app will give warnings when started outside of our supported area (Toronto for now).</change>
+	</release>
 	<release version="nightly-20130621" versioncode="7">
 		<change>Feature: Offloaded static calculations to the splash screen. This seems to dramatically improve the responsiveness of the app once it is loaded.</change>
 		<change>Bugfix: Fixing grocery list updating sync.</change>

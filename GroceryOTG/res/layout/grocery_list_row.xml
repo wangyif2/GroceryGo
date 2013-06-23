@@ -10,7 +10,6 @@
 		android:id="@+id/grocery_row_in_shopcart"
 		android:layout_width="wrap_content"
 		android:layout_height="match_parent"
-		android:background="@drawable/ic_checkbox_shoplist_bg"
 		android:clickable="true"
 		android:contentDescription="@string/groceryoverview_row_imagedesc"
 		android:button="@drawable/ic_menu_cart_wide" >
@@ -38,14 +37,13 @@
 		<LinearLayout
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
-			android:orientation="vertical" >
+			android:orientation="vertical"
+			android:paddingLeft="6dp" >
 			
 			<LinearLayout
 				android:id="@+id/grocery_list_row1"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:layout_marginTop="6dp"
-				android:layout_marginLeft="8dp"
 				android:orientation="horizontal" >
 				   
 				<TextView
@@ -92,14 +90,14 @@
 					android:layout_gravity="left"
 					android:layout_weight="0.9"
 					android:paddingBottom="8dp"
-					android:paddingLeft="12dp"
+					android:paddingLeft="6dp"
 					android:orientation="vertical" >
 					
 				 	<TextView
 						android:id="@+id/grocery_row_details"
 						android:layout_width="fill_parent"
 						android:layout_height="wrap_content"
-						android:layout_marginTop="6dp"
+						android:paddingTop="6dp"
 						android:text="@+id/grocery_row_details_text"
 						android:textSize="12sp"
 						android:fontFamily="sans-serif"

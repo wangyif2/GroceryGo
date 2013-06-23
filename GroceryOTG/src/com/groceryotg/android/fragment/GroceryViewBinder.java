@@ -23,12 +23,14 @@ import java.util.List;
 import java.util.Map;
 
 public class GroceryViewBinder implements SimpleCursorAdapter.ViewBinder, ViewBinder {
+	private Context mContext;
 	private Map<String, Integer> mStoreParentIconMap;
 	private SparseArray<ArrayList<Integer>> mFlyerStoreMap;
 	
 	public GroceryViewBinder(Context context) {
-		mStoreParentIconMap = ((GroceryApplication) ((Activity) context).getApplication()).getStoreParentIconMap();
-		mFlyerStoreMap = ((GroceryApplication) ((Activity) context).getApplication()).getFlyerStoreMap();
+		this.mContext = context;
+		this.mStoreParentIconMap = ((GroceryApplication) ((Activity) context).getApplication()).getStoreParentIconMap();
+		this.mFlyerStoreMap = ((GroceryApplication) ((Activity) context).getApplication()).getFlyerStoreMap();
 	}
 	
 	@Override
@@ -168,9 +170,11 @@ public class GroceryViewBinder implements SimpleCursorAdapter.ViewBinder, ViewBi
 			
 			if (inShoplist != 0) {
 				cb.setChecked(true);
+				cb.setBackgroundColor(mContext.getResources().getColor(R.color.holo_blue_very_light));
 			}
 			else {
 				cb.setChecked(false);
+				cb.setBackgroundColor(mContext.getResources().getColor(R.color.semi_transparent));
 			}
 			
 			return true;

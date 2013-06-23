@@ -13,6 +13,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -145,6 +147,17 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
 				
 				Toast t = Toast.makeText(mContext, displayMessage, Toast.LENGTH_SHORT);
 				t.show();
+			}
+		});
+		cb_inshoplist.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton button, boolean isChecked) {
+				if (isChecked) {
+					button.setBackgroundColor(mContext.getResources().getColor(R.color.holo_blue_very_light));
+				} else {
+					button.setBackgroundColor(mContext.getResources().getColor(R.color.semi_transparent));
+				}
+				
 			}
 		});
 		

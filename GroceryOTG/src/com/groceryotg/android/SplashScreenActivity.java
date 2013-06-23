@@ -1,12 +1,10 @@
 package com.groceryotg.android;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.*;
 import android.location.Address;
 import android.location.Geocoder;
@@ -146,7 +144,8 @@ public class SplashScreenActivity extends Activity {
 			} else {
 				// If the location service isn't working, then warn the user
 				mLocalizationWarningDialogIntentExtra = CategoryTopFragmentActivity.INTENT_EXTRA_FLAG_LOCATION_SERVICE_BAD;
-				configHandler();
+				//configHandler();
+				configDatabase();
 			}
 		} else {
 			configDatabase();

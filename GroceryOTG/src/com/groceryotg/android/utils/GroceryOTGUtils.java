@@ -181,7 +181,11 @@ public class GroceryOTGUtils {
 		Location storeLoc;
 		float distance;
 		
-		Location loc = GroceryOTGUtils.getLastKnownLocation(context);
+		//Location loc = GroceryOTGUtils.getLastKnownLocation(context);
+		// Set up mock location for emulator
+		Location loc = new Location("Mock Location");
+		loc.setLatitude(43.6481);
+		loc.setLongitude(-79.4042);
 		
 		storeLocations.moveToFirst();
 		while (!storeLocations.isAfterLast()) {

@@ -120,7 +120,7 @@ public class SplashScreenActivity extends Activity {
 			List<Address> addresses = new ArrayList<Address>();
 			try {
 				addresses = gcd.getFromLocation(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude(), 1);
-			} catch (IOException e) {
+			} catch (Exception e) {
 				Log.i("GroceryOTG", "Could not get location");
 				e.printStackTrace();
 			}

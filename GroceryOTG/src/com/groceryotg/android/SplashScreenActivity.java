@@ -144,8 +144,9 @@ public class SplashScreenActivity extends Activity {
 			} else {
 				// If the location service isn't working, then warn the user
 				mLocalizationWarningDialogIntentExtra = CategoryTopFragmentActivity.INTENT_EXTRA_FLAG_LOCATION_SERVICE_BAD;
-				//configHandler();
-				configDatabase();
+				configHandler();
+				// switch when using emulator
+				//configDatabase();
 			}
 		} else {
 			configDatabase();

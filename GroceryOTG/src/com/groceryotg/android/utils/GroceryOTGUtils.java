@@ -285,7 +285,8 @@ public class GroceryOTGUtils {
 		};
 		
 		drawerLayout = (DrawerLayout) activity.findViewById(R.id.navigation_drawer_layout);
-		drawerLayout.setDrawerListener(new DrawerLayout.SimpleDrawerListener() {
+		
+		drawerToggle = new ActionBarDrawerToggle(activity, drawerLayout, R.drawable.ic_drawer, R.string.navdrawer_open, R.string.navdrawer_closed) {
 			public void onDrawerClosed(View view) {
 				((SherlockFragmentActivity) activity).getSupportActionBar().setTitle(activity.getString(titleResId));
 				((SherlockFragmentActivity) activity).supportInvalidateOptionsMenu();
@@ -296,28 +297,17 @@ public class GroceryOTGUtils {
 				((SherlockFragmentActivity) activity).getSupportActionBar().setTitle(activity.getString(R.string.app_name));
 				((SherlockFragmentActivity) activity).supportInvalidateOptionsMenu();
 			}
-		});
+		};
+		if (!isTopView) {
+			drawerToggle.setDrawerIndicatorEnabled(false);
+		}
+		drawerLayout.setDrawerListener(drawerToggle);
 		
 		drawerList = (ListView) activity.findViewById(R.id.navigation_drawer_view);
 		drawerList.setAdapter(new GroceryOTGUtils.NavigationDrawerAdapter(activity, rowModels));
 		drawerList.setOnItemClickListener(new NavigationDrawerItemClickListener(activity, drawerLayout, drawerList));
 		
-		// Only set up toggling when at a top view
 		if (isTopView) {
-			drawerToggle = new ActionBarDrawerToggle(activity, drawerLayout, R.drawable.ic_drawer, R.string.navdrawer_open, R.string.navdrawer_closed) {
-				public void onDrawerClosed(View view) {
-					((SherlockFragmentActivity) activity).getSupportActionBar().setTitle(activity.getString(titleResId));
-					((SherlockFragmentActivity) activity).supportInvalidateOptionsMenu();
-				}
-				public void onDrawerOpened(View drawerView) {
-					if (!SettingsManager.getNavigationDrawerSeen(activity))
-						SettingsManager.setNavigationDrawerSeen(activity, true);
-					((SherlockFragmentActivity) activity).getSupportActionBar().setTitle(activity.getString(R.string.app_name));
-					((SherlockFragmentActivity) activity).supportInvalidateOptionsMenu();
-				}
-			};
-			drawerLayout.setDrawerListener(drawerToggle);
-			
 			// Handle first-time viewing of navigaton drawer
 			if (!SettingsManager.getNavigationDrawerSeen(activity)) {
 				drawerLayout.openDrawer(drawerList);

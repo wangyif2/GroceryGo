@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <changelog>
+	<release version="nightly-20130624" versioncode="10">
+		<change>Tweak: Cleaned up some code.</change>
+	</release>
+	<release version="nightly-20130623" versioncode="9">
+		<change>Feature: Improved DB population time.</change>
+		<change>Bugfix: Fixing layout problems with Android versions less than 4.2.2.</change>
+		<change>Tweak: Added visual feedback for clicking on categories.</change>
+	</release>
 	<release version="nightly-20130622" versioncode="8">
 		<change>Feature: Improved layout for adding custom items to the cart.</change>
 		<change>Feature: Implemented shopping cart as a wrapper of the basic grocery list. Code reuse ftw.</change>

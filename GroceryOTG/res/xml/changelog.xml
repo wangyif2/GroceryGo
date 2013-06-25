@@ -3,6 +3,8 @@
 <changelog>
 	<release version="nightly-20130624" versioncode="10">
 		<change>Tweak: Cleaned up some code.</change>
+		<change>Bugfix: Fixed problem caused by missing store flyers.</change>
+		<change>Feature: Added crawling of all store location flyers for Toronto.</change>
 	</release>
 	<release version="nightly-20130623" versioncode="9">
 		<change>Feature: Improved DB population time.</change>

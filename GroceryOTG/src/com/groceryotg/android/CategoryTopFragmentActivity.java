@@ -169,7 +169,7 @@ public class CategoryTopFragmentActivity extends SherlockFragmentActivity {
 	}
 
 	private void refreshCategories() {
-		Toast t = Toast.makeText(this, "Fetching new items...", Toast.LENGTH_LONG);
+		Toast t = Toast.makeText(this, "Fetching new items...", Toast.LENGTH_SHORT);
 		t.show();
 
 		Intent intent = new Intent(mContext, NetworkHandler.class);
@@ -194,10 +194,10 @@ public class CategoryTopFragmentActivity extends SherlockFragmentActivity {
 				RefreshAnimation.refreshIcon(context, false, refreshItem);
 			}
 			if (resultCode == NetworkHandler.CONNECTION) {
-				toast = Toast.makeText(mContext, "Groceries Updated", Toast.LENGTH_LONG);
+				toast = Toast.makeText(mContext, "Groceries Updated", Toast.LENGTH_SHORT);
 			} else if (resultCode == NetworkHandler.NO_CONNECTION) {
 				RefreshAnimation.refreshIcon(context, false, refreshItem);
-				toast = Toast.makeText(mContext, "No Internet Connection", Toast.LENGTH_LONG);
+				toast = Toast.makeText(mContext, "No Internet Connection", Toast.LENGTH_SHORT);
 			}
 			assert toast != null;
 			toast.show();

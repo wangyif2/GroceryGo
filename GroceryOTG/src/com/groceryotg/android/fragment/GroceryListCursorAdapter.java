@@ -18,7 +18,6 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.groceryotg.android.MapFragmentActivity;
 import com.groceryotg.android.R;
@@ -144,9 +143,6 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
 				
 				// Restart the loader, refreshing all views
 				GroceryOTGUtils.restartGroceryLoaders(mContext);
-				
-				Toast t = Toast.makeText(mContext, displayMessage, Toast.LENGTH_SHORT);
-				t.show();
 			}
 		});
 		cb_inshoplist.setOnCheckedChangeListener(new OnCheckedChangeListener() {

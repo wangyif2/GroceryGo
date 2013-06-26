@@ -99,7 +99,7 @@ public class ShopCartAddFragment extends SherlockFragment {
 	}
 
 	private void makeToast(String text) {
-		Toast.makeText(mContext, text, Toast.LENGTH_LONG).show();
+		Toast.makeText(mContext, text, Toast.LENGTH_SHORT).show();
 	}
 	
 	private void clearFocus() {
@@ -115,11 +115,6 @@ public class ShopCartAddFragment extends SherlockFragment {
 		String name = mEditText.getText().toString();
 		
 		clearFocus();
-		
-		if (TextUtils.isEmpty(name)) {
-			makeToast("Please enter a name");
-			return;
-		}
 		
 		makeToast(getString(R.string.cart_shoplist_added));
 

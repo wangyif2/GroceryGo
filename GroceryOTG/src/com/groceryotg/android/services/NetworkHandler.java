@@ -204,11 +204,12 @@ public class NetworkHandler extends IntentService {
 
 				for (JsonElement jsonElement : storeArray) {
 					store = gson.fromJson(jsonElement, Store.class);
-
+					
 					ih.prepareForInsert();
 					ih.bind(store_id, store.getStoreId());
 					ih.bind(store_parent, store.getStoreParent().getStoreParentId());
-					ih.bind(store_flyer, store.getFlyer().getFlyerId());
+					if (store.getFlyer() != null)
+						ih.bind(store_flyer, store.getFlyer().getFlyerId());
 					if (store.getStoreAddress() != null)
 						ih.bind(store_addr, store.getStoreAddress());
 					if (store.getStoreLatitude() != null)

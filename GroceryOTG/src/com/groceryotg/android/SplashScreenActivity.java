@@ -1,9 +1,5 @@
 package com.groceryotg.android;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
 import android.app.Activity;
 import android.content.*;
 import android.location.Address;
@@ -14,7 +10,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 import android.util.Log;
 import android.widget.ProgressBar;
 import com.google.android.gcm.GCMRegistrar;
@@ -29,6 +24,9 @@ import com.groceryotg.android.settings.SettingsManager;
 import com.groceryotg.android.utils.GroceryOTGUtils;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 public class SplashScreenActivity extends Activity {
 	public static final String BROADCAST_ACTION_UPDATE_PROGRESS = "com.groceryotg.android.intent_action_update_progress_bar";
@@ -94,12 +92,21 @@ public class SplashScreenActivity extends Activity {
 		LocalBroadcastManager.getInstance(this).registerReceiver(mProgressReceiver, mProgressIntentFilter);
 	}
 
+	@Override
+	protected void onPause() {
+		super.onPause();
+
+		LocalBroadcastManager.getInstance(this).unregisterReceiver(mRefreshStatusReceiver);
+		LocalBroadcastManager.getInstance(this).unregisterReceiver(mProgressReceiver);
+	}
+
     private void init() {
 		configProgressBar();
         
         configGCM();
 
-		configLocale();
+//		configLocale();
+        configDatabase();
 		
 		configDefaultSettings();
 	}
@@ -222,11 +229,16 @@ public class SplashScreenActivity extends Activity {
 		
 		if (ServerURL.checkNetworkStatus(getBaseContext()) && !isDBPopulated) {
 			populateCategory();
-			populateStoreParent();
-			populateStore();
-			populateFlyer();
-			populateGrocery();
-		} else {
+            Log.i(GroceryApplication.TAG, "Cat poped");
+            populateStoreParent();
+            Log.i(GroceryApplication.TAG, "StorePar poped");
+            populateStore();
+            Log.i(GroceryApplication.TAG, "Store poped");
+            populateFlyer();
+            Log.i(GroceryApplication.TAG, "Flyer poped");
+            populateGrocery();
+            Log.i(GroceryApplication.TAG, "Grocery poped");
+        } else {
 			configHandler();
 		}
 	}
@@ -278,24 +290,24 @@ public class SplashScreenActivity extends Activity {
 		Handler handler = new Handler();
 		// wait a bit, then start the home screen
 		handler.postDelayed(new Runnable() {
-			@Override
-			public void run() {
-				// make sure we close the splash screen so the user won't come
-				// back when it presses back key
-				finish();
-				if (!mIsBackButtonPressed) {
-					((GroceryApplication) getApplication()).constructGlobals(mContext);
-					
-					// start the home screen if the back button wasn't pressed
-					// already
-					Intent intent = new Intent(SplashScreenActivity.this, CategoryTopFragmentActivity.class);
-					if (mLocalizationWarningDialogIntentExtra != null) {
-						intent.putExtra(mLocalizationWarningDialogIntentExtra, true);
-					}
-					SplashScreenActivity.this.startActivity(intent);
-				}
-			}
-		}, SPLASH_DURATION);
+            @Override
+            public void run() {
+                // make sure we close the splash screen so the user won't come
+                // back when it presses back key
+                finish();
+                if (!mIsBackButtonPressed) {
+                    ((GroceryApplication) getApplication()).constructGlobals(mContext);
+
+                    // start the home screen if the back button wasn't pressed
+                    // already
+                    Intent intent = new Intent(SplashScreenActivity.this, CategoryTopFragmentActivity.class);
+                    if (mLocalizationWarningDialogIntentExtra != null) {
+                        intent.putExtra(mLocalizationWarningDialogIntentExtra, true);
+                    }
+                    SplashScreenActivity.this.startActivity(intent);
+                }
+            }
+        }, SPLASH_DURATION);
 	}
 
 	@Override

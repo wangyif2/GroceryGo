@@ -4,31 +4,29 @@
 	android:orientation="vertical"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent" >
-	
-	<ImageButton
-		android:id="@+id/voice_button"
+
+	<LinearLayout
 		android:layout_width="match_parent"
 		android:layout_height="0dp"
 		android:layout_weight="1.0"
-		android:background="?android:attr/selectableItemBackground"
-		android:src="@drawable/ic_cart_add_mic_button" >
-	</ImageButton>
-	
-	<TextView
-		android:id="@+id/voice_text"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:paddingTop="10dp"
-		android:paddingBottom="10dp"
-		android:hint="@string/cart_add_voice_hint"
-		android:gravity="center_horizontal" >
-	</TextView>
+		android:paddingTop="30dp"
+		android:orientation="vertical" >
+		
+		<EditText
+			android:id="@+id/cart_grocery_edit_name"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:inputType="textAutoCorrect"
+			android:hint="@string/cart_grocery_edit_name"
+			android:imeOptions="actionGo" >
+		</EditText>
+	</LinearLayout>
 	
 	<LinearLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:orientation="horizontal"
-		android:paddingBottom="20dp" >
+		android:paddingBottom="20dp"
+		android:orientation="horizontal" >
 		
 		<Button
 			android:id="@+id/negative_button"
@@ -46,4 +44,5 @@
 			android:text="@string/cart_add_positive_button" >
 		</Button>
 	</LinearLayout>
+	
 </LinearLayout>

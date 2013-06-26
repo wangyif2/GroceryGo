@@ -10,7 +10,6 @@
 		android:id="@+id/grocery_row_in_shopcart"
 		android:layout_width="wrap_content"
 		android:layout_height="match_parent"
-		android:background="@drawable/ic_checkbox_shoplist_bg"
 		android:clickable="true"
 		android:contentDescription="@string/groceryoverview_row_imagedesc"
 		android:button="@drawable/ic_menu_cart_wide" >
@@ -32,20 +31,19 @@
 			android:id="@+id/expandable_toggle_button"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
-			android:background="?android:attr/selectableItemBackground" >
+			android:background="@drawable/empty_background_selectable" >
 		</ImageButton>
 		
 		<LinearLayout
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
-			android:orientation="vertical" >
+			android:orientation="vertical"
+			android:paddingLeft="6dp" >
 			
 			<LinearLayout
 				android:id="@+id/grocery_list_row1"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:layout_marginTop="6dp"
-				android:layout_marginLeft="8dp"
 				android:orientation="horizontal" >
 				   
 				<TextView
@@ -83,7 +81,8 @@
 				android:id="@+id/grocery_list_row2"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:orientation="horizontal" >
+				android:orientation="horizontal"
+				android:baselineAligned="false" >
 				
 				<LinearLayout
 					android:layout_width="0dp"
@@ -91,14 +90,14 @@
 					android:layout_gravity="left"
 					android:layout_weight="0.9"
 					android:paddingBottom="8dp"
-					android:paddingLeft="12dp"
+					android:paddingLeft="6dp"
 					android:orientation="vertical" >
 					
 				 	<TextView
 						android:id="@+id/grocery_row_details"
 						android:layout_width="fill_parent"
 						android:layout_height="wrap_content"
-						android:layout_marginTop="6dp"
+						android:paddingTop="6dp"
 						android:text="@+id/grocery_row_details_text"
 						android:textSize="12sp"
 						android:fontFamily="sans-serif"
@@ -154,7 +153,7 @@
 				android:layout_width="0dp"
 				android:layout_height="0dp"
 				android:visibility="gone"
-				android:text="0" />
+				android:text="" />
 			<!-- Hold meta for flyer url -->
 			<TextView
 				android:id="@+id/grocery_row_flyer_url"
@@ -165,6 +164,13 @@
 			<!-- Hold meta for store parent name -->
 			<TextView
 				android:id="@+id/grocery_row_store_parent_name"
+				android:layout_width="0dp"
+				android:layout_height="0dp"
+				android:visibility="gone"
+				android:text="" />
+			<!-- Hold meta for cart item id -->
+			<TextView
+				android:id="@+id/grocery_row_cart_item_id"
 				android:layout_width="0dp"
 				android:layout_height="0dp"
 				android:visibility="gone"

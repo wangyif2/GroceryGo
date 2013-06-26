@@ -91,6 +91,8 @@ public class NetworkHandler extends IntentService {
 
 		if (categoryArray != null) {
 			try {
+				db.beginTransaction();
+				
 				int previousIncrement = 0;
 				int windowLength = categoryArray.size() / 10;
 				if (windowLength == 0)
@@ -113,7 +115,9 @@ public class NetworkHandler extends IntentService {
 						updateProgressBar(1);
 					}
 				}
+				db.setTransactionSuccessful();
 			} finally {
+				db.endTransaction();
 				ih.close();
 			}
 		}
@@ -145,6 +149,8 @@ public class NetworkHandler extends IntentService {
 
 		if (storeParentArray != null) {
 			try {
+				db.beginTransaction();
+				
 				int previousIncrement = 0;
 				int windowLength = storeParentArray.size() / 10;
 				if (windowLength == 0)
@@ -166,7 +172,9 @@ public class NetworkHandler extends IntentService {
 						updateProgressBar(1);
 					}
 				}
+				db.setTransactionSuccessful();
 			} finally {
+				db.endTransaction();
 				ih.close();
 			}
 		}
@@ -180,6 +188,8 @@ public class NetworkHandler extends IntentService {
 
 		if (storeArray != null) {
 			try {
+				db.beginTransaction();
+				
 				int previousIncrement = 0;
 				int windowLength = storeArray.size() / 10;
 				if (windowLength == 0)
@@ -194,11 +204,12 @@ public class NetworkHandler extends IntentService {
 
 				for (JsonElement jsonElement : storeArray) {
 					store = gson.fromJson(jsonElement, Store.class);
-
+					
 					ih.prepareForInsert();
 					ih.bind(store_id, store.getStoreId());
 					ih.bind(store_parent, store.getStoreParent().getStoreParentId());
-					ih.bind(store_flyer, store.getFlyer().getFlyerId());
+					if (store.getFlyer() != null)
+						ih.bind(store_flyer, store.getFlyer().getFlyerId());
 					if (store.getStoreAddress() != null)
 						ih.bind(store_addr, store.getStoreAddress());
 					if (store.getStoreLatitude() != null)
@@ -213,7 +224,9 @@ public class NetworkHandler extends IntentService {
 						updateProgressBar(1);
 					}
 				}
+				db.setTransactionSuccessful();
 			} finally {
+				db.endTransaction();
 				ih.close();
 			}
 		}
@@ -227,6 +240,8 @@ public class NetworkHandler extends IntentService {
 
 		if (flyerArray != null) {
 			try {
+				db.beginTransaction();
+				
 				int previousIncrement = 0;
 				int windowLength = flyerArray.size() / 10;
 				if (windowLength == 0)
@@ -250,7 +265,9 @@ public class NetworkHandler extends IntentService {
 						updateProgressBar(1);
 					}
 				}
+				db.setTransactionSuccessful();
 			} finally {
+				db.endTransaction();
 				ih.close();
 			}
 		}
@@ -264,6 +281,8 @@ public class NetworkHandler extends IntentService {
 
 		int maxGroceryIdBefore = GroceryOTGUtils.getMaxGroceryId(this);
 		try {
+			db.beginTransaction();
+			
 			int previousIncrement = 0;
 			int windowLength = groceryArray.size() / 50;
 			if (windowLength == 0)
@@ -301,7 +320,9 @@ public class NetworkHandler extends IntentService {
 					updateProgressBar(1);
 				}
 			}
+			db.setTransactionSuccessful();
 		} finally {
+			db.endTransaction();
 			ih.close();
 		}
 

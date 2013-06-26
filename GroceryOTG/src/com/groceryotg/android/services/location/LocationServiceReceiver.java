@@ -26,11 +26,11 @@ public class LocationServiceReceiver extends BroadcastReceiver {
 			// If the intent comes from system startup
 			if (SettingsManager.getNotificationsEnabled(context)) {
 				// If notifications are enabled
-				locationAlarm.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), LocationReceiver.pollingPeriod, locationPendingIntent);
+				locationAlarm.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), SettingsManager.getNotificationFrequency(context), locationPendingIntent);
 			}
 		} else if (intent.getAction() == LocationServiceReceiver.LOCATION_SERVICE_RECEIVER_ENABLE) {
 			// If notifications are enabled
-			locationAlarm.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), LocationReceiver.pollingPeriod, locationPendingIntent);
+			locationAlarm.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), SettingsManager.getNotificationFrequency(context), locationPendingIntent);
 		} else if (intent.getAction() == LocationServiceReceiver.LOCATION_SERVICE_RECEIVER_DISABLE) {
 			// If notifications are disabled, then cancel any alarms - in essence disabling the notification service
 			locationAlarm.cancel(locationPendingIntent);

@@ -25,12 +25,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class LocationReceiver extends BroadcastReceiver {
-	//currently polling time is every 1 hour
-	public static final int pollingPeriod = 60*60*1000;
-
-	// a near location is 500m
-	//public static int LOCATION_NEAR = 500;
-	public static int LOCATION_NEAR = 50000000;
+	// a near location is 1500m
+	public static final int LOCATION_NEAR = 1500;
+	//public static final int LOCATION_NEAR = 50000000;
 
 	public static final int NOTIFICATION_LOCATION_ID = 0;
 

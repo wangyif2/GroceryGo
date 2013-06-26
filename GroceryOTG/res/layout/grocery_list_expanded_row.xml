@@ -28,7 +28,7 @@
 			android:layout_height="wrap_content"
 			android:layout_weight="1"
 			android:src="@drawable/ic_menu_flyerview"
-			android:background="?android:attr/selectableItemBackground"
+			android:background="@drawable/empty_background_selectable"
 			android:contentDescription="@string/expanded_row_flyerview">
 		</ImageButton>
 		
@@ -38,7 +38,7 @@
 			android:layout_height="wrap_content"
 			android:layout_weight="1"
 			android:src="@drawable/ic_menu_place"
-			android:background="?android:attr/selectableItemBackground"
+			android:background="@drawable/empty_background_selectable"
 			android:contentDescription="@string/expanded_row_map">
 		</ImageButton>
 		
@@ -48,7 +48,7 @@
 			android:layout_height="wrap_content"
 			android:layout_weight="1"
 			android:src="@drawable/ic_menu_share"
-			android:background="?android:attr/selectableItemBackground"
+			android:background="@drawable/empty_background_selectable"
 			android:contentDescription="@string/expanded_row_share">
 		</ImageButton>
 	</LinearLayout>

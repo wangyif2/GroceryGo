@@ -27,7 +27,7 @@ public class StoreTable {
 			+ COLUMN_STORE_LATITUDE + " real, "
 			+ COLUMN_STORE_LONGITUDE + " real, "
 			+ COLUMN_STORE_PARENT + " integer not null, "
-			+ COLUMN_STORE_FLYER + " integer not null);";
+			+ COLUMN_STORE_FLYER + " integer);";
 
 	public static void onCreate(SQLiteDatabase database) {
 		database.execSQL(DATABASE_CREATE);

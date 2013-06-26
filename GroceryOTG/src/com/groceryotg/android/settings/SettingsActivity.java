@@ -85,5 +85,15 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 				return true;
 			}
 		});
+		
+		Preference storeLocationPreference = pm.findPreference(SettingsManager.SETTINGS_STORE_LOCATION);
+		storeLocationPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+			
+			@Override
+			public boolean onPreferenceChange(Preference preference, Object newValue) {
+				GroceryOTGUtils.restartGroceryLoaders(mActivity);
+				return true;
+			}
+		});
 	}
 }

@@ -16,6 +16,7 @@ public class SettingsManager {
 	public static final String SETTINGS_NOTIFICATION_ENABLED = "notification_enabled";
 	public static final String SETTINGS_NOTIFICATION_FREQUENCY = "notification_freq";
 	public static final String SETTINGS_STORE_FILTER = "store_select";
+	public static final String SETTINGS_STORE_LOCATION = "store_location";
 	
 	public static SharedPreferences getPrefs(Context context) {
 		return PreferenceManager.getDefaultSharedPreferences(context);
@@ -83,5 +84,15 @@ public class SettingsManager {
 		}
 		
 		return a;
+	}
+	
+	public static int getStoreLocationFilter(Context context) {
+		return getPrefs(context).getInt(SETTINGS_STORE_LOCATION, Integer.valueOf(R.string.setting_storelocation_default));
+	}
+	
+	public static void setStoreLocationFilter(Context context, int state) {
+		Editor editor = getPrefs(context).edit();
+		editor.putInt(SETTINGS_STORE_LOCATION, state);
+		editor.commit();
 	}
 }

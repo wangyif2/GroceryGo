@@ -34,5 +34,15 @@
 			android:entryValues="@array/store_ids"
 			android:defaultValue="@string/legacy_store_filter_ids"
 			/>
+		
+		<ListPreference
+		    android:key="storelocation_select"
+		    android:title="@string/setting_storelocation_title"
+		    android:summary="@string/setting_storelocation_summary"
+		    android:dialogTitle="@string/setting_storelocation_title"
+		    android:entries="@array/storelocation_entry"
+		    android:entryValues="@array/storelocation_value"
+		    android:defaultValue="@string/setting_storelocation_default"
+		    />
 	</PreferenceCategory>
 </PreferenceScreen>

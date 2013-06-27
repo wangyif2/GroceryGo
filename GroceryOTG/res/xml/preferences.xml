@@ -36,7 +36,7 @@
 			/>
 		
 		<ListPreference
-		    android:key="storelocation_select"
+		    android:key="store_location"
 		    android:title="@string/setting_storelocation_title"
 		    android:summary="@string/setting_storelocation_summary"
 		    android:dialogTitle="@string/setting_storelocation_title"

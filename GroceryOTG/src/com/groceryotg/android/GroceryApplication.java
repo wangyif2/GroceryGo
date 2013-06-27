@@ -21,6 +21,7 @@ public class GroceryApplication extends Application {
 	private Map<String, Integer> mMapIconMap = new HashMap<String, Integer>();
 	private Map<String, Integer> mStoreParentIconMap = new HashMap<String, Integer>();
 	private SparseArray<ArrayList<Integer>> mFlyerStoreMap = new SparseArray<ArrayList<Integer>>();
+	private SparseArray<ArrayList<Integer>> mStoreParentStoreMap = new SparseArray<ArrayList<Integer>>();
 	
 	public void constructGlobals(final Context context) {
 		ArrayList<Thread> threads = new ArrayList<Thread>();
@@ -80,35 +81,47 @@ public class GroceryApplication extends Application {
 		threads.add(t);
 		t.start();
 		
-		// Calculates mapping between flyer and stores
+		// Calculates mapping between flyer and stores, and 
+		// mapping between storeParents and stores
 		t = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				Looper.prepare();
 				
-				Cursor flyerIDs = GroceryOTGUtils.getStoreFlyerIDs(context);
+				Cursor storeIDs = GroceryOTGUtils.getStoreIDs(context);
 				
-				flyerIDs.moveToFirst();
-				while (!flyerIDs.isAfterLast()) {
-					int flyerId = flyerIDs.getInt(flyerIDs.getColumnIndex(StoreTable.COLUMN_STORE_FLYER));
-					int storeId = flyerIDs.getInt(flyerIDs.getColumnIndex(StoreTable.COLUMN_STORE_ID));
+				storeIDs.moveToFirst();
+				while (!storeIDs.isAfterLast()) {
+					int flyerId = storeIDs.getInt(storeIDs.getColumnIndex(StoreTable.COLUMN_STORE_FLYER));
+					int storeId = storeIDs.getInt(storeIDs.getColumnIndex(StoreTable.COLUMN_STORE_ID));
+					int storeParentId = storeIDs.getInt(storeIDs.getColumnIndex(StoreTable.COLUMN_STORE_PARENT));
+					
+					// Be careful: some stores have NULL flyers which gets translated to flyerId=0
+					if (flyerId > 0) {
+						if (mFlyerStoreMap.get(flyerId) == null)
+							mFlyerStoreMap.put(flyerId, new ArrayList<Integer>());
+						ArrayList<Integer> n = mFlyerStoreMap.get(flyerId);
+						n.add(storeId);
+						mFlyerStoreMap.put(flyerId, n);
+					}
 					
 					// Make sure to initialize our lists!
-					if (mFlyerStoreMap.get(flyerId) == null)
-						mFlyerStoreMap.put(flyerId, new ArrayList<Integer>());
+					if (mStoreParentStoreMap.get(storeParentId) == null)
+						mStoreParentStoreMap.put(storeParentId, new ArrayList<Integer>());
 					
 					// Now append the new value onto the end of the appropriate list
-					ArrayList<Integer> n = mFlyerStoreMap.get(flyerId);
-					n.add(storeId);
-					mFlyerStoreMap.put(flyerId, n);
+					ArrayList<Integer> m = mStoreParentStoreMap.get(storeParentId);
+					m.add(storeId);
+					mStoreParentStoreMap.put(storeParentId, m);
 					
-					flyerIDs.moveToNext();
+					storeIDs.moveToNext();
 				}
 				
 			}
 		});
 		threads.add(t);
 		t.start();
+		
 		
 		for (Thread thread : threads) {
 			try {
@@ -145,5 +158,12 @@ public class GroceryApplication extends Application {
 	 */
 	public SparseArray<ArrayList<Integer>> getFlyerStoreMap() {
 		return mFlyerStoreMap;
+	}
+	
+	/**
+	 * @return the storeParentStoreMap
+	 */
+	public SparseArray<ArrayList<Integer>> getStoreParentStoreMap() {
+		return mStoreParentStoreMap;
 	}
 }

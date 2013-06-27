@@ -71,7 +71,7 @@ public class SettingsManager {
 	}
 	
 	public static SparseBooleanArray getStoreFilter(Context context) {
-		String strRaw = getPrefs(context).getString("store_select", "");
+		String strRaw = getPrefs(context).getString(SETTINGS_STORE_FILTER, "");
 		String[] strs = MultiSelectListPreference.fromPersistedPreferenceValue(strRaw);
 		SparseBooleanArray a = new SparseBooleanArray();
 		
@@ -87,12 +87,8 @@ public class SettingsManager {
 	}
 	
 	public static int getStoreLocationFilter(Context context) {
-		return getPrefs(context).getInt(SETTINGS_STORE_LOCATION, Integer.valueOf(R.string.setting_storelocation_default));
-	}
-	
-	public static void setStoreLocationFilter(Context context, int state) {
-		Editor editor = getPrefs(context).edit();
-		editor.putInt(SETTINGS_STORE_LOCATION, state);
-		editor.commit();
+		String defaultValue = context.getResources().getString(R.string.setting_storelocation_default);
+		String prefValue = getPrefs(context).getString(SETTINGS_STORE_LOCATION, defaultValue);
+		return Integer.valueOf(prefValue);
 	}
 }

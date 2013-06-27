@@ -44,6 +44,7 @@ import java.util.Set;
 
 public class GroceryOTGUtils {
 	public static final String BROADCAST_ACTION_RELOAD_GROCERY_LIST = "com.groceryotg.android.intent_action_reload_grocery_list";
+	public static final String BROADCAST_ACTION_FILTER_GROCERY_LIST = "com.groceryotg.android.intent_action_filter_grocery_list";
 
 	public static Cursor getStoreLocations(Context context) {
 		String[] projection = {StoreTable.TABLE_STORE+"."+StoreTable.COLUMN_STORE_ID,
@@ -55,9 +56,9 @@ public class GroceryOTGUtils {
 		return c;
 	}
 	
-	public static Cursor getStoreFlyerIDs(Context context) {
+	public static Cursor getStoreIDs(Context context) {
 		String[] projection = {StoreTable.TABLE_STORE+"."+StoreTable.COLUMN_STORE_ID,
-				StoreTable.TABLE_STORE+"."+StoreTable.COLUMN_STORE_FLYER};
+				StoreTable.TABLE_STORE+"."+StoreTable.COLUMN_STORE_FLYER, StoreTable.TABLE_STORE+"."+StoreTable.COLUMN_STORE_PARENT};
 		Cursor c = context.getContentResolver().query(GroceryotgProvider.CONTENT_URI_STO, projection, null, null, null);
 		return c;
 	}
@@ -168,6 +169,25 @@ public class GroceryOTGUtils {
 			loc = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 		}
 		return loc;
+	}
+	
+	public static int getClosestStore(ArrayList<Integer> storeIds, SparseArray<Float> distanceMap) {
+		/* 
+		 * storeIds: list of store_ids
+		 * distanceMap: <store_id, distance>
+		 * 
+		 * Returns the store_id of the store with the minimal distance from the user's last known location
+		 */
+		float closestDistance = -1;
+		int closestStore = 0;
+		for (int j=0; j<storeIds.size(); j++) {
+			float nextDistance = distanceMap.get(storeIds.get(j));
+			if (closestDistance < 0 || nextDistance < closestDistance) {
+				closestDistance = nextDistance;
+				closestStore = storeIds.get(j);
+			}
+		}
+		return closestStore;
 	}
 	
 	public static SparseArray<Float> buildDistanceMap(Context context) {
@@ -478,4 +498,5 @@ public class GroceryOTGUtils {
 		intent.setAction(BROADCAST_ACTION_RELOAD_GROCERY_LIST);
 		LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
 	}
+	
 }

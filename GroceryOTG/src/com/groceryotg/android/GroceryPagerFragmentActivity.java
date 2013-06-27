@@ -1,30 +1,23 @@
 package com.groceryotg.android;
 
 import android.app.SearchManager;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.util.SparseArray;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.Toast;
-
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.widget.SearchView;
 import com.groceryotg.android.fragment.GroceryListFragment;
-import com.groceryotg.android.services.NetworkHandler;
 import com.groceryotg.android.utils.GroceryOTGUtils;
-import com.groceryotg.android.utils.RefreshAnimation;
 
 public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
 	public static String EXTRA_LAUNCH_PAGE = "extra_launch_page";
@@ -41,8 +34,6 @@ public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
 	private ListView mDrawerList;
 	
 	GroceryAdapter mAdapter;
-	RefreshStatusReceiver mRefreshStatusReceiver;
-	MenuItem refreshItem;
 
 	private final int OFFPAGE_LIMIT = 0;
 
@@ -97,18 +88,8 @@ public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
 	}
 
 	@Override
-	protected void onResume() {
-		super.onResume();
-		mRefreshStatusReceiver = new RefreshStatusReceiver();
-		IntentFilter mStatusIntentFilter = new IntentFilter(NetworkHandler.REFRESH_COMPLETED_ACTION);
-		mStatusIntentFilter.addCategory(Intent.CATEGORY_DEFAULT);
-		LocalBroadcastManager.getInstance(this).registerReceiver(mRefreshStatusReceiver, mStatusIntentFilter);
-	}
-
-	@Override
 	protected void onPause() {
 		super.onPause();
-		LocalBroadcastManager.getInstance(this).unregisterReceiver(mRefreshStatusReceiver);
 	}
 
 	@Override
@@ -141,9 +122,6 @@ public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-			case R.id.refresh:
-				refreshCurrentPager();
-				return true;
 			case android.R.id.home:
 				if (mDrawerLayout.isDrawerOpen(mDrawerList))
 					mDrawerLayout.closeDrawer(mDrawerList);
@@ -168,39 +146,6 @@ public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
 		mPager.setOffscreenPageLimit(OFFPAGE_LIMIT);
 	}
 	
-	private void refreshCurrentPager() {
-		Toast t = Toast.makeText(this, "Fetching new items...", Toast.LENGTH_SHORT);
-		t.show();
-
-		Intent intent = new Intent(mContext, NetworkHandler.class);
-		intent.putExtra(NetworkHandler.REFRESH_CONTENT, NetworkHandler.GRO);
-		startService(intent);
-	}
-
-	private class RefreshStatusReceiver extends BroadcastReceiver {
-		private RefreshStatusReceiver() {
-
-		}
-
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			int resultCode = intent.getBundleExtra("bundle").getInt(NetworkHandler.CONNECTION_STATE);
-			int requestType = intent.getBundleExtra("bundle").getInt(NetworkHandler.REQUEST_TYPE);
-
-			Toast toast = null;
-			if (requestType == NetworkHandler.CAT) {
-				RefreshAnimation.refreshIcon(context, false, refreshItem);
-			}
-			if (resultCode == NetworkHandler.CONNECTION) {
-				toast = Toast.makeText(mContext, "Groceries Updated", Toast.LENGTH_SHORT);
-			} else if (resultCode == NetworkHandler.NO_CONNECTION) {
-				RefreshAnimation.refreshIcon(context, false, refreshItem);
-				toast = Toast.makeText(mContext, "No Internet Connection", Toast.LENGTH_SHORT);
-			}
-			assert toast != null;
-			toast.show();
-		}
-	}
 
 	public class GroceryAdapter extends FragmentStatePagerAdapter implements ViewPager.OnPageChangeListener {
 		private SparseArray<GroceryListFragment> mPageReferenceMap;

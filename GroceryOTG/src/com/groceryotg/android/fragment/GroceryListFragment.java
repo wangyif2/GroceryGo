@@ -126,7 +126,8 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
 				StoreParentTable.COLUMN_STORE_PARENT_NAME,
 				FlyerTable.COLUMN_FLYER_ID,
 				FlyerTable.COLUMN_FLYER_URL,
-				CartTable.COLUMN_CART_FLAG_SHOPLIST};
+				CartTable.COLUMN_CART_FLAG_SHOPLIST,
+				GroceryTable.COLUMN_GROCERY_EXPIRY};
 		int[] to = new int[]{R.id.grocery_row_id,
 				R.id.grocery_row_label,
 				R.id.grocery_row_details,
@@ -134,7 +135,8 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
 				R.id.grocery_row_store_parent_name,
 				R.id.grocery_row_store_id,
 				R.id.grocery_row_flyer_url,
-				R.id.grocery_row_in_shopcart};
+				R.id.grocery_row_in_shopcart,
+				R.id.grocery_row_expiry};
 		
 		// Handles the search filter
 		Bundle args = ((Activity) mContext).getIntent().getExtras();
@@ -218,7 +220,8 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
 				FlyerTable.TABLE_FLYER + "." + FlyerTable.COLUMN_FLYER_ID,
 				FlyerTable.TABLE_FLYER + "." + FlyerTable.COLUMN_FLYER_URL,
 				CartTable.COLUMN_CART_GROCERY_ID,
-				CartTable.COLUMN_CART_FLAG_SHOPLIST};
+				CartTable.COLUMN_CART_FLAG_SHOPLIST,
+				GroceryTable.COLUMN_GROCERY_EXPIRY};
 		
 		String selection;
 		if (categoryId == GroceryListCursorAdapter.GLOBAL_SEARCH_CATEGORY) {

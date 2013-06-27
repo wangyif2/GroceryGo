@@ -38,7 +38,8 @@
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
 			android:orientation="vertical"
-			android:paddingLeft="6dp" >
+			android:paddingLeft="6dp"
+			android:paddingRight="6dp" >
 			
 			<LinearLayout
 				android:id="@+id/grocery_list_row1"
@@ -75,7 +76,7 @@
 					android:gravity="center"
 					android:background="@color/transparent" >
 				</TextView>
-			</LinearLayout>
+			</LinearLayout> <!-- end of row 1 -->
 			
 			<LinearLayout
 				android:id="@+id/grocery_list_row2"
@@ -84,61 +85,82 @@
 				android:orientation="horizontal"
 				android:baselineAligned="false" >
 				
-				<LinearLayout
+				<TextView
+					android:id="@+id/grocery_row_details"
+					android:layout_width="fill_parent"
+					android:layout_height="wrap_content"
+					android:paddingTop="6dp"
+					android:text="@+id/grocery_row_details_text"
+					android:textSize="12sp"
+					android:fontFamily="sans-serif"
+					android:textStyle="normal"
+					android:singleLine="false"
+					android:gravity="center_vertical"
+					android:clickable="false"
+					android:focusable="false">
+				</TextView>
+				
+			</LinearLayout> <!-- end of row 2 -->
+			
+			<LinearLayout
+			    android:id="@+id/grocery_list_row3"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="horizontal"
+				android:baselineAligned="false">
+				
+				<TextView
+					android:id="@+id/grocery_row_distance"
 					android:layout_width="0dp"
 					android:layout_height="wrap_content"
-					android:layout_gravity="left"
-					android:layout_weight="0.9"
-					android:paddingBottom="8dp"
-					android:paddingLeft="6dp"
-					android:orientation="vertical" >
+					android:layout_weight="0.55"
+					android:paddingBottom="4dp"
+					android:paddingTop="8dp"
+					android:textSize="12sp"
+					android:fontFamily="sans-serif"
+					android:textStyle="normal"
+					android:singleLine="false"
+					android:textColor="#999999"
+					android:drawablePadding="6dip"
+					android:gravity="center_vertical" >
+				</TextView>
+			
+				<TextView 
+				    android:id="@+id/grocery_row_expiry"
+				    android:layout_width="0dp"
+				    android:layout_height="wrap_content"
+				    android:layout_weight="0.45"
+				    android:layout_gravity="right"
+				    android:paddingTop="16dp"
+				    android:paddingRight="5dp"
+				    android:textSize="12sp"
+				    android:fontFamily="sans-serif"
+				    android:textStyle="normal"
+				    android:singleLine="true"
+				    android:textColor="#999999"
+				    android:gravity="right"
+				    android:text="asdf"
+				    />
 					
-				 	<TextView
-						android:id="@+id/grocery_row_details"
-						android:layout_width="fill_parent"
-						android:layout_height="wrap_content"
-						android:paddingTop="6dp"
-						android:text="@+id/grocery_row_details_text"
-						android:textSize="12sp"
-						android:fontFamily="sans-serif"
-						android:textStyle="normal"
-						android:singleLine="false"
-						android:gravity="center_vertical"
-						android:clickable="false"
-						android:focusable="false">
-					</TextView>
-		
-					<TextView
-						android:id="@+id/grocery_row_distance"
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:paddingBottom="4dp"
-						android:paddingTop="8dp"
-						android:textSize="12sp"
-						android:fontFamily="sans-serif"
-						android:textStyle="normal"
-						android:singleLine="false"
-						android:textColor="#999999"
-						android:drawablePadding="6dip"
-						android:gravity="center_vertical" >
-					</TextView>
-				</LinearLayout>
-				
-				<RelativeLayout
-					android:layout_width="0dp"
-					android:layout_height="match_parent"
-					android:orientation="vertical"
-					android:layout_weight="0.1" >
-					
-					<ImageView
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:layout_alignParentBottom="true"
-						android:layout_alignParentRight="true"
-						android:src="@drawable/ic_spinner" >
-					</ImageView>
-				</RelativeLayout>
-			</LinearLayout>
+			</LinearLayout> <!-- end of row 3 -->
+			
+			<LinearLayout
+			    android:id="@+id/grocery_list_row4"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="horizontal"
+				android:baselineAligned="false"
+				android:layout_gravity="right"
+				android:gravity="right">
+			
+				<ImageView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:src="@drawable/ic_spinner"
+					android:contentDescription="Additional options" >
+				</ImageView>
+			    
+			</LinearLayout> <!-- end of row 4 -->
 		
 			<!-- Hold meta for grocery id -->
 			<TextView
@@ -175,7 +197,7 @@
 				android:layout_height="0dp"
 				android:visibility="gone"
 				android:text="" />
-		</LinearLayout>
+		</LinearLayout> <!-- end of vertical layout -->
 	</RelativeLayout>
 </LinearLayout>
 

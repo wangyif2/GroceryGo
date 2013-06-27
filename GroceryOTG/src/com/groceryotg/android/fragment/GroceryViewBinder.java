@@ -17,8 +17,13 @@ import com.groceryotg.android.database.FlyerTable;
 import com.groceryotg.android.database.GroceryTable;
 import com.groceryotg.android.database.StoreParentTable;
 import com.groceryotg.android.services.ServerURL;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -46,6 +51,16 @@ public class GroceryViewBinder implements SimpleCursorAdapter.ViewBinder, ViewBi
 			} else {
 				textView.setText(R.string.no_price_available);
 			}
+			return true;
+		}
+		else if (columnIndex == cursor.getColumnIndex(GroceryTable.COLUMN_GROCERY_EXPIRY) 
+				&& viewId == R.id.grocery_row_expiry) {
+			
+			DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+			String expiryDate = formatter.format(new Date(Long.valueOf(cursor.getString(columnIndex))));
+			
+			TextView textView = (TextView) view;
+			textView.setText("Ends: " + expiryDate);
 			return true;
 		}
 		else if (columnIndex == cursor.getColumnIndex(GroceryTable.COLUMN_GROCERY_ID)

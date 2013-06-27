@@ -16,6 +16,7 @@ public class SettingsManager {
 	public static final String SETTINGS_NOTIFICATION_ENABLED = "notification_enabled";
 	public static final String SETTINGS_NOTIFICATION_FREQUENCY = "notification_freq";
 	public static final String SETTINGS_STORE_FILTER = "store_select";
+	public static final String SETTINGS_STORE_LOCATION = "store_location";
 	
 	public static SharedPreferences getPrefs(Context context) {
 		return PreferenceManager.getDefaultSharedPreferences(context);
@@ -70,7 +71,7 @@ public class SettingsManager {
 	}
 	
 	public static SparseBooleanArray getStoreFilter(Context context) {
-		String strRaw = getPrefs(context).getString("store_select", "");
+		String strRaw = getPrefs(context).getString(SETTINGS_STORE_FILTER, "");
 		String[] strs = MultiSelectListPreference.fromPersistedPreferenceValue(strRaw);
 		SparseBooleanArray a = new SparseBooleanArray();
 		
@@ -83,5 +84,11 @@ public class SettingsManager {
 		}
 		
 		return a;
+	}
+	
+	public static int getStoreLocationFilter(Context context) {
+		String defaultValue = context.getResources().getString(R.string.setting_storelocation_default);
+		String prefValue = getPrefs(context).getString(SETTINGS_STORE_LOCATION, defaultValue);
+		return Integer.valueOf(prefValue);
 	}
 }

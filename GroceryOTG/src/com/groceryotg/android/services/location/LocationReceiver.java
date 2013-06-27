@@ -93,7 +93,7 @@ public class LocationReceiver extends BroadcastReceiver {
 		// Now make a notification if there are nearby items in the cart
 		NotificationCompat.Builder mBuilder =
 				new NotificationCompat.Builder(context)
-						.setSmallIcon(R.drawable.ic_launcher)
+						.setSmallIcon(R.drawable.ic_stat_notify_item)
 						.setContentTitle("GroceryOTG")
 						.setContentText("An item in your cart is near")
 						.setAutoCancel(true);

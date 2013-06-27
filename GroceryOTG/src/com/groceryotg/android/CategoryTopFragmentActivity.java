@@ -21,6 +21,10 @@ import com.groceryotg.android.utils.ChangeLogDialog;
 import com.groceryotg.android.utils.GroceryOTGUtils;
 import com.groceryotg.android.utils.GroceryRefreshTrigger;
 import com.groceryotg.android.utils.RefreshAnimation;
+import de.keyboardsurfer.android.widget.crouton.Configuration;
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
+import android.util.Log;
 
 public class CategoryTopFragmentActivity extends SherlockFragmentActivity {
     public static final String INTENT_EXTRA_FLAG_LOCATION_SERVICE_BAD = "intent_extra_flag_location_service_bad";
@@ -115,12 +119,20 @@ public class CategoryTopFragmentActivity extends SherlockFragmentActivity {
         // show a changelog dialog if it's new
         ChangeLogDialog cd = new ChangeLogDialog(this);
         cd.show();
+
+        invalidateOptionsMenu();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mRefreshStatusReceiver);
+    }
+
+    @Override
+    protected void onDestroy() {
+        Crouton.cancelAllCroutons();
+        super.onDestroy();
     }
 
     @Override
@@ -134,6 +146,8 @@ public class CategoryTopFragmentActivity extends SherlockFragmentActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
+        Log.i(GroceryApplication.TAG,"in onPrepareOptionsMenu");
+
         menu.clear();
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         boolean isNewDataAva = settings.getBoolean(GroceryGCMBroadcastReceiver.SETTINGS_IS_NEW_DATA_AVA, false);
@@ -149,8 +163,14 @@ public class CategoryTopFragmentActivity extends SherlockFragmentActivity {
         searchItem.setIcon(R.drawable.ic_menu_search).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
         searchItem.setActionView(searchView);
 
-        if (isNewDataAva)
+        if (isNewDataAva) {
             menu.add(0, R.id.refresh, Menu.NONE, R.string.navdrawer_item_sync).setIcon(R.drawable.ic_menu_refresh).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+
+            Style INFINITE = new Style.Builder().setBackgroundColorValue(Style.holoBlueLight).build();
+            Configuration CONFIGURATION_INFINITE = new Configuration.Builder().setDuration(Configuration.DURATION_INFINITE).build();
+            Crouton.makeText(this, R.string.gcm_newdata_notification, INFINITE).setConfiguration(CONFIGURATION_INFINITE).show();
+
+        }
 
         if (this.mDrawerLayout != null && this.mDrawerList != null) {
             for (int i = 0; i < menu.size(); i++) {
@@ -218,6 +238,8 @@ public class CategoryTopFragmentActivity extends SherlockFragmentActivity {
                 settingsEditor.putBoolean(GroceryGCMBroadcastReceiver.SETTINGS_IS_NEW_DATA_AVA, false);
                 settingsEditor.commit();
                 invalidateOptionsMenu();
+
+                Crouton.cancelAllCroutons();
 
                 toast = Toast.makeText(mContext, "Groceries Updated", Toast.LENGTH_SHORT);
                 toast.show();

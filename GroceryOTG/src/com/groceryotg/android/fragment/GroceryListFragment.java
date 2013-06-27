@@ -266,6 +266,64 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
 				selection += storeSelection;
 			}
 		}
+		
+		// Store location filter
+		int storeLocationPref = SettingsManager.getStoreLocationFilter(mContext);
+		if (storeLocationPref == 1) {
+			// Display only the closest store location for each store parent
+			
+			// Map between storeParents and corresponding stores
+			SparseArray<ArrayList<Integer>> storeParentStores = ((GroceryApplication) ((Activity) mContext).getApplication()).getStoreParentStoreMap();
+			
+			// Selected storeParents (from settings)
+			SparseBooleanArray selectedStoreParents = SettingsManager.getStoreFilter(mContext);
+			ArrayList<Integer> filterStores = new ArrayList<Integer>();
+			ArrayList<Integer> filterFlyers = new ArrayList<Integer>();
+			
+			if (selectedStoreParents != null && selectedStoreParents.size() > 0) {
+				for (int k=0; k<selectedStoreParents.size(); k++) {
+					ArrayList<Integer> storeIds = storeParentStores.get(selectedStoreParents.keyAt(k));
+					filterStores.add(GroceryOTGUtils.getClosestStore(storeIds, mDistanceMap));
+				}
+			} else { 	
+				// go through all storeParents, and find the closest store location
+				for (int k=0; k<storeParentStores.size(); k++) {
+					ArrayList<Integer> storeIds = storeParentStores.get(k);
+					filterStores.add(GroceryOTGUtils.getClosestStore(storeIds, mDistanceMap));
+				}
+			}
+			
+			// Translate store IDs into flyer IDs to be used in the SQL query
+			SparseArray<ArrayList<Integer>> flyerStoreMap = ((GroceryApplication) ((Activity) mContext).getApplication()).getFlyerStoreMap();
+			for (int k=0; k<flyerStoreMap.size(); k++) {
+				int flyerId = flyerStoreMap.keyAt(k);
+				ArrayList<Integer> listStores = flyerStoreMap.valueAt(k);
+				for (int m=0; m<filterStores.size(); m++) {
+					if (listStores.contains(filterStores.get(m))) {
+						filterFlyers.add(flyerId);
+						break;
+					}
+				}
+			}
+			
+			// Update the where clause for the query
+			if (!isAtLeastOneWhere) {
+				isAtLeastOneWhere = true;
+			} else {
+				selection += " AND ";
+			}
+			selection += "(";
+			for (int k=0; k<filterFlyers.size(); k++) {
+				if (k > 0) 
+					selection += " OR ";
+				selection += GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_GROCERY_FLYER + " = ?";
+				selectionArgs.add(filterFlyers.get(k).toString());
+			}
+			selection += ")";
+			
+		}
+		
+		
 		if (CategoryTopFragmentActivity.mPriceRangeMin != null) {
 			if (!isAtLeastOneWhere) {
 				isAtLeastOneWhere = true;

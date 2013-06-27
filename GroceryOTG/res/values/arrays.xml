@@ -20,4 +20,14 @@
 		<item>Sometimes</item>
 		<item>Rarely</item>
 	</string-array>
+	
+	<string-array name="storelocation_value">
+	    <item>1</item>
+	    <item>2</item>
+	</string-array>
+	<string-array name="storelocation_entry">
+	    <item>Only store locations near you</item>
+	    <item>All store locations</item>
+	</string-array>
+	
 </resources>

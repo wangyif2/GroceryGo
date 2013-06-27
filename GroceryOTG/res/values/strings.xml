@@ -66,6 +66,9 @@
 	<string name="setting_notification_enable_summary">Turn location-based notifications on or off</string>
 	<string name="setting_notification_freq_title">Frequency</string>
 	<string name="setting_notification_freq_summary">Set notification interval</string>
+	<string name="setting_storelocation_title">Select locations</string>
+	<string name="setting_storelocation_summary">Filter by store locations near you</string>
+	<string name="setting_storelocation_default">1</string>
 	
 	<string name="legacy_store_filter_ids">1|2|3|4|5</string>
 	

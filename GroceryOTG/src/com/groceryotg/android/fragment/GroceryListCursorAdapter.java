@@ -50,8 +50,7 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
 		// Add text to the distance text view
 		LinearLayout parentLayout = (LinearLayout) topView.findViewById(R.id.grocery_list_row_layout);
 		TextView distanceTextView = (TextView) parentLayout.findViewById(R.id.grocery_row_distance);
-		final float BIG_FLOAT = (float) 1000000.0;
-		Float oldDist = Float.valueOf(BIG_FLOAT), newDist;
+		Float closestDist = null, newDist;
 		
 		TextView storesTextView = (TextView) parentLayout.findViewById(R.id.grocery_row_store_id);
 		String list = storesTextView.getText().toString();
@@ -59,20 +58,20 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
 			for (String s : list.split(",")) {
 				newDist = this.mDistanceMap.get(Integer.parseInt(s));
 				if (newDist != null) {
-					if (newDist < oldDist) {
-						oldDist = newDist;
+					if (closestDist == null || newDist < closestDist) {
+						closestDist = newDist;
 					}
 				}
 			}
 		}
 		
-		if (oldDist != BIG_FLOAT) {
+		if (closestDist != null) {
 			// Truncate to a single decimal place
 			DecimalFormat oneD = new DecimalFormat("#.#");
-			Float truc = Float.valueOf(oneD.format((float) (oldDist/1000.0)));
+			Float truc = Float.valueOf(oneD.format((float) (closestDist/1000.0)));
 			distanceTextView.setText(truc.toString() + "km");
 		} else {
-			distanceTextView.setText("No distance info available");
+			distanceTextView.setText(mContext.getString(R.string.grocery_row_distance_missing));
 		}
 		
 		// Replace the default map icon next to the distance text with the store parent's icon

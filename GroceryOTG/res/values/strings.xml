@@ -30,12 +30,14 @@
 	<string name="navdrawer_item_changelog">Changelog</string>
 	<string name="navdrawer_item_about_feedback">Send feedback</string>
 	<string name="navdrawer_item_feedback_subject">GroceryOTG feedback</string>
-	
 	<string name="navdrawer_item_sync">Sync</string>
-	
 	<string name="navdrawer_open">Open</string>
 	<string name="navdrawer_closed">Closed</string>
+	
+	
 	<string name="action_close">Close</string>
+	
+	<string name="grocery_row_distance_missing">No distance info available</string>
 	
 	<string name="title_main">Home</string>
 	<string name="title_grocery_pager">Sales</string>

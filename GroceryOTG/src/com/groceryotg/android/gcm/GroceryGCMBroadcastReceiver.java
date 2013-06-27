@@ -30,6 +30,8 @@ public class GroceryGCMBroadcastReceiver extends BroadcastReceiver {
         settingsEditor.putBoolean(SETTINGS_IS_NEW_DATA_AVA, true);
         settingsEditor.commit();
 
+        Log.i(GroceryApplication.TAG, String.valueOf(settings.getBoolean(SETTINGS_IS_NEW_DATA_AVA, false)));
+
 
         Bundle bundle = new Bundle();
         bundle.putBoolean(SETTINGS_IS_NEW_DATA_AVA, true);

@@ -3,8 +3,13 @@ package com.groceryotg.android.gcm;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import com.groceryotg.android.GroceryApplication;
+import com.groceryotg.android.R;
 import com.groceryotg.android.services.NetworkHandler;
 
 /**
@@ -13,17 +18,23 @@ import com.groceryotg.android.services.NetworkHandler;
  */
 public class GroceryGCMBroadcastReceiver extends BroadcastReceiver {
 
+    public static final String SETTINGS_IS_NEW_DATA_AVA = "isNewDataAvailable";
+
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        Log.i(GroceryApplication.TAG, intent.getExtras().toString());
+        Log.i(GroceryApplication.TAG, context.getString(R.string.gcm_received));
 
-        populateGrocery(context);
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor settingsEditor = settings.edit();
+        settingsEditor.putBoolean(SETTINGS_IS_NEW_DATA_AVA, true);
+        settingsEditor.commit();
+
+
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(SETTINGS_IS_NEW_DATA_AVA, true);
+        Intent localIntent = new Intent(NetworkHandler.REFRESH_COMPLETED_ACTION).putExtra("bundle", bundle);
+        LocalBroadcastManager.getInstance(context).sendBroadcast(localIntent);
     }
 
-    private void populateGrocery(Context context) {
-        Intent intent = new Intent(context, NetworkHandler.class);
-        intent.putExtra(NetworkHandler.REFRESH_CONTENT, NetworkHandler.GRO);
-        context.startService(intent);
-    }
 }

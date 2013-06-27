@@ -91,4 +91,8 @@
     <string name="server_unregistered">From GAE Server: successfully removed device!</string>
     <string name="server_register_error">Could not register device on GAE Server after %1$d attempts.</string>
     <string name="server_unregister_error">Could not unregister device on GAE Server (%1$s).</string>
+    <string name="gcm_received">GCM push message received, refreshing items now..</string>
+    <string name="gcm_newdata_notification">This weeks grocery data is now available, click the refresh button to
+        sync.
+    </string>
 </resources>

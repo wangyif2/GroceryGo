@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string-array name="colours">
+		<item>#dc725e</item>
+		<item>#ec8824</item>
+		<item>#9dd200</item>
+		<item>#21a3db</item>
+		<item>#a8220f</item>
+		<item>#e46414</item>
+		<item>#ef0588</item>
+	</string-array>
+	
+	<string-array name="notification_freq_value">
+		<item>1</item>
+		<item>2</item>
+		<item>3</item>
+	</string-array>
+	<string-array name="notification_freq_entry">
+		<item>Often</item>
+		<item>Sometimes</item>
+		<item>Rarely</item>
+	</string-array>
+	
+	<string-array name="storelocation_value">
+	    <item>1</item>
+	    <item>2</item>
+	</string-array>
+	<string-array name="storelocation_entry">
+	    <item>Only store locations near you</item>
+	    <item>All store locations</item>
+	</string-array>
+	
+</resources>

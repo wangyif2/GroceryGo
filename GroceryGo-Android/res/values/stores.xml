@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string-array name="store_names">
+		<item>Metro</item>
+		<item>Loblaws</item>
+		<item>Food Basics</item>
+		<item>No Frills</item>
+		<item>Sobeys</item>
+	</string-array>
+	<string-array name="store_ids">
+		<item>1</item>
+		<item>2</item>
+		<item>3</item>
+		<item>4</item>
+		<item>5</item>
+	</string-array>
+</resources>

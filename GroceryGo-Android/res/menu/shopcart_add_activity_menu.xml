@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<item
+		android:id="@+id/cart_add_by_voice"
+		android:showAsAction="always"
+		android:title="Add by voice"
+		android:icon="@drawable/ic_menu_add_voice"/>
+	<item
+		android:id="@+id/cart_add_by_barcode"
+		android:showAsAction="always"
+		android:title="Add by barcode"
+		android:icon="@drawable/ic_menu_add_barcode"/>
+</menu>

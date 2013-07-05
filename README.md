@@ -1,3 +1,3 @@
-GroceryOTG
+GroceryGo
 ==========
 The ubiquitous task of grocery shopping is a weekly chore for many people. Some commonplace frustrations include keeping handwritten lists of items, purchasing an item at a non-optimal price, or forgetting about a needed item when you are at the store. There is a need for a smart portable system which can alleviate these commonplace problems. The system would offer the ability (1) to view a consolidated list of sale items from all major grocery stores in Toronto, allowing the user to quickly find the optimal price, (2) to maintain a digital shopping list for each user, allowing the user to easily edit and share the list on-the-go, (3) to inform the user of nearby stores with sale items based on current location, ensuring the user does not forget to buy an item or miss a sale.

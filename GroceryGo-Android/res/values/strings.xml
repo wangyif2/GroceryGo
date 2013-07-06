@@ -1,0 +1,104 @@
+<resources>
+	<string name="app_name">GroceryGo</string>
+	<string name="version_name">1.1.0</string>
+	<string name="app_email">grocery.otg+support@gmail.com</string>
+	
+	<string name="upcdatabase_key">f0268314144a9baf5d105e31416b4e09</string>
+	
+	<string name="no_content">Currently no content, please refresh</string>
+	<string name="no_new_content">There is no new available data. Last checked: %1$s</string>
+	<string name="no_search_results">No results match your search criteria</string>
+	<string name="search_results">Results</string>
+	<string name="search_results_num">0</string>
+	<string name="fresh_action">Refreshing…</string>
+	<string name="no_cart_item">Your shopping cart is currently empty</string>
+	<string name="cart_grocery_edit_name">Grocery item name</string>
+	<string name="cart_add_positive_button">Add item</string>
+	<string name="cart_add_negative_button">Clear</string>
+	<string name="cart_item_delete">Delete this item</string>
+	<string name="cart_shoplist_add">Add new item to shopping cart</string>
+	<string name="cart_shoplist_added">Item added to shopping cart</string>
+	<string name="cart_shoplist_removed">Item removed from shopping cart</string>
+	<string name="cart_summary">View summary by store</string>
+	
+	<string name="navdrawer_heading_places">PLACES</string>
+	<string name="navdrawer_item_cat">Home</string>
+	<string name="navdrawer_item_cart">Shopping Cart</string>
+	<string name="navdrawer_item_map">Map</string>
+	<string name="navdrawer_heading_tools">TOOLS</string>
+	<string name="navdrawer_item_settings">Settings</string>
+	<string name="navdrawer_item_about">About</string>
+	<string name="navdrawer_item_changelog">Changelog</string>
+	<string name="navdrawer_item_about_feedback">Send feedback</string>
+	<string name="navdrawer_item_feedback_subject">GroceryOTG feedback</string>
+	<string name="navdrawer_item_sync">Sync</string>
+	<string name="navdrawer_open">Open</string>
+	<string name="navdrawer_closed">Closed</string>
+	
+	
+	<string name="action_close">Close</string>
+	
+	<string name="grocery_row_distance_missing">No distance info available</string>
+	
+	<string name="title_main">Home</string>
+	<string name="title_grocery_pager">Sales</string>
+	<string name="title_search">Search</string>
+	<string name="title_map">Map</string>
+	<string name="title_settings">Settings</string>
+	<string name="title_cart">Shopping Cart</string>
+	<string name="title_cart_detail">Add Item</string>
+	<string name="title_cart_add_tab_text">MANUAL</string>
+	<string name="title_cart_add_tab_voice">VOICE</string>
+	<string name="title_cart_add_tab_code">UPC</string>
+	
+	<string name="groceryoverview_menu_item_search">Search</string>
+	<string name="groceryoverview_menu_item_select">Select Mode</string>
+	<string name="groceryoverview_menu_item_refresh">Refresh</string>
+	
+	<string name="groceryoverview_row_imagedesc">Subcategory</string>
+	
+	<string name="search_hint">Search</string>
+	<string name="cart_add_voice_prompt">Speak item name</string>
+	<string name="cart_add_voice_hint">Click mic to begin listening</string>
+	<string name="cart_add_code_hint">Click barcode to begin scanning</string>
+
+	<string name="map_usermarker">You are here</string>
+	<string name="setting_store_title">Select stores</string>
+	<string name="setting_store_summary">Filter by your favourite stores</string>
+	<string name="setting_notification_enable_title">Enable notifications</string>
+	<string name="setting_notification_enable_summary">Turn location-based notifications on or off</string>
+	<string name="setting_notification_freq_title">Frequency</string>
+	<string name="setting_notification_freq_summary">Set notification interval</string>
+	<string name="setting_storelocation_title">Select locations</string>
+	<string name="setting_storelocation_summary">Filter by store locations near you</string>
+	<string name="setting_storelocation_default">1</string>
+	
+	<string name="legacy_store_filter_ids">1|2|3|4|5</string>
+	
+	<string name="no_price_available">N/A</string>
+	
+	<string name="about_text">GroceryGo-nightly</string>
+	<string name="about_title">GroceryGo</string>
+	<string name="expanded_row_map">Map</string>
+	<string name="expanded_row_share">Share</string>
+	<string name="expanded_row_flyerview">View in flyer</string>
+
+    <!--GCM strings-->
+    <string name="error_config">Please set the %1$s constant and recompile the app.</string>
+    <string name="already_registered">Device is already registered on server.</string>
+    <string name="gcm_registered">From GCM: device successfully registered (regId = %1$s)!</string>
+    <string name="gcm_unregistered">From GCM: device successfully unregistered!</string>
+    <string name="gcm_message">From GCM: you got message!</string>
+    <string name="gcm_error">From GCM: error (%1$s).</string>
+    <string name="gcm_recoverable_error">From GCM: recoverable error (%1$s).</string>
+    <string name="gcm_deleted">From GCM: server deleted %1$d pending messages!</string>
+    <string name="server_registering">Trying (attempt %1$d/%2$d) to register device on Demo Server.</string>
+    <string name="server_registered">From GAE Server: successfully added device!</string>
+    <string name="server_unregistered">From GAE Server: successfully removed device!</string>
+    <string name="server_register_error">Could not register device on GAE Server after %1$d attempts.</string>
+    <string name="server_unregister_error">Could not unregister device on GAE Server (%1$s).</string>
+    <string name="gcm_received">GCM push message received, refreshing items now..</string>
+    <string name="gcm_newdata_notification">This weeks grocery data is now available, click the refresh button to
+        sync.
+    </string>
+</resources>

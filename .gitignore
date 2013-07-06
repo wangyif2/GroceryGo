@@ -51,3 +51,5 @@ proguard/
 #tut
 /tutorial
 
+#ignore bootstrap
+/GroceryGo-Bootstrap

@@ -50,6 +50,9 @@ public class ShopCartOverviewFragmentActivity extends SherlockFragmentActivity {
 			case R.id.cart_add:
 				createCartGroceryItem();
 				return true;
+			case R.id.cart_summary:
+				showCartSummary();
+				return true;
 			case android.R.id.home:
 				if (mDrawerLayout.isDrawerOpen(mDrawerList))
 					mDrawerLayout.closeDrawer(mDrawerList);
@@ -69,6 +72,10 @@ public class ShopCartOverviewFragmentActivity extends SherlockFragmentActivity {
 	private void createCartGroceryItem() {
 		Intent i = new Intent(this, ShopCartAddFragmentActivity.class);
 		startActivity(i);
+	}
+	
+	private void showCartSummary() {
+		
 	}
 }
 

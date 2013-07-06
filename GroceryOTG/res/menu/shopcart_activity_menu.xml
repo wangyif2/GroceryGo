@@ -7,4 +7,10 @@
 		android:showAsAction="always"
 		android:title="@string/cart_shoplist_add"
 		android:icon="@drawable/ic_menu_add"/>
+	
+	<item 
+	    android:id="@+id/cart_summary"
+	    android:showAsAction="always"
+	    android:title="@string/cart_summary"
+	    android:icon="@drawable/ic_cart_summary"/>
 </menu>

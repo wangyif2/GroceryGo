@@ -33,6 +33,7 @@ public class GroceryotgProvider extends ContentProvider {
 	private static final int STORE_JOIN_STOREPARENT = 150;
 	private static final int ITEM_JOIN_STORE = 160;
 	private static final int CART_JOIN_GROCERIES = 170;
+	private static final int CART_GROUPBY_STOREPARENT = 180;
 
 	// Content URI
 	private static final String AUTHORITY = "com.groceryotg.android.database.contentprovider";
@@ -48,6 +49,9 @@ public class GroceryotgProvider extends ContentProvider {
 	private static final String BASE_PATH_STO_JOIN_STOREPARENT = "storeWithStoreParent";
 	private static final String BASE_PATH_CART_JOIN_STORE = "itemWithStore";
 	private static final String BASE_PATH_CART_JOIN_GRO = "cartWithGroceries";
+	
+	// GroupBys
+	private static final String BASE_PATH_CART_GROUPBY_STOREPARENT = "cartGroupByStoreParent";
 
 	public static final Uri CONTENT_URI_CAT = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH_CAT);
 	public static final Uri CONTENT_URI_GRO = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH_GRO);
@@ -60,6 +64,8 @@ public class GroceryotgProvider extends ContentProvider {
 	public static final Uri CONTENT_URI_STO_JOIN_STOREPARENT = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH_STO_JOIN_STOREPARENT);
 	public static final Uri CONTENT_URI_CART_JOIN_STORE = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH_CART_JOIN_STORE);
 	public static final Uri CONTENT_URI_CART_JOIN_GRO = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH_CART_JOIN_GRO);
+	// GroupBy URIs
+	public static final Uri CONTENT_URI_CART_GROUPBY_STOREPARENT = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH_CART_GROUPBY_STOREPARENT);
 
 	// MIME type for multiple rows
 	public static final String CONTENT_TYPE_CAT = ContentResolver.CURSOR_DIR_BASE_TYPE + "/categories";
@@ -80,6 +86,8 @@ public class GroceryotgProvider extends ContentProvider {
 	public static final String CONTENT_TYPE_STO_JOIN_STOREPARENT = ContentResolver.CURSOR_DIR_BASE_TYPE + "/storeWithStoreParent";
 	public static final String CONTENT_TYPE_CART_JOIN_STORE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/itemWithStore";
 	public static final String CONTENT_TYPE_CART_JOIN_GRO = ContentResolver.CURSOR_DIR_BASE_TYPE + "/cartWithGroceries";
+	// GroupBys
+	public static final String CONTENT_TYPE_CART_GROUPBY_STOREPARENT = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + BASE_PATH_CART_GROUPBY_STOREPARENT;
 
 	private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
@@ -101,6 +109,7 @@ public class GroceryotgProvider extends ContentProvider {
 		sURIMatcher.addURI(AUTHORITY, BASE_PATH_STO_JOIN_STOREPARENT, STORE_JOIN_STOREPARENT);
 		sURIMatcher.addURI(AUTHORITY, BASE_PATH_CART_JOIN_STORE, ITEM_JOIN_STORE);
 		sURIMatcher.addURI(AUTHORITY, BASE_PATH_CART_JOIN_GRO, CART_JOIN_GROCERIES);
+		sURIMatcher.addURI(AUTHORITY, BASE_PATH_CART_GROUPBY_STOREPARENT, CART_GROUPBY_STOREPARENT);
 	}
 
 	@Override
@@ -113,6 +122,7 @@ public class GroceryotgProvider extends ContentProvider {
 	public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
 		SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
 
+		String groupBy = null;
 		int uriType = sURIMatcher.match(uri);
 		switch (uriType) {
 			case CATEGORIES:
@@ -197,13 +207,28 @@ public class GroceryotgProvider extends ContentProvider {
 							+ " ON " + FlyerTable.TABLE_FLYER + "." + FlyerTable.COLUMN_FLYER_STOREPARENT
 							+ "=" + StoreParentTable.TABLE_STORE_PARENT + "." + StoreParentTable.COLUMN_STORE_PARENT_ID);
 				break;
+			case CART_GROUPBY_STOREPARENT:
+				queryBuilder.setTables(CartTable.TABLE_CART
+						+ " INNER JOIN " + GroceryTable.TABLE_GROCERY
+							+ " ON " + CartTable.TABLE_CART + "." + CartTable.COLUMN_CART_GROCERY_ID
+							+ " = " + GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_GROCERY_ID
+						+ " INNER JOIN " + FlyerTable.TABLE_FLYER
+							+ " ON " + GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_GROCERY_FLYER
+							+ "=" + FlyerTable.TABLE_FLYER + "." + FlyerTable.COLUMN_FLYER_ID
+						+ " INNER JOIN " + StoreParentTable.TABLE_STORE_PARENT
+							+ " ON " + FlyerTable.TABLE_FLYER + "." + FlyerTable.COLUMN_FLYER_STOREPARENT
+							+ "=" + StoreParentTable.TABLE_STORE_PARENT + "." + StoreParentTable.COLUMN_STORE_PARENT_ID);
+				
+				groupBy = StoreParentTable.TABLE_STORE_PARENT + "." + StoreParentTable.COLUMN_STORE_PARENT_ID;
+				queryBuilder.appendWhere(CartTable.TABLE_CART + "." + CartTable.COLUMN_CART_GROCERY_ID + " IS NOT NULL");
+				break;
 			default:
 				throw new IllegalArgumentException("Unknown URI: " + uri);
 		}
 
 		//get readable?
 		SQLiteDatabase db = database.getWritableDatabase();
-		Cursor cursor = queryBuilder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
+		Cursor cursor = queryBuilder.query(db, projection, selection, selectionArgs, groupBy, null, sortOrder);
 		cursor.setNotificationUri(getContext().getContentResolver(), uri);
 
 		return cursor;

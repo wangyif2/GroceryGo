@@ -19,6 +19,7 @@
 	<string name="cart_shoplist_add">Add new item to shopping cart</string>
 	<string name="cart_shoplist_added">Item added to shopping cart</string>
 	<string name="cart_shoplist_removed">Item removed from shopping cart</string>
+	<string name="cart_summary">View summary by store</string>
 	
 	<string name="navdrawer_heading_places">PLACES</string>
 	<string name="navdrawer_item_cat">Home</string>

@@ -309,21 +309,23 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
 				}
 			}
 			
-			// Update the where clause for the query
-			if (!isAtLeastOneWhere) {
-				isAtLeastOneWhere = true;
-			} else {
-				selection += " AND ";
+			// Update the where clause for the query iff there are any flyers matching the filter
+			// (some stores have no associated flyer)
+			if (filterFlyers.size() > 0) {
+				if (!isAtLeastOneWhere) {
+					isAtLeastOneWhere = true;
+				} else {
+					selection += " AND ";
+				}
+				selection += "(";
+				for (int k=0; k<filterFlyers.size(); k++) {
+					if (k > 0) 
+						selection += " OR ";
+					selection += GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_GROCERY_FLYER + " = ?";
+					selectionArgs.add(filterFlyers.get(k).toString());
+				}
+				selection += ")";
 			}
-			selection += "(";
-			for (int k=0; k<filterFlyers.size(); k++) {
-				if (k > 0) 
-					selection += " OR ";
-				selection += GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_GROCERY_FLYER + " = ?";
-				selectionArgs.add(filterFlyers.get(k).toString());
-			}
-			selection += ")";
-			
 		}
 		
 		

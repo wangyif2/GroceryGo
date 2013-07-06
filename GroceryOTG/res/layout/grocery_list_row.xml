@@ -139,7 +139,7 @@
 				    android:singleLine="true"
 				    android:textColor="#999999"
 				    android:gravity="right"
-				    android:text="asdf"
+				    android:text=""
 				    />
 					
 			</LinearLayout> <!-- end of row 3 -->

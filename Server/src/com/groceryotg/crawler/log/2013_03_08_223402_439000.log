@@ -1,0 +1,61 @@
+2013-03-08 22:34:02,454:INFO: Connected to database
+2013-03-08 22:34:02,461:INFO: Crawling store: 3
+2013-03-08 22:34:02,947:INFO: start date: 2013-03-08
+2013-03-08 22:34:02,947:INFO: end date: 2013-03-14
+2013-03-08 22:34:02,947:INFO: update date: 2013-03-08 22:34:02
+2013-03-08 22:34:02,957:INFO: 
+
+2013-03-08 22:34:02,957:INFO: Crawling store: 2
+2013-03-08 22:34:04,250:INFO: URL: http://eflyerontario.loblaws.ca/cached_banner_pages/AJAXProxy.aspx?bname=LOB&AJAXCall=GetPublicationData.aspx?view=TEXT&version=Flash&publicationid=4b8a6ee0-3266-43a7-b925-f3fdc9354ec7&publicationtype=1&bannername=LOB&customername=LCL&pageid1=1&languageid=1&bannerid=3d5f3800-c099-11d9-9669-0800200c9a66
+2013-03-08 22:34:04,433:INFO: start date: 2013-03-08
+2013-03-08 22:34:04,433:INFO: end date: 2013-03-14
+2013-03-08 22:34:04,433:INFO: update date: 2013-03-08 22:34:02
+2013-03-08 22:34:04,436:INFO: 
+
+2013-03-08 22:34:04,436:INFO: Crawling store: 1
+2013-03-08 22:34:05,844:INFO: URL: http://www.metro.ca/en/on/accessible-flyer.html?method=getAccessibleFlyer&idFlyer=1634
+2013-03-08 22:34:05,846:INFO: start date: 2013-03-08
+2013-03-08 22:34:05,846:INFO: end date: 2013-03-14
+2013-03-08 22:34:05,846:INFO: update date: 2013-03-08 22:34:02
+2013-03-08 22:34:05,851:INFO: 
+
+2013-03-08 22:34:05,851:INFO: Crawling store: 4
+2013-03-08 22:34:15,434:INFO: URL: http://eflyer.shopnofrills.ca/cached_banner_pages/AJAXProxy.aspx?bname=NOFR&AJAXCall=GetPublicationData.aspx?view=TEXT&version=Flash&publicationid=ba6f7463-0505-445a-a8fb-08f43d275933&publicationtype=32&bannername=NOFR&customername=LCL&pageid1=1&languageid=1&bannerid=1f2ff19d-2888-44b3-93ea-1905aa0d9756
+2013-03-08 22:34:15,520:INFO: start date: 2013-03-08
+2013-03-08 22:34:15,520:INFO: end date: 2013-03-14
+2013-03-08 22:34:15,520:INFO: update date: 2013-03-08 22:34:02
+2013-03-08 22:34:15,522:INFO: 
+
+2013-03-08 22:34:15,522:INFO: Crawling store: 5
+2013-03-08 22:34:17,148:INFO: URL: http://sob.ca.flyerservices.com/cached_banner_pages/AJAXProxy.aspx?bname=SOB&AJAXCall=GetPublicationData.aspx?view=TEXT&version=Flash&publicationid=8f6eb863-e821-4579-9182-b60638d1e3d6&publicationtype=1&bannername=SOB&customername=SOB&pageid1=1&languageid=1&bannerid=0f69e65d-a96e-4871-8f86-a5fe7dde96c0
+2013-03-08 22:34:17,309:INFO: start date: 2013-03-07
+2013-03-08 22:34:17,309:INFO: end date: 2013-03-13
+2013-03-08 22:34:17,309:INFO: update date: 2013-03-08 22:34:02
+2013-03-08 22:34:17,311:INFO: 
+
+2013-03-08 22:34:18,105:INFO: 
+
+2013-03-08 22:34:20,098:INFO: Classification accuracy for store 1 could not be determined due to missing labelled targets
+2013-03-08 22:34:20,535:INFO: Wrote 181 lines into table Item
+2013-03-08 22:34:20,536:INFO: 
+
+2013-03-08 22:34:21,365:INFO: Classification accuracy for store 2 could not be determined due to missing labelled targets
+2013-03-08 22:34:21,884:INFO: Wrote 221 lines into table Item
+2013-03-08 22:34:21,887:INFO: 
+
+2013-03-08 22:34:22,477:INFO: Classification accuracy for store 3 could not be determined due to missing labelled targets
+2013-03-08 22:34:22,805:INFO: Wrote 134 lines into table Item
+2013-03-08 22:34:22,805:INFO: 
+
+2013-03-08 22:34:22,951:INFO: Classification accuracy for store 4 could not be determined due to missing labelled targets
+2013-03-08 22:34:23,071:INFO: Wrote 50 lines into table Item
+2013-03-08 22:34:23,072:INFO: 
+
+2013-03-08 22:34:23,339:INFO: Classification accuracy for store 5 could not be determined due to missing labelled targets
+2013-03-08 22:34:23,497:INFO: Wrote 62 lines into table Item
+2013-03-08 22:34:23,499:INFO: 
+
+2013-03-08 22:34:33,818:INFO: Wrote 648 lines into table Grocery
+2013-03-08 22:34:33,822:INFO: Closed connection to database
+2013-03-08 22:34:33,822:INFO: 
+ELAPSED: 31.38 seconds

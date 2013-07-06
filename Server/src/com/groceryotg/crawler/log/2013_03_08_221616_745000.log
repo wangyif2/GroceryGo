@@ -1,0 +1,14 @@
+2013-03-08 22:16:17,822:INFO: Connected to database
+2013-03-08 22:16:19,032:INFO: Crawling store: 3
+2013-03-08 22:16:19,618:INFO: start date: 2013-03-08
+2013-03-08 22:16:19,618:INFO: end date: 2013-03-14
+2013-03-08 22:16:19,618:INFO: update date: 2013-03-08 22:16:18
+2013-03-08 22:16:19,624:INFO: 
+
+2013-03-08 22:16:19,624:INFO: Crawling store: 2
+2013-03-08 22:16:20,397:INFO: URL: http://eflyerontario.loblaws.ca/cached_banner_pages/AJAXProxy.aspx?bname=LOB&AJAXCall=GetPublicationData.aspx?view=TEXT&version=Flash&publicationid=4b8a6ee0-3266-43a7-b925-f3fdc9354ec7&publicationtype=1&bannername=LOB&customername=LCL&pageid1=1&languageid=1&bannerid=3d5f3800-c099-11d9-9669-0800200c9a66
+2013-03-08 22:16:20,552:INFO: start date: 2013-03-08
+2013-03-08 22:16:20,552:INFO: end date: 2013-03-14
+2013-03-08 22:16:20,552:INFO: update date: 2013-03-08 22:16:18
+2013-03-08 22:16:20,555:INFO: Error (<type 'exceptions.ValueError'>) occurred in crawl.py, line 1132: could not convert string to float: $33.99
+2013-03-08 22:16:20,555:INFO: Closed connection to database

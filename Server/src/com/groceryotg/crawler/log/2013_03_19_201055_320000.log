@@ -1,0 +1,11 @@
+2013-03-19 20:10:55,404:INFO: Error (<class '_mysql_exceptions.OperationalError'>) occurred in crawl.py, line 1142: (1045, "Access denied for user 'root'@'localhost' (using password: NO)")
+2013-03-19 20:10:55,404:INFO: Traceback:
+2013-03-19 20:10:55,440:INFO: Traceback (most recent call last):
+  File "E:\installs\Git\storage\GroceryOTG\Server\src\com\groceryotg\crawler\crawl.py", line 1142, in <module>
+    con = mdb.connect('localhost', mysql_user, mysql_password, mysql_db, use_unicode=True, charset="utf8")
+  File "E:\installs\Python27\lib\site-packages\MySQLdb\__init__.py", line 81, in Connect
+    return Connection(*args, **kwargs)
+  File "E:\installs\Python27\lib\site-packages\MySQLdb\connections.py", line 187, in __init__
+    super(Connection, self).__init__(*args, **kwargs2)
+OperationalError: (1045, "Access denied for user 'root'@'localhost' (using password: NO)")
+

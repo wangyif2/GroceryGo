@@ -13,6 +13,7 @@
 		android:layout_height="match_parent"
 		android:textStyle="bold"
 		android:textSize="14sp"
+        android:padding="5dp"
 		android:textIsSelectable="false"
 		android:gravity="left|bottom" >
 	</TextView>

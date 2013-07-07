@@ -65,18 +65,6 @@ public class CategoryTopCursorAdapter extends SimpleCursorAdapter {
 		String colName = CategoryTable.COLUMN_CATEGORY_NAME;
 		String categoryName = c.getString(c.getColumnIndex(colName)).toLowerCase(Locale.CANADA);
 
-		// TODO: Update category names in database
-		if (categoryName.equalsIgnoreCase("Miscellaneous")) {
-			categoryName = "misc";
-		} else if (categoryName.equalsIgnoreCase("Fruits and Vegetables")) {
-			categoryName = "fruit & veg";
-		} else if (categoryName.equalsIgnoreCase("Bread and Bakery")) {
-			categoryName = "bread";
-		} else if (categoryName.equalsIgnoreCase("Beverages")) {
-			categoryName = "drinks";
-		}
-
-
 		// Set the name of the next category in the grid view
 		TextView name_text = (TextView) v.findViewById(R.id.category_row_label);
 		if (name_text != null) {

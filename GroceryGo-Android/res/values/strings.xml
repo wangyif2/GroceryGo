@@ -39,6 +39,8 @@
 	<string name="action_close">Close</string>
 	
 	<string name="grocery_row_distance_missing">No distance info available</string>
+	<string name="grocery_row_expires">Ends:</string>
+	<string name="grocery_row_expired">EXPIRED</string>
 	
 	<string name="title_main">Home</string>
 	<string name="title_grocery_pager">Sales</string>

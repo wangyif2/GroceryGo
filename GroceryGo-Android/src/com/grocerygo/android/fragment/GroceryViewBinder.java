@@ -22,6 +22,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -56,10 +57,35 @@ public class GroceryViewBinder implements SimpleCursorAdapter.ViewBinder, ViewBi
 				&& viewId == R.id.grocery_row_expiry) {
 			
 			DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-			String expiryDate = formatter.format(new Date(Long.valueOf(cursor.getString(columnIndex))));
+			Date theExpiryDate = new Date(Long.valueOf(cursor.getString(columnIndex)));
+			String expiryDate = formatter.format(theExpiryDate);
+			Date todayDate = new Date();
+			
+			// Compare dates only, regardless of time
+			Calendar expiry = Calendar.getInstance();
+			expiry.setTime(theExpiryDate);
+			expiry.set(Calendar.MILLISECOND,0);
+			expiry.set(Calendar.SECOND, 0);
+			expiry.set(Calendar.MINUTE, 0);
+			expiry.set(Calendar.HOUR_OF_DAY, 0);
+			
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(todayDate);
+			calendar.set(Calendar.MILLISECOND,0);
+			calendar.set(Calendar.SECOND, 0);
+			calendar.set(Calendar.MINUTE, 0);
+			calendar.set(Calendar.HOUR_OF_DAY, 0);
+			
+			int dateDiff = (int)(expiry.getTimeInMillis()-calendar.getTimeInMillis())/(1000*3600*24);
 			
 			TextView textView = (TextView) view;
-			textView.setText("Ends: " + expiryDate);
+			if (dateDiff < 0) {
+				textView.setText(mContext.getString(R.string.grocery_row_expired) + " " + expiryDate);
+				textView.setTextColor(mContext.getResources().getColor(R.color.holo_red_light));
+			} else {
+				textView.setText(mContext.getString(R.string.grocery_row_expires) + " " + expiryDate);
+				textView.setTextColor(mContext.getResources().getColor(R.color.holo_gray_light));
+			}
 			return true;
 		}
 		else if (columnIndex == cursor.getColumnIndex(GroceryTable.COLUMN_GROCERY_ID)

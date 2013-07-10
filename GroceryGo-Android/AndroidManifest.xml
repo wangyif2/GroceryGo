@@ -102,6 +102,11 @@
             android:name=".ShopCartAddFragmentActivity"
             android:label="@string/title_cart_detail">
         </activity>
+        
+        <activity
+            android:name=".ShopCartSummaryFragmentActivity"
+            android:label="@string/title_cart_summary">
+        </activity>
 
         <activity
             android:name=".MapFragmentActivity"

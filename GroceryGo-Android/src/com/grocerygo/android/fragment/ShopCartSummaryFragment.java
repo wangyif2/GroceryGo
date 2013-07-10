@@ -47,7 +47,7 @@ public class ShopCartSummaryFragment extends SherlockListFragment { //implements
 		mHeaderView = inflater.inflate(R.layout.shopcart_summary_list_header, container, false);
 		
 		mProgressView = (ProgressBar) v.findViewById(R.id.refresh_progress);
-		mEmptyTextView = (TextView) v.findViewById(R.id.empty_grocery_list);
+		mEmptyTextView = (TextView) v.findViewById(R.id.empty_shopcart_list);
 		
 		if (mProgressView != null)
 			mProgressView.setVisibility(View.VISIBLE);
@@ -143,7 +143,11 @@ public class ShopCartSummaryFragment extends SherlockListFragment { //implements
 		setListAdapter(mAdapter);
 		if (mProgressView != null)
 			mProgressView.setVisibility(View.INVISIBLE);
-		
+		if (values.size() <= 0) {
+			this.getListView().removeHeaderView(mHeaderView);
+			if (mEmptyTextView != null)
+				mEmptyTextView.setVisibility(View.VISIBLE);
+		}
 		
 	}
 	

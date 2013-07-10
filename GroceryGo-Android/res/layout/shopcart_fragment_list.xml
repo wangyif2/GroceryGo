@@ -27,13 +27,13 @@
 			/>
 
 		<TextView
-			android:id="@+id/empty_shopcart_list"
+			android:id="@+id/empty_grocery_list"
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
 			android:textSize="18sp"
 			android:fontFamily="sans-serif-light"
-			android:gravity="top|center_horizontal"
-			android:text="@string/no_summary_content"
+			android:gravity="center"
+			android:text="@string/no_shopcart_content"
 			android:drawableLeft="@drawable/ic_menu_about"
 			android:drawablePadding="2dip"
 			android:paddingLeft="10dip"

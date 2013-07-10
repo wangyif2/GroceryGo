@@ -53,7 +53,7 @@ public class ShopCartOverviewFragment extends SherlockListFragment implements Lo
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View v = inflater.inflate(R.layout.grocery_fragment_list, container, false);
+		View v = inflater.inflate(R.layout.shopcart_fragment_list, container, false);
 		
 		mProgressView = (ProgressBar) v.findViewById(R.id.refresh_progress);
 		mEmptyTextView = (TextView) v.findViewById(R.id.empty_grocery_list);
@@ -196,6 +196,10 @@ public class ShopCartOverviewFragment extends SherlockListFragment implements Lo
 		mAdapter.swapCursor(cursor);
 		if (mProgressView != null)
 			mProgressView.setVisibility(View.GONE);
+		if (cursor.getCount() <= 0) {
+			if (mEmptyTextView != null)
+				mEmptyTextView.setVisibility(View.VISIBLE);
+		}
 	}
 
 	@Override

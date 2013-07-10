@@ -1,5 +1,8 @@
 package com.grocerygo.android.fragment;
 
+import java.text.DecimalFormat;
+import java.util.Locale;
+
 public class ShopCartSummaryItem {
 	private String storeParentId;
 	private String storeParentName;
@@ -36,6 +39,7 @@ public class ShopCartSummaryItem {
 	}
 	
 	public void setStoreTotal(String storeTotal) {
-		this.storeTotal = storeTotal;
+		String parsed = String.format(Locale.CANADA, "%.2f", Double.parseDouble(storeTotal));
+		this.storeTotal = parsed;
 	}
 }

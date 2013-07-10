@@ -28,6 +28,7 @@ public class ShopCartSummaryFragment extends SherlockListFragment { //implements
 	
 	private ProgressBar mProgressView;
 	private TextView mEmptyTextView;
+	private View mHeaderView;
 	
 	@Override
 	public void onAttach(Activity activity) {
@@ -43,6 +44,7 @@ public class ShopCartSummaryFragment extends SherlockListFragment { //implements
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.shopcart_summary_fragment_list, container, false);
+		mHeaderView = inflater.inflate(R.layout.shopcart_summary_list_header, container, false);
 		
 		mProgressView = (ProgressBar) v.findViewById(R.id.refresh_progress);
 		mEmptyTextView = (TextView) v.findViewById(R.id.empty_grocery_list);
@@ -64,6 +66,10 @@ public class ShopCartSummaryFragment extends SherlockListFragment { //implements
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
+		
+		if (mHeaderView != null) {
+			this.getListView().addHeaderView(mHeaderView);
+		}
 		
 		// Construct a raw query because SimpleCursorAdapter doesn't support 
 		// aggregate statements like SUM() in the from column spec
@@ -133,6 +139,7 @@ public class ShopCartSummaryFragment extends SherlockListFragment { //implements
 		setListAdapter(mAdapter);
 		if (mProgressView != null)
 			mProgressView.setVisibility(View.INVISIBLE);
+		
 		
 	}
 	

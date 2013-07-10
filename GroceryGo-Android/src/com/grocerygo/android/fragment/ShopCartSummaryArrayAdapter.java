@@ -34,7 +34,7 @@ public class ShopCartSummaryArrayAdapter extends ArrayAdapter<ShopCartSummaryIte
 		
 		storeParentId.setText(mValues.get(position).getStoreParentId());
 		storeParentName.setText(mValues.get(position).getStoreParentName());
-		storeTotal.setText(mValues.get(position).getStoreTotal());
+		storeTotal.setText("$" + mValues.get(position).getStoreTotal());
 		
 		return rowView;
 	}

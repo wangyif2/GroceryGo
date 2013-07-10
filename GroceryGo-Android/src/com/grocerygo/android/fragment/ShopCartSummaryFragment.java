@@ -79,7 +79,8 @@ public class ShopCartSummaryFragment extends SherlockListFragment { //implements
 		String[] from = new String[]{StoreParentTable.TABLE_STORE_PARENT + "." + StoreParentTable.COLUMN_ID,
 									 StoreParentTable.TABLE_STORE_PARENT + "." + StoreParentTable.COLUMN_STORE_PARENT_ID,
 									 StoreParentTable.TABLE_STORE_PARENT + "." + StoreParentTable.COLUMN_STORE_PARENT_NAME,
-									 "SUM(" + GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_GROCERY_PRICE + ")"};
+									 "SUM(" + GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_GROCERY_PRICE + ") AS sumTotal",
+									 "COUNT(" + GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_GROCERY_PRICE + ") AS countItems"};
 		String whereClause = CartTable.TABLE_CART + "." + CartTable.COLUMN_CART_GROCERY_ID + " IS NOT NULL";
 		String groupByClause = StoreParentTable.TABLE_STORE_PARENT + "." + StoreParentTable.COLUMN_STORE_PARENT_ID;
 		
@@ -125,7 +126,10 @@ public class ShopCartSummaryFragment extends SherlockListFragment { //implements
 					else if (columnIndex == cur.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_NAME)) {
 						nextItem.setStoreParentName(cur.getString(columnIndex));
 					}
-					else { // aggregation column
+					else if (columnIndex == cur.getColumnIndex("countItems")) {
+						nextItem.setStoreTotalItems(cur.getString(columnIndex));
+					}
+					else if (columnIndex == cur.getColumnIndex("sumTotal")) { // aggregation column
 						nextItem.setStoreTotal(cur.getString(columnIndex));
 					}
 				}

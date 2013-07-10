@@ -10,7 +10,7 @@
 		android:id="@+id/shopcart_summary_title_storeparent"
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
-		android:layout_weight="0.6"
+		android:layout_weight="0.5"
 		android:text="@string/shopcart_summary_title_storeparent"
 		android:textSize="18sp"
 		android:fontFamily="sans-serif"
@@ -24,8 +24,22 @@
 		android:id="@+id/shopcart_summary_title_total"
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
-		android:layout_weight="0.4"
+		android:layout_weight="0.25"
 		android:text="@string/shopcart_summary_title_total"
+		android:textSize="18sp"
+		android:fontFamily="sans-serif"
+		android:textStyle="bold"
+		android:singleLine="true"
+		android:gravity="left"
+		android:padding="4dp" >
+	</TextView>
+	
+	<TextView
+		android:id="@+id/shopcart_summary_title_numitems"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_weight="0.25"
+		android:text="@string/shopcart_summary_title_numitems"
 		android:textSize="18sp"
 		android:fontFamily="sans-serif"
 		android:textStyle="bold"

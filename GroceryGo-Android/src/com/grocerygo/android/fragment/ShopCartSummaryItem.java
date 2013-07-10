@@ -1,21 +1,22 @@
 package com.grocerygo.android.fragment;
 
-import java.text.DecimalFormat;
 import java.util.Locale;
 
 public class ShopCartSummaryItem {
 	private String storeParentId;
 	private String storeParentName;
 	private String storeTotal;
+	private String storeTotalItems;
 	
 	public ShopCartSummaryItem() {
 		
 	}
 	
-	public ShopCartSummaryItem(String storeParentId, String storeParentName, String storeTotal) {
+	public ShopCartSummaryItem(String storeParentId, String storeParentName, String storeTotal, String storeTotalItems) {
 		this.storeParentId = storeParentId;
 		this.storeParentName = storeParentName;
 		this.storeTotal = storeTotal;
+		this.storeTotalItems = storeTotalItems;
 	}
 	
 	public String getStoreParentId() {
@@ -30,6 +31,10 @@ public class ShopCartSummaryItem {
 		return this.storeTotal;
 	}
 	
+	public String getStoreTotalItems() {
+		return this.storeTotalItems;
+	}
+	
 	public void setStoreParentId(String storeParentId) {
 		this.storeParentId = storeParentId;
 	}
@@ -41,5 +46,9 @@ public class ShopCartSummaryItem {
 	public void setStoreTotal(String storeTotal) {
 		String parsed = String.format(Locale.CANADA, "%.2f", Double.parseDouble(storeTotal));
 		this.storeTotal = parsed;
+	}
+	
+	public void setStoreTotalItems(String storeTotalItems) {
+		this.storeTotalItems = storeTotalItems;
 	}
 }

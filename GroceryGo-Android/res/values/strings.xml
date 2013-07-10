@@ -23,6 +23,7 @@
 	<string name="cart_summary">View summary by store</string>
 	<string name="shopcart_summary_title_storeparent">Store</string>
 	<string name="shopcart_summary_title_total">Total</string>
+	<string name="shopcart_summary_title_numitems"># Items</string>
 	
 	<string name="navdrawer_heading_places">PLACES</string>
 	<string name="navdrawer_item_cat">Home</string>

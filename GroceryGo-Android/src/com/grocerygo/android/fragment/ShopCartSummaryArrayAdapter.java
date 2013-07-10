@@ -31,10 +31,12 @@ public class ShopCartSummaryArrayAdapter extends ArrayAdapter<ShopCartSummaryIte
 		TextView storeParentId = (TextView) rowView.findViewById(R.id.shopcart_summary_storeparent_id);
 		TextView storeParentName = (TextView) rowView.findViewById(R.id.shopcart_summary_storeparent);
 		TextView storeTotal = (TextView) rowView.findViewById(R.id.shopcart_summary_total);
+		TextView storeNumItems = (TextView) rowView.findViewById(R.id.shopcart_summary_numitems);
 		
 		storeParentId.setText(mValues.get(position).getStoreParentId());
 		storeParentName.setText(mValues.get(position).getStoreParentName());
 		storeTotal.setText("$" + mValues.get(position).getStoreTotal());
+		storeNumItems.setText(mValues.get(position).getStoreTotalItems());
 		
 		return rowView;
 	}

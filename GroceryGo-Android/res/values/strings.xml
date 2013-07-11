@@ -64,6 +64,8 @@
 	<string name="groceryoverview_menu_item_refresh">Refresh</string>
 	
 	<string name="groceryoverview_row_imagedesc">Subcategory</string>
+	<string name="groceryoverview_row_storeicondesc">Store</string>
+	<string name="groceryoverview_row_additionaloptions">Additional options</string>
 	
 	<string name="search_hint">Search</string>
 	<string name="cart_add_voice_prompt">Speak item name</string>

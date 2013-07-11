@@ -16,6 +16,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -50,6 +51,7 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
 		// Add text to the distance text view
 		LinearLayout parentLayout = (LinearLayout) topView.findViewById(R.id.grocery_list_row_layout);
 		TextView distanceTextView = (TextView) parentLayout.findViewById(R.id.grocery_row_distance);
+		ImageView imageView = (ImageView) parentLayout.findViewById(R.id.grocery_row_storeicon);
 		Float closestDist = null, newDist;
 		
 		TextView storesTextView = (TextView) parentLayout.findViewById(R.id.grocery_row_store_id);
@@ -79,7 +81,8 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
 		Integer iconId = (Integer) storeParentTextView.getTag();
 		if (iconId != null) {
 			Drawable iconDrawable = mContext.getResources().getDrawable(iconId);
-			distanceTextView.setCompoundDrawablesWithIntrinsicBounds(iconDrawable, null, null, null);
+			//distanceTextView.setCompoundDrawablesWithIntrinsicBounds(iconDrawable, null, null, null);
+			imageView.setImageDrawable(iconDrawable);
 		}
 		
 		// Now add listeners for the different buttons

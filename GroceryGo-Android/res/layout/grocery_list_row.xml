@@ -45,7 +45,8 @@
 				android:id="@+id/grocery_list_row1"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:orientation="horizontal" >
+				android:orientation="horizontal"
+				android:paddingTop="4dp" >
 				   
 				<TextView
 					android:id="@+id/grocery_row_label"
@@ -57,7 +58,7 @@
 					android:fontFamily="sans-serif"
 					android:textStyle="bold"
 					android:singleLine="false"
-					android:gravity="center_vertical"
+					android:gravity="left|center_vertical"
 					android:clickable="false"
 					android:focusable="false" >
 				</TextView>
@@ -70,10 +71,10 @@
 					android:layout_weight="0.25"
 					android:text="@+id/grocery_row_price_text"
 					android:textColor="#ffcc0000"
-					android:textSize="18sp"
+					android:textSize="16sp"
 					android:fontFamily="sans-serif"
 					android:singleLine="true"
-					android:gravity="center"
+					android:gravity="right|center_vertical"
 					android:background="@color/transparent" >
 				</TextView>
 			</LinearLayout> <!-- end of row 1 -->
@@ -83,13 +84,13 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:orientation="horizontal"
-				android:baselineAligned="false" >
+				android:baselineAligned="false"
+				android:paddingTop="4dp" >
 				
 				<TextView
 					android:id="@+id/grocery_row_details"
 					android:layout_width="fill_parent"
 					android:layout_height="wrap_content"
-					android:paddingTop="6dp"
 					android:text="@+id/grocery_row_details_text"
 					android:textSize="12sp"
 					android:fontFamily="sans-serif"
@@ -107,22 +108,32 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:orientation="horizontal"
-				android:baselineAligned="false">
+				android:baselineAligned="false"
+				android:paddingTop="4dp">
 				
+			    <ImageView 
+			        android:id="@+id/grocery_row_storeicon"
+			        android:layout_width="0dp"
+			        android:layout_height="wrap_content"
+			        android:layout_weight="0.1"
+			        android:contentDescription="@string/groceryoverview_row_storeicondesc"
+					android:gravity="left|center_vertical"
+			        />
+			    
 				<TextView
 					android:id="@+id/grocery_row_distance"
 					android:layout_width="0dp"
 					android:layout_height="wrap_content"
-					android:layout_weight="0.55"
+					android:layout_weight="0.45"
 					android:paddingBottom="4dp"
 					android:paddingTop="8dp"
+					android:paddingLeft="5dp"
 					android:textSize="12sp"
 					android:fontFamily="sans-serif"
 					android:textStyle="normal"
 					android:singleLine="false"
 					android:textColor="#999999"
-					android:drawablePadding="6dip"
-					android:gravity="center_vertical" >
+					android:gravity="left|center_vertical" >
 				</TextView>
 			
 				<TextView 
@@ -131,14 +142,14 @@
 				    android:layout_height="wrap_content"
 				    android:layout_weight="0.45"
 				    android:layout_gravity="right"
-				    android:paddingTop="16dp"
-				    android:paddingRight="5dp"
+				    android:paddingBottom="4dp"
+					android:paddingTop="8dp"
 				    android:textSize="12sp"
 				    android:fontFamily="sans-serif"
 				    android:textStyle="normal"
 				    android:singleLine="true"
 				    android:textColor="#999999"
-				    android:gravity="right"
+				    android:gravity="right|center_vertical"
 				    android:text=""
 				    />
 					
@@ -157,7 +168,7 @@
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:src="@drawable/ic_spinner"
-					android:contentDescription="Additional options" >
+					android:contentDescription="@string/groceryoverview_row_additionaloptions" >
 				</ImageView>
 			    
 			</LinearLayout> <!-- end of row 4 -->

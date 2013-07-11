@@ -3,10 +3,12 @@ package com.grocerygo.android.fragment;
 import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.support.v4.widget.SimpleCursorAdapter.ViewBinder;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
@@ -231,7 +233,8 @@ public class GroceryViewBinder implements SimpleCursorAdapter.ViewBinder, ViewBi
 			}
 			
 			textView.setText(storeParentName);
-			textView.setTag(mStoreParentIconMap.get(storeParentName));
+			Integer iconId = (Integer) mStoreParentIconMap.get(storeParentName);
+			textView.setTag(iconId);
 			
 			return true;
 		}

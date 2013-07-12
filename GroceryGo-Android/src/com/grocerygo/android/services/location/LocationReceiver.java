@@ -67,10 +67,9 @@ public class LocationReceiver extends BroadcastReceiver {
 					events.add(name);
 				if (!storeIDs.contains(storeID))
 					storeIDs.add(storeID);
+				newEvents.add(name);
 				displayNotification = true;
 			}
-			
-			newEvents.add(name);
 			
 			stores.moveToNext();
 		}

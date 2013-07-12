@@ -6,6 +6,8 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.location.Location;
 import android.media.AudioManager;
@@ -18,6 +20,7 @@ import com.grocerygo.android.MapFragmentActivity;
 import com.grocerygo.android.R;
 import com.grocerygo.android.database.CartTable;
 import com.grocerygo.android.database.StoreTable;
+import com.grocerygo.android.settings.SettingsManager;
 import com.grocerygo.android.utils.GroceryOTGUtils;
 
 import java.util.ArrayList;
@@ -27,10 +30,8 @@ import java.util.Set;
 public class LocationReceiver extends BroadcastReceiver {
 	// a near location is 1500m
 	public static final int LOCATION_NEAR = 1500;
-	//public static final int LOCATION_NEAR = 50000000;
-
 	public static final int NOTIFICATION_LOCATION_ID = 0;
-
+	
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		Location loc = (Location) intent.getExtras().get(LocationMonitor.EXTRA_LOCATION);
@@ -43,10 +44,10 @@ public class LocationReceiver extends BroadcastReceiver {
 	
 	private void constructNotification(Context context, Location loc) {
 		Bundle extras = new Bundle();
-		ArrayList<Integer> storeIDs = new ArrayList<Integer>();
+		ArrayList<Integer> storeIDs = new ArrayList<Integer>(); // list of unique stores that are closeby
 		Set<String> newEvents = new HashSet<String>();
 		
-		ArrayList<String> events = new ArrayList<String>();
+		ArrayList<String> events = new ArrayList<String>(); // list of unique grocery names
 		boolean displayNotification = false;
 		
 		Cursor stores = GroceryOTGUtils.getGroceriesFromCartFromStores(context);
@@ -77,16 +78,15 @@ public class LocationReceiver extends BroadcastReceiver {
 		if (!displayNotification)
 			return;
 		
-		// TODO: Add a check for previously notified items
-		/*SharedPreferences prefs = SettingsManager.getPrefs(context);
+		// Check if the exact same set of items has been previously notified
+		SharedPreferences prefs = SettingsManager.getPrefs(context);
 		Set<String> oldEvents = prefs.getStringSet(SettingsManager.SETTINGS_PREVIOUS_NOTIFICATION, new HashSet<String>());
 		if (oldEvents.equals(newEvents))
 			return;
 		
 		Editor prefsEditor = prefs.edit();
 		prefsEditor.putStringSet(SettingsManager.SETTINGS_PREVIOUS_NOTIFICATION, newEvents);
-		prefsEditor.commit();*/
-		
+		prefsEditor.commit();
 		
 		extras.putIntegerArrayList(MapFragmentActivity.EXTRA_FILTER_STORE, storeIDs);
 		

@@ -181,19 +181,21 @@ public class GroceryotgProvider extends ContentProvider {
 						+ "=" + StoreParentTable.TABLE_STORE_PARENT + "." + StoreParentTable.COLUMN_STORE_PARENT_ID);
 				break;
 			case ITEM_JOIN_STORE:
-				queryBuilder.setTables(StoreTable.TABLE_STORE
+				queryBuilder.setTables(CartTable.TABLE_CART
+						+ " INNER JOIN " + GroceryTable.TABLE_GROCERY
+							+ " ON " + CartTable.TABLE_CART + "." + CartTable.COLUMN_CART_GROCERY_ID 
+							+ " = " + GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_GROCERY_ID
 						+ " INNER JOIN " + FlyerTable.TABLE_FLYER
+							+ " ON " + GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_GROCERY_FLYER
+							+ " = " + FlyerTable.TABLE_FLYER + "." + FlyerTable.COLUMN_FLYER_ID
+						+ " INNER JOIN " + StoreTable.TABLE_STORE
 							+ " ON " + StoreTable.TABLE_STORE + "." + StoreTable.COLUMN_STORE_FLYER
 							+ " = " + FlyerTable.TABLE_FLYER + "." + FlyerTable.COLUMN_FLYER_ID
-						+ " INNER JOIN " + GroceryTable.TABLE_GROCERY
-							+ " ON " + FlyerTable.TABLE_FLYER + "." + FlyerTable.COLUMN_FLYER_ID
-							+ " = " + GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_GROCERY_FLYER
-						+ " INNER JOIN " + CartTable.TABLE_CART
-							+ " ON " + GroceryTable.TABLE_GROCERY + "." + GroceryTable.COLUMN_GROCERY_ID
-							+ " = " + CartTable.TABLE_CART + "." + CartTable.COLUMN_CART_GROCERY_ID
 						+ " INNER JOIN " + StoreParentTable.TABLE_STORE_PARENT
 							+ " ON " + StoreTable.TABLE_STORE + "." + StoreTable.COLUMN_STORE_PARENT
-							+ " = " + StoreParentTable.TABLE_STORE_PARENT + "." + StoreParentTable.COLUMN_STORE_PARENT_ID);
+							+ " = " + StoreParentTable.TABLE_STORE_PARENT + "." + StoreParentTable.COLUMN_STORE_PARENT_ID
+						);
+				queryBuilder.appendWhere(CartTable.TABLE_CART + "." + CartTable.COLUMN_CART_GROCERY_ID + " IS NOT NULL");
 				break;
 			case CART_JOIN_GROCERIES:
 				queryBuilder.setTables(CartTable.TABLE_CART

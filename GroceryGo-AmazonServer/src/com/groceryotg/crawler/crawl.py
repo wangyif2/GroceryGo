@@ -21,7 +21,6 @@ import MySQLdb as mdb
 import nltk
 import os
 import re
-#import sqlalchemy
 import sys
 import time
 import traceback
@@ -1235,6 +1234,13 @@ try:
     
     # Step 5: Write to Grocery
     grocery_ids = grocery_table.write_data()
+    
+    # Step 6: Push GCM notification
+    gcm_url = r"http://groceryotg-test.appspot.com/sendAll"
+    values = {"form":""}
+    data = urllib.urlencode(values)
+    req = urllib2.Request(gcm_url, data)
+    response = urllib2.urlopen(req)
     
 except Exception, e:
     exc_type, exc_obj, exc_tb = sys.exc_info()

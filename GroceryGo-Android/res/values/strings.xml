@@ -35,7 +35,7 @@
 	<string name="navdrawer_item_about">About</string>
 	<string name="navdrawer_item_changelog">Changelog</string>
 	<string name="navdrawer_item_about_feedback">Send feedback</string>
-	<string name="navdrawer_item_feedback_subject">GroceryOTG feedback</string>
+	<string name="navdrawer_item_feedback_subject">GroceryGo feedback</string>
 	<string name="navdrawer_item_sync">Sync</string>
 	<string name="navdrawer_open">Open</string>
 	<string name="navdrawer_closed">Closed</string>

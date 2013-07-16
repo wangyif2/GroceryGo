@@ -8,11 +8,11 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.widget.ListView;
 import android.widget.Toast;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.widget.SearchView;
 import com.grocerygo.android.gcm.GroceryGCMBroadcastReceiver;
@@ -28,6 +28,7 @@ import de.keyboardsurfer.android.widget.crouton.Style;
 public class CategoryTopFragmentActivity extends SherlockFragmentActivity {
     public static final String INTENT_EXTRA_FLAG_LOCATION_SERVICE_BAD = "intent_extra_flag_location_service_bad";
     public static final String INTENT_EXTRA_FLAG_LOCATION_NOT_SUPPORTED = "intent_extra_flag_location_not_supported";
+    private static final String SETTINGS_IS_REFRESHING = "isRefreshing";
     private Context mContext;
 
     private DrawerLayout mDrawerLayout;
@@ -119,13 +120,18 @@ public class CategoryTopFragmentActivity extends SherlockFragmentActivity {
         ChangeLogDialog cd = new ChangeLogDialog(this);
         cd.show();
 
+        if (refreshItem != null)
+            RefreshAnimation.refreshIcon(mContext, false, refreshItem);
+
         invalidateOptionsMenu();
+        refreshItem = null;
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mRefreshStatusReceiver);
+
     }
 
     @Override
@@ -136,19 +142,57 @@ public class CategoryTopFragmentActivity extends SherlockFragmentActivity {
 
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
-        MenuInflater inflater = getSupportMenuInflater();
-        inflater.inflate(R.menu.category_activity_menu, menu);
         mMenu = menu;
-
         return true;
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        menu.clear();
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        boolean isRefreshing = settings.getBoolean(CategoryTopFragmentActivity.SETTINGS_IS_REFRESHING, false);
         boolean isNewDataAva = settings.getBoolean(GroceryGCMBroadcastReceiver.SETTINGS_IS_NEW_DATA_AVA, false);
 
+        menu.clear();
+        configSearchView(menu);
+
+        if (isRefreshing) {
+            refreshItem = mMenu.findItem(R.id.refresh);
+            Log.i(GroceryApplication.TAG, "refreshItem is: " + (refreshItem == null));
+            if (refreshItem == null) {
+                Log.i(GroceryApplication.TAG, "refreshItem is: null, gonna add it");
+                menu.add(0, R.id.refresh, Menu.NONE, R.string.navdrawer_item_sync).setIcon(R.drawable.ic_menu_refresh).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+                refreshItem = mMenu.findItem(R.id.refresh);
+                if (refreshItem != null) {
+                    Log.i(GroceryApplication.TAG, "refreshItem is: added, gonna start animation");
+                    RefreshAnimation.refreshIcon(mContext, true, refreshItem);
+                }
+            }
+
+            Style INFINITE = new Style.Builder().setBackgroundColorValue(Style.holoBlueLight).build();
+            Configuration CONFIGURATION_INFINITE = new Configuration.Builder().setDuration(Configuration.DURATION_INFINITE).build();
+            Crouton.makeText(this, R.string.gcm_newdata_notification, INFINITE).setConfiguration(CONFIGURATION_INFINITE).show();
+        } else if (isNewDataAva) {
+            if (refreshItem == null) {
+                menu.add(0, R.id.refresh, Menu.NONE, R.string.navdrawer_item_sync).setIcon(R.drawable.ic_menu_refresh).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+            }
+
+            Style INFINITE = new Style.Builder().setBackgroundColorValue(Style.holoBlueLight).build();
+            Configuration CONFIGURATION_INFINITE = new Configuration.Builder().setDuration(Configuration.DURATION_INFINITE).build();
+            Crouton.makeText(this, R.string.gcm_newdata_notification, INFINITE).setConfiguration(CONFIGURATION_INFINITE).show();
+        }
+
+        if (this.mDrawerLayout != null && this.mDrawerList != null) {
+            for (int i = 0; i < menu.size(); i++) {
+                MenuItem item = menu.getItem(i);
+                item.setVisible(!mDrawerLayout.isDrawerOpen(mDrawerList));
+            }
+        }
+
+        return super.onPrepareOptionsMenu(menu);
+
+    }
+
+    private void configSearchView(Menu menu) {
         // Create a blank SearchView and set the searchable configuration
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = new SearchView(getSherlock().getActionBar().getThemedContext());
@@ -159,30 +203,13 @@ public class CategoryTopFragmentActivity extends SherlockFragmentActivity {
         MenuItem searchItem = menu.add(0, R.id.search, Menu.NONE, R.string.groceryoverview_menu_item_search);
         searchItem.setIcon(R.drawable.ic_menu_search).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
         searchItem.setActionView(searchView);
-
-        if (isNewDataAva) {
-            menu.add(0, R.id.refresh, Menu.NONE, R.string.navdrawer_item_sync).setIcon(R.drawable.ic_menu_refresh).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-
-            Style INFINITE = new Style.Builder().setBackgroundColorValue(Style.holoBlueLight).build();
-            Configuration CONFIGURATION_INFINITE = new Configuration.Builder().setDuration(Configuration.DURATION_INFINITE).build();
-            Crouton.makeText(this, R.string.gcm_newdata_notification, INFINITE).setConfiguration(CONFIGURATION_INFINITE).show();
-
-        }
-
-        if (this.mDrawerLayout != null && this.mDrawerList != null) {
-            for (int i = 0; i < menu.size(); i++) {
-                MenuItem item = menu.getItem(i);
-                item.setVisible(!mDrawerLayout.isDrawerOpen(mDrawerList));
-            }
-        }
-        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.refresh:
-                refreshContent();
+                refreshContent(mContext);
                 return true;
             case android.R.id.home:
                 // When home is pressed
@@ -195,9 +222,15 @@ public class CategoryTopFragmentActivity extends SherlockFragmentActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void refreshContent() {
+    private void refreshContent(Context context) {
         Toast t = Toast.makeText(this, "Fetching new items...", Toast.LENGTH_SHORT);
         t.show();
+
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor settingsEditor = settings.edit();
+        settingsEditor.putBoolean(SETTINGS_IS_REFRESHING, true);
+        settingsEditor.commit();
+
         refreshItem = mMenu.findItem(R.id.refresh);
         RefreshAnimation.refreshIcon(mContext, true, refreshItem);
 
@@ -211,6 +244,9 @@ public class CategoryTopFragmentActivity extends SherlockFragmentActivity {
 
         @Override
         public void onReceive(Context context, Intent intent) {
+            SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+            SharedPreferences.Editor settingsEditor = settings.edit();
+
             int resultCode = intent.getBundleExtra("bundle").getInt(NetworkHandler.CONNECTION_STATE);
             int requestType = intent.getBundleExtra("bundle").getInt(NetworkHandler.REQUEST_TYPE);
             boolean newData = intent.getBundleExtra("bundle").getBoolean(GroceryGCMBroadcastReceiver.SETTINGS_IS_NEW_DATA_AVA);
@@ -221,20 +257,28 @@ public class CategoryTopFragmentActivity extends SherlockFragmentActivity {
                 RefreshAnimation.refreshIcon(context, false, refreshItem);
                 toast = Toast.makeText(mContext, "No Internet Connection", Toast.LENGTH_SHORT);
                 toast.show();
+
+                settingsEditor.putBoolean(SETTINGS_IS_REFRESHING, false);
+                settingsEditor.commit();
+
                 return;
             }
 
-            if (newData)
+            if (newData) {
                 invalidateOptionsMenu();
+
+                settingsEditor.putBoolean(SETTINGS_IS_REFRESHING, false);
+                settingsEditor.commit();
+            }
 
             if (requestType == NetworkHandler.GRO && resultCode == NetworkHandler.CONNECTION) {
                 RefreshAnimation.refreshIcon(context, false, refreshItem);
 
-                SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-                SharedPreferences.Editor settingsEditor = settings.edit();
                 settingsEditor.putBoolean(GroceryGCMBroadcastReceiver.SETTINGS_IS_NEW_DATA_AVA, false);
+                settingsEditor.putBoolean(SETTINGS_IS_REFRESHING, false);
                 settingsEditor.commit();
                 invalidateOptionsMenu();
+                refreshItem = null;
 
                 Crouton.cancelAllCroutons();
 

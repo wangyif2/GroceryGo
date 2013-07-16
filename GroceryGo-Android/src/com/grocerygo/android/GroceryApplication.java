@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class GroceryApplication extends Application {
 
-    public static final String TAG = "GroceryOTG";
+    public static final String TAG = "GroceryGo";
 	
 	private SparseArray<Float> mStoreDistanceMap;
 	private Map<String, Integer> mMapIconMap = new HashMap<String, Integer>();

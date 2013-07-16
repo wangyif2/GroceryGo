@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.grocerygo.android"
-          android:versionCode="@string/version_code"
+          android:versionCode="718"
           android:versionName="@string/version_name">
 
     <uses-sdk
@@ -61,7 +61,8 @@
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyAJnXqmSFeniKuP1CgTJ8yUJZwdzVLP8yc"/>
+            android:value="AIzaSyCKS_i0HP9HNknRoV8m14afOZyMDmYgdiY"/>
+            <!--android:value="AIzaSyAJnXqmSFeniKuP1CgTJ8yUJZwdzVLP8yc"/>-->
 
         <activity
             android:name=".SplashScreenActivity"

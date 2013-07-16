@@ -1,6 +1,5 @@
 <resources>
 	<string name="app_name">GroceryGo</string>
-    <string name="version_code">718</string>
     <string name="version_name">1.1</string>
 	<string name="app_email">grocerygo.ca@gmail.com</string>
 	

@@ -11,6 +11,7 @@ import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import com.actionbarsherlock.app.SherlockDialogFragment;
 import com.grocerygo.android.R;
+import com.grocerygo.android.utils.GroceryOTGUtils;
 
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class AboutDialogFragment extends SherlockDialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        String titleString = getString(R.string.about_title) + " v" + getString(R.string.version_name) + " build " + getString(R.string.version_code);
+        String titleString = getString(R.string.about_title) + " v" + getString(R.string.version_name) + " build " + GroceryOTGUtils.getVersionCode(mContext);
 
         Dialog dialog = new AlertDialog.Builder(getActivity())
                 .setTitle(titleString)

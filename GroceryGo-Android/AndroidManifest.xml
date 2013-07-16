@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.grocerygo.android"
-          android:versionCode="1"
+          android:versionCode="@string/version_code"
           android:versionName="@string/version_name">
 
     <uses-sdk
         android:minSdkVersion="10"
         android:targetSdkVersion="17"/>
+
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true"/>
 
     <!-- We have to explicitly declare we support larger screen sizes -->
     <!-- We don't really care or want to support small screens, since those are generally run Donut or lower -->

@@ -97,23 +97,21 @@ public class GroceryApplication extends Application {
 					int storeId = storeIDs.getInt(storeIDs.getColumnIndex(StoreTable.COLUMN_STORE_ID));
 					int storeParentId = storeIDs.getInt(storeIDs.getColumnIndex(StoreTable.COLUMN_STORE_PARENT));
 					
-					// Be careful: some stores have NULL flyers which gets translated to flyerId=0
+					// Be careful: some stores have NULL flyers which gets translated to flyerId=0 here
 					if (flyerId > 0) {
 						if (mFlyerStoreMap.get(flyerId) == null)
 							mFlyerStoreMap.put(flyerId, new ArrayList<Integer>());
 						ArrayList<Integer> n = mFlyerStoreMap.get(flyerId);
 						n.add(storeId);
 						mFlyerStoreMap.put(flyerId, n);
+						
+						if (mStoreParentStoreMap.get(storeParentId) == null)
+							mStoreParentStoreMap.put(storeParentId, new ArrayList<Integer>());
+						// Now append the new value onto the end of the appropriate list
+						ArrayList<Integer> m = mStoreParentStoreMap.get(storeParentId);
+						m.add(storeId);
+						mStoreParentStoreMap.put(storeParentId, m);
 					}
-					
-					// Make sure to initialize our lists!
-					if (mStoreParentStoreMap.get(storeParentId) == null)
-						mStoreParentStoreMap.put(storeParentId, new ArrayList<Integer>());
-					
-					// Now append the new value onto the end of the appropriate list
-					ArrayList<Integer> m = mStoreParentStoreMap.get(storeParentId);
-					m.add(storeId);
-					mStoreParentStoreMap.put(storeParentId, m);
 					
 					storeIDs.moveToNext();
 				}

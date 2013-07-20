@@ -273,7 +273,7 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
 		// Store location filter
 		int storeLocationPref = SettingsManager.getStoreLocationFilter(mContext);
 		if (storeLocationPref == 1) {
-			// Display only the closest store location for each store parent
+			// Display only the closest store location for each store parent (which has a flyer)
 			
 			// Map between storeParents and corresponding stores
 			SparseArray<ArrayList<Integer>> storeParentStores = ((GroceryApplication) ((Activity) mContext).getApplication()).getStoreParentStoreMap();

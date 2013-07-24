@@ -5,8 +5,8 @@ import android.view.LayoutInflater;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-import ca.actionbarsherlock.view.MenuItem;
 import ca.grocerygo.android.R;
+import com.actionbarsherlock.view.MenuItem;
 
 /**
  * User: robert

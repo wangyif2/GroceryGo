@@ -11,10 +11,9 @@ import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.view.View;
 import android.webkit.WebView;
-
-import ca.actionbarsherlock.app.SherlockDialogFragment;
-import ca.grocerygo.android.utils.GroceryOTGUtils;
 import ca.grocerygo.android.R;
+import ca.grocerygo.android.utils.GroceryOTGUtils;
+import com.actionbarsherlock.app.SherlockDialogFragment;
 
 import java.util.List;
 

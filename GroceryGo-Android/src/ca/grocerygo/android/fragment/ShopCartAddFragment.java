@@ -16,11 +16,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-import ca.grocerygo.android.database.CartTable;
-import ca.actionbarsherlock.app.SherlockFragment;
 import ca.grocerygo.android.R;
+import ca.grocerygo.android.database.CartTable;
 import ca.grocerygo.android.database.contentprovider.GroceryotgProvider;
 import ca.grocerygo.android.utils.GroceryOTGUtils;
+import com.actionbarsherlock.app.SherlockFragment;
 
 public class ShopCartAddFragment extends SherlockFragment {
 	private Context mContext;

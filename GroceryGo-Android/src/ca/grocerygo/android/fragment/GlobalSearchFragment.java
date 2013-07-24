@@ -7,10 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
-import ca.actionbarsherlock.app.SherlockFragmentActivity;
-import ca.actionbarsherlock.app.SherlockListFragment;
 import ca.grocerygo.android.R;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.app.SherlockListFragment;
 
 public class GlobalSearchFragment extends SherlockListFragment {
 	private Context mContext;

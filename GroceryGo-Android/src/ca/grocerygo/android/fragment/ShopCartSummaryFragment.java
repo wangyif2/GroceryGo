@@ -1,8 +1,7 @@
 package ca.grocerygo.android.fragment;
 
-import java.util.ArrayList;
 import android.app.Activity;
-import android.content.*;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -11,14 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import ca.grocerygo.android.R;
-import ca.grocerygo.android.database.CartTable;
-import ca.grocerygo.android.database.GroceryTable;
-import ca.grocerygo.android.database.GroceryotgDatabaseHelper;
-import ca.actionbarsherlock.app.SherlockListFragment;
-import ca.grocerygo.android.database.FlyerTable;
-import ca.grocerygo.android.database.StoreParentTable;
+import ca.grocerygo.android.database.*;
+import com.actionbarsherlock.app.SherlockListFragment;
+
+import java.util.ArrayList;
 
 public class ShopCartSummaryFragment extends SherlockListFragment { //implements LoaderManager.LoaderCallbacks<Cursor>
 	private Context mContext;

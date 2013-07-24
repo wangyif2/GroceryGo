@@ -6,15 +6,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.ListView;
-
 import ca.grocerygo.android.fragment.GlobalSearchFragment;
 import ca.grocerygo.android.utils.GroceryOTGUtils;
-import ca.actionbarsherlock.app.SherlockFragmentActivity;
-import ca.actionbarsherlock.view.Menu;
-import ca.actionbarsherlock.view.MenuInflater;
-import ca.actionbarsherlock.view.MenuItem;
-import ca.actionbarsherlock.widget.SearchView;
-import ca.actionbarsherlock.widget.SearchView.OnQueryTextListener;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.widget.SearchView;
+import com.actionbarsherlock.widget.SearchView.OnQueryTextListener;
 
 public class GlobalSearchFragmentActivity extends SherlockFragmentActivity {
 	public static final String GLOBAL_SEARCH = "global_search";

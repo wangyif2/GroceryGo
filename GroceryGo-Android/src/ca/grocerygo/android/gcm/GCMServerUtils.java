@@ -2,10 +2,10 @@ package ca.grocerygo.android.gcm;
 
 import android.content.Context;
 import android.util.Log;
-import ca.grocerygo.android.utils.ServerURLs;
-import ca.google.android.gcm.GCMRegistrar;
 import ca.grocerygo.android.GroceryApplication;
 import ca.grocerygo.android.R;
+import ca.grocerygo.android.utils.ServerURLs;
+import com.google.android.gcm.GCMRegistrar;
 
 import java.io.IOException;
 import java.io.OutputStream;

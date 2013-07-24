@@ -1,11 +1,11 @@
 package ca.grocerygo.android.fragment;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.Activity;
 import android.app.SearchManager;
-import android.content.*;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
@@ -20,21 +20,23 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import ca.grocerygo.android.CategoryTopFragmentActivity;
 import ca.grocerygo.android.GlobalSearchFragmentActivity;
 import ca.grocerygo.android.GroceryApplication;
 import ca.grocerygo.android.R;
 import ca.grocerygo.android.database.CartTable;
-import ca.grocerygo.android.settings.SettingsManager;
-import ca.grocerygo.android.utils.ServerURLs;
-import ca.actionbarsherlock.app.SherlockListFragment;
 import ca.grocerygo.android.database.FlyerTable;
 import ca.grocerygo.android.database.GroceryTable;
 import ca.grocerygo.android.database.StoreParentTable;
 import ca.grocerygo.android.database.contentprovider.GroceryotgProvider;
+import ca.grocerygo.android.settings.SettingsManager;
 import ca.grocerygo.android.utils.GroceryOTGUtils;
-import ca.tjerkw.slideexpandable.library.SlideExpandableListAdapter;
+import ca.grocerygo.android.utils.ServerURLs;
+import com.actionbarsherlock.app.SherlockListFragment;
+import com.tjerkw.slideexpandable.library.SlideExpandableListAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GroceryListFragment extends SherlockListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
 	private static final String CATEGORY_POSITION = "position";

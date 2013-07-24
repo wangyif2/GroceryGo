@@ -1,7 +1,5 @@
 package ca.grocerygo.android;
 
-import java.util.ArrayList;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,16 +9,16 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import ca.grocerygo.android.services.QueryUPCDatabase;
 import ca.grocerygo.android.utils.GroceryOTGUtils;
-import ca.actionbarsherlock.app.SherlockFragmentActivity;
-import ca.actionbarsherlock.view.Menu;
-import ca.actionbarsherlock.view.MenuInflater;
-import ca.actionbarsherlock.view.MenuItem;
-
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+
+import java.util.ArrayList;
 
 public class ShopCartAddFragmentActivity extends SherlockFragmentActivity {
 	private static final int VOICE_RECOGNITION_REQUEST_CODE = 1000;

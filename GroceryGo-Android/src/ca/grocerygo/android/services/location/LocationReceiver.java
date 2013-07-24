@@ -15,13 +15,12 @@ import android.media.RingtoneManager;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
-
-import ca.grocerygo.android.database.CartTable;
-import ca.grocerygo.android.settings.SettingsManager;
-import ca.grocerygo.android.utils.GroceryOTGUtils;
 import ca.grocerygo.android.MapFragmentActivity;
 import ca.grocerygo.android.R;
+import ca.grocerygo.android.database.CartTable;
 import ca.grocerygo.android.database.StoreTable;
+import ca.grocerygo.android.settings.SettingsManager;
+import ca.grocerygo.android.utils.GroceryOTGUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;

@@ -13,11 +13,11 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.SimpleCursorAdapter;
-import ca.grocerygo.android.database.contentprovider.GroceryotgProvider;
-import ca.grocerygo.android.utils.GroceryOTGUtils;
-import ca.actionbarsherlock.app.SherlockFragment;
 import ca.grocerygo.android.R;
 import ca.grocerygo.android.database.CategoryTable;
+import ca.grocerygo.android.database.contentprovider.GroceryotgProvider;
+import ca.grocerygo.android.utils.GroceryOTGUtils;
+import com.actionbarsherlock.app.SherlockFragment;
 
 public class CategoryTopFragment extends SherlockFragment implements LoaderManager.LoaderCallbacks<Cursor> {
 	private Context mContext;

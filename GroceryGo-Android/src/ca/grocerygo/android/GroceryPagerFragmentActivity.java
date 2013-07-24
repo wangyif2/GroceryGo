@@ -13,11 +13,11 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import ca.grocerygo.android.fragment.GroceryListFragment;
 import ca.grocerygo.android.utils.GroceryOTGUtils;
-import ca.actionbarsherlock.app.SherlockFragmentActivity;
-import ca.actionbarsherlock.view.Menu;
-import ca.actionbarsherlock.view.MenuInflater;
-import ca.actionbarsherlock.view.MenuItem;
-import ca.actionbarsherlock.widget.SearchView;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.widget.SearchView;
 
 public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
 	public static String EXTRA_LAUNCH_PAGE = "extra_launch_page";

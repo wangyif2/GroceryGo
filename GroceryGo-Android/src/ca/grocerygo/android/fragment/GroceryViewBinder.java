@@ -9,23 +9,17 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
-
 import ca.grocerygo.android.GroceryApplication;
 import ca.grocerygo.android.R;
 import ca.grocerygo.android.database.CartTable;
+import ca.grocerygo.android.database.FlyerTable;
 import ca.grocerygo.android.database.GroceryTable;
 import ca.grocerygo.android.database.StoreParentTable;
 import ca.grocerygo.android.utils.ServerURLs;
-import ca.grocerygo.android.database.FlyerTable;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class GroceryViewBinder implements SimpleCursorAdapter.ViewBinder, ViewBinder {
 	private Context mContext;

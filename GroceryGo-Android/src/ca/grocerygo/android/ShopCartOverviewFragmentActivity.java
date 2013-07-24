@@ -4,12 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.ListView;
-
 import ca.grocerygo.android.utils.GroceryOTGUtils;
-import ca.actionbarsherlock.app.SherlockFragmentActivity;
-import ca.actionbarsherlock.view.Menu;
-import ca.actionbarsherlock.view.MenuInflater;
-import ca.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 
 public class ShopCartOverviewFragmentActivity extends SherlockFragmentActivity {
 	private DrawerLayout mDrawerLayout;

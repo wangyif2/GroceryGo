@@ -1,15 +1,14 @@
 package ca.grocerygo.android.fragment;
 
-import java.util.ArrayList;
-
-import ca.grocerygo.android.R;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import ca.grocerygo.android.R;
+
+import java.util.ArrayList;
 
 public class ShopCartSummaryArrayAdapter extends ArrayAdapter<ShopCartSummaryItem> {
 	private final Context mContext;

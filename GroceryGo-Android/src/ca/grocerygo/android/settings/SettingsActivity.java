@@ -1,18 +1,17 @@
 package ca.grocerygo.android.settings;
 
-import ca.grocerygo.android.CategoryTopFragmentActivity;
-import ca.actionbarsherlock.app.SherlockPreferenceActivity;
-import ca.actionbarsherlock.view.MenuItem;
-import ca.grocerygo.android.R;
-import ca.grocerygo.android.services.location.LocationServiceReceiver;
-import ca.grocerygo.android.utils.GroceryOTGUtils;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
+import ca.grocerygo.android.CategoryTopFragmentActivity;
+import ca.grocerygo.android.R;
+import ca.grocerygo.android.services.location.LocationServiceReceiver;
+import ca.grocerygo.android.utils.GroceryOTGUtils;
+import com.actionbarsherlock.app.SherlockPreferenceActivity;
+import com.actionbarsherlock.view.MenuItem;
 
 public class SettingsActivity extends SherlockPreferenceActivity {
 	Activity mActivity;

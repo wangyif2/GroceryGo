@@ -1,13 +1,12 @@
 package ca.grocerygo.android.settings;
 
-import ca.grocerygo.android.R;
-import ca.grocerygo.android.utils.MultiSelectListPreference;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 import android.util.SparseBooleanArray;
+import ca.grocerygo.android.R;
+import ca.grocerygo.android.utils.MultiSelectListPreference;
 
 public class SettingsManager {
 	public static final String SETTINGS_PREVIOUS_NOTIFICATION = "previous_notification_set";

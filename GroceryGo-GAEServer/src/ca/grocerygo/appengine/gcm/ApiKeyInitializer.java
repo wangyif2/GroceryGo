@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.groceryotg.appengine.gcm;
+package ca.grocerygo.appengine.gcm;
 
 import com.google.appengine.api.datastore.*;
 

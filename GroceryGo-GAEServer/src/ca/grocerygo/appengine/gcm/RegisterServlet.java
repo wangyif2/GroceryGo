@@ -13,22 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.groceryotg.appengine.gcm;
+package ca.grocerygo.appengine.gcm;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Servlet that unregisters a device, whose registration id is identified by
+ * Servlet that registers a device, whose registration id is identified by
  * {@link #PARAMETER_REG_ID}.
  * <p/>
+ * <p/>
  * The client app should call this servlet everytime it receives a
- * {@code com.google.android.c2dm.intent.REGISTRATION} with an
- * {@code unregistered} extra.
+ * {@code com.google.android.c2dm.intent.REGISTRATION C2DM} intent without an
+ * error or {@code unregistered} extra.
  */
 @SuppressWarnings("serial")
-public class UnregisterServlet extends BaseServlet {
+public class RegisterServlet extends BaseServlet {
 
     private static final String PARAMETER_REG_ID = "regId";
 
@@ -36,7 +37,7 @@ public class UnregisterServlet extends BaseServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException {
         String regId = getParameter(req, PARAMETER_REG_ID);
-        Datastore.unregister(regId);
+        Datastore.register(regId);
         setSuccess(resp);
     }
 

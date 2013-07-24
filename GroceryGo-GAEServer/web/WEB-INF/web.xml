@@ -16,14 +16,14 @@
 
   <listener>
     <listener-class>
-        com.groceryotg.appengine.gcm.ApiKeyInitializer
+        ca.grocerygo.appengine.gcm.ApiKeyInitializer
     </listener-class>
   </listener>
 
   <servlet>
     <servlet-name>RegisterServlet</servlet-name>
     <servlet-class>
-        com.groceryotg.appengine.gcm.RegisterServlet
+        ca.grocerygo.appengine.gcm.RegisterServlet
     </servlet-class>
     <load-on-startup>1</load-on-startup>
   </servlet>
@@ -36,7 +36,7 @@
   <servlet>
     <servlet-name>UnregisterServlet</servlet-name>
     <servlet-class>
-        com.groceryotg.appengine.gcm.UnregisterServlet
+        ca.grocerygo.appengine.gcm.UnregisterServlet
     </servlet-class>
     <load-on-startup>1</load-on-startup>
   </servlet>
@@ -49,7 +49,7 @@
   <servlet>
     <servlet-name>SendAllMessagesServlet</servlet-name>
     <servlet-class>
-        com.groceryotg.appengine.gcm.SendAllMessagesServlet
+        ca.grocerygo.appengine.gcm.SendAllMessagesServlet
     </servlet-class>
     <load-on-startup>1</load-on-startup>
   </servlet>
@@ -62,7 +62,7 @@
   <servlet>
     <servlet-name>SendMessageServlet</servlet-name>
     <servlet-class>
-        com.groceryotg.appengine.gcm.SendMessageServlet
+        ca.grocerygo.appengine.gcm.SendMessageServlet
     </servlet-class>
     <load-on-startup>1</load-on-startup>
   </servlet>
@@ -75,7 +75,7 @@
   <servlet>
     <servlet-name>HomeServlet</servlet-name>
     <servlet-class>
-        com.groceryotg.appengine.gcm.HomeServlet
+        ca.grocerygo.appengine.gcm.HomeServlet
     </servlet-class>
     <load-on-startup>1</load-on-startup>
   </servlet>

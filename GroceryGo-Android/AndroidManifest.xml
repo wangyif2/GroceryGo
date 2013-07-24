@@ -50,7 +50,7 @@
         android:required="true"/>
 
     <application
-        android:name="GroceryApplication"
+        android:name="ca.grocerygo.android.GroceryApplication"
         android:allowBackup="true"
         android:label="@string/app_name"
         android:icon="@drawable/ic_launcher"
@@ -65,7 +65,7 @@
             <!--android:value="AIzaSyAJnXqmSFeniKuP1CgTJ8yUJZwdzVLP8yc"/>-->
 
         <activity
-            android:name=".SplashScreenActivity"
+            android:name="ca.grocerygo.android.SplashScreenActivity"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -75,7 +75,7 @@
         </activity>
 
         <activity
-            android:name=".CategoryTopFragmentActivity"
+            android:name="ca.grocerygo.android.CategoryTopFragmentActivity"
             android:launchMode="singleTop"
             android:label="@string/title_main">
             <intent-filter>
@@ -87,7 +87,7 @@
         </activity>
 
         <activity
-            android:name=".GroceryPagerFragmentActivity"
+            android:name="ca.grocerygo.android.GroceryPagerFragmentActivity"
             android:launchMode="singleTop"
             android:label="@string/title_grocery_pager">
             <intent-filter>
@@ -99,27 +99,27 @@
         </activity>
 
         <activity
-            android:name=".ShopCartOverviewFragmentActivity"
+            android:name="ca.grocerygo.android.ShopCartOverviewFragmentActivity"
             android:label="@string/title_cart">
         </activity>
 
         <activity
-            android:name=".ShopCartAddFragmentActivity"
+            android:name="ca.grocerygo.android.ShopCartAddFragmentActivity"
             android:label="@string/title_cart_detail">
         </activity>
         
         <activity
-            android:name=".ShopCartSummaryFragmentActivity"
+            android:name="ca.grocerygo.android.ShopCartSummaryFragmentActivity"
             android:label="@string/title_cart_summary">
         </activity>
 
         <activity
-            android:name=".MapFragmentActivity"
+            android:name="ca.grocerygo.android.MapFragmentActivity"
             android:label="@string/title_map">
         </activity>
 
         <activity
-            android:name=".GlobalSearchFragmentActivity"
+            android:name="ca.grocerygo.android.GlobalSearchFragmentActivity"
             android:launchMode="singleTop"
             android:label="@string/title_search">
             <intent-filter>
@@ -131,17 +131,17 @@
         </activity>
 
         <activity
-            android:name=".settings.SettingsActivity"
+            android:name="ca.grocerygo.android.settings.SettingsActivity"
             android:label="@string/title_settings">
         </activity>
 
-        <service android:name=".services.NetworkHandler"/>
-        <service android:name="com.grocerygo.android.services.location.LocationMonitorService"/>
+        <service android:name="ca.grocerygo.android.services.NetworkHandler"/>
+        <service android:name="ca.grocerygo.android.services.location.LocationMonitorService"/>
 
-        <receiver android:name="com.grocerygo.android.services.location.LocationMonitor"/>
-        <receiver android:name="com.grocerygo.android.services.location.LocationReceiver"/>
+        <receiver android:name="ca.grocerygo.android.services.location.LocationMonitor"/>
+        <receiver android:name="ca.grocerygo.android.services.location.LocationReceiver"/>
         <receiver
-            android:name="com.grocerygo.android.services.location.LocationServiceReceiver"
+            android:name="ca.grocerygo.android.services.location.LocationServiceReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.groceryotg.android.services.location.LocationServiceReceiver.LOCATION_SERVICE_RECEIVER_ENABLE"/>
@@ -151,7 +151,7 @@
         </receiver>
 
         <receiver
-            android:name="com.grocerygo.android.gcm.GroceryGCMBroadcastReceiver"
+            android:name="ca.grocerygo.android.gcm.GroceryGCMBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
@@ -160,7 +160,7 @@
         </receiver>
 
         <provider
-            android:name=".database.contentprovider.GroceryotgProvider"
+            android:name="ca.grocerygo.android.database.contentprovider.GroceryotgProvider"
             android:authorities="com.grocerygo.android.database.contentprovider"
             android:exported="false">
         </provider>

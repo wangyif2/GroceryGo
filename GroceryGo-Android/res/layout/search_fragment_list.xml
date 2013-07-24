@@ -35,7 +35,7 @@
 	</LinearLayout>
 	
   	<fragment
-		android:name="com.grocerygo.android.fragment.GroceryListFragment"
+		android:name="ca.grocerygo.android.fragment.GroceryListFragment"
 		android:id="@+id/search_fragment_list_fragment"
 		android:layout_width="fill_parent"
 		android:layout_height="fill_parent" />

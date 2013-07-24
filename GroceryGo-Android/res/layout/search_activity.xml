@@ -12,7 +12,7 @@
 		android:layout_height="match_parent">
 				  
 		<fragment
-			android:name="com.grocerygo.android.fragment.GlobalSearchFragment"
+			android:name="ca.grocerygo.android.fragment.GlobalSearchFragment"
 			android:id="@+id/search_activity_content_fragment"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent" />

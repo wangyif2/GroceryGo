@@ -297,6 +297,8 @@ public class GroceryOTGUtils {
 
         drawerToggle = new ActionBarDrawerToggle(activity, drawerLayout, R.drawable.ic_drawer, R.string.navdrawer_open, R.string.navdrawer_closed) {
             public void onDrawerClosed(View view) {
+            	if (!SettingsManager.getNavigationDrawerSeen(activity))
+                    SettingsManager.setNavigationDrawerSeen(activity, true);
                 ((SherlockFragmentActivity) activity).getSupportActionBar().setTitle(activity.getString(titleResId));
                 ((SherlockFragmentActivity) activity).supportInvalidateOptionsMenu();
             }

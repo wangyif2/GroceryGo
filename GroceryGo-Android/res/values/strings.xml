@@ -9,7 +9,7 @@
 	<string name="no_new_content">There is no new available data. Last checked: %1$s</string>
 	<string name="no_shopcart_content">There are no items in your Shopping Cart</string>
 	<string name="no_search_results">No results match your search criteria</string>
-	<string name="no_summary_content">There are no items in your Sh`opping Cart, or the items\' price information is not available.</string>
+	<string name="no_summary_content">There are no items in your Shopping Cart, or the items\' price information is not available.</string>
 	<string name="search_results">Results</string>
 	<string name="search_results_num">0</string>
 	<string name="fresh_action">Refreshing…</string>

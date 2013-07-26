@@ -36,7 +36,7 @@ logname = "./log/" + str(timestamp.year).zfill(4) + "_" + str(timestamp.month).z
           str(timestamp.microsecond) + ".log"
 print("writing log to %s..." % logname)
 
-# Define logging level (if you set this to logging.DEBUG, the debug print messages will be displayed) 
+# Define logging level (if you set this to logging.DEBUG, the debug print messages will be displayed)
 logging.basicConfig(filename=logname, format='%(asctime)s:%(levelname)s: %(message)s', level=logging.INFO)
 
 # for debugging
@@ -499,6 +499,7 @@ def getFlyer():
             # No Frills
             elif store_id == 4:
                 try:
+                    noPublication = False
                     # Split the URL and the flyer ID info
                     arrUrl = next_url.split("|")
                     next_url = arrUrl[0]
@@ -537,170 +538,174 @@ def getFlyer():
                     # the option of selecting either the current or next week's flyer from a 
                     # list of publications
                     if soup('div', {'id': 'PublicationList'}):
-                        pub_link = soup('span', {'class':'publicationDate'})[-1].parent['href']
-                        pub_link = "http://" + hostname + "/LCL/" + pub_link.lstrip('.').lstrip('/')
-                        response = opener.open(pub_link).read()
-                        soup = BeautifulSoup(response)
+                        if soup('span', {'class':'lblNoPublication'}):
+                            noPublication = True
+                        else:
+                            pub_link = soup('span', {'class':'publicationDate'})[-1].parent['href']
+                            pub_link = "http://" + hostname + "/LCL/" + pub_link.lstrip('.').lstrip('/')
+                            response = opener.open(pub_link).read()
+                            soup = BeautifulSoup(response)
                     
-                    # Before getting to the actual flyer page, submit an intermediate page web form
-                    the_form = soup('form', {'name':'form1'})[0]
-                    target_url = the_form['action']
-                    children = the_form.findChildren()
-                    post_data = []
-                    for param in children:
-                        if param.has_key("value"):
-                            post_data += [(param['id'], param['value'])]
-                        elif param.has_key("id"):
-                            post_data += [(param['id'], '')]
-                            
-                    post_data = urllib.urlencode(post_data)
-                    response = opener.open(target_url, post_data).read()
-                    
-                    # On the actual flyer page, the iframe data is populated via an AJAX call
-                    # Simulate the AJAX call by fetching all necessary parameters.
-                    
-                    # Default values (in case not found on page):
-                    BANNER_NAME = "NOFR"
-                    PUBLICATION_ID = "38706e85-01a0-4b00-94d5-25ea0cbe8eb8"
-                    PUBLICATION_TYPE = "32"
-                    CUSTOMER_NAME = "LCL"
-                    LANGUAGE_ID = "1"
-                    BANNER_ID = "1f2ff19d-2888-44b3-93ea-1905aa0d9756"
-                    
-                    # Find values from the HTML:
-                    # NB: Look-behind regex requires fixed-width pattern, so we can't match for arbitrary
-                    # number of spaces between "=" sign and the variables..
-                    match_banner = re.search(r"(?<=BANNER[_]NAME [=]['])[a-zA-Z]+(?=['])", response)
-                    if match_banner:
-                        BANNER_NAME = str(match_banner.group(0))
-                    
-                    match_pub_id = re.search(r"(?<=PUBLICATION[_]ID [=] ['])[-a-zA-Z0-9]+(?=['])", response)
-                    if match_pub_id:
-                        PUBLICATION_ID = str(match_pub_id.group(0))
-                        
-                    match_pub_type = re.search(r"(?<=PUBLICATION[_]TYPE [=] ['])[0-9]+(?=['])", response)
-                    if match_pub_type:
-                        PUBLICATION_TYPE = str(match_pub_type.group(0))
-                    
-                    match_cust_name = re.search(r"(?<=CUSTOMER[_]NAME [=] ['])[a-zA-Z]+(?=['])", response)
-                    if match_cust_name:
-                        CUSTOMER_NAME = str(match_cust_name.group(0))
-                    
-                    match_language_id = re.search(r"(?<=LANGUAGE[_]ID [=] )[0-9]+(?=[;])", response)
-                    if match_language_id:
-                        LANGUAGE_ID = str(match_language_id.group(0))
-                    
-                    match_banner_id = re.search(r"(?<=BANNER[_]ID [=] ['])[-0-9a-zA-Z]+(?=['])", response)
-                    if match_banner_id:
-                        BANNER_ID = str(match_banner_id.group(0))
-                    
-                    ajax_url = urlparse(target_url)
-                    url_path = ajax_url.path[:ajax_url.path.rfind("/")+1]
-                    page_id = 1
-                    
-                    ajax_query = ajax_url.scheme + "://" + ajax_url.netloc + url_path + \
-                        "AJAXProxy.aspx?bname=" + BANNER_NAME + "&AJAXCall=GetPublicationData.aspx?" + \
-                        "view=TEXT" + "&version=Flash" + "&publicationid=" + PUBLICATION_ID + \
-                        "&publicationtype=" + PUBLICATION_TYPE + "&bannername=" + BANNER_NAME + \
-                        "&customername=" + CUSTOMER_NAME + "&pageid1=" + str(page_id) + \
-                        "&languageid=" + LANGUAGE_ID + "&bannerid=" + BANNER_ID
-                    logging.info("URL: %s" % ajax_query)
-                    response = opener.open(ajax_query).read()
-                    dict_items = ast.literal_eval(response)
-                    
-                    # Parse into a list of items
-                    data_list = dict_items["textdata"]
-                    store_items = []
-                    
-                    line_number = 0
-                    # Find the start and end date
-                    #Try finding the tag with "effective from" content, then do the regex
-                    pattern = re.compile('effective from [^"]*["]')
-                    datePattern = pattern.findall(response)
-                    if datePattern:
-                        response = datePattern[0]
-                    [start_date, end_date] = getFlyerDates(response)
-                    
-                    data_list = filter(lambda x: x if x.has_key('regiontypeid') and x['regiontypeid']=='1' else None, data_list)
-                    for item in data_list:
-                        line_number += 1
-                        raw_item = item['title'] + ", " + item['description'] 
-                        
-                        # Price format:
-                        # 1) $1.50              (dollars)
-                        # 2) 99c                (cents)
-                        # 3) 4/$5               (ratio)
-                        # 4) $3.99 - $4.29      (range)
-                        unit_price = None
-                        unit_type_id = None
-                        total_price = None
-                        
-                        numeric_pattern = re.compile("[0-9]+")
-                        numeric_only = re.compile("^[0-9.]+$")
-                        
-                        raw_price = item['price']
-                        orig_price = raw_price
-                        if raw_price:
-                            # If a range given, take the lowest value
-                            if raw_price.find("-") != -1:
-                                raw_price = raw_price.split("-")[0].strip()
-                            
-                            # Replace any occurrences of "for" with "/"
-                            # e.g., "3 for $5" becomes "3 / $5"
-                            raw_price = re.sub("\sfor\s", " / ", raw_price)
-                            
-                            index_ratio = raw_price.find("/")
-                            index_dollar = raw_price.find("$")
-                            index_cents = raw_price.find("\xa2")
-                            if index_ratio != -1:
-                                num_products = float(raw_price[:index_ratio])
-                                total_price = raw_price[index_ratio+1:]
-                                if index_dollar != -1:
-                                    total_price = float(total_price.strip().strip("$").strip())
-                                else:
-                                    total_price = float(total_price.strip("\xa2").strip("\xc2")) / 100.0
+                    if not noPublication:
+                        # Before getting to the actual flyer page, submit an intermediate page web form
+                        the_form = soup('form', {'name':'form1'})[0]
+                        target_url = the_form['action']
+                        children = the_form.findChildren()
+                        post_data = []
+                        for param in children:
+                            if param.has_key("value"):
+                                post_data += [(param['id'], param['value'])]
+                            elif param.has_key("id"):
+                                post_data += [(param['id'], '')]
                                 
-                                # Default unit_price
-                                unit_price = total_price / num_products
+                        post_data = urllib.urlencode(post_data)
+                        response = opener.open(target_url, post_data).read()
+                        
+                        # On the actual flyer page, the iframe data is populated via an AJAX call
+                        # Simulate the AJAX call by fetching all necessary parameters.
+                        
+                        # Default values (in case not found on page):
+                        BANNER_NAME = "NOFR"
+                        PUBLICATION_ID = "38706e85-01a0-4b00-94d5-25ea0cbe8eb8"
+                        PUBLICATION_TYPE = "32"
+                        CUSTOMER_NAME = "LCL"
+                        LANGUAGE_ID = "1"
+                        BANNER_ID = "1f2ff19d-2888-44b3-93ea-1905aa0d9756"
+                        
+                        # Find values from the HTML:
+                        # NB: Look-behind regex requires fixed-width pattern, so we can't match for arbitrary
+                        # number of spaces between "=" sign and the variables..
+                        match_banner = re.search(r"(?<=BANNER[_]NAME [=]['])[a-zA-Z]+(?=['])", response)
+                        if match_banner:
+                            BANNER_NAME = str(match_banner.group(0))
+                        
+                        match_pub_id = re.search(r"(?<=PUBLICATION[_]ID [=] ['])[-a-zA-Z0-9]+(?=['])", response)
+                        if match_pub_id:
+                            PUBLICATION_ID = str(match_pub_id.group(0))
                             
-                            elif index_dollar != -1:
-                                total_price = float(raw_price.strip("$"))
+                        match_pub_type = re.search(r"(?<=PUBLICATION[_]TYPE [=] ['])[0-9]+(?=['])", response)
+                        if match_pub_type:
+                            PUBLICATION_TYPE = str(match_pub_type.group(0))
+                        
+                        match_cust_name = re.search(r"(?<=CUSTOMER[_]NAME [=] ['])[a-zA-Z]+(?=['])", response)
+                        if match_cust_name:
+                            CUSTOMER_NAME = str(match_cust_name.group(0))
+                        
+                        match_language_id = re.search(r"(?<=LANGUAGE[_]ID [=] )[0-9]+(?=[;])", response)
+                        if match_language_id:
+                            LANGUAGE_ID = str(match_language_id.group(0))
+                        
+                        match_banner_id = re.search(r"(?<=BANNER[_]ID [=] ['])[-0-9a-zA-Z]+(?=['])", response)
+                        if match_banner_id:
+                            BANNER_ID = str(match_banner_id.group(0))
+                        
+                        ajax_url = urlparse(target_url)
+                        url_path = ajax_url.path[:ajax_url.path.rfind("/")+1]
+                        page_id = 1
+                        
+                        ajax_query = ajax_url.scheme + "://" + ajax_url.netloc + url_path + \
+                            "AJAXProxy.aspx?bname=" + BANNER_NAME + "&AJAXCall=GetPublicationData.aspx?" + \
+                            "view=TEXT" + "&version=Flash" + "&publicationid=" + PUBLICATION_ID + \
+                            "&publicationtype=" + PUBLICATION_TYPE + "&bannername=" + BANNER_NAME + \
+                            "&customername=" + CUSTOMER_NAME + "&pageid1=" + str(page_id) + \
+                            "&languageid=" + LANGUAGE_ID + "&bannerid=" + BANNER_ID
+                        logging.info("URL: %s" % ajax_query)
+                        response = opener.open(ajax_query).read()
+                        dict_items = ast.literal_eval(response)
+                        
+                        # Parse into a list of items
+                        data_list = dict_items["textdata"]
+                        store_items = []
+                        
+                        line_number = 0
+                        # Find the start and end date
+                        #Try finding the tag with "effective from" content, then do the regex
+                        pattern = re.compile('effective from [^"]*["]')
+                        datePattern = pattern.findall(response)
+                        if datePattern:
+                            response = datePattern[0]
+                        [start_date, end_date] = getFlyerDates(response)
+                        
+                        data_list = filter(lambda x: x if x.has_key('regiontypeid') and x['regiontypeid']=='1' else None, data_list)
+                        for item in data_list:
+                            line_number += 1
+                            raw_item = item['title'] + ", " + item['description'] 
+                            
+                            # Price format:
+                            # 1) $1.50              (dollars)
+                            # 2) 99c                (cents)
+                            # 3) 4/$5               (ratio)
+                            # 4) $3.99 - $4.29      (range)
+                            unit_price = None
+                            unit_type_id = None
+                            total_price = None
+                            
+                            numeric_pattern = re.compile("[0-9]+")
+                            numeric_only = re.compile("^[0-9.]+$")
+                            
+                            raw_price = item['price']
+                            orig_price = raw_price
+                            if raw_price:
+                                # If a range given, take the lowest value
+                                if raw_price.find("-") != -1:
+                                    raw_price = raw_price.split("-")[0].strip()
                                 
-                                # Default unit_price
-                                unit_price = total_price
-                            elif index_cents != -1:
-                                if numeric_only.findall(raw_price.strip("\xa2").strip("\xc2")):
+                                # Replace any occurrences of "for" with "/"
+                                # e.g., "3 for $5" becomes "3 / $5"
+                                raw_price = re.sub("\sfor\s", " / ", raw_price)
+                                
+                                index_ratio = raw_price.find("/")
+                                index_dollar = raw_price.find("$")
+                                index_cents = raw_price.find("\xa2")
+                                if index_ratio != -1:
+                                    num_products = float(raw_price[:index_ratio])
+                                    total_price = raw_price[index_ratio+1:]
+                                    if index_dollar != -1:
+                                        total_price = float(total_price.strip().strip("$").strip())
+                                    else:
+                                        total_price = float(total_price.strip("\xa2").strip("\xc2")) / 100.0
                                     
-                                    total_price = float(raw_price.strip("\xa2").strip("\xc2")) / 100.0
+                                    # Default unit_price
+                                    unit_price = total_price / num_products
                                 
+                                elif index_dollar != -1:
+                                    total_price = float(raw_price.strip("$"))
+                                    
                                     # Default unit_price
                                     unit_price = total_price
+                                elif index_cents != -1:
+                                    if numeric_only.findall(raw_price.strip("\xa2").strip("\xc2")):
+                                        
+                                        total_price = float(raw_price.strip("\xa2").strip("\xc2")) / 100.0
+                                    
+                                        # Default unit_price
+                                        unit_price = total_price
+                                
+                                # When price units are specified, the unit price is usually given in
+                                # the "priceunits" key-value pair
+                                price_units = item['priceunits']
+                                if price_units:
+                                    index_or = price_units.find("or ")
+                                    index_kg = price_units.find("/kg")
+                                    if index_or != -1:
+                                        dollar_matches = re.search(r'(?<=[$])[0-9.]+', price_units)
+                                        cent_matches = re.search(r'(?<=or )[0-9.]+', price_units)
+                                        if dollar_matches:
+                                            unit_price = float(dollar_matches.group(0))
+                                        elif cent_matches:
+                                            unit_price = float(cent_matches.group(0))/100.0
+                                    elif index_kg != -1:
+                                        price_matches = re.search(r'[0-9.]+(?=/kg)', price_units)
+                                        if price_matches:
+                                            unit_price = float(price_matches.group(0))
+                                            unit_type_id = filter(lambda x: x if x[1]=='kg' else None,units)[0][0]
                             
-                            # When price units are specified, the unit price is usually given in
-                            # the "priceunits" key-value pair
-                            price_units = item['priceunits']
-                            if price_units:
-                                index_or = price_units.find("or ")
-                                index_kg = price_units.find("/kg")
-                                if index_or != -1:
-                                    dollar_matches = re.search(r'(?<=[$])[0-9.]+', price_units)
-                                    cent_matches = re.search(r'(?<=or )[0-9.]+', price_units)
-                                    if dollar_matches:
-                                        unit_price = float(dollar_matches.group(0))
-                                    elif cent_matches:
-                                        unit_price = float(cent_matches.group(0))/100.0
-                                elif index_kg != -1:
-                                    price_matches = re.search(r'[0-9.]+(?=/kg)', price_units)
-                                    if price_matches:
-                                        unit_price = float(price_matches.group(0))
-                                        unit_type_id = filter(lambda x: x if x[1]=='kg' else None,units)[0][0]
-                        
-                        item_details = [stripAllTags(raw_item), stripAllTags(orig_price), unit_price, unit_type_id, total_price, \
-                                        start_date, end_date, line_number, flyer_id, update_date, line_number]
-                        
-                        store_items += [item_details]
-                        
-                    items[flyer_id] = store_items
+                            item_details = [stripAllTags(raw_item), stripAllTags(orig_price), unit_price, unit_type_id, total_price, \
+                                            start_date, end_date, line_number, flyer_id, update_date, line_number]
+                            
+                            store_items += [item_details]
+                            
+                        items[flyer_id] = store_items
                 except urllib2.URLError as e:
                     logging.info("Could not connect to store %d due to Error %d (%s)" % (store_id, e.errno, e.strerror))
                 
@@ -988,8 +993,8 @@ def toTitlecase(text, chars):
 def getFlyerDates(tag_dates):
     '''Get the start and end day,month,year for a flyer'''
     #find month and day
-    months = {'Jan':1,'Feb':2,'Mar':3,'Apr':4,'May':5,'Jun':6,'Jul':7,'Aug':8,'Sep':9,'Oct':10,'Nov':11,'Dec':12}
-    pattern = re.compile('(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-zA-Z.]*\s([0-9]{1,2})(?=[^0-9])')
+    months = {'jan':1,'feb':2,'mar':3,'apr':4,'may':5,'jun':6,'jul':7,'aug':8,'sep':9,'oct':10,'nov':11,'dec':12}
+    pattern = re.compile('(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-zA-Z.]*\s*([0-9]{1,2})(?=[^0-9])', re.IGNORECASE)
     matches = pattern.findall(tag_dates)
     #default values
     start_month = date.today().month
@@ -998,9 +1003,9 @@ def getFlyerDates(tag_dates):
     end_date = start_date+7
     #if date information is posted in flyer, use that instead
     if matches:
-        start_month = months[matches[0][0]]
+        start_month = months[matches[0][0].lower()]
         start_date = int(matches[0][1])
-        end_month = months[matches[1][0]]
+        end_month = months[matches[1][0].lower()]
         end_date =  int(matches[1][1])
 
     #find year

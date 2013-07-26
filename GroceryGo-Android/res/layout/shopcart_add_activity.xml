@@ -7,7 +7,7 @@
 	android:layout_height="match_parent" >
 	
 	<fragment
-		android:name="com.grocerygo.android.fragment.ShopCartAddFragment"
+		android:name="ca.grocerygo.android.fragment.ShopCartAddFragment"
 		android:id="@+id/shopcart_add_content_fragment"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent" >

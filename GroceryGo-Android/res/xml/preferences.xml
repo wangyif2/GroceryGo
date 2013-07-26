@@ -25,7 +25,7 @@
 	<PreferenceCategory
 		android:title="CONTENT">
 
-		<com.grocerygo.android.utils.MultiSelectListPreference
+		<ca.grocerygo.android.utils.MultiSelectListPreference
 			android:key="store_select"
 			android:title="@string/setting_store_title"
 			android:summary="@string/setting_store_summary"

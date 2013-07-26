@@ -8,7 +8,7 @@
 
 	<fragment
 		xmlns:map="http://schemas.android.com/apk/res-auto"
-		android:name="com.grocerygo.android.fragment.MapFragment"
+		android:name="ca.grocerygo.android.fragment.MapFragment"
 		android:id="@+id/map_activity_content_fragment"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"

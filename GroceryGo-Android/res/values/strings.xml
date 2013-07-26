@@ -86,8 +86,9 @@
 	<string name="legacy_store_filter_ids">1|2|3|4|5</string>
 	
 	<string name="no_price_available">N/A</string>
-	
-	<string name="about_text">Copy Right 2013, GroceryGo Inc.</string>
+	<string name="my_link"></string>
+
+	<string name="about_text">Copyright 2013\n GroceryGo Inc.\n<a ref="http://google.com/">Terms &amp; Privacy</a></string>
 	<string name="about_title">GroceryGo</string>
 	<string name="expanded_row_map">Map</string>
 	<string name="expanded_row_share">Share</string>

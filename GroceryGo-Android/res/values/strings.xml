@@ -9,7 +9,7 @@
 	<string name="no_new_content">There is no new available data. Last checked: %1$s</string>
 	<string name="no_shopcart_content">There are no items in your Shopping Cart</string>
 	<string name="no_search_results">No results match your search criteria</string>
-	<string name="no_summary_content">There are no items in your Shopping Cart, or the items\' price information is not available.</string>
+	<string name="no_summary_content">There are no items in your Sh`opping Cart, or the items\' price information is not available.</string>
 	<string name="search_results">Results</string>
 	<string name="search_results_num">0</string>
 	<string name="fresh_action">Refreshing…</string>
@@ -43,7 +43,7 @@
 	
 	<string name="action_close">Close</string>
 	
-	<string name="grocery_row_distance_missing">No distance info available</string>
+	<string name="grocery_row_distance_missing">Distance not available</string>
 	<string name="grocery_row_expires">Ends:</string>
 	<string name="grocery_row_expired">EXPIRED</string>
 	
@@ -77,7 +77,7 @@
 	<string name="setting_store_summary">Filter by your favourite stores</string>
 	<string name="setting_notification_enable_title">Enable notifications</string>
 	<string name="setting_notification_enable_summary">Turn location-based notifications on or off</string>
-	<string name="setting_notification_freq_title">Frequency</string>
+	<string name="setting_notification_freq_title">Notification Frequency</string>
 	<string name="setting_notification_freq_summary">Set notification interval</string>
 	<string name="setting_storelocation_title">Select locations</string>
 	<string name="setting_storelocation_summary">Filter by store locations near you</string>
@@ -110,8 +110,6 @@
     <string name="server_register_error">Could not register device on GAE Server after %1$d attempts.</string>
     <string name="server_unregister_error">Could not unregister device on GAE Server (%1$s).</string>
     <string name="gcm_received">GCM push message received, refreshing items now..</string>
-    <string name="gcm_newdata_notification">This weeks grocery data is now available, click the refresh button to
-        sync.
-    </string>
+    <string name="gcm_newdata_notification">Click the refresh button for new grocery data</string>
 
 </resources>

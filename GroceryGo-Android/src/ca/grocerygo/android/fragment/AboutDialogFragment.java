@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.webkit.WebView;
@@ -34,11 +35,6 @@ public class AboutDialogFragment extends SherlockDialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         String titleString = getString(R.string.about_title) + " v" + getString(R.string.version_name) + " build " + GroceryOTGUtils.getVersionCode(mContext);
-        String aboutText = "Copyright 2013 <br> GroceryGo Inc.<br><a href=\"http://www.grocerygo.ca/terms.html\">Terms &amp; Privacy</a>";
-        View alertview = ((Activity) mContext).getLayoutInflater().inflate(R.layout.about_dialog, null);
-        WebView myWebview = (WebView) alertview.findViewById(R.id.about_dialog_textbox);
-        myWebview.loadData(aboutText, "text/html", "utf-8");
-        
         Dialog dialog = new AlertDialog.Builder(getActivity())
                 .setTitle(titleString)
                 .setPositiveButton(R.string.navdrawer_item_about_feedback, new DialogInterface.OnClickListener() {
@@ -75,9 +71,20 @@ public class AboutDialogFragment extends SherlockDialogFragment {
                         dialog.dismiss();
                     }
                 })
-                .setView(alertview)
+                .setNeutralButton(R.string.about_terms, new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// Open link in browser and dismiss the open dialogue
+						Uri uriUrl = Uri.parse("http://www.grocerygo.ca/terms.html");
+						Intent launchBrowser = new Intent(Intent.ACTION_VIEW, uriUrl);
+						startActivity(launchBrowser);
+						dialog.dismiss();
+					}
+				})
+                .setView(((Activity) mContext).getLayoutInflater().inflate(R.layout.about_dialog, null))
                 .create();
-        //.setView(((Activity) mContext).getLayoutInflater().inflate(R.layout.about_dialog, null))
+        //
 
         dialog.setCanceledOnTouchOutside(false);
 

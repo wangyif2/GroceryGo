@@ -88,8 +88,9 @@
 	<string name="no_price_available">N/A</string>
 	<string name="my_link"></string>
 
-	<string name="about_text">Copyright 2013\n GroceryGo Inc.\n<a ref="http://google.com/">Terms &amp; Privacy</a></string>
+	<string name="about_text">Copyright \u00A9 2013\nGroceryGo Inc.</string>
 	<string name="about_title">GroceryGo</string>
+	<string name="about_terms">Terms &amp; Privacy</string>
 	<string name="expanded_row_map">Map</string>
 	<string name="expanded_row_share">Share</string>
 	<string name="expanded_row_flyerview">View in flyer</string>

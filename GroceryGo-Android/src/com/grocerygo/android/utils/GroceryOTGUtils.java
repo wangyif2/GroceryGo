@@ -46,6 +46,7 @@ import java.util.Set;
 public class GroceryOTGUtils {
     public static final String BROADCAST_ACTION_RELOAD_GROCERY_LIST = "com.grocerygo.android.intent_action_reload_grocery_list";
     public static final String BROADCAST_ACTION_FILTER_GROCERY_LIST = "com.grocerygo.android.intent_action_filter_grocery_list";
+    public static final String BROADCAST_ACTION_RELOAD_LOCATION = "com.grocerygo.android.intent_action_reload_location";
 
     public static Cursor getStoreLocations(Context context) {
         String[] projection = {StoreTable.TABLE_STORE + "." + StoreTable.COLUMN_STORE_ID,
@@ -499,6 +500,12 @@ public class GroceryOTGUtils {
         Intent intent = new Intent();
         intent.setAction(BROADCAST_ACTION_RELOAD_GROCERY_LIST);
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+    }
+    
+    public static void reloadGroceryLocation(Context context) {
+    	Intent intent = new Intent();
+    	intent.setAction(BROADCAST_ACTION_RELOAD_LOCATION);
+    	LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
 
     public static int getVersionCode(Context mContext) {

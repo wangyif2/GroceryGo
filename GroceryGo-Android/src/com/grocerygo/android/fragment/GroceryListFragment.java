@@ -48,6 +48,7 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
 	private SparseArray<Float> mDistanceMap;
 	
 	private BroadcastReceiver mRestartReceiver;
+	private BroadcastReceiver mLocationReceiver;
 
 	public static GroceryListFragment newInstance(int pos) {
 		GroceryListFragment f = new GroceryListFragment();
@@ -104,6 +105,25 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
 		IntentFilter mRestartIntentFilter = new IntentFilter(GroceryOTGUtils.BROADCAST_ACTION_RELOAD_GROCERY_LIST);
 		mRestartIntentFilter.addCategory(Intent.CATEGORY_DEFAULT);
 		LocalBroadcastManager.getInstance(mContext).registerReceiver(mRestartReceiver, mRestartIntentFilter);
+		
+		mLocationReceiver = new BroadcastReceiver() {
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				if (intent.getAction().equals(GroceryOTGUtils.BROADCAST_ACTION_RELOAD_LOCATION)) {
+					// Reload the store distance map
+					mDistanceMap = ((GroceryApplication) ((Activity) mContext).getApplication()).getStoreDistanceMap();
+					
+					// Restart the loader, refreshing all views
+					Bundle b = new Bundle();
+					b.putString("query", mQuery);
+					b.putBoolean("reload", false);
+					getLoaderManager().restartLoader(0, b, frag);
+				}
+			}
+		};
+		IntentFilter mLocationIntentFilter = new IntentFilter(GroceryOTGUtils.BROADCAST_ACTION_RELOAD_LOCATION);
+		mLocationIntentFilter.addCategory(Intent.CATEGORY_DEFAULT);
+		LocalBroadcastManager.getInstance(mContext).registerReceiver(mLocationReceiver, mLocationIntentFilter);
 		
 		return v;
 	}

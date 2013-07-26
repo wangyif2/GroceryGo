@@ -1,5 +1,6 @@
 package com.grocerygo.android.services.location;
 
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -15,6 +16,7 @@ import android.media.RingtoneManager;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.util.SparseArray;
 
 import com.grocerygo.android.MapFragmentActivity;
 import com.grocerygo.android.R;
@@ -22,6 +24,7 @@ import com.grocerygo.android.database.CartTable;
 import com.grocerygo.android.database.StoreTable;
 import com.grocerygo.android.settings.SettingsManager;
 import com.grocerygo.android.utils.GroceryOTGUtils;
+import com.grocerygo.android.GroceryApplication;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -40,6 +43,14 @@ public class LocationReceiver extends BroadcastReceiver {
 			return;
 		
 		constructNotification(context, loc);
+		rebuildStoreDistances(context, loc);
+	}
+	
+	private void rebuildStoreDistances(Context context, Location loc) {
+		// Build a new store location map using the new location and reload the view
+		SparseArray<Float> newDistanceMap = GroceryOTGUtils.buildDistanceMap(context);
+		((GroceryApplication) ((Activity) context).getApplication()).setStoreDistanceMap(newDistanceMap);
+		GroceryOTGUtils.reloadGroceryLocation(context);
 	}
 	
 	private void constructNotification(Context context, Location loc) {

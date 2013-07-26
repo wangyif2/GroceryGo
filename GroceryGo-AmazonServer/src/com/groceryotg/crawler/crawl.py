@@ -36,7 +36,7 @@ logname = "./log/" + str(timestamp.year).zfill(4) + "_" + str(timestamp.month).z
           str(timestamp.microsecond) + ".log"
 print("writing log to %s..." % logname)
 
-# Define logging level (if you set this to logging.DEBUG, the debug print messages will be displayed) 
+# Define logging level (if you set this to logging.DEBUG, the debug print messages will be displayed)
 logging.basicConfig(filename=logname, format='%(asctime)s:%(levelname)s: %(message)s', level=logging.INFO)
 
 # for debugging
@@ -988,8 +988,8 @@ def toTitlecase(text, chars):
 def getFlyerDates(tag_dates):
     '''Get the start and end day,month,year for a flyer'''
     #find month and day
-    months = {'Jan':1,'Feb':2,'Mar':3,'Apr':4,'May':5,'Jun':6,'Jul':7,'Aug':8,'Sep':9,'Oct':10,'Nov':11,'Dec':12}
-    pattern = re.compile('(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-zA-Z.]*\s([0-9]{1,2})(?=[^0-9])')
+    months = {'jan':1,'feb':2,'mar':3,'apr':4,'may':5,'jun':6,'jul':7,'aug':8,'sep':9,'oct':10,'nov':11,'dec':12}
+    pattern = re.compile('(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-zA-Z.]*\s*([0-9]{1,2})(?=[^0-9])', re.IGNORECASE)
     matches = pattern.findall(tag_dates)
     #default values
     start_month = date.today().month
@@ -998,9 +998,9 @@ def getFlyerDates(tag_dates):
     end_date = start_date+7
     #if date information is posted in flyer, use that instead
     if matches:
-        start_month = months[matches[0][0]]
+        start_month = months[matches[0][0].lower()]
         start_date = int(matches[0][1])
-        end_month = months[matches[1][0]]
+        end_month = months[matches[1][0].lower()]
         end_date =  int(matches[1][1])
 
     #find year

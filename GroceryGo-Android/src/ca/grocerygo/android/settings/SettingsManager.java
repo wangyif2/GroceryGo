@@ -38,7 +38,7 @@ public class SettingsManager {
 		int period = 60*60*1000;
 		if (f.equals(freqArray[0])) {
 			// 30 minutes
-			period = 1*60*1000;
+			period = 30*60*1000;
 		} else if (f.equals(freqArray[1])) {
 			// 1 hour
 			period = 60*60*1000;

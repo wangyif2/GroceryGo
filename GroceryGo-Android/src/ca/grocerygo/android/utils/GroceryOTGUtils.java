@@ -152,10 +152,15 @@ public class GroceryOTGUtils {
     }
 
     public static Location getLastKnownLocation(Context context) {
-        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        List<String> providers = lm.getProviders(true);
+        
+        // Loop over the array backwards (more accurate)
+        // if you get an accurate location, then break out the loop
         Location loc = null;
-        if (locationManager != null) {
-            loc = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        for (int i=providers.size()-1; i>=0; i--) {
+        	loc = lm.getLastKnownLocation(providers.get(i));
+        	if (loc != null) break;
         }
         return loc;
     }
@@ -191,6 +196,7 @@ public class GroceryOTGUtils {
         float distance;
 
         Location loc = GroceryOTGUtils.getLastKnownLocation(context);
+        if (loc == null) return null;
         // Set up mock location for emulator
         //Location loc = new Location("Mock Location");
         //loc.setLatitude(43.6481);

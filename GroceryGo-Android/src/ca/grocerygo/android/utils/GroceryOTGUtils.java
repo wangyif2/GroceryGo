@@ -33,6 +33,7 @@ import java.util.Set;
 public class GroceryOTGUtils {
     public static final String BROADCAST_ACTION_RELOAD_GROCERY_LIST = "com.grocerygo.android.intent_action_reload_grocery_list";
     public static final String BROADCAST_ACTION_FILTER_GROCERY_LIST = "com.grocerygo.android.intent_action_filter_grocery_list";
+    public static final String BROADCAST_ACTION_RELOAD_LOCATION = "com.grocerygo.android.intent_action_reload_location";
 
     public static Cursor getStoreLocations(Context context) {
         String[] projection = {StoreTable.TABLE_STORE + "." + StoreTable.COLUMN_STORE_ID,
@@ -151,10 +152,15 @@ public class GroceryOTGUtils {
     }
 
     public static Location getLastKnownLocation(Context context) {
-        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        List<String> providers = lm.getProviders(true);
+        
+        // Loop over the array backwards (more accurate)
+        // if you get an accurate location, then break out the loop
         Location loc = null;
-        if (locationManager != null) {
-            loc = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        for (int i=providers.size()-1; i>=0; i--) {
+        	loc = lm.getLastKnownLocation(providers.get(i));
+        	if (loc != null) break;
         }
         return loc;
     }
@@ -190,6 +196,7 @@ public class GroceryOTGUtils {
         float distance;
 
         Location loc = GroceryOTGUtils.getLastKnownLocation(context);
+        if (loc == null) return null;
         // Set up mock location for emulator
         //Location loc = new Location("Mock Location");
         //loc.setLatitude(43.6481);
@@ -296,6 +303,8 @@ public class GroceryOTGUtils {
 
         drawerToggle = new ActionBarDrawerToggle(activity, drawerLayout, R.drawable.ic_drawer, R.string.navdrawer_open, R.string.navdrawer_closed) {
             public void onDrawerClosed(View view) {
+            	if (!SettingsManager.getNavigationDrawerSeen(activity))
+                    SettingsManager.setNavigationDrawerSeen(activity, true);
                 ((SherlockFragmentActivity) activity).getSupportActionBar().setTitle(activity.getString(titleResId));
                 ((SherlockFragmentActivity) activity).supportInvalidateOptionsMenu();
             }
@@ -486,6 +495,12 @@ public class GroceryOTGUtils {
         Intent intent = new Intent();
         intent.setAction(BROADCAST_ACTION_RELOAD_GROCERY_LIST);
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+    }
+    
+    public static void reloadGroceryLocation(Context context) {
+    	Intent intent = new Intent();
+    	intent.setAction(BROADCAST_ACTION_RELOAD_LOCATION);
+    	LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
 
     public static int getVersionCode(Context mContext) {

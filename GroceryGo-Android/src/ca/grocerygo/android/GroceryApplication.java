@@ -137,6 +137,10 @@ public class GroceryApplication extends Application {
 	public SparseArray<Float> getStoreDistanceMap() {
 		return mStoreDistanceMap;
 	}
+	
+	public void setStoreDistanceMap(SparseArray<Float> newDistanceMap) {
+		mStoreDistanceMap = newDistanceMap;
+	}
 
 	/**
 	 * @return the mapIconMap

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<WebView xmlns:android="http://schemas.android.com/apk/res/android"
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
 	android:id="@+id/about_dialog_textbox"
 	android:layout_width="wrap_content"
 	android:layout_height="wrap_content"
@@ -10,8 +10,9 @@
 	android:drawablePadding="10dp"
 	android:fontFamily="sans-serif-light"
 	android:gravity="left"
+	android:text="@string/about_text"
 	android:textSize="18sp"
 	android:textStyle="normal"
 	android:padding="10dp"
 	android:contentDescription="@string/app_name" >
-</WebView>
+</TextView>

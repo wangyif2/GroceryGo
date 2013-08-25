@@ -1,7 +1,7 @@
-package com.groceryotg.server;
+package ca.grocerygo.server;
 
+import ca.grocerygo.database.Grocery;
 import com.google.gson.Gson;
-import com.groceryotg.database.Grocery;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Projections;

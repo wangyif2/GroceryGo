@@ -1,7 +1,7 @@
-package com.groceryotg.server;
+package ca.grocerygo.server;
 
+import ca.grocerygo.database.StoreParent;
 import com.google.gson.Gson;
-import com.groceryotg.database.Store;
 import org.hibernate.Session;
 
 import javax.servlet.ServletException;
@@ -17,27 +17,27 @@ import java.util.List;
  * User: robert
  * Date: 15/02/13
  */
-@WebServlet(name = "GetStoreInfo", urlPatterns = "/GetStoreInfo")
-public class GetStoreInfo extends HttpServlet {
+@WebServlet(name = "GetStoreParentInfo", urlPatterns = "/GetStoreParentInfo")
+public class GetStoreParentInfo extends HttpServlet {
     Gson gson = new Gson();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<Store> stores = getStores();
+        List<StoreParent> storeParents = getStoreParents();
 
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
         PrintWriter out = resp.getWriter();
-        out.print(gson.toJson(stores));
+        out.print(gson.toJson(storeParents));
     }
 
-    private List<Store> getStores() {
+    private List<StoreParent> getStoreParents() {
         Session session = HibernateUtils.getSessionFactory().openSession();
         session.beginTransaction();
 
-        List<Store> stores = (List<Store>) session.createCriteria(Store.class).list();
+        List<StoreParent> storeParents = (List<StoreParent>) session.createCriteria(StoreParent.class).list();
         session.getTransaction().commit();
 
-        return stores;
+        return storeParents;
     }
 }

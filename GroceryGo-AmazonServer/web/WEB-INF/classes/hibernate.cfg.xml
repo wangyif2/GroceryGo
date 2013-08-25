@@ -6,26 +6,28 @@
 <hibernate-configuration>
 
     <session-factory>
-        <property name="connection.url">jdbc:mysql://localhost:3306/groceryotg</property>
+        <!--Prod-->
+        <property name="connection.url">jdbc:mysql://aa120uk48qkqk9n.crj9vk2lkxxd.us-east-1.rds.amazonaws.com:3306/ebdb</property>
         <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
-        <property name="connection.username">user1</property>
-        <property name="connection.password">1234</property>
+        <property name="connection.username">grocerygo</property>
+        <property name="connection.password">GGbmw2013</property>
+
+        <!--Dev-->
+        <!--<property name="connection.url">jdbc:mysql://localhost:3306/grocerygo</property>-->
+        <!--<property name="connection.driver_class">com.mysql.jdbc.Driver</property>-->
+        <!--<property name="connection.username">grocerygo</property>-->
+        <!--<property name="connection.password">E4twyawl</property>-->
 
         <!-- c3p0 config http://www.hibernate.org/214.html -->
-        <!--<property name="connection.provider_class">org.hibernate.connection.C3P0ConnectionProvider</property>-->
-        <!--<property name="hibernate.c3p0.acquire_increment">1</property>-->
-        <!--<property name="hibernate.c3p0.idle_test_period">60</property>-->
-        <!--<property name="hibernate.c3p0.min_size">1</property>-->
-        <!--<property name="hibernate.c3p0.max_size">2</property>-->
-        <!--<property name="hibernate.c3p0.max_statements">50</property>-->
-        <!--<property name="hibernate.c3p0.timeout">0</property>-->
-        <!--<property name="hibernate.c3p0.acquireRetryAttempts">1</property>-->
-        <!--<property name="hibernate.c3p0.acquireRetryDelay">250</property>-->
+        <property name="hibernate.c3p0.acquire_increment">1</property>
+        <property name="hibernate.c3p0.idle_test_period">60</property>
+        <property name="hibernate.c3p0.max_size">100</property>
+        <property name="hibernate.c3p0.max_statements">0</property>
+        <property name="hibernate.c3p0.min_size">10</property>
+        <property name="hibernate.c3p0.timeout">100</property>
 
         <!--Postgresql Dialect-->
         <property name="dialect">org.hibernate.dialect.MySQL5Dialect</property>
-
-        <!--<property name="current_session_context_class">org.hibernate.context.ThreadLocalSessionContext</property>-->
 
         <!--Log All SQL to Output-->
         <property name="show_sql">true</property>
@@ -34,14 +36,14 @@
         <property name="hbm2ddl.auto">update</property>
 
         <!--Names the Annotated Entity Class-->
-        <mapping class="com.groceryotg.database.Category"/>
-        <mapping class="com.groceryotg.database.Flyer"/>
-        <mapping class="com.groceryotg.database.Grocery"/>
-        <mapping class="com.groceryotg.database.Item"/>
-        <mapping class="com.groceryotg.database.Store"/>
-        <mapping class="com.groceryotg.database.StoreParent"/>
-        <mapping class="com.groceryotg.database.Subcategory"/>
-        <mapping class="com.groceryotg.database.Unit"/>
+        <mapping class="ca.grocerygo.database.Category"/>
+        <mapping class="ca.grocerygo.database.Flyer"/>
+        <mapping class="ca.grocerygo.database.Grocery"/>
+        <mapping class="ca.grocerygo.database.Item"/>
+        <mapping class="ca.grocerygo.database.Store"/>
+        <mapping class="ca.grocerygo.database.StoreParent"/>
+        <mapping class="ca.grocerygo.database.Subcategory"/>
+        <mapping class="ca.grocerygo.database.Unit"/>
 
     </session-factory>
 

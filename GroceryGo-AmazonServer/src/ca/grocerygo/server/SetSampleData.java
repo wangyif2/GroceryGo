@@ -1,6 +1,6 @@
-package com.groceryotg.server;
+package ca.grocerygo.server;
 
-import com.groceryotg.database.*;
+import ca.grocerygo.database.*;
 import org.hibernate.Session;
 
 import javax.servlet.ServletException;

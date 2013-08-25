@@ -1,7 +1,7 @@
-package com.groceryotg.server;
+package ca.grocerygo.server;
 
+import ca.grocerygo.database.Store;
 import com.google.gson.Gson;
-import com.groceryotg.database.Flyer;
 import org.hibernate.Session;
 
 import javax.servlet.ServletException;
@@ -17,27 +17,27 @@ import java.util.List;
  * User: robert
  * Date: 15/02/13
  */
-@WebServlet(name = "GetFlyerInfo", urlPatterns = "/GetFlyerInfo")
-public class GetFlyerInfo extends HttpServlet {
+@WebServlet(name = "GetStoreInfo", urlPatterns = "/GetStoreInfo")
+public class GetStoreInfo extends HttpServlet {
     Gson gson = new Gson();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<Flyer> flyers = getFlyers();
+        List<Store> stores = getStores();
 
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
         PrintWriter out = resp.getWriter();
-        out.print(gson.toJson(flyers));
+        out.print(gson.toJson(stores));
     }
 
-    private List<Flyer> getFlyers() {
+    private List<Store> getStores() {
         Session session = HibernateUtils.getSessionFactory().openSession();
         session.beginTransaction();
 
-        List<Flyer> flyers = (List<Flyer>) session.createCriteria(Flyer.class).list();
+        List<Store> stores = (List<Store>) session.createCriteria(Store.class).list();
         session.getTransaction().commit();
 
-        return flyers;
+        return stores;
     }
 }

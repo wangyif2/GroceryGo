@@ -1,7 +1,7 @@
-package com.groceryotg.server;
+package ca.grocerygo.server;
 
+import ca.grocerygo.database.Category;
 import com.google.gson.Gson;
-import com.groceryotg.database.Category;
 import org.hibernate.Session;
 
 import javax.servlet.ServletException;

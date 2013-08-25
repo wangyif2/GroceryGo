@@ -1,4 +1,4 @@
-package com.groceryotg.database;
+package ca.grocerygo.database;
 
 import javax.persistence.*;
 import java.util.Date;

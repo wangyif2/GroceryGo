@@ -1,4 +1,4 @@
-package com.groceryotg.server;
+package ca.grocerygo.server;
 
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;

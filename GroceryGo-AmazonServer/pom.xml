@@ -12,7 +12,7 @@
         <hibernate.version>4.1.9.Final</hibernate.version>
         <guava.version>12.0</guava.version>
         <postgres.version>9.1-901.jdbc4</postgres.version>
-        <mysql.version>5.1.22</mysql.version>
+        <mysql.version>5.1.23</mysql.version>
         <javax.version>3.0-alpha-1</javax.version>
         <jthyon.version>2.5.3</jthyon.version>
     </properties>

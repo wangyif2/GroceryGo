@@ -18,7 +18,7 @@ public class Item {
     @Column(name = "item_id")
     private Integer itemId;
 
-    @Column(name = "item_name")
+    @Column(name = "item_name", columnDefinition = "longtext")
     private String itemName;
 
     @ManyToOne

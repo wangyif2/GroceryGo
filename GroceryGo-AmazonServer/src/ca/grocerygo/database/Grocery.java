@@ -28,7 +28,7 @@ public class Grocery {
     @Lob
     private String rawString;
 
-    @Column(name = "raw_price")
+    @Column(name = "raw_price", columnDefinition = "longtext")
     private String rawPrice;
 
     @Column(name = "unit_price", precision = 10,length = 2)

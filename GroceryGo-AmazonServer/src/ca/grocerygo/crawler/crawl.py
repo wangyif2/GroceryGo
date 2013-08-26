@@ -828,84 +828,91 @@ def getFlyer():
                     
                     data_list = filter(lambda x: x if x.has_key('regiontypeid') and x['regiontypeid']=='1' else None, data_list)
                     for item in data_list:
-                        line_number += 1
-                        raw_item = item['title'] + ", " + item['description'] 
-                        
-                        # Price format:
-                        # 1) $1.50                (dollars)
-                        # 2) 99c                  (cents)
-                        # 3) 4/$5                 (ratio)
-                        # 4) $3.99 - $4.29        (range)
-                        # 5) BUY ONE GET ONE FREE (string)
-                        unit_price = None
-                        unit_type_id = None
-                        total_price = None
-                        
-                        raw_price = item['price']
-                        orig_price = raw_price
-                        
-                        numeric_pattern = re.compile("[0-9]+")
-                        
-                        # If the price contains any spaces, e.g. "Starting from $19.99", then 
-                        # split on space and keep the elements that contains numeric chars
-                        if raw_price.find(" ") != -1:
-                            raw_price = " ".join(filter(lambda x: x if numeric_pattern.findall(x) else None, raw_price.split(" ")))
-                        
-                        if raw_price and numeric_pattern.findall(raw_price):
-                            # If a range given, take the lowest value
-                            if raw_price.find("-") != -1:
-                                raw_price = raw_price.split("-")[0].strip()
+                        try:
+                            line_number += 1
+                            raw_item = item['title'] + ", " + item['description'] 
                             
-                            index_ratio = raw_price.find("/")
-                            index_dollar = raw_price.find("$")
-                            index_cents = raw_price.find("\xa2")
-                            if index_ratio != -1:
-                                num_products = float(raw_price[:index_ratio])
-                                total_price = raw_price[index_ratio+1:]
-                                if index_dollar != -1:
-                                    total_price = float(total_price.strip().strip("$").strip())
-                                else:
-                                    total_price = float(total_price.strip("\xa2").strip("\xc2")) / 100.0
-                                
-                                # Default unit_price
-                                unit_price = total_price / num_products
+                            # Price format:
+                            # 1) $1.50                (dollars)
+                            # 2) 99c                  (cents)
+                            # 3) 4/$5                 (ratio)
+                            # 4) $3.99 - $4.29        (range)
+                            # 5) BUY ONE GET ONE FREE (string)
+                            # 6) 2 $5                 (ratio) convert to format 3) first
+                            unit_price = None
+                            unit_type_id = None
+                            total_price = None
                             
-                            elif index_dollar != -1:
-                                total_price = float(raw_price.strip("$"))
-                                
-                                # Default unit_price
-                                unit_price = total_price
-                                
-                            elif index_cents != -1:
-                                total_price = float(raw_price.strip("\xa2").strip("\xc2")) / 100.0
-                                
-                                # Default unit_price
-                                unit_price = total_price
+                            raw_price = item['price']
+                            orig_price = raw_price
                             
-                            # When price units are specified, the unit price is usually given in
-                            # the "priceunits" key-value pair
-                            price_units = item['priceunits']
-                            if price_units:
-                                index_or = price_units.find("or ")
-                                index_kg = price_units.find("/kg")
-                                if index_or != -1:
-                                    dollar_matches = re.search(r'(?<=[$])[0-9.]+', price_units)
-                                    cent_matches = re.search(r'(?<=or )[0-9.]+', price_units)
-                                    if dollar_matches:
-                                        unit_price = float(dollar_matches.group(0))
-                                    elif cent_matches:
-                                        unit_price = float(cent_matches.group(0))/100.0
-                                elif index_kg != -1:
-                                    price_matches = re.search(r'[0-9.]+(?=/kg)', price_units)
-                                    if price_matches:
-                                        unit_price = float(price_matches.group(0))
-                                        unit_type_id = filter(lambda x: x if x[1]=='kg' else None,units)[0][0]
-                        
-                        item_details = [stripAllTags(raw_item), stripAllTags(orig_price), unit_price, unit_type_id, total_price, \
-                                        start_date, end_date, line_number, flyer_id, update_date, line_number]
-                        
-                        store_items += [item_details]
-                    
+                            numeric_pattern = re.compile("[0-9]+")
+                            
+                            # If the price contains any spaces, e.g. "Starting from $19.99", then 
+                            # split on space and keep the elements that contains numeric chars
+                            if raw_price.find(" ") != -1:
+                                raw_price = " ".join(filter(lambda x: x if numeric_pattern.findall(x) else None, raw_price.split(" ")))
+                            
+                            #convert from format 6 to format 3
+                            raw_price = re.sub(r"([0-9]) +(\$[0-9])", r"\1/\2", raw_price)
+                            
+                            if raw_price and numeric_pattern.findall(raw_price):
+                                # If a range given, take the lowest value
+                                if raw_price.find("-") != -1:
+                                    raw_price = raw_price.split("-")[0].strip()
+                                
+                                index_ratio = raw_price.find("/")
+                                index_dollar = raw_price.find("$")
+                                index_cents = raw_price.find("\xa2")
+                                if index_ratio != -1:
+                                    num_products = float(raw_price[:index_ratio])
+                                    total_price = raw_price[index_ratio+1:]
+                                    if index_dollar != -1:
+                                        total_price = float(total_price.strip().strip("$").strip())
+                                    else:
+                                        total_price = float(total_price.strip("\xa2").strip("\xc2")) / 100.0
+                                    
+                                    # Default unit_price
+                                    unit_price = total_price / num_products
+                                
+                                elif index_dollar != -1:
+                                    total_price = float(raw_price.strip("$"))
+                                    
+                                    # Default unit_price
+                                    unit_price = total_price
+                                    
+                                elif index_cents != -1:
+                                    total_price = float(raw_price.strip("\xa2").strip("\xc2")) / 100.0
+                                    
+                                    # Default unit_price
+                                    unit_price = total_price
+                                
+                                # When price units are specified, the unit price is usually given in
+                                # the "priceunits" key-value pair
+                                price_units = item['priceunits']
+                                if price_units:
+                                    index_or = price_units.find("or ")
+                                    index_kg = price_units.find("/kg")
+                                    if index_or != -1:
+                                        dollar_matches = re.search(r'(?<=[$])[0-9.]+', price_units)
+                                        cent_matches = re.search(r'(?<=or )[0-9.]+', price_units)
+                                        if dollar_matches:
+                                            unit_price = float(dollar_matches.group(0))
+                                        elif cent_matches:
+                                            unit_price = float(cent_matches.group(0))/100.0
+                                    elif index_kg != -1:
+                                        price_matches = re.search(r'[0-9.]+(?=/kg)', price_units)
+                                        if price_matches:
+                                            unit_price = float(price_matches.group(0))
+                                            unit_type_id = filter(lambda x: x if x[1]=='kg' else None,units)[0][0]
+                            
+                            item_details = [stripAllTags(raw_item), stripAllTags(orig_price), unit_price, unit_type_id, total_price, \
+                                            start_date, end_date, line_number, flyer_id, update_date, line_number]
+                            
+                            store_items += [item_details]
+                        except:
+                                logging.exception("Flyer parsing error!\nstoreid=%s\nraw_item=%s\nurl=%s\nexception=%s\n"
+                                              % (store_id, item['title'] + ", " + item['description'], ajax_query, sys.exc_info()))
                     items[flyer_id] = store_items
                 
                 

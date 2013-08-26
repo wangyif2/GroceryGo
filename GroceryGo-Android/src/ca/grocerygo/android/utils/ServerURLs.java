@@ -14,7 +14,7 @@ public class ServerURLs {
     public static final String GOOGLE_APP_ENGINE = "http://groceryotg-test.appspot.com/";
 
     //TODO: publish another env at grocerygo
-	private static final String AMAZON_BEANSTALK = "http://groceryotg.elasticbeanstalk.com/";
+	private static final String AMAZON_BEANSTALK = "http://grocerygo.elasticbeanstalk.com/";
 	private static final String cateoryUrl = AMAZON_BEANSTALK + "/GetGeneralInfo";
 	private static final String groceryBaseUrl = AMAZON_BEANSTALK + "/UpdateGroceryInfo";
 	private static final String storeUrl = AMAZON_BEANSTALK + "/GetStoreInfo";

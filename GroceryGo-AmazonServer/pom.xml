@@ -15,9 +15,16 @@
         <mysql.version>5.1.23</mysql.version>
         <javax.version>3.0-alpha-1</javax.version>
         <jthyon.version>2.5.3</jthyon.version>
+        <c3p0.version>0.9.1.2</c3p0.version>
     </properties>
 
     <dependencies>
+        <!--c3p0-->
+        <dependency>
+            <groupId>c3p0</groupId>
+            <artifactId>c3p0</artifactId>
+            <version>${c3p0.version}</version>
+        </dependency>
         <!--Jthyon-->
         <dependency>
             <groupId>org.python</groupId>

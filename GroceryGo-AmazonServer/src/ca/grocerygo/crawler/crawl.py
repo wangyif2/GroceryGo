@@ -52,9 +52,10 @@ import classifier
 start_timer = time.time()
 
 # Fill in your MySQL user & password
-mysql_user = "user1"
-mysql_password = "1234"
-mysql_db = "groceryotg"
+mysql_endpoint = "aa120uk48qkqk9n.crj9vk2lkxxd.us-east-1.rds.amazonaws.com"
+mysql_user = "grocerygo"
+mysql_password = "GGbmw2013"
+mysql_db = "ebdb"
 
 # TODO:
 # Done. 1) Pass in only the item part of the line string to getNouns, so it doesn't get confused with the price 
@@ -1166,7 +1167,7 @@ class TableInterface:
 con = None
 
 try:
-    con = mdb.connect('localhost', mysql_user, mysql_password, mysql_db, use_unicode=True, charset="utf8")
+    con = mdb.connect(mysql_endpoint, mysql_user, mysql_password, mysql_db, use_unicode=True, charset="utf8")
     cur = con.cursor()
     logging.info("Connected to database")
     

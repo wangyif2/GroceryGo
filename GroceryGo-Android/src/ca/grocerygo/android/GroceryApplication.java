@@ -4,25 +4,17 @@ import android.app.Application;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Looper;
-import android.util.SparseArray;
-import ca.grocerygo.android.utils.GroceryOTGUtils;
 import ca.grocerygo.android.database.StoreParentTable;
 import ca.grocerygo.android.database.StoreTable;
+import ca.grocerygo.android.utils.GroceryOTGUtils;
+import ca.grocerygo.android.utils.GroceryStoreDistanceMap;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 public class GroceryApplication extends Application {
 
     public static final String TAG = "GroceryGo";
-	
-	private SparseArray<Float> mStoreDistanceMap;
-	private Map<String, Integer> mMapIconMap = new HashMap<String, Integer>();
-	private Map<String, Integer> mStoreParentIconMap = new HashMap<String, Integer>();
-	private SparseArray<ArrayList<Integer>> mFlyerStoreMap = new SparseArray<ArrayList<Integer>>();
-	private SparseArray<ArrayList<Integer>> mStoreParentStoreMap = new SparseArray<ArrayList<Integer>>();
 	
 	public void constructGlobals(final Context context) {
 		ArrayList<Thread> threads = new ArrayList<Thread>();
@@ -34,7 +26,7 @@ public class GroceryApplication extends Application {
 			public void run() {
 				Looper.prepare();
 				
-				mStoreDistanceMap = GroceryOTGUtils.buildDistanceMap(context);
+                GroceryStoreDistanceMap.setmStoreDistanceMap(GroceryOTGUtils.buildDistanceMap(context));
 			}
 		});
 		threads.add(t);
@@ -52,7 +44,7 @@ public class GroceryApplication extends Application {
 					String name = parents.getString(parents.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_NAME));
 					int markerImageID = context.getResources().getIdentifier("ic_mapmarker_" + name.toLowerCase(Locale.CANADA).replace(" ", ""), "drawable", context.getPackageName());
 					if (markerImageID != 0) {
-						mMapIconMap.put(name, markerImageID);
+                        GroceryStoreDistanceMap.getmMapIconMap().put(name, markerImageID);
 					}
 					parents.moveToNext();
 				}
@@ -73,7 +65,7 @@ public class GroceryApplication extends Application {
 					String name = parents.getString(parents.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_NAME));
 					int storeIconID = context.getResources().getIdentifier("ic_store_" + name.toLowerCase(Locale.CANADA).replace(" ", ""), "drawable", context.getPackageName());
 					if (storeIconID != 0) {
-						mStoreParentIconMap.put(name, storeIconID);
+                        GroceryStoreDistanceMap.getmStoreParentIconMap().put(name, storeIconID);
 					}
 					parents.moveToNext();
 				}
@@ -99,18 +91,18 @@ public class GroceryApplication extends Application {
 					
 					// Be careful: some stores have NULL flyers which gets translated to flyerId=0 here
 					if (flyerId > 0) {
-						if (mFlyerStoreMap.get(flyerId) == null)
-							mFlyerStoreMap.put(flyerId, new ArrayList<Integer>());
-						ArrayList<Integer> n = mFlyerStoreMap.get(flyerId);
+						if (GroceryStoreDistanceMap.getmFlyerStoreMap().get(flyerId) == null)
+                            GroceryStoreDistanceMap.getmFlyerStoreMap().put(flyerId, new ArrayList<Integer>());
+						ArrayList<Integer> n = GroceryStoreDistanceMap.getmFlyerStoreMap().get(flyerId);
 						n.add(storeId);
-						mFlyerStoreMap.put(flyerId, n);
+                        GroceryStoreDistanceMap.getmFlyerStoreMap().put(flyerId, n);
 						
-						if (mStoreParentStoreMap.get(storeParentId) == null)
-							mStoreParentStoreMap.put(storeParentId, new ArrayList<Integer>());
+						if (GroceryStoreDistanceMap.getmStoreParentStoreMap().get(storeParentId) == null)
+							GroceryStoreDistanceMap.getmStoreParentStoreMap().put(storeParentId, new ArrayList<Integer>());
 						// Now append the new value onto the end of the appropriate list
-						ArrayList<Integer> m = mStoreParentStoreMap.get(storeParentId);
+						ArrayList<Integer> m = GroceryStoreDistanceMap.getmStoreParentStoreMap().get(storeParentId);
 						m.add(storeId);
-						mStoreParentStoreMap.put(storeParentId, m);
+						GroceryStoreDistanceMap.getmStoreParentStoreMap().put(storeParentId, m);
 					}
 					
 					storeIDs.moveToNext();
@@ -131,42 +123,4 @@ public class GroceryApplication extends Application {
 		}
 	}
 
-	/**
-	 * @return the storeDistanceMap
-	 */
-	public SparseArray<Float> getStoreDistanceMap() {
-		return mStoreDistanceMap;
-	}
-	
-	public void setStoreDistanceMap(SparseArray<Float> newDistanceMap) {
-		mStoreDistanceMap = newDistanceMap;
-	}
-
-	/**
-	 * @return the mapIconMap
-	 */
-	public Map<String, Integer> getMapIconMap() {
-		return mMapIconMap;
-	}
-	
-	/**
-	 * @return the storeParentIconMap
-	 */
-	public Map<String, Integer> getStoreParentIconMap() {
-		return mStoreParentIconMap;
-	}
-	
-	/**
-	 * @return the flyerStoreMap
-	 */
-	public SparseArray<ArrayList<Integer>> getFlyerStoreMap() {
-		return mFlyerStoreMap;
-	}
-	
-	/**
-	 * @return the storeParentStoreMap
-	 */
-	public SparseArray<ArrayList<Integer>> getStoreParentStoreMap() {
-		return mStoreParentStoreMap;
-	}
 }

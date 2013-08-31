@@ -36,7 +36,7 @@ public class GroceryotgProvider extends ContentProvider {
 	private static final int CART_GROUPBY_STOREPARENT = 180;
 
 	// Content URI
-	private static final String AUTHORITY = "com.grocerygo.android.database.contentprovider";
+	private static final String AUTHORITY = "ca.grocerygo.android.database.contentprovider";
 	private static final String BASE_PATH_CAT = "categories";
 	private static final String BASE_PATH_GRO = "groceries";
 	private static final String BASE_PATH_STO = "stores";

@@ -17,7 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import ca.grocerygo.android.GroceryApplication;
 import ca.grocerygo.android.R;
 import ca.grocerygo.android.database.CartTable;
 import ca.grocerygo.android.database.FlyerTable;
@@ -25,6 +24,7 @@ import ca.grocerygo.android.database.GroceryTable;
 import ca.grocerygo.android.database.StoreParentTable;
 import ca.grocerygo.android.database.contentprovider.GroceryotgProvider;
 import ca.grocerygo.android.utils.GroceryOTGUtils;
+import ca.grocerygo.android.utils.GroceryStoreDistanceMap;
 import com.actionbarsherlock.app.SherlockListFragment;
 import com.tjerkw.slideexpandable.library.SlideExpandableListAdapter;
 
@@ -92,7 +92,7 @@ public class ShopCartOverviewFragment extends SherlockListFragment implements Lo
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		
-		mDistanceMap = ((GroceryApplication) ((Activity) mContext).getApplication()).getStoreDistanceMap();
+		mDistanceMap = GroceryStoreDistanceMap.getmStoreDistanceMap();
 		
 		String[] from = new String[]{GroceryTable.COLUMN_GROCERY_ID,
 				GroceryTable.COLUMN_GROCERY_NAME,

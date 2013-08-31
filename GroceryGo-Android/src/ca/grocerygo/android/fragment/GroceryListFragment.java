@@ -22,7 +22,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import ca.grocerygo.android.CategoryTopFragmentActivity;
 import ca.grocerygo.android.GlobalSearchFragmentActivity;
-import ca.grocerygo.android.GroceryApplication;
 import ca.grocerygo.android.R;
 import ca.grocerygo.android.database.CartTable;
 import ca.grocerygo.android.database.FlyerTable;
@@ -31,6 +30,7 @@ import ca.grocerygo.android.database.StoreParentTable;
 import ca.grocerygo.android.database.contentprovider.GroceryotgProvider;
 import ca.grocerygo.android.settings.SettingsManager;
 import ca.grocerygo.android.utils.GroceryOTGUtils;
+import ca.grocerygo.android.utils.GroceryStoreDistanceMap;
 import ca.grocerygo.android.utils.ServerURLs;
 import com.actionbarsherlock.app.SherlockListFragment;
 import com.tjerkw.slideexpandable.library.SlideExpandableListAdapter;
@@ -116,7 +116,7 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
 			public void onReceive(Context context, Intent intent) {
 				if (intent.getAction().equals(GroceryOTGUtils.BROADCAST_ACTION_RELOAD_LOCATION)) {
 					// Reload the store distance map
-					mDistanceMap = ((GroceryApplication) ((Activity) mContext).getApplication()).getStoreDistanceMap();
+					mDistanceMap = GroceryStoreDistanceMap.getmStoreDistanceMap();
 					
 					// Restart the loader, refreshing all views
 					Bundle b = new Bundle();
@@ -142,7 +142,7 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		
-		mDistanceMap = ((GroceryApplication) ((Activity) mContext).getApplication()).getStoreDistanceMap();
+		mDistanceMap = GroceryStoreDistanceMap.getmStoreDistanceMap();
 		
 		String[] from = new String[]{GroceryTable.COLUMN_GROCERY_ID,
 				GroceryTable.COLUMN_GROCERY_NAME,
@@ -301,7 +301,7 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
 			// Display only the closest store location for each store parent (which has a flyer)
 			
 			// Map between storeParents and corresponding stores
-			SparseArray<ArrayList<Integer>> storeParentStores = ((GroceryApplication) ((Activity) mContext).getApplication()).getStoreParentStoreMap();
+			SparseArray<ArrayList<Integer>> storeParentStores = GroceryStoreDistanceMap.getmStoreParentStoreMap();
 			
 			// Selected storeParents (from settings)
 			SparseBooleanArray selectedStoreParents = SettingsManager.getStoreFilter(mContext);
@@ -322,7 +322,7 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
 			}
 			
 			// Translate store IDs into flyer IDs to be used in the SQL query
-			SparseArray<ArrayList<Integer>> flyerStoreMap = ((GroceryApplication) ((Activity) mContext).getApplication()).getFlyerStoreMap();
+			SparseArray<ArrayList<Integer>> flyerStoreMap = GroceryStoreDistanceMap.getmFlyerStoreMap();
 			for (int k=0; k<flyerStoreMap.size(); k++) {
 				int flyerId = flyerStoreMap.keyAt(k);
 				ArrayList<Integer> listStores = flyerStoreMap.valueAt(k);

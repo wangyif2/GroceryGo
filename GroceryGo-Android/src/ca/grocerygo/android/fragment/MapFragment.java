@@ -5,12 +5,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.location.Location;
 import android.os.Bundle;
-import ca.grocerygo.android.GroceryApplication;
 import ca.grocerygo.android.MapFragmentActivity;
 import ca.grocerygo.android.R;
 import ca.grocerygo.android.database.StoreParentTable;
 import ca.grocerygo.android.database.StoreTable;
 import ca.grocerygo.android.utils.GroceryOTGUtils;
+import ca.grocerygo.android.utils.GroceryStoreDistanceMap;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
@@ -51,7 +51,7 @@ public class MapFragment extends SupportMapFragment {
 	public void onActivityCreated (Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		
-		mIconMap = ((GroceryApplication) ((Activity) mContext).getApplication()).getMapIconMap();
+		mIconMap = GroceryStoreDistanceMap.getmMapIconMap();
 		
 		Location lastKnownLocation = GroceryOTGUtils.getLastKnownLocation(mContext);
 		Cursor storeLocations = GroceryOTGUtils.getFilteredStores(mContext).loadInBackground();

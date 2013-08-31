@@ -1,6 +1,5 @@
 package ca.grocerygo.android.fragment;
 
-import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.SimpleCursorAdapter.ViewBinder;
@@ -9,12 +8,12 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
-import ca.grocerygo.android.GroceryApplication;
 import ca.grocerygo.android.R;
 import ca.grocerygo.android.database.CartTable;
 import ca.grocerygo.android.database.FlyerTable;
 import ca.grocerygo.android.database.GroceryTable;
 import ca.grocerygo.android.database.StoreParentTable;
+import ca.grocerygo.android.utils.GroceryStoreDistanceMap;
 import ca.grocerygo.android.utils.ServerURLs;
 
 import java.text.DateFormat;
@@ -28,8 +27,8 @@ public class GroceryViewBinder implements SimpleCursorAdapter.ViewBinder, ViewBi
 	
 	public GroceryViewBinder(Context context) {
 		this.mContext = context;
-		this.mStoreParentIconMap = ((GroceryApplication) ((Activity) context).getApplication()).getStoreParentIconMap();
-		this.mFlyerStoreMap = ((GroceryApplication) ((Activity) context).getApplication()).getFlyerStoreMap();
+		this.mStoreParentIconMap = GroceryStoreDistanceMap.getmStoreParentIconMap();
+		this.mFlyerStoreMap = GroceryStoreDistanceMap.getmFlyerStoreMap();
 	}
 	
 	@Override

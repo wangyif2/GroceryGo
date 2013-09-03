@@ -221,8 +221,6 @@ public class GroceryGoUtils {
             // calculate the distance in meters between the current user location and the store's location
             distance = loc.distanceTo(storeLoc);
 
-            // Add this distance to a hash map
-            //Log.i("GroceryOTG", "Store " + storeID + " at distance " + distance);
             map.put(storeID, distance);
 
             storeLocations.moveToNext();

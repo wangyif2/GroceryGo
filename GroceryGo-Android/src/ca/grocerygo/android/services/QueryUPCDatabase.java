@@ -5,9 +5,13 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
+import ca.grocerygo.android.GroceryApplication;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
-import java.io.StringWriter;
-import java.net.URL;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
@@ -16,12 +20,8 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
+import java.io.StringWriter;
+import java.net.URL;
 
 public class QueryUPCDatabase extends AsyncTask<String, Void, String> {
 	private Context mContext;
@@ -63,7 +63,7 @@ public class QueryUPCDatabase extends AsyncTask<String, Void, String> {
 			
 		} catch (Exception e) {
 			e.printStackTrace();
-			Log.e("GroceryOTG", "Could not construct upc database url. Exception " + e);
+			Log.e(GroceryApplication.TAG, "Could not construct upc database url. Exception " + e);
 		}
 		
 		return null;

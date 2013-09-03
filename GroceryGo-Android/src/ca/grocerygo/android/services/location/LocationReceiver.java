@@ -102,15 +102,15 @@ public class LocationReceiver extends BroadcastReceiver {
 		NotificationCompat.Builder mBuilder =
 				new NotificationCompat.Builder(context)
 						.setSmallIcon(R.drawable.ic_stat_notify_item)
-						.setContentTitle("GroceryOTG")
-						.setContentText("An item in your cart is near")
+						.setContentTitle(context.getString(R.string.app_name))
+						.setContentText(context.getString(R.string.notification_content_text))
 						.setAutoCancel(true);
 		// Create a big notification
 		NotificationCompat.InboxStyle inboxStyle =
 				new NotificationCompat.InboxStyle();
 		
 		// Sets a title for the inbox style big view
-		inboxStyle.setBigContentTitle("Items on the go:");
+		inboxStyle.setBigContentTitle(context.getString(R.string.notification_contect_big_title));
 		// Moves events into the big view
 		for (int i=0; i < events.size(); i++) {
 			inboxStyle.addLine(events.get(i));

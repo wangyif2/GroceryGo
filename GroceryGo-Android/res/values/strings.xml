@@ -111,5 +111,7 @@
     <string name="server_unregister_error">Could not unregister device on GAE Server (%1$s).</string>
     <string name="gcm_received">GCM push message received, refreshing items now..</string>
     <string name="gcm_newdata_notification">Click the refresh button for new grocery data</string>
+    <string name="notification_content_text">An item in your cart is near</string>
+    <string name="notification_contect_big_title">Items on the go:</string>
 
 </resources>

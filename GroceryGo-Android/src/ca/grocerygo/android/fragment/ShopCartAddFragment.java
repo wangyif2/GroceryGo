@@ -19,7 +19,7 @@ import android.widget.Toast;
 import ca.grocerygo.android.R;
 import ca.grocerygo.android.database.CartTable;
 import ca.grocerygo.android.database.contentprovider.GroceryotgProvider;
-import ca.grocerygo.android.utils.GroceryOTGUtils;
+import ca.grocerygo.android.utils.GroceryGoUtils;
 import com.actionbarsherlock.app.SherlockFragment;
 
 public class ShopCartAddFragment extends SherlockFragment {
@@ -125,6 +125,6 @@ public class ShopCartAddFragment extends SherlockFragment {
 
 		mContext.getContentResolver().insert(GroceryotgProvider.CONTENT_URI_CART_ITEM, values);
 		
-		GroceryOTGUtils.restartGroceryLoaders(mContext);
+		GroceryGoUtils.restartGroceryLoaders(mContext);
 	}
 }

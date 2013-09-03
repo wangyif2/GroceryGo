@@ -18,7 +18,7 @@ import ca.grocerygo.android.MapFragmentActivity;
 import ca.grocerygo.android.R;
 import ca.grocerygo.android.database.CartTable;
 import ca.grocerygo.android.database.contentprovider.GroceryotgProvider;
-import ca.grocerygo.android.utils.GroceryOTGUtils;
+import ca.grocerygo.android.utils.GroceryGoUtils;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -138,7 +138,7 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
 				}
 				
 				// Restart the loader, refreshing all views
-				GroceryOTGUtils.restartGroceryLoaders(mContext);
+				GroceryGoUtils.restartGroceryLoaders(mContext);
 			}
 		});
 		cb_inshoplist.setOnCheckedChangeListener(new OnCheckedChangeListener() {

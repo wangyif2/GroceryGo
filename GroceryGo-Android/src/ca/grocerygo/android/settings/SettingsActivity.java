@@ -9,7 +9,7 @@ import android.preference.PreferenceManager;
 import ca.grocerygo.android.CategoryTopFragmentActivity;
 import ca.grocerygo.android.R;
 import ca.grocerygo.android.services.location.LocationServiceReceiver;
-import ca.grocerygo.android.utils.GroceryOTGUtils;
+import ca.grocerygo.android.utils.GroceryGoUtils;
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
 import com.actionbarsherlock.view.MenuItem;
 
@@ -80,7 +80,7 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 		storeFilterPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
 			@Override
 			public boolean onPreferenceChange(Preference preference, Object newValue) {
-				GroceryOTGUtils.restartGroceryLoaders(mActivity);
+				GroceryGoUtils.restartGroceryLoaders(mActivity);
 				return true;
 			}
 		});
@@ -90,7 +90,7 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 			
 			@Override
 			public boolean onPreferenceChange(Preference preference, Object newValue) {
-				GroceryOTGUtils.restartGroceryLoaders(mActivity);
+				GroceryGoUtils.restartGroceryLoaders(mActivity);
 				return true;
 			}
 		});

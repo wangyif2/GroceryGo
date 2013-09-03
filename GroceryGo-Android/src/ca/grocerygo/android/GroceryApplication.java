@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.os.Looper;
 import ca.grocerygo.android.database.StoreParentTable;
 import ca.grocerygo.android.database.StoreTable;
-import ca.grocerygo.android.utils.GroceryOTGUtils;
+import ca.grocerygo.android.utils.GroceryGoUtils;
 import ca.grocerygo.android.utils.GroceryStoreDistanceMap;
 
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ public class GroceryApplication extends Application {
 			public void run() {
 				Looper.prepare();
 				
-                GroceryStoreDistanceMap.setmStoreDistanceMap(GroceryOTGUtils.buildDistanceMap(context));
+                GroceryStoreDistanceMap.setmStoreDistanceMap(GroceryGoUtils.buildDistanceMap(context));
 			}
 		});
 		threads.add(t);
@@ -38,7 +38,7 @@ public class GroceryApplication extends Application {
 			public void run() {
 				Looper.prepare();
 				
-				Cursor parents = GroceryOTGUtils.getStoreParentNamesCursor(context);
+				Cursor parents = GroceryGoUtils.getStoreParentNamesCursor(context);
 				parents.moveToFirst();
 				while (!parents.isAfterLast()) {
 					String name = parents.getString(parents.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_NAME));
@@ -59,7 +59,7 @@ public class GroceryApplication extends Application {
 			public void run() {
 				Looper.prepare();
 				
-				Cursor parents = GroceryOTGUtils.getStoreParentNamesCursor(context);
+				Cursor parents = GroceryGoUtils.getStoreParentNamesCursor(context);
 				parents.moveToFirst();
 				while (!parents.isAfterLast()) {
 					String name = parents.getString(parents.getColumnIndex(StoreParentTable.COLUMN_STORE_PARENT_NAME));
@@ -81,7 +81,7 @@ public class GroceryApplication extends Application {
 			public void run() {
 				Looper.prepare();
 				
-				Cursor storeIDs = GroceryOTGUtils.getStoreIDs(context);
+				Cursor storeIDs = GroceryGoUtils.getStoreIDs(context);
 				
 				storeIDs.moveToFirst();
 				while (!storeIDs.isAfterLast()) {

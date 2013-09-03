@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.ListView;
 import ca.grocerygo.android.fragment.GlobalSearchFragment;
-import ca.grocerygo.android.utils.GroceryOTGUtils;
+import ca.grocerygo.android.utils.GroceryGoUtils;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -31,7 +31,7 @@ public class GlobalSearchFragmentActivity extends SherlockFragmentActivity {
 		
 		setContentView(R.layout.search_activity);
 		
-		GroceryOTGUtils.NavigationDrawerBundle drawerBundle = GroceryOTGUtils.configNavigationDrawer(this, false, R.string.title_search);
+		GroceryGoUtils.NavigationDrawerBundle drawerBundle = GroceryGoUtils.configNavigationDrawer(this, false, R.string.title_search);
 		this.mDrawerLayout = drawerBundle.getDrawerLayout();
 		this.mDrawerList = drawerBundle.getDrawerList();
 		

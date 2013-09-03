@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.ListView;
-import ca.grocerygo.android.utils.GroceryOTGUtils;
+import ca.grocerygo.android.utils.GroceryGoUtils;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -20,7 +20,7 @@ public class ShopCartSummaryFragmentActivity extends SherlockFragmentActivity {
 		
 		setContentView(R.layout.shopcart_summary_activity);
 		
-		GroceryOTGUtils.NavigationDrawerBundle drawerBundle = GroceryOTGUtils.configNavigationDrawer(this, false, R.string.title_cart);
+		GroceryGoUtils.NavigationDrawerBundle drawerBundle = GroceryGoUtils.configNavigationDrawer(this, false, R.string.title_cart);
 		this.mDrawerLayout = drawerBundle.getDrawerLayout();
 		this.mDrawerList = drawerBundle.getDrawerList();
 	}

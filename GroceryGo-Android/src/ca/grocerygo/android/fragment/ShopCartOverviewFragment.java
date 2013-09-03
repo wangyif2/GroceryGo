@@ -23,7 +23,7 @@ import ca.grocerygo.android.database.FlyerTable;
 import ca.grocerygo.android.database.GroceryTable;
 import ca.grocerygo.android.database.StoreParentTable;
 import ca.grocerygo.android.database.contentprovider.GroceryotgProvider;
-import ca.grocerygo.android.utils.GroceryOTGUtils;
+import ca.grocerygo.android.utils.GroceryGoUtils;
 import ca.grocerygo.android.utils.GroceryStoreDistanceMap;
 import com.actionbarsherlock.app.SherlockListFragment;
 import com.tjerkw.slideexpandable.library.SlideExpandableListAdapter;
@@ -70,13 +70,13 @@ public class ShopCartOverviewFragment extends SherlockListFragment implements Lo
 		mRestartReceiver = new BroadcastReceiver() {
 			@Override
 			public void onReceive(Context context, Intent intent) {
-				if (intent.getAction().equals(GroceryOTGUtils.BROADCAST_ACTION_RELOAD_GROCERY_LIST)) {
+				if (intent.getAction().equals(GroceryGoUtils.BROADCAST_ACTION_RELOAD_GROCERY_LIST)) {
 					// Restart the loader, refreshing all views
 					reloadData(false);
 				}
 			}
 		};
-		IntentFilter mRestartIntentFilter = new IntentFilter(GroceryOTGUtils.BROADCAST_ACTION_RELOAD_GROCERY_LIST);
+		IntentFilter mRestartIntentFilter = new IntentFilter(GroceryGoUtils.BROADCAST_ACTION_RELOAD_GROCERY_LIST);
 		mRestartIntentFilter.addCategory(Intent.CATEGORY_DEFAULT);
 		LocalBroadcastManager.getInstance(mContext).registerReceiver(mRestartReceiver, mRestartIntentFilter);
 		

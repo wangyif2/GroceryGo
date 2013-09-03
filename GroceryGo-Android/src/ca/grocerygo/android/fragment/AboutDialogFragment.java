@@ -10,10 +10,8 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.View;
-import android.webkit.WebView;
 import ca.grocerygo.android.R;
-import ca.grocerygo.android.utils.GroceryOTGUtils;
+import ca.grocerygo.android.utils.GroceryGoUtils;
 import com.actionbarsherlock.app.SherlockDialogFragment;
 
 import java.util.List;
@@ -34,7 +32,7 @@ public class AboutDialogFragment extends SherlockDialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        String titleString = getString(R.string.about_title) + " v" + getString(R.string.version_name) + " build " + GroceryOTGUtils.getVersionCode(mContext);
+        String titleString = getString(R.string.about_title) + " v" + getString(R.string.version_name) + " build " + GroceryGoUtils.getVersionCode(mContext);
         Dialog dialog = new AlertDialog.Builder(getActivity())
                 .setTitle(titleString)
                 .setPositiveButton(R.string.navdrawer_item_about_feedback, new DialogInterface.OnClickListener() {

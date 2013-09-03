@@ -16,7 +16,7 @@ import android.widget.SimpleCursorAdapter;
 import ca.grocerygo.android.R;
 import ca.grocerygo.android.database.CategoryTable;
 import ca.grocerygo.android.database.contentprovider.GroceryotgProvider;
-import ca.grocerygo.android.utils.GroceryOTGUtils;
+import ca.grocerygo.android.utils.GroceryGoUtils;
 import com.actionbarsherlock.app.SherlockFragment;
 
 public class CategoryTopFragment extends SherlockFragment implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -43,7 +43,7 @@ public class CategoryTopFragment extends SherlockFragment implements LoaderManag
 		gridview = (GridView) v.findViewById(R.id.gridview);
 		gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-				GroceryOTGUtils.launchGroceryPagerActivity(mContext, position);
+				GroceryGoUtils.launchGroceryPagerActivity(mContext, position);
 			}
 		});
 		gridview.setEmptyView(v.findViewById(R.id.empty_category_list));

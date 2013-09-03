@@ -14,7 +14,7 @@ import android.widget.Toast;
 import ca.grocerygo.android.gcm.GroceryGCMBroadcastReceiver;
 import ca.grocerygo.android.services.NetworkHandler;
 import ca.grocerygo.android.utils.ChangeLogDialog;
-import ca.grocerygo.android.utils.GroceryOTGUtils;
+import ca.grocerygo.android.utils.GroceryGoUtils;
 import ca.grocerygo.android.utils.GroceryRefreshTrigger;
 import ca.grocerygo.android.utils.RefreshAnimation;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -49,7 +49,7 @@ public class CategoryTopFragmentActivity extends SherlockFragmentActivity {
 
         mContext = this;
 
-        GroceryOTGUtils.NavigationDrawerBundle drawerBundle = GroceryOTGUtils.configNavigationDrawer(this, true, R.string.title_main);
+        GroceryGoUtils.NavigationDrawerBundle drawerBundle = GroceryGoUtils.configNavigationDrawer(this, true, R.string.title_main);
         this.mDrawerLayout = drawerBundle.getDrawerLayout();
         this.mDrawerList = drawerBundle.getDrawerList();
         this.mDrawerToggle = drawerBundle.getDrawerToggle();
@@ -84,7 +84,7 @@ public class CategoryTopFragmentActivity extends SherlockFragmentActivity {
             // If on the home page and doing a global search, send the intent
             // to the GlobalSearchActivity
             Intent globalSearchIntent = new Intent(this, GlobalSearchFragmentActivity.class);
-            GroceryOTGUtils.copyIntentData(intent, globalSearchIntent);
+            GroceryGoUtils.copyIntentData(intent, globalSearchIntent);
             globalSearchIntent.putExtra(GlobalSearchFragmentActivity.GLOBAL_SEARCH, true);
             startActivity(globalSearchIntent);
         } else {

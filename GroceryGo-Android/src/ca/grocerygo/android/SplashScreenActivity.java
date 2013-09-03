@@ -18,7 +18,7 @@ import ca.grocerygo.android.gcm.GCMUtils;
 import ca.grocerygo.android.services.NetworkHandler;
 import ca.grocerygo.android.services.location.LocationServiceReceiver;
 import ca.grocerygo.android.settings.SettingsManager;
-import ca.grocerygo.android.utils.GroceryOTGUtils;
+import ca.grocerygo.android.utils.GroceryGoUtils;
 import ca.grocerygo.android.utils.GroceryRefreshTrigger;
 import ca.grocerygo.android.utils.ServerURLs;
 import com.google.android.gcm.GCMRegistrar;
@@ -181,7 +181,7 @@ public class SplashScreenActivity extends Activity {
 
         if (!isLocationFound) {
             // configure locale settings
-            Location lastKnownLocation = GroceryOTGUtils.getLastKnownLocation(mContext);
+            Location lastKnownLocation = GroceryGoUtils.getLastKnownLocation(mContext);
 
             Geocoder gcd = new Geocoder(this, Locale.getDefault());
             List<Address> addresses = new ArrayList<Address>();

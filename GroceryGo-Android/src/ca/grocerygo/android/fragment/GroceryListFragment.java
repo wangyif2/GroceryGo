@@ -29,7 +29,7 @@ import ca.grocerygo.android.database.GroceryTable;
 import ca.grocerygo.android.database.StoreParentTable;
 import ca.grocerygo.android.database.contentprovider.GroceryotgProvider;
 import ca.grocerygo.android.settings.SettingsManager;
-import ca.grocerygo.android.utils.GroceryOTGUtils;
+import ca.grocerygo.android.utils.GroceryGoUtils;
 import ca.grocerygo.android.utils.GroceryStoreDistanceMap;
 import ca.grocerygo.android.utils.ServerURLs;
 import com.actionbarsherlock.app.SherlockListFragment;
@@ -98,7 +98,7 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
 		mRestartReceiver = new BroadcastReceiver() {
 			@Override
 			public void onReceive(Context context, Intent intent) {
-				if (intent.getAction().equals(GroceryOTGUtils.BROADCAST_ACTION_RELOAD_GROCERY_LIST)) {
+				if (intent.getAction().equals(GroceryGoUtils.BROADCAST_ACTION_RELOAD_GROCERY_LIST)) {
 					// Restart the loader, refreshing all views
 					Bundle b = new Bundle();
 					b.putString("query", mQuery);
@@ -107,14 +107,14 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
 				}
 			}
 		};
-		IntentFilter mRestartIntentFilter = new IntentFilter(GroceryOTGUtils.BROADCAST_ACTION_RELOAD_GROCERY_LIST);
+		IntentFilter mRestartIntentFilter = new IntentFilter(GroceryGoUtils.BROADCAST_ACTION_RELOAD_GROCERY_LIST);
 		mRestartIntentFilter.addCategory(Intent.CATEGORY_DEFAULT);
 		LocalBroadcastManager.getInstance(mContext).registerReceiver(mRestartReceiver, mRestartIntentFilter);
 		
 		mLocationReceiver = new BroadcastReceiver() {
 			@Override
 			public void onReceive(Context context, Intent intent) {
-				if (intent.getAction().equals(GroceryOTGUtils.BROADCAST_ACTION_RELOAD_LOCATION)) {
+				if (intent.getAction().equals(GroceryGoUtils.BROADCAST_ACTION_RELOAD_LOCATION)) {
 					// Reload the store distance map
 					mDistanceMap = GroceryStoreDistanceMap.getmStoreDistanceMap();
 					
@@ -126,7 +126,7 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
 				}
 			}
 		};
-		IntentFilter mLocationIntentFilter = new IntentFilter(GroceryOTGUtils.BROADCAST_ACTION_RELOAD_LOCATION);
+		IntentFilter mLocationIntentFilter = new IntentFilter(GroceryGoUtils.BROADCAST_ACTION_RELOAD_LOCATION);
 		mLocationIntentFilter.addCategory(Intent.CATEGORY_DEFAULT);
 		LocalBroadcastManager.getInstance(mContext).registerReceiver(mLocationReceiver, mLocationIntentFilter);
 		
@@ -311,13 +311,13 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
 			if (selectedStoreParents != null && selectedStoreParents.size() > 0) {
 				for (int k=0; k<selectedStoreParents.size(); k++) {
 					ArrayList<Integer> storeIds = storeParentStores.get(selectedStoreParents.keyAt(k));
-					filterStores.add(GroceryOTGUtils.getClosestStore(storeIds, mDistanceMap));
+					filterStores.add(GroceryGoUtils.getClosestStore(storeIds, mDistanceMap));
 				}
 			} else { 	
 				// go through all storeParents, and find the closest store location
 				for (int k=0; k<storeParentStores.size(); k++) {
 					ArrayList<Integer> storeIds = storeParentStores.get(k);
-					filterStores.add(GroceryOTGUtils.getClosestStore(storeIds, mDistanceMap));
+					filterStores.add(GroceryGoUtils.getClosestStore(storeIds, mDistanceMap));
 				}
 			}
 			

@@ -9,7 +9,7 @@ import ca.grocerygo.android.MapFragmentActivity;
 import ca.grocerygo.android.R;
 import ca.grocerygo.android.database.StoreParentTable;
 import ca.grocerygo.android.database.StoreTable;
-import ca.grocerygo.android.utils.GroceryOTGUtils;
+import ca.grocerygo.android.utils.GroceryGoUtils;
 import ca.grocerygo.android.utils.GroceryStoreDistanceMap;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -53,8 +53,8 @@ public class MapFragment extends SupportMapFragment {
 		
 		mIconMap = GroceryStoreDistanceMap.getmMapIconMap();
 		
-		Location lastKnownLocation = GroceryOTGUtils.getLastKnownLocation(mContext);
-		Cursor storeLocations = GroceryOTGUtils.getFilteredStores(mContext).loadInBackground();
+		Location lastKnownLocation = GroceryGoUtils.getLastKnownLocation(mContext);
+		Cursor storeLocations = GroceryGoUtils.getFilteredStores(mContext).loadInBackground();
 		
 		mMap = this.getMap();
 		if (mMap != null) {

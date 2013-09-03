@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class GroceryOTGUtils {
+public class GroceryGoUtils {
     public static final String BROADCAST_ACTION_RELOAD_GROCERY_LIST = "com.grocerygo.android.intent_action_reload_grocery_list";
     public static final String BROADCAST_ACTION_FILTER_GROCERY_LIST = "com.grocerygo.android.intent_action_filter_grocery_list";
     public static final String BROADCAST_ACTION_RELOAD_LOCATION = "com.grocerygo.android.intent_action_reload_location";
@@ -88,7 +88,7 @@ public class GroceryOTGUtils {
     public static SparseArray<String> getStoreParentNameSets(Context context) {
         SparseArray<String> storeNames = new SparseArray<String>();
 
-        Cursor storeCursor = GroceryOTGUtils.getStoreParentNamesCursor(context);
+        Cursor storeCursor = GroceryGoUtils.getStoreParentNamesCursor(context);
         if (storeCursor != null) {
             storeCursor.moveToFirst();
             while (!storeCursor.isAfterLast()) {
@@ -185,7 +185,7 @@ public class GroceryOTGUtils {
     }
 
     public static SparseArray<Float> buildDistanceMap(Context context) {
-        Cursor storeLocations = GroceryOTGUtils.getAllStores(context).loadInBackground();
+        Cursor storeLocations = GroceryGoUtils.getAllStores(context).loadInBackground();
 
         SparseArray<Float> map = new SparseArray<Float>();
 
@@ -195,7 +195,7 @@ public class GroceryOTGUtils {
         Location storeLoc;
         float distance;
 
-        Location loc = GroceryOTGUtils.getLastKnownLocation(context);
+        Location loc = GroceryGoUtils.getLastKnownLocation(context);
         if (loc == null) return null;
         // Set up mock location for emulator
         //Location loc = new Location("Mock Location");
@@ -283,7 +283,7 @@ public class GroceryOTGUtils {
         ((SherlockFragmentActivity) activity).getSupportActionBar().setHomeButtonEnabled(true);
     }
 
-    public static GroceryOTGUtils.NavigationDrawerBundle configNavigationDrawer(final Activity activity, boolean isTopView, final int titleResId) {
+    public static GroceryGoUtils.NavigationDrawerBundle configNavigationDrawer(final Activity activity, boolean isTopView, final int titleResId) {
         DrawerLayout drawerLayout;
         ListView drawerList;
         ActionBarDrawerToggle drawerToggle = null;
@@ -322,7 +322,7 @@ public class GroceryOTGUtils {
         drawerLayout.setDrawerListener(drawerToggle);
 
         drawerList = (ListView) activity.findViewById(R.id.navigation_drawer_view);
-        drawerList.setAdapter(new GroceryOTGUtils.NavigationDrawerAdapter(activity, rowModels));
+        drawerList.setAdapter(new GroceryGoUtils.NavigationDrawerAdapter(activity, rowModels));
         drawerList.setOnItemClickListener(new NavigationDrawerItemClickListener(activity, drawerLayout, drawerList));
 
         if (isTopView) {
@@ -332,7 +332,7 @@ public class GroceryOTGUtils {
             }
         }
 
-        GroceryOTGUtils.NavigationDrawerBundle bundle = new GroceryOTGUtils.NavigationDrawerBundle(drawerLayout, drawerList, drawerToggle);
+        GroceryGoUtils.NavigationDrawerBundle bundle = new GroceryGoUtils.NavigationDrawerBundle(drawerLayout, drawerList, drawerToggle);
 
         return bundle;
 

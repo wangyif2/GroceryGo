@@ -11,7 +11,7 @@ import ca.grocerygo.android.SplashScreenActivity;
 import ca.grocerygo.android.database.*;
 import ca.grocerygo.android.database.contentprovider.GroceryotgProvider;
 import ca.grocerygo.android.database.objects.*;
-import ca.grocerygo.android.utils.GroceryOTGUtils;
+import ca.grocerygo.android.utils.GroceryGoUtils;
 import ca.grocerygo.android.utils.ServerURLs;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -135,7 +135,7 @@ public class NetworkHandler extends IntentService {
 
 		if (groceryArray != null) {
 			int maxGroceryIdBefore = addNewGroceries(groceryArray, db);
-			int maxGroceryIdAfter = GroceryOTGUtils.getMaxGroceryId(this);
+			int maxGroceryIdAfter = GroceryGoUtils.getMaxGroceryId(this);
 
 			if (maxGroceryIdAfter > maxGroceryIdBefore)
 				removeExpiredGroceries(maxGroceryIdBefore);
@@ -280,7 +280,7 @@ public class NetworkHandler extends IntentService {
 		DatabaseUtils.InsertHelper ih = new DatabaseUtils.InsertHelper(db, GroceryTable.TABLE_GROCERY);
 		Grocery grocery;
 
-		int maxGroceryIdBefore = GroceryOTGUtils.getMaxGroceryId(this);
+		int maxGroceryIdBefore = GroceryGoUtils.getMaxGroceryId(this);
 		try {
 			db.beginTransaction();
 			

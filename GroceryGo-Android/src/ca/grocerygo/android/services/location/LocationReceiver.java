@@ -21,7 +21,7 @@ import ca.grocerygo.android.R;
 import ca.grocerygo.android.database.CartTable;
 import ca.grocerygo.android.database.StoreTable;
 import ca.grocerygo.android.settings.SettingsManager;
-import ca.grocerygo.android.utils.GroceryOTGUtils;
+import ca.grocerygo.android.utils.GroceryGoUtils;
 import ca.grocerygo.android.utils.GroceryStoreDistanceMap;
 
 import java.util.ArrayList;
@@ -46,9 +46,9 @@ public class LocationReceiver extends BroadcastReceiver {
 	
 	private void rebuildStoreDistances(Context context, Location loc) {
 		// Build a new store location map using the new location and reload the view
-		SparseArray<Float> newDistanceMap = GroceryOTGUtils.buildDistanceMap(context);
+		SparseArray<Float> newDistanceMap = GroceryGoUtils.buildDistanceMap(context);
 		GroceryStoreDistanceMap.setmStoreDistanceMap(newDistanceMap);
-		GroceryOTGUtils.reloadGroceryLocation(context);
+		GroceryGoUtils.reloadGroceryLocation(context);
 	}
 	
 	private void constructNotification(Context context, Location loc) {
@@ -59,7 +59,7 @@ public class LocationReceiver extends BroadcastReceiver {
 		ArrayList<String> events = new ArrayList<String>(); // list of unique grocery names
 		boolean displayNotification = false;
 		
-		Cursor stores = GroceryOTGUtils.getGroceriesFromCartFromStores(context);
+		Cursor stores = GroceryGoUtils.getGroceriesFromCartFromStores(context);
 		stores.moveToFirst();
 		while (!stores.isAfterLast()) {
 			String name = stores.getString(stores.getColumnIndex(CartTable.COLUMN_CART_GROCERY_NAME));

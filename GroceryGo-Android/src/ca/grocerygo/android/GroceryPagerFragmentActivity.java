@@ -12,7 +12,7 @@ import android.util.SparseArray;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import ca.grocerygo.android.fragment.GroceryListFragment;
-import ca.grocerygo.android.utils.GroceryOTGUtils;
+import ca.grocerygo.android.utils.GroceryGoUtils;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -43,10 +43,10 @@ public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
 		setContentView(R.layout.grocery_pager_activity);
 		this.mContext = this;
 
-		categories = GroceryOTGUtils.getCategorySets(this);
-		storeNames = GroceryOTGUtils.getStoreParentNameSets(this);
+		categories = GroceryGoUtils.getCategorySets(this);
+		storeNames = GroceryGoUtils.getStoreParentNameSets(this);
 
-		GroceryOTGUtils.NavigationDrawerBundle drawerBundle = GroceryOTGUtils.configNavigationDrawer(this, false, R.string.title_grocery_pager);
+		GroceryGoUtils.NavigationDrawerBundle drawerBundle = GroceryGoUtils.configNavigationDrawer(this, false, R.string.title_grocery_pager);
 		this.mDrawerLayout = drawerBundle.getDrawerLayout();
 		this.mDrawerList = drawerBundle.getDrawerList();
 
@@ -78,7 +78,7 @@ public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
 			// If on the home page and doing a global search, send the intent
 			// to the GlobalSearchActivity
 			Intent globalSearchIntent = new Intent(this, GlobalSearchFragmentActivity.class);
-			GroceryOTGUtils.copyIntentData(intent, globalSearchIntent);
+			GroceryGoUtils.copyIntentData(intent, globalSearchIntent);
 			globalSearchIntent.putExtra(GlobalSearchFragmentActivity.GLOBAL_SEARCH, true);
 			startActivity(globalSearchIntent);
 		} else if (extras != null) {

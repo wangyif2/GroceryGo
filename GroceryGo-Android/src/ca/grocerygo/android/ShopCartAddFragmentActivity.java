@@ -10,7 +10,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import ca.grocerygo.android.services.QueryUPCDatabase;
-import ca.grocerygo.android.utils.GroceryOTGUtils;
+import ca.grocerygo.android.utils.GroceryGoUtils;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -36,7 +36,7 @@ public class ShopCartAddFragmentActivity extends SherlockFragmentActivity {
 		
 		setContentView(R.layout.shopcart_add_activity);
 		
-		GroceryOTGUtils.NavigationDrawerBundle drawerBundle = GroceryOTGUtils.configNavigationDrawer(this, false, R.string.title_cart_detail);
+		GroceryGoUtils.NavigationDrawerBundle drawerBundle = GroceryGoUtils.configNavigationDrawer(this, false, R.string.title_cart_detail);
 		this.mDrawerLayout = drawerBundle.getDrawerLayout();
 		this.mDrawerList = drawerBundle.getDrawerList();
 	}

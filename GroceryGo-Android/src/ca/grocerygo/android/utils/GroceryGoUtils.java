@@ -3,11 +3,13 @@ package ca.grocerygo.android.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.LocalBroadcastManager;
@@ -34,6 +36,7 @@ public class GroceryGoUtils {
     public static final String BROADCAST_ACTION_RELOAD_GROCERY_LIST = "com.grocerygo.android.intent_action_reload_grocery_list";
     public static final String BROADCAST_ACTION_FILTER_GROCERY_LIST = "com.grocerygo.android.intent_action_filter_grocery_list";
     public static final String BROADCAST_ACTION_RELOAD_LOCATION = "com.grocerygo.android.intent_action_reload_location";
+    public static final String LOCATION_IS_LOATION_AVA = "isLocationAvailable";
 
     public static Cursor getStoreLocations(Context context) {
         String[] projection = {StoreTable.TABLE_STORE + "." + StoreTable.COLUMN_STORE_ID,
@@ -155,6 +158,10 @@ public class GroceryGoUtils {
         LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         List<String> providers = lm.getProviders(true);
 
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor settingsEditor = settings.edit();
+
+
         // Loop over the array backwards (more accurate)
         // if you get an accurate location, then break out the loop
         Location loc = null;
@@ -165,10 +172,17 @@ public class GroceryGoUtils {
 
         // Since the user disabled GPS, we assume they are in downtown Toronto
         if (loc == null) {
+            settingsEditor.putBoolean(LOCATION_IS_LOATION_AVA, false);
+
             loc = new Location("Mock Location");
             loc.setLatitude(43.6481);
             loc.setLongitude(-79.4042);
         }
+        else{
+            settingsEditor.putBoolean(LOCATION_IS_LOATION_AVA, true);
+        }
+
+        settingsEditor.commit();
 
         return loc;
     }

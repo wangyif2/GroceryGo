@@ -11,6 +11,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.widget.ListView;
 import android.widget.Toast;
+import ca.grocerygo.android.fragment.ToggleLocationDialogFragment;
 import ca.grocerygo.android.gcm.GroceryGCMBroadcastReceiver;
 import ca.grocerygo.android.services.NetworkHandler;
 import ca.grocerygo.android.utils.ChangeLogDialog;
@@ -42,6 +43,8 @@ public class CategoryTopFragmentActivity extends SherlockFragmentActivity {
     public static Double mPriceRangeMin;
     public static Double mPriceRangeMax;
 
+    SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +64,15 @@ public class CategoryTopFragmentActivity extends SherlockFragmentActivity {
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         mDrawerToggle.syncState();
+
+        boolean isLocAva = settings.getBoolean(GroceryGoUtils.LOCATION_IS_LOATION_AVA, false);
+
+        // If we see that user has disabled all locations, we prompt them to use it.
+        if (!isLocAva) {
+            ToggleLocationDialogFragment toggleLocDialog = new ToggleLocationDialogFragment();
+            toggleLocDialog.show(this.getSupportFragmentManager(), "toggle_location_dialog");
+        }
+
     }
 
     @Override
@@ -148,7 +160,6 @@ public class CategoryTopFragmentActivity extends SherlockFragmentActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         boolean isRefreshing = settings.getBoolean(CategoryTopFragmentActivity.SETTINGS_IS_REFRESHING, false);
         boolean isNewDataAva = settings.getBoolean(GroceryGCMBroadcastReceiver.SETTINGS_IS_NEW_DATA_AVA, false);
 

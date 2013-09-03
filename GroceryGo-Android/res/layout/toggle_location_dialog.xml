@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/toggle_location_dialog_textbox"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:layout_gravity="center"
+	android:autoLink="web"
+	android:fontFamily="sans-serif-light"
+    android:text="@string/toggle_location_text_content"
+	android:gravity="left"
+	android:textSize="18sp"
+    android:padding="10dp"
+    android:contentDescription="@string/app_name" >
+</TextView>

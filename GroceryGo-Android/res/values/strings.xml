@@ -1,99 +1,101 @@
 <resources>
-	<string name="app_name">GroceryGo</string>
+    <string name="app_name">GroceryGo</string>
     <string name="version_name">1.1</string>
-	<string name="app_email">grocerygo.ca@gmail.com</string>
-	
-	<string name="upcdatabase_key">f0268314144a9baf5d105e31416b4e09</string>
-	
-	<string name="no_content">Currently no content, please refresh</string>
-	<string name="no_new_content">There is no new available data. Last checked: %1$s</string>
-	<string name="no_shopcart_content">There are no items in your Shopping Cart</string>
-	<string name="no_search_results">No results match your search criteria</string>
-	<string name="no_summary_content">There are no items in your Shopping Cart, or the items\' price information is not available.</string>
-	<string name="search_results">Results</string>
-	<string name="search_results_num">0</string>
-	<string name="fresh_action">Refreshing…</string>
-	<string name="no_cart_item">Your shopping cart is currently empty</string>
-	<string name="cart_grocery_edit_name">Grocery item name</string>
-	<string name="cart_add_positive_button">Add item</string>
-	<string name="cart_add_negative_button">Clear</string>
-	<string name="cart_item_delete">Delete this item</string>
-	<string name="cart_shoplist_add">Add new item to shopping cart</string>
-	<string name="cart_shoplist_added">Item added to shopping cart</string>
-	<string name="cart_shoplist_removed">Item removed from shopping cart</string>
-	<string name="cart_summary">View summary by store</string>
-	<string name="shopcart_summary_title_storeparent">Store</string>
-	<string name="shopcart_summary_title_total">Total</string>
-	<string name="shopcart_summary_title_numitems"># Items</string>
-	
-	<string name="navdrawer_heading_places">PLACES</string>
-	<string name="navdrawer_item_cat">Home</string>
-	<string name="navdrawer_item_cart">Shopping Cart</string>
-	<string name="navdrawer_item_map">Map</string>
-	<string name="navdrawer_heading_tools">TOOLS</string>
-	<string name="navdrawer_item_settings">Settings</string>
-	<string name="navdrawer_item_about">About</string>
-	<string name="navdrawer_item_changelog">Changelog</string>
-	<string name="navdrawer_item_about_feedback">Send feedback</string>
-	<string name="navdrawer_item_feedback_subject">GroceryGo feedback</string>
-	<string name="navdrawer_item_sync">Sync</string>
-	<string name="navdrawer_open">Open</string>
-	<string name="navdrawer_closed">Closed</string>
-	
-	
-	<string name="action_close">Close</string>
-	
-	<string name="grocery_row_distance_missing">Distance not available</string>
-	<string name="grocery_row_expires">Ends:</string>
-	<string name="grocery_row_expired">EXPIRED</string>
-	
-	<string name="title_main">Home</string>
-	<string name="title_grocery_pager">Sales</string>
-	<string name="title_search">Search</string>
-	<string name="title_map">Map</string>
-	<string name="title_settings">Settings</string>
-	<string name="title_cart">Shopping Cart</string>
-	<string name="title_cart_detail">Add Item</string>
-	<string name="title_cart_summary">Shopping Cart Summary</string>
-	<string name="title_cart_add_tab_text">MANUAL</string>
-	<string name="title_cart_add_tab_voice">VOICE</string>
-	<string name="title_cart_add_tab_code">UPC</string>
-	
-	<string name="groceryoverview_menu_item_search">Search</string>
-	<string name="groceryoverview_menu_item_select">Select Mode</string>
-	<string name="groceryoverview_menu_item_refresh">Refresh</string>
-	
-	<string name="groceryoverview_row_imagedesc">Subcategory</string>
-	<string name="groceryoverview_row_storeicondesc">Store</string>
-	<string name="groceryoverview_row_additionaloptions">Additional options</string>
-	
-	<string name="search_hint">Search</string>
-	<string name="cart_add_voice_prompt">Speak item name</string>
-	<string name="cart_add_voice_hint">Click mic to begin listening</string>
-	<string name="cart_add_code_hint">Click barcode to begin scanning</string>
+    <string name="app_email">grocerygo.ca@gmail.com</string>
 
-	<string name="map_usermarker">You are here</string>
-	<string name="setting_store_title">Select stores</string>
-	<string name="setting_store_summary">Filter by your favourite stores</string>
-	<string name="setting_notification_enable_title">Enable notifications</string>
-	<string name="setting_notification_enable_summary">Turn location-based notifications on or off</string>
-	<string name="setting_notification_freq_title">Notification Frequency</string>
-	<string name="setting_notification_freq_summary">Set notification interval</string>
-	<string name="setting_storelocation_title">Select locations</string>
-	<string name="setting_storelocation_summary">Filter by store locations near you</string>
-	<string name="setting_storelocation_default">1</string>
-	
-	<string name="legacy_store_filter_ids">1|2|3|4|5</string>
-	
-	<string name="no_price_available">N/A</string>
-	<string name="my_link"></string>
+    <string name="upcdatabase_key">f0268314144a9baf5d105e31416b4e09</string>
 
-	<string name="about_text">Copyright \u00A9 2013\nGroceryGo Inc.</string>
-	<string name="about_title">GroceryGo</string>
-	<string name="about_terms">Terms &amp; Privacy</string>
-	<string name="expanded_row_map">Map</string>
-	<string name="expanded_row_share">Share</string>
-	<string name="expanded_row_flyerview">View in flyer</string>
+    <string name="no_content">Currently no content, please refresh</string>
+    <string name="no_new_content">There is no new available data. Last checked: %1$s</string>
+    <string name="no_shopcart_content">There are no items in your Shopping Cart</string>
+    <string name="no_search_results">No results match your search criteria</string>
+    <string name="no_summary_content">There are no items in your Shopping Cart, or the items\' price information is not
+        available.
+    </string>
+    <string name="search_results">Results</string>
+    <string name="search_results_num">0</string>
+    <string name="fresh_action">Refreshing…</string>
+    <string name="no_cart_item">Your shopping cart is currently empty</string>
+    <string name="cart_grocery_edit_name">Grocery item name</string>
+    <string name="cart_add_positive_button">Add item</string>
+    <string name="cart_add_negative_button">Clear</string>
+    <string name="cart_item_delete">Delete this item</string>
+    <string name="cart_shoplist_add">Add new item to shopping cart</string>
+    <string name="cart_shoplist_added">Item added to shopping cart</string>
+    <string name="cart_shoplist_removed">Item removed from shopping cart</string>
+    <string name="cart_summary">View summary by store</string>
+    <string name="shopcart_summary_title_storeparent">Store</string>
+    <string name="shopcart_summary_title_total">Total</string>
+    <string name="shopcart_summary_title_numitems"># Items</string>
+
+    <string name="navdrawer_heading_places">PLACES</string>
+    <string name="navdrawer_item_cat">Home</string>
+    <string name="navdrawer_item_cart">Shopping Cart</string>
+    <string name="navdrawer_item_map">Map</string>
+    <string name="navdrawer_heading_tools">TOOLS</string>
+    <string name="navdrawer_item_settings">Settings</string>
+    <string name="navdrawer_item_about">About</string>
+    <string name="navdrawer_item_changelog">Changelog</string>
+    <string name="navdrawer_item_about_feedback">Send feedback</string>
+    <string name="navdrawer_item_feedback_subject">GroceryGo feedback</string>
+    <string name="navdrawer_item_sync">Sync</string>
+    <string name="navdrawer_open">Open</string>
+    <string name="navdrawer_closed">Closed</string>
+
+
+    <string name="action_close">Close</string>
+
+    <string name="grocery_row_distance_missing">Distance not available</string>
+    <string name="grocery_row_expires">Ends:</string>
+    <string name="grocery_row_expired">EXPIRED</string>
+
+    <string name="title_main">Home</string>
+    <string name="title_grocery_pager">Sales</string>
+    <string name="title_search">Search</string>
+    <string name="title_map">Map</string>
+    <string name="title_settings">Settings</string>
+    <string name="title_cart">Shopping Cart</string>
+    <string name="title_cart_detail">Add Item</string>
+    <string name="title_cart_summary">Shopping Cart Summary</string>
+    <string name="title_cart_add_tab_text">MANUAL</string>
+    <string name="title_cart_add_tab_voice">VOICE</string>
+    <string name="title_cart_add_tab_code">UPC</string>
+
+    <string name="groceryoverview_menu_item_search">Search</string>
+    <string name="groceryoverview_menu_item_select">Select Mode</string>
+    <string name="groceryoverview_menu_item_refresh">Refresh</string>
+
+    <string name="groceryoverview_row_imagedesc">Subcategory</string>
+    <string name="groceryoverview_row_storeicondesc">Store</string>
+    <string name="groceryoverview_row_additionaloptions">Additional options</string>
+
+    <string name="search_hint">Search</string>
+    <string name="cart_add_voice_prompt">Speak item name</string>
+    <string name="cart_add_voice_hint">Click mic to begin listening</string>
+    <string name="cart_add_code_hint">Click barcode to begin scanning</string>
+
+    <string name="map_usermarker">You are here</string>
+    <string name="setting_store_title">Select stores</string>
+    <string name="setting_store_summary">Filter by your favourite stores</string>
+    <string name="setting_notification_enable_title">Enable notifications</string>
+    <string name="setting_notification_enable_summary">Turn location-based notifications on or off</string>
+    <string name="setting_notification_freq_title">Notification Frequency</string>
+    <string name="setting_notification_freq_summary">Set notification interval</string>
+    <string name="setting_storelocation_title">Select locations</string>
+    <string name="setting_storelocation_summary">Filter by store locations near you</string>
+    <string name="setting_storelocation_default">1</string>
+
+    <string name="legacy_store_filter_ids">1|2|3|4|5</string>
+
+    <string name="no_price_available">N/A</string>
+    <string name="my_link"></string>
+
+    <string name="about_text">Copyright \u00A9 2013\nGroceryGo Inc.</string>
+    <string name="about_title">GroceryGo</string>
+    <string name="about_terms">Terms &amp; Privacy</string>
+    <string name="expanded_row_map">Map</string>
+    <string name="expanded_row_share">Share</string>
+    <string name="expanded_row_flyerview">View in flyer</string>
 
     <!--GCM strings-->
     <string name="error_config">Please set the %1$s constant and recompile the app.</string>
@@ -113,5 +115,28 @@
     <string name="gcm_newdata_notification">Click the refresh button for new grocery data</string>
     <string name="notification_content_text">An item in your cart is near</string>
     <string name="notification_contect_big_title">Items on the go:</string>
+
+    <!--dialog for toggling gps location-->
+    <string name="toggle_location_enable_location">Enable GPS Location</string>
+    <string name="toggle_location_action_agree">Yes</string>
+    <string name="toggle_location_action_disagree">No</string>
+    <string name="toggle_location_text_content">
+        <body>We noticed that you have
+            <b>disabled</b>
+            GPS location. By re-enabling it,
+            we
+            can:\n\n\t<br/>&#8226; Recommend sales from only the grocery stores
+            <b><i>closest</i></b>
+            to you.\n\n\t<br/>&#8226; Notify you when you
+            <b><i>walk by</i></b>
+            a store
+            with sales you want.\n\nWe hope what we provide can compensate the battery it uses, and you can always
+            change
+            the frequency
+            of notification in Settings.\n\nWould you like to
+            <b>re-enable</b>
+            your location?
+        </body>
+    </string>
 
 </resources>

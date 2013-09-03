@@ -37,6 +37,7 @@ public class GroceryGoUtils {
     public static final String BROADCAST_ACTION_FILTER_GROCERY_LIST = "com.grocerygo.android.intent_action_filter_grocery_list";
     public static final String BROADCAST_ACTION_RELOAD_LOCATION = "com.grocerygo.android.intent_action_reload_location";
     public static final String LOCATION_IS_LOATION_AVA = "isLocationAvailable";
+    public static final String LOCATION_IS_LOATION_TOGGLE_PROMTED = "isLocationTogglePrompted";
 
     public static Cursor getStoreLocations(Context context) {
         String[] projection = {StoreTable.TABLE_STORE + "." + StoreTable.COLUMN_STORE_ID,

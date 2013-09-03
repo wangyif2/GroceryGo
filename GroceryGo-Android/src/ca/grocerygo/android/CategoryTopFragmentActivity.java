@@ -43,8 +43,6 @@ public class CategoryTopFragmentActivity extends SherlockFragmentActivity {
     public static Double mPriceRangeMin;
     public static Double mPriceRangeMax;
 
-    SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,12 +63,20 @@ public class CategoryTopFragmentActivity extends SherlockFragmentActivity {
         super.onPostCreate(savedInstanceState);
         mDrawerToggle.syncState();
 
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+
         boolean isLocAva = settings.getBoolean(GroceryGoUtils.LOCATION_IS_LOATION_AVA, false);
+        boolean isLocTogglePromted = settings.getBoolean(GroceryGoUtils.LOCATION_IS_LOATION_TOGGLE_PROMTED, false);
 
         // If we see that user has disabled all locations, we prompt them to use it.
-        if (!isLocAva) {
+        if (!isLocAva & !isLocTogglePromted) {
             ToggleLocationDialogFragment toggleLocDialog = new ToggleLocationDialogFragment();
             toggleLocDialog.show(this.getSupportFragmentManager(), "toggle_location_dialog");
+
+            SharedPreferences.Editor settingsEditor = settings.edit();
+            settingsEditor.putBoolean(GroceryGoUtils.LOCATION_IS_LOATION_TOGGLE_PROMTED, true);
+            settingsEditor.commit();
+
         }
 
     }
@@ -160,6 +166,8 @@ public class CategoryTopFragmentActivity extends SherlockFragmentActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+
         boolean isRefreshing = settings.getBoolean(CategoryTopFragmentActivity.SETTINGS_IS_REFRESHING, false);
         boolean isNewDataAva = settings.getBoolean(GroceryGCMBroadcastReceiver.SETTINGS_IS_NEW_DATA_AVA, false);
 

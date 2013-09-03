@@ -29,7 +29,7 @@
         android:name="ca.grocerygo.android.permission.C2D_MESSAGE"
         android:protectionLevel="signature"/>
 
-    <uses-permission android:name="ca.google.android.providers.gsf.permission.READ_GSERVICES"/>
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
     <uses-permission android:name="ca.grocerygo.android.GroceryMapView.permission.MAPS_RECEIVE"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>

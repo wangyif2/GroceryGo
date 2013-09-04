@@ -221,6 +221,10 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
 					return;
 				}
 				
+				int indexPipe = url.indexOf('|');
+				if (indexPipe != -1) {
+					url = url.substring(0,indexPipe);
+				}
 				Uri uri = Uri.parse(url);
 				Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 				mContext.startActivity(intent);

@@ -21,6 +21,7 @@ import MySQLdb as mdb
 import nltk
 import os
 import re
+import smtplib
 import sys
 import time
 import traceback
@@ -28,6 +29,7 @@ import urllib
 import urllib2
 from urlparse import urlparse
 from datetime import date
+
 
 # Initialize log file (filename based on YYYY_MM_DD_hhmmsscc.log)
 timestamp = datetime.datetime.now()
@@ -90,6 +92,37 @@ def unescape(s):
     p.save_bgn()
     p.feed(s)
     return p.save_end()
+
+def sendNotification(error_msg):
+    # Set up mail authentication
+    email_username = "grocerygo.ca@gmail.com"
+    email_password = "E4twyawl"
+    
+    # Set up message
+    ts = time.time()
+    timestamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+    email_subject = "Server Notification - Crawler Fail"
+    email_sender = "grocerygo.ca@gmail.com"
+    email_receiver = "grocerygo.ca@gmail.com"
+    email_body = "Hi Team, \r\n\r\nThe crawler failed at [" + str(timestamp) +\
+        "] with the following output:\r\n\r\n" + str(error_msg)
+    
+    msg = "\r\n".join([
+      "From: " + email_sender,
+      "To: " + email_receiver,
+      "Subject: " + email_subject,
+      "",
+      email_body
+      ])
+    
+    # Send the message via Gmail's SMTP server
+    server = smtplib.SMTP("smtp.gmail.com", 587)
+    server.ehlo()
+    server.starttls()
+    server.login(email_username, email_password)
+    server.sendmail(email_sender, [email_receiver], msg)
+    server.quit()
+
 
 def getFlyer():
     '''No input parameters, accesses the database directly. 
@@ -1258,9 +1291,11 @@ try:
 except Exception, e:
     exc_type, exc_obj, exc_tb = sys.exc_info()
     fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-    logging.info("Error (%s) occurred in %s, line %s: %s" % (exc_type, fname, exc_tb.tb_lineno, e))
+    error_msg = "Error (" + str(exc_type) + ") occurred in " + str(fname) + ", line " + str(exc_tb.tb_lineno) + ": " + str(e)
+    logging.info(error_msg)
     logging.info("Traceback:")
     logging.info(traceback.format_exc())
+    sendNotification(error_msg)
     sys.exit(1)
 finally:
     if con:

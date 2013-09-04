@@ -18,54 +18,80 @@ import java.io.*;
 
 public class JSONParser {
 
-	static InputStream is = null;
-	static JsonArray jObj = null;
-	static String json = "";
+    static InputStream is = null;
+    static JsonArray jObj = null;
+    static String json = "";
 
-	// constructor
-	public JSONParser() {
+    // constructor
+    public JSONParser() {
 
-	}
+    }
 
-	public JsonArray getJSONFromUrl(String url) {
+    public Reader getReaderFromUrl(String url) {
+        Reader reader;
+        InputStream inputStream = null;
 
-		// Making HTTP request
-		try {
-			// defaultHttpClient
-			DefaultHttpClient httpClient = new DefaultHttpClient();
-			HttpGet httpGet = new HttpGet(url);
+        // Making HTTP request
+        try {
+            // defaultHttpClient
+            DefaultHttpClient httpClient = new DefaultHttpClient();
 
-			HttpResponse httpResponse = httpClient.execute(httpGet);
-			HttpEntity httpEntity = httpResponse.getEntity();
-			is = httpEntity.getContent();
+            HttpGet httpGet = new HttpGet(url);
 
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		} catch (ClientProtocolException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+            HttpResponse httpResponse = httpClient.execute(httpGet);
+            HttpEntity httpEntity = httpResponse.getEntity();
+            inputStream = httpEntity.getContent();
 
-		try {
-			BufferedReader reader = new BufferedReader(new InputStreamReader(
-					is, "UTF-8"), 8);
-			StringBuilder sb = new StringBuilder();
-			String line = null;
-			while ((line = reader.readLine()) != null) {
-				sb.append(line + "\n");
-			}
-			is.close();
-			json = sb.toString();
-		} catch (Exception e) {
-			Log.e("Buffer Error", "Error converting result " + e.toString());
-		}
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-		// try parse the string to a JsonArray
-		JsonParser jsonParser = new JsonParser();
-		jObj = jsonParser.parse(json).getAsJsonArray();
+        return new InputStreamReader(inputStream);
+    }
 
-		return jObj;
+    public JsonArray getJSONFromUrl(String url) {
 
-	}
+        // Making HTTP request
+        try {
+            // defaultHttpClient
+            DefaultHttpClient httpClient = new DefaultHttpClient();
+            HttpGet httpGet = new HttpGet(url);
+
+            HttpResponse httpResponse = httpClient.execute(httpGet);
+            HttpEntity httpEntity = httpResponse.getEntity();
+            is = httpEntity.getContent();
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    is, "UTF-8"), 8);
+            StringBuilder sb = new StringBuilder();
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line + "\n");
+            }
+            is.close();
+            json = sb.toString();
+        } catch (Exception e) {
+            Log.e("Buffer Error", "Error converting result " + e.toString());
+        }
+
+        // try parse the string to a JsonArray
+        JsonParser jsonParser = new JsonParser();
+        jObj = jsonParser.parse(json).getAsJsonArray();
+
+        return jObj;
+
+    }
 }

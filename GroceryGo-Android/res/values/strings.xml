@@ -121,20 +121,14 @@
     <string name="toggle_location_action_agree">Yes</string>
     <string name="toggle_location_action_disagree">No</string>
     <string name="toggle_location_text_content">
-        <body>We noticed that you have
-            <b>disabled</b>
-            GPS location. By re-enabling it,
-            we
-            can:\n\n\t<br/>&#8226; Recommend sales from only the grocery stores
+        <body>We noticed that GPS location is 
+            <b>disabled</b>. By enabling it, we
+            can:\n\n\t<br/>&#8226; Recommend sales from the grocery stores
             <b><i>closest</i></b>
-            to you.\n\n\t<br/>&#8226; Notify you when you
+            to you.\n\n\t<br/>&#8226; Notify you with the best sales when you
             <b><i>walk by</i></b>
-            a store
-            with sales you want.\n\nWe hope what we provide can compensate the battery it uses, and you can always
-            change
-            the frequency
-            of notification in Settings.\n\nWould you like to
-            <b>re-enable</b>
+            a store.\n\nWould you like to
+            <b>enable</b>
             your location?
         </body>
     </string>

@@ -40,6 +40,14 @@ public class GlobalSearchFragmentActivity extends SherlockFragmentActivity {
 	}
 	
 	@Override
+    public void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        handleIntent(intent);
+        refreshQuery();
+    }
+	
+	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 			case android.R.id.home:
@@ -72,11 +80,12 @@ public class GlobalSearchFragmentActivity extends SherlockFragmentActivity {
 		mSearchView.setOnQueryTextListener(new OnQueryTextListener() {
 			@Override
 			public boolean onQueryTextSubmit(String query) {
+				if (mQuery.equals(query))
+					return true;
+				
+				// Only refresh if the query has changed
 				mQuery = query;
-				mSearchView.setQuery(query, false);
-				mSearchView.clearFocus();
-				GlobalSearchFragment frag = (GlobalSearchFragment) getSupportFragmentManager().findFragmentById(R.id.search_activity_content_fragment);
-				frag.setQuery(query);
+				refreshQuery();
 				return false;
 			}
 			@Override
@@ -85,8 +94,7 @@ public class GlobalSearchFragmentActivity extends SherlockFragmentActivity {
 			}
 		});
 		
-		mSearchView.setQuery(mQuery, true);
-		
+		refreshQuery();
 		return true;
 	}
 	
@@ -101,10 +109,19 @@ public class GlobalSearchFragmentActivity extends SherlockFragmentActivity {
 		return super.onPrepareOptionsMenu(menu);
 	}
 
+	private void refreshQuery() {
+		if (mSearchView != null) {
+			mSearchView.setQuery(mQuery, false);
+			mSearchView.clearFocus();
+			GlobalSearchFragment frag = (GlobalSearchFragment) getSupportFragmentManager().findFragmentById(R.id.search_activity_content_fragment);
+			frag.setQuery(mQuery);
+		}
+	}
+	
 	public void handleIntent(Intent intent) {
 		setIntent(intent);
 		
-		if (intent.getExtras().containsKey(GlobalSearchFragmentActivity.GLOBAL_SEARCH)) {
+		if (intent.getExtras().containsKey(GlobalSearchFragmentActivity.GLOBAL_SEARCH) || Intent.ACTION_SEARCH.equals(intent.getAction()) ) {
 			// Update the query - this is used by the loader when fetching results from database
 			mQuery = intent.getStringExtra(SearchManager.QUERY).trim();
 		}

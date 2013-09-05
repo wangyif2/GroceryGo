@@ -147,9 +147,22 @@ public class CategoryTopFragmentActivity extends SherlockFragmentActivity {
 
     @Override
     protected void onPause() {
-        super.onPause();
+        GroceryRefreshTrigger.stopAll(this);
+
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mRefreshStatusReceiver);
 
+        RefreshAnimation.refreshIcon(this, false, refreshItem);
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor settingsEditor = settings.edit();
+
+        settingsEditor.putBoolean(GroceryGCMBroadcastReceiver.SETTINGS_IS_NEW_DATA_AVA, true);
+        settingsEditor.putBoolean(SETTINGS_IS_REFRESHING, false);
+        settingsEditor.commit();
+        invalidateOptionsMenu();
+        refreshItem = null;
+
+        Crouton.cancelAllCroutons();
+        super.onPause();
     }
 
     @Override
@@ -291,6 +304,8 @@ public class CategoryTopFragmentActivity extends SherlockFragmentActivity {
             }
 
             if (requestType == NetworkHandler.GRO && resultCode == NetworkHandler.CONNECTION) {
+                Log.i(GroceryApplication.TAG, "******** Refresh is done... ********");
+
                 RefreshAnimation.refreshIcon(context, false, refreshItem);
 
                 settingsEditor.putBoolean(GroceryGCMBroadcastReceiver.SETTINGS_IS_NEW_DATA_AVA, false);

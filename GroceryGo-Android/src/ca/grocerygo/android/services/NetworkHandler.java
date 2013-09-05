@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import ca.grocerygo.android.GroceryApplication;
 import ca.grocerygo.android.SplashScreenActivity;
 import ca.grocerygo.android.database.*;
 import ca.grocerygo.android.database.contentprovider.GroceryotgProvider;
@@ -36,6 +37,8 @@ public class NetworkHandler extends IntentService {
     public static final int FLY = 50;
 
     public static final String REQUEST_TYPE = "refresh_type";
+
+    private static boolean stopped = false;
 
     JSONParser jsonParser = new JSONParser();
 
@@ -86,7 +89,15 @@ public class NetworkHandler extends IntentService {
         LocalBroadcastManager.getInstance(this).sendBroadcast(localIntent);
     }
 
+    @Override
+    public void onDestroy() {
+        stopped = true;
+        super.onDestroy();
+    }
+
     private void refreshCategory(SQLiteDatabase db) {
+        Log.i(GroceryApplication.TAG, "refreshing category...");
+
         Gson gson = new Gson();
         JsonArray categoryArray = jsonParser.getJSONFromUrl(ServerURLs.getCateoryUrl());
         DatabaseUtils.InsertHelper ih = new DatabaseUtils.InsertHelper(db, CategoryTable.TABLE_CATEGORY);
@@ -124,9 +135,13 @@ public class NetworkHandler extends IntentService {
                 ih.close();
             }
         }
+
+        Log.i(GroceryApplication.TAG, "refreshing category... DONE");
     }
 
     private void refreshGrocery(SQLiteDatabase db) {
+        Log.i(GroceryApplication.TAG, "refreshing grocery...");
+
 //		this is here for testing purposes
 //		String date = "?date=2013-03-13";
         String date = ServerURLs.getDateNowAsArg();
@@ -142,9 +157,13 @@ public class NetworkHandler extends IntentService {
             if (maxGroceryIdAfter > maxGroceryIdBefore)
                 removeExpiredGroceries(maxGroceryIdBefore);
         }
+
+        Log.i(GroceryApplication.TAG, "refreshing grocery...DONE");
     }
 
     private void refreshStoreParent(SQLiteDatabase db) {
+        Log.i(GroceryApplication.TAG, "refreshing store parent...");
+
         Gson gson = new Gson();
         JsonArray storeParentArray = jsonParser.getJSONFromUrl(ServerURLs.getStoreParentUrl());
         DatabaseUtils.InsertHelper ih = new DatabaseUtils.InsertHelper(db, StoreParentTable.TABLE_STORE_PARENT);
@@ -181,9 +200,13 @@ public class NetworkHandler extends IntentService {
                 ih.close();
             }
         }
+
+        Log.i(GroceryApplication.TAG, "refreshing store parent...DONE");
     }
 
     private void refreshStore(SQLiteDatabase db) {
+        Log.i(GroceryApplication.TAG, "refreshing store...");
+
         Gson gson = new Gson();
         JsonArray storeArray = jsonParser.getJSONFromUrl(ServerURLs.getStoreUrl());
         DatabaseUtils.InsertHelper ih = new DatabaseUtils.InsertHelper(db, StoreTable.TABLE_STORE);
@@ -233,9 +256,12 @@ public class NetworkHandler extends IntentService {
                 ih.close();
             }
         }
+        Log.i(GroceryApplication.TAG, "refreshing store...DONE");
     }
 
     private void refreshFlyer(SQLiteDatabase db) {
+        Log.i(GroceryApplication.TAG, "refreshing flyer...");
+
         Gson gson = new Gson();
         JsonArray flyerArray = jsonParser.getJSONFromUrl(ServerURLs.getFlyerUrl());
         DatabaseUtils.InsertHelper ih = new DatabaseUtils.InsertHelper(db, FlyerTable.TABLE_FLYER);
@@ -274,6 +300,8 @@ public class NetworkHandler extends IntentService {
                 ih.close();
             }
         }
+
+        Log.i(GroceryApplication.TAG, "refreshing flyer...DONE");
     }
 
     private int addNewGroceries(Reader groceryReader, SQLiteDatabase db) {
@@ -303,6 +331,11 @@ public class NetworkHandler extends IntentService {
             int grocery_flyer = ih.getColumnIndex(GroceryTable.COLUMN_GROCERY_FLYER);
 
             for (int i = 0; i < numGrocery; i++) {
+                if (stopped) {
+                    Log.i(GroceryApplication.TAG, "intent serverice stopped");
+                    break;
+                }
+
                 ih.prepareForInsert();
                 ih.bind(grocery_id, groceries[i].getGroceryId());
                 ih.bind(grocery_name, groceries[i].getRawString());

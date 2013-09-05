@@ -18,6 +18,11 @@ public class GroceryRefreshTrigger {
         populateGrocery(context);
     }
 
+    public static void stopAll(Context context) {
+        Intent intent = new Intent(context, NetworkHandler.class);
+        context.stopService(intent);
+    }
+
     public static void populateCategory(Context context) {
         Intent intent = new Intent(context, NetworkHandler.class);
         intent.putExtra(NetworkHandler.REFRESH_CONTENT, NetworkHandler.CAT);

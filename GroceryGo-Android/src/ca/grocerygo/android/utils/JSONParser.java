@@ -3,6 +3,7 @@ package ca.grocerygo.android.utils;
 import android.util.Log;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
+import com.google.gson.stream.JsonReader;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -27,7 +28,7 @@ public class JSONParser {
 
     }
 
-    public Reader getReaderFromUrl(String url) {
+    public JsonReader getReaderFromUrl(String url) {
         Reader reader;
         InputStream inputStream = null;
 
@@ -50,7 +51,10 @@ public class JSONParser {
             e.printStackTrace();
         }
 
-        return new InputStreamReader(inputStream);
+        JsonReader jsonReader = new JsonReader(new InputStreamReader(inputStream));
+        jsonReader.setLenient(true);
+
+        return jsonReader;
     }
 
     public JsonArray getJSONFromUrl(String url) {

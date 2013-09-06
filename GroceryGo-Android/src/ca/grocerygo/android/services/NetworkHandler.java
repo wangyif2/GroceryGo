@@ -19,8 +19,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-
-import java.io.Reader;
+import com.google.gson.stream.JsonReader;
 
 public class NetworkHandler extends IntentService {
     public static final String REFRESH_COMPLETED_ACTION = "com.grocerygo.android.service.REFRESH_COMPLETE";
@@ -148,7 +147,7 @@ public class NetworkHandler extends IntentService {
         String[] requestArgs = new String[]{date};
         String getGrocery = buildGroceryURL(requestArgs);
 
-        Reader groceryReader = jsonParser.getReaderFromUrl(getGrocery);
+        JsonReader groceryReader = jsonParser.getReaderFromUrl(getGrocery);
 
         if (groceryReader != null) {
             int maxGroceryIdBefore = addNewGroceries(groceryReader, db);
@@ -304,7 +303,7 @@ public class NetworkHandler extends IntentService {
         Log.i(GroceryApplication.TAG, "refreshing flyer...DONE");
     }
 
-    private int addNewGroceries(Reader groceryReader, SQLiteDatabase db) {
+    private int addNewGroceries(JsonReader groceryReader, SQLiteDatabase db) {
         //TODO: hard coded date format!! not good...
         Gson gson = new GsonBuilder().setDateFormat("MMM dd, yyyy").create();
         DatabaseUtils.InsertHelper ih = new DatabaseUtils.InsertHelper(db, GroceryTable.TABLE_GROCERY);

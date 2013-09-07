@@ -155,9 +155,11 @@ public class CategoryTopFragmentActivity extends SherlockFragmentActivity {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor settingsEditor = settings.edit();
 
-        settingsEditor.putBoolean(GroceryGCMBroadcastReceiver.SETTINGS_IS_NEW_DATA_AVA, true);
-        settingsEditor.putBoolean(SETTINGS_IS_REFRESHING, false);
-        settingsEditor.commit();
+        if (settings.getBoolean(SETTINGS_IS_REFRESHING, false)) {
+            settingsEditor.putBoolean(GroceryGCMBroadcastReceiver.SETTINGS_IS_NEW_DATA_AVA, true);
+            settingsEditor.putBoolean(SETTINGS_IS_REFRESHING, false);
+            settingsEditor.commit();
+        }
         invalidateOptionsMenu();
         refreshItem = null;
 

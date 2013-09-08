@@ -96,7 +96,7 @@ def unescape(s):
 def sendNotification(error_msg):
     # Set up mail authentication
     email_username = "grocerygo.ca@gmail.com"
-    email_password = "E4twyawl"
+    email_password = "GGbmw2013"
     
     # Set up message
     ts = time.time()
@@ -154,7 +154,7 @@ def getFlyer():
             if store_id == 1:
                 try:
                     flyer_url = ""
-                    logging.info("Crawling store: %d" % store_id)
+                    logging.info("Crawling store: %d (url: %s)" % (store_id, next_url))
                     hostname = urlparse(next_url).hostname
                     soup = BeautifulSoup(urllib2.urlopen(next_url))
                     foundElems = soup('a', text=re.compile(r'Metro Ontario Flyer'))
@@ -217,7 +217,7 @@ def getFlyer():
                         
                         items[flyer_id] = store_items
                 except urllib2.URLError as e:
-                    logging.info("Could not connect to store %d due to Error %d (%s)" % (store_id, e.errno, e.strerror))
+                    logging.info("Could not connect to store %d due to URLError: %s" % (store_id, str(e)))
             # Loblaws
             elif store_id == 2:
                 try:
@@ -464,7 +464,7 @@ def getFlyer():
                             
                         items[flyer_id] = store_items
                 except urllib2.URLError as e:
-                    logging.info("Could not connect to store %d due to Error %d (%s)" % (store_id, e.errno, e.strerror))
+                    logging.info("Could not connect to store %d due to URLError: %s" % (store_id, str(e)))
             # Food Basics
             elif store_id == 3:
                 try:
@@ -529,7 +529,7 @@ def getFlyer():
                     
                     items[flyer_id] = store_items
                 except urllib2.URLError as e:
-                    logging.info("Could not connect to store %d due to Error %d (%s)" % (store_id, e.errno, e.strerror))
+                    logging.info("Could not connect to store %d due to URLError: %s" % (store_id, str(e)))
             # No Frills
             elif store_id == 4:
                 try:
@@ -741,7 +741,7 @@ def getFlyer():
                             
                         items[flyer_id] = store_items
                 except urllib2.URLError as e:
-                    logging.info("Could not connect to store %d due to Error %d (%s)" % (store_id, e.errno, e.strerror))
+                    logging.info("Could not connect to store %d due to URLError: %s" % (store_id, str(e)))
                 
             # Sobeys
             elif store_id == 5:

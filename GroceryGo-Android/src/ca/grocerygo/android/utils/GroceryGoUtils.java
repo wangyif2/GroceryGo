@@ -197,12 +197,14 @@ public class GroceryGoUtils {
 		 */
         float closestDistance = -1;
         int closestStore = 0;
-        for (int j = 0; j < storeIds.size(); j++) {
-            float nextDistance = distanceMap.get(storeIds.get(j));
-            if (closestDistance < 0 || nextDistance < closestDistance) {
-                closestDistance = nextDistance;
-                closestStore = storeIds.get(j);
-            }
+        if (storeIds != null && distanceMap != null) {
+	        for (int j = 0; j < storeIds.size(); j++) {
+	            float nextDistance = distanceMap.get(storeIds.get(j));
+	            if (closestDistance < 0 || nextDistance < closestDistance) {
+	                closestDistance = nextDistance;
+	                closestStore = storeIds.get(j);
+	            }
+	        }
         }
         return closestStore;
     }

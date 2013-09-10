@@ -2,10 +2,8 @@ package ca.grocerygo.android.fragment;
 
 import android.app.Activity;
 import android.content.Context;
-import android.database.ContentObserver;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -15,13 +13,11 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.SimpleCursorAdapter;
-import ca.grocerygo.android.GroceryApplication;
 import ca.grocerygo.android.R;
 import ca.grocerygo.android.database.CategoryTable;
 import ca.grocerygo.android.database.contentprovider.GroceryotgProvider;
 import ca.grocerygo.android.utils.GroceryGoUtils;
 import com.actionbarsherlock.app.SherlockFragment;
-import android.util.Log;
 
 public class CategoryTopFragment extends SherlockFragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private Context mContext;
@@ -39,9 +35,6 @@ public class CategoryTopFragment extends SherlockFragment implements LoaderManag
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        MyContentObserver myContentObserver = new MyContentObserver(new Handler());
-        getActivity().getContentResolver().registerContentObserver(GroceryotgProvider.CONTENT_URI_CAT, true, myContentObserver);
     }
 
     @Override
@@ -96,20 +89,4 @@ public class CategoryTopFragment extends SherlockFragment implements LoaderManag
         sa.changeCursor(null);
     }
 
-    class MyContentObserver extends ContentObserver {
-        public MyContentObserver(Handler h) {
-            super(h);
-        }
-
-        @Override
-        public boolean deliverSelfNotifications() {
-            return true;
-        }
-
-        @Override
-        public void onChange(boolean selfChange) {
-            super.onChange(selfChange);
-            Log.i(GroceryApplication.TAG, "S:DLKJA:DKFJA:SLKJF:ALGKJ:LDSAKJF");
-        }
-    }
 }

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <changelog>
-	<release version="Beta v1.1" versioncode="1">
-		<change>Welcome to the GroceryGo Beta</change>
+	<release version="GroceryGo v1.1" versioncode="1">
+		<change>Welcome to GroceryGo</change>
 		<change>Please help us by sending your feedback from the About page</change>
 	</release>
 </changelog>

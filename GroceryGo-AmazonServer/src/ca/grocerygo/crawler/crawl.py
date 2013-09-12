@@ -16,6 +16,7 @@ from bs4 import BeautifulSoup
 import cookielib
 import datetime
 import htmllib
+import json
 import logging
 import MySQLdb as mdb
 import nltk
@@ -58,6 +59,7 @@ mysql_endpoint = "aa120uk48qkqk9n.crj9vk2lkxxd.us-east-1.rds.amazonaws.com"
 mysql_user = "grocerygo"
 mysql_password = "GGbmw2013"
 mysql_db = "ebdb"
+
 
 # TODO:
 # Done. 1) Pass in only the item part of the line string to getNouns, so it doesn't get confused with the price 
@@ -155,67 +157,39 @@ def getFlyer():
                 try:
                     flyer_url = ""
                     logging.info("Crawling store: %d (url: %s)" % (store_id, next_url))
+                    
+                    next_url = "http://www.metro.ca/flyer/index.en.html"
                     hostname = urlparse(next_url).hostname
-                    soup = BeautifulSoup(urllib2.urlopen(next_url))
-                    foundElems = soup('a', text=re.compile(r'Metro Ontario Flyer'))
-                    if foundElems:
-                        linkElem = foundElems[0]
-                        flyer_page = "http://" + hostname + linkElem['href']
-                        soup = BeautifulSoup(urllib2.urlopen(flyer_page))
-                        linkElem = soup('span', text=re.compile(r'View accessible flyer'))[0].parent
-                        flyer_url = "http://"+ hostname + linkElem['href']
+                    soup = str(BeautifulSoup(urllib2.urlopen(next_url)))
+                    
+                    start_token = "TINK.bootstrap.jsonPromotions = "
+                    end_token = "];"
+                    index_start = soup.find(start_token)
+                    index_end = soup.find(end_token, index_start)
+                    json_input = soup[index_start+len(start_token):index_end+len(end_token)-1]
+                    j = json.loads(json_input)
+                    store_items = []
+                    for row in j:
+                        #print(row)
+                        start_date = row['promotionStartDate']
+                        end_date = row['promotionEndDate']
+                        shortDescription = row['shortDescription']
+                        long_description = row['longDescription']
+                        next_price = row['price']
+                        next_price_unit = row['priceUnit']
+                        next_price_savings = row['priceSavings']
+                        nextPromotionImageUrl = row['promotionImageUrl']
+                        nextPromotionThumbnail = row['promotionThumbnailUrl']
+                        page_number = row['pageNumber']
+                        nextBonusValue = row['bonusValue']
+                        nextQuantityForBonus = row['quantityForBonus']
+                        nextLoyalty = row['loyalty']
                         
-                        store_items = []
-                        line_number = 0
+                        item_details = [stripAllTags(long_description), stripAllTags(next_price), next_price_unit, unit_type_id, next_price, \
+                                        start_date, end_date, page_number, flyer_id, update_date, page_number]
+                        store_items += [item_details]
                         
-                        start_date = ""
-                        end_date = ""
-                        
-                        soup = BeautifulSoup(urllib2.urlopen(flyer_url))
-                        logging.info("URL: %s" % flyer_url)
-                        div_pages = soup.find_all(lambda tag: tag.name=='div' and tag.has_key('style') and not tag.has_key('id'))
-                        
-                        # Find the start and end dates
-                        tag_dates = soup.find(text=re.compile('Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec[a-zA-Z]*\s[0-9]')).string
-                        [start_date, end_date] = getFlyerDates(tag_dates)
-                        
-                        for page in div_pages:
-                            page_lines = re.sub('<[bB][rR]\s*?>', '', page.text).split('\n')
-                            page_lines = filter(None, map(lambda x: x.strip('\t').strip('\r').strip('\n').strip(), page_lines))
-                            for line in page_lines:
-                                #line = line.decode('utf-8')
-                                line_number += 1
-                                unit_price = None
-                                unit_type_id = None
-                                total_price = None
-                                
-                                # The price is preceded either by a dollar sign ($) or a cent sign (\\xa2)
-                                pattern = re.compile('([\\xa2]|[$])([0-9]+[.]*[0-9]*)')
-                                if pattern.findall(line):
-                                    total_price = pattern.findall(line)[0]
-                                    if total_price[0] == "$":
-                                        total_price = float(total_price[1])
-                                    else:
-                                        total_price = float(total_price[1])/100.0
-                                
-                                # TODO: calculate unit price by dividing if necessary
-                                unit_price = total_price
-                                
-                                raw_item = line
-                                raw_price = ""
-                                tag_price = "PRICE"
-                                index_price = line.find(tag_price)
-                                if index_price != -1:
-                                    raw_price = line[index_price+len(tag_price):].strip().strip(":").strip()
-                                    raw_item = line[:index_price].strip()
-                                
-                                item_details = [stripAllTags(raw_item), stripAllTags(raw_price), unit_price, unit_type_id, total_price, \
-                                                start_date, end_date, line_number, flyer_id, update_date, line_number]
-                                
-                                #logging.info(item_details)
-                                store_items += [item_details]
-                        
-                        items[flyer_id] = store_items
+                    items[flyer_id] = store_items
                 except urllib2.URLError as e:
                     logging.info("Could not connect to store %d due to URLError: %s" % (store_id, str(e)))
             # Loblaws

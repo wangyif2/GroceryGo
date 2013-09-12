@@ -12,12 +12,10 @@ import android.util.Log;
 import android.widget.ListView;
 import android.widget.Toast;
 import ca.grocerygo.android.fragment.ToggleLocationDialogFragment;
+import ca.grocerygo.android.fragment.ToggleWifiDialogFragment;
 import ca.grocerygo.android.gcm.GroceryGCMBroadcastReceiver;
 import ca.grocerygo.android.services.NetworkHandler;
-import ca.grocerygo.android.utils.ChangeLogDialog;
-import ca.grocerygo.android.utils.GroceryGoUtils;
-import ca.grocerygo.android.utils.GroceryRefreshTrigger;
-import ca.grocerygo.android.utils.RefreshAnimation;
+import ca.grocerygo.android.utils.*;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
@@ -129,6 +127,9 @@ public class CategoryTopFragmentActivity extends SherlockFragmentActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        promptIfEmptyDb(this);
+
         mRefreshStatusReceiver = new RefreshStatusReceiver();
         IntentFilter mStatusIntentFilter = new IntentFilter(NetworkHandler.REFRESH_COMPLETED_ACTION);
         mStatusIntentFilter.addCategory(Intent.CATEGORY_DEFAULT);
@@ -143,6 +144,20 @@ public class CategoryTopFragmentActivity extends SherlockFragmentActivity {
 
         invalidateOptionsMenu();
         refreshItem = null;
+    }
+
+    private void promptIfEmptyDb(Context context) {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        boolean isDBPopulated = settings.getBoolean(SplashScreenActivity.SETTINGS_IS_DB_POPULATED, false);
+
+        if (!ServerURLs.checkNetworkStatus(getBaseContext()) && !isDBPopulated) {
+            ToggleWifiDialogFragment toggleWifiDialog = new ToggleWifiDialogFragment();
+            toggleWifiDialog.show(this.getSupportFragmentManager(), "toggle_wifi_dialog");
+        } else if (ServerURLs.checkNetworkStatus(getBaseContext()) && !isDBPopulated) {
+            SharedPreferences.Editor settingsEditor = settings.edit();
+            settingsEditor.putBoolean(GroceryGCMBroadcastReceiver.SETTINGS_IS_NEW_DATA_AVA, true);
+            settingsEditor.commit();
+        }
     }
 
     @Override
@@ -312,7 +327,9 @@ public class CategoryTopFragmentActivity extends SherlockFragmentActivity {
 
                 settingsEditor.putBoolean(GroceryGCMBroadcastReceiver.SETTINGS_IS_NEW_DATA_AVA, false);
                 settingsEditor.putBoolean(SETTINGS_IS_REFRESHING, false);
+                settingsEditor.putBoolean(SplashScreenActivity.SETTINGS_IS_DB_POPULATED, true);
                 settingsEditor.commit();
+
                 invalidateOptionsMenu();
                 refreshItem = null;
 

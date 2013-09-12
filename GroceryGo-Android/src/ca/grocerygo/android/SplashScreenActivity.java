@@ -33,7 +33,7 @@ public class SplashScreenActivity extends Activity {
     public static final String BROADCAST_ACTION_UPDATE_PROGRESS = "com.grocerygo.android.intent_action_update_progress_bar";
     public static final String BROADCAST_ACTION_UPDATE_PROGRESS_INCREMENT = "intent_action_update_progres_increment";
 
-    private static final String SETTINGS_IS_DB_POPULATED = "isDBPopulated";
+    public static final String SETTINGS_IS_DB_POPULATED = "isDBPopulated";
     private static final String SETTINGS_IS_LOCATION_FOUND = "isLocationFound";
     // used to know if the back button was pressed in the splash screen activity
     // and avoid opening the next activity
@@ -223,7 +223,7 @@ public class SplashScreenActivity extends Activity {
     }
 
     private void configDatabase() {
-        SharedPreferences settings = getPreferences(0);
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
         boolean isDBPopulated = settings.getBoolean(SETTINGS_IS_DB_POPULATED, false);
 
         if (ServerURLs.checkNetworkStatus(getBaseContext()) && !isDBPopulated) {
@@ -285,10 +285,12 @@ public class SplashScreenActivity extends Activity {
         @Override
         public void onReceive(Context context, Intent intent) {
             int requestType = intent.getBundleExtra("bundle").getInt(NetworkHandler.REQUEST_TYPE);
+            int connectionState = intent.getBundleExtra("bundle").getInt(NetworkHandler.CONNECTION_STATE);
 
             // Network handler services are processed in the order they are called in
-            if (requestType == NetworkHandler.GRO) {
-                SharedPreferences settings = getPreferences(0);
+            if (requestType == NetworkHandler.GRO && connectionState == NetworkHandler.CONNECTION) {
+
+                SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
                 SharedPreferences.Editor settingsEditor = settings.edit();
                 settingsEditor.putBoolean(SETTINGS_IS_DB_POPULATED, true);
                 settingsEditor.commit();

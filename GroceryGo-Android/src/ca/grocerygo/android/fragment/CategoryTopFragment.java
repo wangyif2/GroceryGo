@@ -20,71 +20,73 @@ import ca.grocerygo.android.utils.GroceryGoUtils;
 import com.actionbarsherlock.app.SherlockFragment;
 
 public class CategoryTopFragment extends SherlockFragment implements LoaderManager.LoaderCallbacks<Cursor> {
-	private Context mContext;
-	private GridView gridview;
-	private SimpleCursorAdapter mAdapter;
+    private Context mContext;
+    private GridView gridview;
+    private SimpleCursorAdapter mAdapter;
 
-	private final int INDEX_LOADER_CAT = 0;
-	
-	@Override
-	public void onAttach(Activity activity) {
-		super.onAttach(activity);
-		this.mContext = activity;
-	}
+    public static final int INDEX_LOADER_CAT = 0;
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-	}
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        this.mContext = activity;
+    }
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View v = inflater.inflate(R.layout.category_fragment_list, container, false);
-		gridview = (GridView) v.findViewById(R.id.gridview);
-		gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-			public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-				GroceryGoUtils.launchGroceryPagerActivity(mContext, position);
-			}
-		});
-		gridview.setEmptyView(v.findViewById(R.id.empty_category_list));
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
-		return v;
-	}
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.category_fragment_list, container, false);
+        gridview = (GridView) v.findViewById(R.id.gridview);
+        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                GroceryGoUtils.launchGroceryPagerActivity(mContext, position);
+            }
+        });
+        gridview.setEmptyView(v.findViewById(R.id.empty_category_list));
 
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-		fillData();
-	}
+        return v;
+    }
 
-	private void fillData() {
-		String[] from = new String[]{CategoryTable.COLUMN_CATEGORY_NAME};
-		int[] to = new int[]{R.id.category_row_label};
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        fillData();
+    }
 
-		getLoaderManager().initLoader(INDEX_LOADER_CAT, null, this);
+    private void fillData() {
+        String[] from = new String[]{CategoryTable.COLUMN_CATEGORY_NAME};
+        int[] to = new int[]{R.id.category_row_label};
 
-		mAdapter = new CategoryTopCursorAdapter(getActivity(), R.layout.category_fragment_list_row, null, from, to);
+        getLoaderManager().initLoader(INDEX_LOADER_CAT, null, this);
 
-		gridview.setAdapter(mAdapter);
+        mAdapter = new CategoryTopCursorAdapter(getActivity(), R.layout.category_fragment_list_row, null, from, to);
 
-	}
+        gridview.setAdapter(mAdapter);
 
-	@Override
-	public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
-		String[] projection = {CategoryTable.COLUMN_ID, CategoryTable.COLUMN_CATEGORY_NAME};
-		return new CursorLoader(getActivity(), GroceryotgProvider.CONTENT_URI_CAT, projection, null, null, null);
-	}
+    }
 
-	@Override
-	public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-		SimpleCursorAdapter sa = mAdapter;
-		if (sa != null)
-			sa.changeCursor(cursor);
-	}
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
+        String[] projection = {CategoryTable.COLUMN_ID, CategoryTable.COLUMN_CATEGORY_NAME};
+        return new CursorLoader(getActivity(), GroceryotgProvider.CONTENT_URI_CAT, projection, null, null, null);
+    }
 
-	@Override
-	public void onLoaderReset(Loader<Cursor> cursorLoader) {
-		SimpleCursorAdapter sa = mAdapter;
-		sa.changeCursor(null);
-	}
+    @Override
+    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
+        SimpleCursorAdapter sa = mAdapter;
+
+        if (sa != null)
+            sa.changeCursor(cursor);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> cursorLoader) {
+        SimpleCursorAdapter sa = mAdapter;
+        sa.changeCursor(null);
+    }
+
 }

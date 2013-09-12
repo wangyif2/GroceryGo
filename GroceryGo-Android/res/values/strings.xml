@@ -5,7 +5,7 @@
 
     <string name="upcdatabase_key">f0268314144a9baf5d105e31416b4e09</string>
 
-    <string name="no_content">Currently no content, please refresh</string>
+    <string name="no_content">Currently no content, please refresh and restart the app</string>
     <string name="no_new_content">There is no new available data. Last checked: %1$s</string>
     <string name="no_shopcart_content">There are no items in your Shopping Cart</string>
     <string name="no_search_results">No results match your search criteria</string>
@@ -132,5 +132,11 @@
             your location?
         </body>
     </string>
+
+    <!--dialog for toggling wifi-->
+    <string name="toggle_wifi_enable_wifi">Enable Wifi</string>
+    <string name="toggle_wifi_action_agree">Enable</string>
+    <string name="toggle_wifi_action_disagree">Cancel</string>
+    <string name="toggle_wifi_text_content">Please enable Wifi and restart the application.</string>
 
 </resources>

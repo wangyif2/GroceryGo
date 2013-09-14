@@ -61,6 +61,11 @@ mysql_user = "grocerygo"
 mysql_password = "GGbmw2013"
 mysql_db = "ebdb"
 
+#mysql_endpoint = "localhost"
+#mysql_user = "root"
+#mysql_password = ""
+#mysql_db = "groceryotg"
+
 # TODO:
 # Done. 1) Pass in only the item part of the line string to getNouns, so it doesn't get confused with the price 
 # Done. 2) Build a language model of bigram probabilities to detect compound nouns (e.g. "potato chips" vs just "chips")
@@ -140,7 +145,7 @@ def getFlyer():
     # Get unit IDs from the database
     cur.execute('SELECT unit_id, unit_type_name FROM Unit;')
     units = cur.fetchall()
-    
+
     # Fetch all flyer URLs
     cur.execute('SELECT StoreParent.store_parent_id, Flyer.flyer_url, Flyer.flyer_id FROM (Flyer INNER JOIN StoreParent ON StoreParent.store_parent_id=Flyer.store_parent_id) ORDER BY StoreParent.store_parent_name')
     data = cur.fetchall()
@@ -167,6 +172,7 @@ def getFlyer():
                     json_input = soup[index_start+len(start_token):index_end+len(end_token)-1]
                     j = json.loads(json_input)
                     store_items = []
+                    line_number = 1
                     for row in j:
                         #print(row)
                         start_date = str(parser.parse(row['promotionEndDate']))
@@ -214,7 +220,7 @@ def getFlyer():
                                 #index_cents = raw_price.find("\xa2")
                                 index_cents = -1
                                 #logging.info(raw_price)
-                                print("RAW PRICE: %s, index_dollar: %d" % (raw_price, index_dollar))
+                                #print("RAW PRICE: %s, index_dollar: %d" % (raw_price, index_dollar))
                                 if index_ratio != -1:
                                     if numeric_only.findall(raw_price[:index_ratio]):
                                         # If the first half is numeric only, e.g. "2 / $5", then it is
@@ -268,10 +274,11 @@ def getFlyer():
                                             unit_price = float(price_matches.group(0))
                                             unit_type_id = filter(lambda x: x if x[1]=='kg' else None,units)[0][0]    
                         
+                        full_desc = full_desc.replace('\r', '').replace('\n', ' ').strip()
                         if full_desc != None:
                             item_details = [stripAllTags(full_desc), stripAllTags(orig_price), unit_price, unit_type_id, total_price, \
-                                            start_date, end_date, page_number, flyer_id, update_date, page_number]
-                            logging.info(item_details)
+                                            start_date, end_date, line_number, flyer_id, update_date, line_number]
+                            line_number += 1
                             store_items += [item_details]
                     
                     items[flyer_id] = store_items
@@ -804,215 +811,9 @@ def getFlyer():
                 
             # Sobeys
             elif store_id == 5:
-                
-                continue
-            
-                # Split the URL and the flyer ID info
-                arrUrl = next_url.split("|")
-                next_url = arrUrl[0]
-                storeflyer_id = arrUrl[1]
-                
-                flyer_url = ""
-                logging.info("Crawling store: %d" % store_id)
-                parsed_url = urlparse(next_url)
-                soup = BeautifulSoup(urllib2.urlopen(next_url))
-                
-                # Fill out form with province, city and store selection
-                formElem = soup('form', {'id':'form1'})[0]
-                target_url = parsed_url.scheme + "://" + parsed_url.netloc + formElem['action']
-                post_data = []
-                
-                input_list = formElem.findChildren('input')
-                for param in input_list:
-                    if param.has_key("value"):
-                        post_data += [(param['id'], param['value'])]
-                    else:
-                        post_data += [(param['id'], '')]
-                
-                # Select store
-                post_data += [('store', str(storeflyer_id))]
-                post_data = urllib.urlencode(post_data)
-                
-                response = opener.open(target_url, post_data).read()
-                soup = BeautifulSoup(response)
-                accessible_link = parsed_url.scheme + "://" + parsed_url.netloc + \
-                                  soup('a', text=re.compile(r'Accessible Flyer'))[0]['href']
-                
-                # Before getting to the actual flyer page, submit an intermediate page web form
-                pageExists = True
-                response = opener.open(accessible_link).read()
-                soup = BeautifulSoup(response)
-                the_form = soup('form', {'name':'form1'})[0]
-                target_url = the_form['action']
-                children = the_form.findChildren()
-                post_data = []
-                for param in children:
-                    if param.has_key("value"):
-                        post_data += [(param['id'], param['value'])]
-                    elif param.has_key("id"):
-                        post_data += [(param['id'], '')]
-                    else:
-                        pageExists = False
-                
-                if pageExists:      
-                    post_data = urllib.urlencode(post_data)
-                    response = opener.open(target_url, post_data).read()
-                    
-                    # On the actual flyer page, the iframe data is populated via an AJAX call
-                    # Simulate the AJAX call by fetching all necessary parameters.
-                    
-                    # Default values (in case not found on page):
-                    BANNER_NAME = "SOB"
-                    PUBLICATION_ID = "ac10ac3c-5cd1-46ef-a1e9-f02d77a422d9"
-                    PUBLICATION_TYPE = "1"
-                    CUSTOMER_NAME = "SOB"
-                    LANGUAGE_ID = "1"
-                    BANNER_ID = "0f69e65d-a96e-4871-8f86-a5fe7dde96c0"
-                    
-                    # Find values from the HTML:
-                    # NB: Look-behind regex requires fixed-width pattern, so we can't match for arbitrary
-                    # number of spaces between "=" sign and the variables..
-                    match_banner = re.search(r"(?<=BANNER[_]NAME [=]['])[a-zA-Z]+(?=['])", response)
-                    if match_banner:
-                        BANNER_NAME = str(match_banner.group(0))
-                    
-                    match_pub_id = re.search(r"(?<=PUBLICATION[_]ID [=] ['])[-a-zA-Z0-9]+(?=['])", response)
-                    if match_pub_id:
-                        PUBLICATION_ID = str(match_pub_id.group(0))
-                        
-                    match_pub_type = re.search(r"(?<=PUBLICATION[_]TYPE [=] ['])[0-9]+(?=['])", response)
-                    if match_pub_type:
-                        PUBLICATION_TYPE = str(match_pub_type.group(0))
-                    
-                    match_cust_name = re.search(r"(?<=CUSTOMER[_]NAME [=] ['])[a-zA-Z]+(?=['])", response)
-                    if match_cust_name:
-                        CUSTOMER_NAME = str(match_cust_name.group(0))
-                    
-                    match_language_id = re.search(r"(?<=LANGUAGE[_]ID [=] )[0-9]+(?=[;])", response)
-                    if match_language_id:
-                        LANGUAGE_ID = str(match_language_id.group(0))
-                    
-                    match_banner_id = re.search(r"(?<=BANNER[_]ID [=] ['])[-0-9a-zA-Z]+(?=['])", response)
-                    if match_banner_id:
-                        BANNER_ID = str(match_banner_id.group(0))
-                    
-                    ajax_url = urlparse(target_url)
-                    url_path = ajax_url.path[:ajax_url.path.rfind("/")+1]
-                    page_id = 1
-                    
-                    ajax_query = ajax_url.scheme + "://" + ajax_url.netloc + url_path + \
-                        "AJAXProxy.aspx?bname=" + BANNER_NAME + "&AJAXCall=GetPublicationData.aspx?" + \
-                        "view=TEXT" + "&version=Flash" + "&publicationid=" + PUBLICATION_ID + \
-                        "&publicationtype=" + PUBLICATION_TYPE + "&bannername=" + BANNER_NAME + \
-                        "&customername=" + CUSTOMER_NAME + "&pageid1=" + str(page_id) + \
-                        "&languageid=" + LANGUAGE_ID + "&bannerid=" + BANNER_ID
-                    logging.info("URL: %s" % ajax_query)
-                    response = opener.open(ajax_query).read()
-                    dict_items = ast.literal_eval(response)
-                    
-                    # Parse into a list of items
-                    data_list = dict_items["textdata"]
-                    store_items = []
-                    
-                    line_number = 0
-                    start_date = ""
-                    end_date = ""
-                    
-                    # Find the start and end dates
-                    [start_date, end_date] = getFlyerDates(response)
-                    
-                    data_list = filter(lambda x: x if x.has_key('regiontypeid') and x['regiontypeid']=='1' else None, data_list)
-                    for item in data_list:
-                        try:
-                            line_number += 1
-                            raw_item = item['title'] + ", " + item['description'] 
-                            
-                            # Price format:
-                            # 1) $1.50                (dollars)
-                            # 2) 99c                  (cents)
-                            # 3) 4/$5                 (ratio)
-                            # 4) $3.99 - $4.29        (range)
-                            # 5) BUY ONE GET ONE FREE (string)
-                            # 6) 2 $5                 (ratio) convert to format 3) first
-                            unit_price = None
-                            unit_type_id = None
-                            total_price = None
-                            
-                            raw_price = item['price']
-                            orig_price = raw_price
-                            
-                            numeric_pattern = re.compile("[0-9]+")
-                            
-                            # If the price contains any spaces, e.g. "Starting from $19.99", then 
-                            # split on space and keep the elements that contains numeric chars
-                            if raw_price.find(" ") != -1:
-                                raw_price = " ".join(filter(lambda x: x if numeric_pattern.findall(x) else None, raw_price.split(" ")))
-                            
-                            #convert from format 6 to format 3
-                            raw_price = re.sub(r"([0-9]) +(\$[0-9])", r"\1/\2", raw_price)
-                            
-                            if raw_price and numeric_pattern.findall(raw_price):
-                                # If a range given, take the lowest value
-                                if raw_price.find("-") != -1:
-                                    raw_price = raw_price.split("-")[0].strip()
-                                
-                                index_ratio = raw_price.find("/")
-                                index_dollar = raw_price.find("$")
-                                index_cents = raw_price.find("\xa2")
-                                if index_ratio != -1:
-                                    num_products = float(raw_price[:index_ratio])
-                                    total_price = raw_price[index_ratio+1:]
-                                    if index_dollar != -1:
-                                        total_price = float(total_price.strip().strip("$").strip())
-                                    else:
-                                        total_price = float(total_price.strip("\xa2").strip("\xc2")) / 100.0
-                                    
-                                    # Default unit_price
-                                    unit_price = total_price / num_products
-                                
-                                elif index_dollar != -1:
-                                    total_price = float(raw_price.strip("$"))
-                                    
-                                    # Default unit_price
-                                    unit_price = total_price
-                                    
-                                elif index_cents != -1:
-                                    total_price = float(raw_price.strip("\xa2").strip("\xc2")) / 100.0
-                                    
-                                    # Default unit_price
-                                    unit_price = total_price
-                                
-                                # When price units are specified, the unit price is usually given in
-                                # the "priceunits" key-value pair
-                                price_units = item['priceunits']
-                                if price_units:
-                                    index_or = price_units.find("or ")
-                                    index_kg = price_units.find("/kg")
-                                    if index_or != -1:
-                                        dollar_matches = re.search(r'(?<=[$])[0-9.]+', price_units)
-                                        cent_matches = re.search(r'(?<=or )[0-9.]+', price_units)
-                                        if dollar_matches:
-                                            unit_price = float(dollar_matches.group(0))
-                                        elif cent_matches:
-                                            unit_price = float(cent_matches.group(0))/100.0
-                                    elif index_kg != -1:
-                                        price_matches = re.search(r'[0-9.]+(?=/kg)', price_units)
-                                        if price_matches:
-                                            unit_price = float(price_matches.group(0))
-                                            unit_type_id = filter(lambda x: x if x[1]=='kg' else None,units)[0][0]
-                            
-                            item_details = [stripAllTags(raw_item), stripAllTags(orig_price), unit_price, unit_type_id, total_price, \
-                                            start_date, end_date, line_number, flyer_id, update_date, line_number]
-                            
-                            store_items += [item_details]
-                        except:
-                                logging.exception("Flyer parsing error!\nstoreid=%s\nraw_item=%s\nurl=%s\nexception=%s\n"
-                                              % (store_id, item['title'] + ", " + item['description'], ajax_query, sys.exc_info()))
-                    items[flyer_id] = store_items
-                
-                
+                #TODO pick stores
+                items[flyer_id] = crawlSobeysStore(flyer_id, store_id, next_url, update_date, units)
             logging.info('\n')
-        
     return items
 
 
@@ -1128,7 +929,90 @@ def getFlyerDates(tag_dates):
     logging.info("end date: %s" % end_date)
     logging.info("update date: %s" % update_date)
     return [start_date, end_date]
-                    
+
+#date_str format Thu September 12-18
+#return start date and start date + 7 days
+def parseFlyerDates(date_str):
+    #default values
+    start_month = date.today().month
+    start_day = date.today().day
+    start_year = date.today().year
+
+    #set day
+    months = {'jan':1,'feb':2,'mar':3,'apr':4,'may':5,'jun':6,'jul':7,'aug':8,'sep':9,'oct':10,'nov':11,'dec':12}
+    pattern = re.compile('(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-zA-Z.]*\s*([0-9]{1,2})', re.IGNORECASE)
+    matches = pattern.findall(date_str)
+    #if date information is posted in flyer, use that instead
+    if matches:
+        start_month = months[matches[0][0].lower()]
+        start_date = int(matches[0][1])
+    start_date = datetime.datetime(start_year, start_month, start_date)
+    end_date = start_date + datetime.timedelta(days=7)
+    start_date = start_date.strftime('%Y-%m-%d')
+    end_date = end_date.strftime('%Y-%m-%d')
+    return [start_date, end_date]
+           
+def crawlSobeysStore(flyer_id, store_id, next_url, update_date, units):
+    #TODO this url is static, need to be store specifc!
+    next_url = "https://www.sobeys.com/en/flyer"
+    logging.info("Crawling store: %d  Store URL: %s"  %(store_id, next_url))
+    try:
+        soup = BeautifulSoup(urllib2.urlopen(next_url))
+        store_items = []
+        effective_date = soup('h6', {'class':'no-bottom'})[0].string
+        [start_date, end_date] = parseFlyerDates(effective_date)
+        line_number = 1
+        #loop through all the pages
+        while True:
+            #loop through all the items on pg
+            for top_card in soup('div', {'class':'card-top'}):
+                #get the useful elements
+                card = top_card.find('div', {'class':'card-inset'})
+                short_description = card.find('h6', {'class':'h6 x-small-bottom'}).string
+                long_description = card.p.string
+                price_dollar = card.find('div', {'class':'price-amount'}).contents[0].string
+                price_cents = card.find('div', {'class':'price-amount'}).contents[1].contents[0].string
+                price_unit = card.find('div', {'class':'price-amount'}).contents[1].contents[1].contents[0].string
+                
+                #set temp vars
+                unit_price = None
+                unit_type_id = None
+                total_price = None 
+                raw_price = None   
+                raw_item =  short_description + '. ' + long_description
+                raw_item = raw_item.replace('\r', '').replace('\n', ' ').strip()
+                if price_dollar and price_cents and price_unit:
+                    num_price = int(price_dollar) + float(price_cents)/100
+                    raw_price = str(num_price) + str(price_unit)
+    
+                    #price_unit = '/3'
+                    per_unit_match = re.search(r'([0-9]{1,2}$)', price_unit)
+                    if per_unit_match: 
+                        unit_price = num_price/float(per_unit_match.group(0))
+                        total_price = num_price   
+                    #/ea. /100g /lb /99c
+                    else:
+                        unit_price = num_price
+                        total_price = num_price
+                        if '/lb' in price_unit:
+                            unit_type_id = filter(lambda x: x if x[1]=='lb' else None,units)[0][0]
+                
+                #add values to item
+                item_details = [stripAllTags(raw_item), stripAllTags(raw_price), unit_price, unit_type_id, total_price, \
+                                                start_date, end_date, line_number, flyer_id, update_date, line_number]                 
+                store_items += [item_details]
+                line_number += 1
+                                   
+            #stop if there's no more flyer pgs    
+            next_pg = soup('span', {'class':'next'})
+            if  next_pg is None or len(next_pg) < 1:
+                break;
+            next_url = 'https://www.sobeys.com' + next_pg[0].a['href']
+            soup = BeautifulSoup(urllib2.urlopen(next_url))
+    except:
+        logging.exception("Flyer parsing error!\nstoreid=%s\nraw_item=%s\nurl=%s\nexception=%s\n"
+                            % (store_id, item_details, next_url, sys.exc_info()))
+    return store_items
 #******************************************************************************
 # An interface for accessing a database table, handles writing data to table
 #******************************************************************************

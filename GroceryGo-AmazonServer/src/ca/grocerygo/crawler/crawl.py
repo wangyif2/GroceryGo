@@ -15,7 +15,8 @@ import ast
 from bs4 import BeautifulSoup
 import cookielib
 import datetime
-import htmllib
+from dateutil import parser
+import HTMLParser
 import json
 import logging
 import MySQLdb as mdb
@@ -60,7 +61,6 @@ mysql_user = "grocerygo"
 mysql_password = "GGbmw2013"
 mysql_db = "ebdb"
 
-
 # TODO:
 # Done. 1) Pass in only the item part of the line string to getNouns, so it doesn't get confused with the price 
 # Done. 2) Build a language model of bigram probabilities to detect compound nouns (e.g. "potato chips" vs just "chips")
@@ -86,14 +86,12 @@ def db_escape(s):
     if type(s) == str:
         return mdb.escape_string(s)
     return s
-    
+
 def unescape(s):
-    '''Takes a string with escaped HTML special characters, e.g. "param1=value1&amp;param2=value2". 
-       Returns an unescaped version of the string, e.g. "param1=value1&param2=value2". '''
-    p = htmllib.HTMLParser(None)
-    p.save_bgn()
-    p.feed(s)
-    return p.save_end()
+    h = HTMLParser.HTMLParser()
+    if s:
+        s = h.unescape(s)
+    return s
 
 def sendNotification(error_msg):
     # Set up mail authentication
@@ -171,24 +169,111 @@ def getFlyer():
                     store_items = []
                     for row in j:
                         #print(row)
-                        start_date = row['promotionStartDate']
-                        end_date = row['promotionEndDate']
-                        shortDescription = row['shortDescription']
-                        long_description = row['longDescription']
-                        next_price = row['price']
-                        next_price_unit = row['priceUnit']
-                        next_price_savings = row['priceSavings']
-                        nextPromotionImageUrl = row['promotionImageUrl']
-                        nextPromotionThumbnail = row['promotionThumbnailUrl']
+                        start_date = str(parser.parse(row['promotionEndDate']))
+                        end_date = str(parser.parse(row['promotionStartDate']))
+                        start_date_obj = datetime.datetime.strptime(start_date, "%Y-%m-%d %H:%M:%S")
+                        end_date_obj = datetime.datetime.strptime(end_date, "%Y-%m-%d %H:%M:%S")
+                        
+                        short_description = unescape(row['shortDescription'])
+                        long_description = unescape(row['longDescription'])
+                        full_desc = short_description
+                        if long_description:
+                            full_desc += ". " + long_description
+                        raw_price = unescape(row['price'])
+                        next_price_unit = unescape(row['priceUnit'])
+                        next_price_savings = unescape(row['priceSavings'])
+                        nextPromotionImageUrl = unescape(row['promotionImageUrl'])
+                        nextPromotionThumbnail = unescape(row['promotionThumbnailUrl'])
                         page_number = row['pageNumber']
                         nextBonusValue = row['bonusValue']
                         nextQuantityForBonus = row['quantityForBonus']
                         nextLoyalty = row['loyalty']
                         
-                        item_details = [stripAllTags(long_description), stripAllTags(next_price), next_price_unit, unit_type_id, next_price, \
-                                        start_date, end_date, page_number, flyer_id, update_date, page_number]
-                        store_items += [item_details]
+                        unit_price = None
+                        unit_type_id = None
+                        total_price = None    
                         
+                        if raw_price:
+                            orig_price = raw_price
+                            
+                            numeric_pattern = re.compile("[0-9]+")
+                            numeric_only = re.compile("^[0-9.]+$")
+                            
+                            # If the price contains any spaces, e.g. "Starting from $19.99", then 
+                            # split on space and keep the elements that contains numeric chars
+                            if raw_price.find(" ") != -1:
+                                raw_price = " ".join(filter(lambda x: x if numeric_pattern.findall(x) else None, raw_price.split(" ")))
+                            
+                            if raw_price and numeric_pattern.findall(raw_price):
+                                # If a range given, take the lowest value
+                                if raw_price.find("-") != -1:
+                                    raw_price = raw_price.split("-")[0].strip()
+                                
+                                index_ratio = raw_price.find("/")
+                                index_dollar = raw_price.find("$")
+                                #index_cents = raw_price.find("\xa2")
+                                index_cents = -1
+                                #logging.info(raw_price)
+                                print("RAW PRICE: %s, index_dollar: %d" % (raw_price, index_dollar))
+                                if index_ratio != -1:
+                                    if numeric_only.findall(raw_price[:index_ratio]):
+                                        # If the first half is numeric only, e.g. "2 / $5", then it is
+                                        # indeed a ratio
+                                        num_products = float(raw_price[:index_ratio])
+                                        total_price = raw_price[index_ratio+1:]
+                                        if index_dollar != -1:
+                                            the_price = total_price.strip().strip("$").strip()
+                                            if numeric_only.findall(the_price):
+                                                total_price = float(the_price)
+                                                # Default unit_price
+                                                unit_price = total_price / num_products
+                                    
+                                        else:
+                                            the_price = total_price.strip("\xa2").strip("\xc2")
+                                            if numeric_only.findall(the_price):
+                                                total_price = float(the_price) / 100.0
+                                                # Default unit_price
+                                                unit_price = total_price / num_products
+                                    elif numeric_only.findall(raw_price[:index_ratio].strip("$").strip("\xa2").strip("\xc2")):
+                                        # Otherwise, it's a range, e.g. "$33 / $36". Take the first 
+                                        # price.
+                                        total_price = float(raw_price[:index_ratio].strip("$").strip("\xa2").strip("\xc2"))
+                                        unit_price = total_price
+                                elif index_dollar != -1:
+                                    the_price = raw_price.strip("$")
+                                    if numeric_only.findall(the_price):
+                                        total_price = float(the_price)
+                                        # Default unit_price
+                                        unit_price = total_price
+                                elif index_cents != -1:
+                                    the_price = raw_price.strip("\xa2").strip("\xc2")
+                                    if numeric_only.findall(the_price):
+                                        total_price = float(the_price) / 100.0
+                                        # Default unit_price
+                                        unit_price = total_price
+                                
+                                if next_price_unit:
+                                    index_or = next_price_unit.find("or ")
+                                    index_kg = next_price_unit.find("/kg")
+                                    if index_or != -1:
+                                        dollar_matches = re.search(r'(?<=[$])[0-9.]+', next_price_unit)
+                                        cent_matches = re.search(r'(?<=or )[0-9.]+', next_price_unit)
+                                        if dollar_matches:
+                                            unit_price = float(dollar_matches.group(0))
+                                        elif cent_matches:
+                                            unit_price = float(cent_matches.group(0))/100.0
+                                    elif index_kg != -1:
+                                        price_matches = re.search(r'[0-9.]+(?=/kg)', next_price_unit)
+                                        if price_matches:
+                                            unit_price = float(price_matches.group(0))
+                                            unit_type_id = filter(lambda x: x if x[1]=='kg' else None,units)[0][0]    
+                        
+                        if full_desc != None:
+                            item_details = [stripAllTags(full_desc), stripAllTags(orig_price), unit_price, unit_type_id, total_price, \
+                                            start_date, end_date, page_number, flyer_id, update_date, page_number]
+                            logging.info(item_details)
+                            store_items += [item_details]
+                    
                     items[flyer_id] = store_items
                 except urllib2.URLError as e:
                     logging.info("Could not connect to store %d due to URLError: %s" % (store_id, str(e)))
@@ -720,6 +805,8 @@ def getFlyer():
             # Sobeys
             elif store_id == 5:
                 
+                continue
+            
                 # Split the URL and the flyer ID info
                 arrUrl = next_url.split("|")
                 next_url = arrUrl[0]

@@ -810,9 +810,9 @@ def getFlyer():
                     logging.info("Could not connect to store %d due to URLError: %s" % (store_id, str(e)))
                 
             # Sobeys
-            elif store_id == 5:
+            #elif store_id == 5:
                 #TODO pick stores
-                items[flyer_id] = crawlSobeysStore(flyer_id, store_id, next_url, update_date, units)
+                #items[flyer_id] = crawlSobeysStore(flyer_id, store_id, next_url, update_date, units)
             logging.info('\n')
     return items
 
@@ -931,7 +931,7 @@ def getFlyerDates(tag_dates):
     return [start_date, end_date]
 
 #date_str format Thu September 12-18
-#return start date and start date + 7 days
+#return start date and start date + 6 days
 def parseFlyerDates(date_str):
     #default values
     start_month = date.today().month
@@ -947,7 +947,7 @@ def parseFlyerDates(date_str):
         start_month = months[matches[0][0].lower()]
         start_date = int(matches[0][1])
     start_date = datetime.datetime(start_year, start_month, start_date)
-    end_date = start_date + datetime.timedelta(days=7)
+    end_date = start_date + datetime.timedelta(days=6)
     start_date = start_date.strftime('%Y-%m-%d')
     end_date = end_date.strftime('%Y-%m-%d')
     return [start_date, end_date]
@@ -970,10 +970,21 @@ def crawlSobeysStore(flyer_id, store_id, next_url, update_date, units):
                 card = top_card.find('div', {'class':'card-inset'})
                 short_description = card.find('h6', {'class':'h6 x-small-bottom'}).string
                 long_description = card.p.string
-                price_dollar = card.find('div', {'class':'price-amount'}).contents[0].string
-                price_cents = card.find('div', {'class':'price-amount'}).contents[1].contents[0].string
-                price_unit = card.find('div', {'class':'price-amount'}).contents[1].contents[1].contents[0].string
-                
+                unit_span = card.find('div', {'class':'price-amount'}).contents[1]
+                price_dollar = '0'
+                price_cents = '0'
+                price_unit = '/ea.'
+                #dollar.cents case
+                if len(unit_span) == 2:
+                    price_dollar = card.find('div', {'class':'price-amount'}).contents[0].string
+                    price_cents = unit_span.contents[0].string
+                    price_unit = unit_span.contents[1].contents[0].string
+                #.99 case
+                elif len(unit_span) == 1:
+                   price_dollar = '0'
+                   price_cents = card.find('div', {'class':'price-amount'}).contents[0].string.replace('.', '')
+                   price_unit = unit_span.contents[0].string
+                   
                 #set temp vars
                 unit_price = None
                 unit_type_id = None
@@ -982,13 +993,19 @@ def crawlSobeysStore(flyer_id, store_id, next_url, update_date, units):
                 raw_item =  short_description + '. ' + long_description
                 raw_item = raw_item.replace('\r', '').replace('\n', ' ').strip()
                 if price_dollar and price_cents and price_unit:
-                    num_price = int(price_dollar) + float(price_cents)/100
+                    try:
+                        num_price = int(price_dollar) + float(price_cents)/100
+                    except ValueError:
+                        num_price = 0.00
                     raw_price = str(num_price) + str(price_unit)
     
                     #price_unit = '/3'
                     per_unit_match = re.search(r'([0-9]{1,2}$)', price_unit)
-                    if per_unit_match: 
-                        unit_price = num_price/float(per_unit_match.group(0))
+                    if per_unit_match:
+                        try:
+                            unit_price = num_price/float(per_unit_match.group(0))
+                        except ValueError:
+                            unit_price = 0.00;    
                         total_price = num_price   
                     #/ea. /100g /lb /99c
                     else:
@@ -1010,9 +1027,18 @@ def crawlSobeysStore(flyer_id, store_id, next_url, update_date, units):
             next_url = 'https://www.sobeys.com' + next_pg[0].a['href']
             soup = BeautifulSoup(urllib2.urlopen(next_url))
     except:
-        logging.exception("Flyer parsing error!\nstoreid=%s\nraw_item=%s\nurl=%s\nexception=%s\n"
-                            % (store_id, item_details, next_url, sys.exc_info()))
+        logging.exception("Flyer parsing error!\nstoreid=%s\nurl=%s\nexception=%s\n"
+                            % (store_id, next_url, sys.exc_info()))
     return store_items
+
+def isSameItem(a, b):
+    '''true if item a is considered the same as item b, false otherwise
+        format: [raw_string, raw_price, unit_price, unit_id, total_price
+                 start_date, end_date, line_number, flyer_id, update_date, score]'''
+    if len(a) != len(b) or len(a) != 11: return False
+    if a[0].strip().lower() == b[0].strip().lower() and a[1] == b[1] and a[2] == b[2] and a[3] == b[3] and a[4] == b[4]:  
+        return True
+    return False
 #******************************************************************************
 # An interface for accessing a database table, handles writing data to table
 #******************************************************************************

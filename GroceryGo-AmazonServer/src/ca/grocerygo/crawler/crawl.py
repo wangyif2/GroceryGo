@@ -810,9 +810,9 @@ def getFlyer():
                     logging.info("Could not connect to store %d due to URLError: %s" % (store_id, str(e)))
                 
             # Sobeys
-            #elif store_id == 5:
+            elif store_id == 5:
                 #TODO pick stores
-                #items[flyer_id] = crawlSobeysStore(flyer_id, store_id, next_url, update_date, units)
+                items[flyer_id] = crawlSobeysStore(flyer_id, store_id, next_url, update_date, units)
             logging.info('\n')
     return items
 
@@ -955,7 +955,7 @@ def parseFlyerDates(date_str):
 def crawlSobeysStore(flyer_id, store_id, next_url, update_date, units):
     #TODO this url is static, need to be store specifc!
     next_url = "https://www.sobeys.com/en/flyer"
-    logging.info("Crawling store: %d  Store URL: %s"  %(store_id, next_url))
+    logging.info("Crawling store: %d, Flyer ID: %d, Store URL: %s"  %(store_id, flyer_id, next_url))
     try:
         soup = BeautifulSoup(urllib2.urlopen(next_url))
         store_items = []
@@ -970,49 +970,60 @@ def crawlSobeysStore(flyer_id, store_id, next_url, update_date, units):
                 card = top_card.find('div', {'class':'card-inset'})
                 short_description = card.find('h6', {'class':'h6 x-small-bottom'}).string
                 long_description = card.p.string
-                unit_span = card.find('div', {'class':'price-amount'}).contents[1]
-                price_dollar = '0'
-                price_cents = '0'
-                price_unit = '/ea.'
-                #dollar.cents case
-                if len(unit_span) == 2:
-                    price_dollar = card.find('div', {'class':'price-amount'}).contents[0].string
-                    price_cents = unit_span.contents[0].string
-                    price_unit = unit_span.contents[1].contents[0].string
-                #.99 case
-                elif len(unit_span) == 1:
-                   price_dollar = '0'
-                   price_cents = card.find('div', {'class':'price-amount'}).contents[0].string.replace('.', '')
-                   price_unit = unit_span.contents[0].string
-                   
+                amount_text = card.find('div', {'class': 'price-amount'}).getText()
+                
                 #set temp vars
                 unit_price = None
                 unit_type_id = None
                 total_price = None 
                 raw_price = None   
+                raw_price_cents = ""
+                raw_price_unit = ""
                 raw_item =  short_description + '. ' + long_description
                 raw_item = raw_item.replace('\r', '').replace('\n', ' ').strip()
-                if price_dollar and price_cents and price_unit:
-                    try:
-                        num_price = int(price_dollar) + float(price_cents)/100
-                    except ValueError:
-                        num_price = 0.00
-                    raw_price = str(num_price) + str(price_unit)
-    
+                
+                if amount_text:
+                    main_amount = card.find('div', {'class':'price-amount'}).contents[0]
+                    cents_sup = card.find('div', {'class': 'price-amount'}).find('sup')
+                    unit_span = card.find('div', {'class':'price-amount'}).find('span')
+                    price_dollar = '0'
+                    price_cents = '0'
+                    price_unit = '/ea.'
+                    
+                    if cents_sup:
+                        price_cents = float(cents_sup.contents[0])
+                        raw_price_cents = "." + str(cents_sup.contents[0])
+                    if unit_span:
+                        raw_price_unit = str(unit_span.contents[0])
+                    
+                    #dollar.cents case
+                    if main_amount.find("/") != -1:
+                        num_obj = float(main_amount.split("/")[0])
+                        total_price = float(main_amount.split("/")[1]) + price_cents / 100.0
+                        unit_price = total_price / num_obj
+                    elif main_amount.find(".") != -1:
+                        total_price = float(main_amount)
+                        unit_price = total_price
+                    else:
+                        total_price = float(main_amount) + price_cents / 100.0
+                        unit_price = total_price
+                    
+                    # Take care of units
                     #price_unit = '/3'
                     per_unit_match = re.search(r'([0-9]{1,2}$)', price_unit)
                     if per_unit_match:
                         try:
-                            unit_price = num_price/float(per_unit_match.group(0))
+                            unit_price = total_price/float(per_unit_match.group(0))
                         except ValueError:
-                            unit_price = 0.00;    
-                        total_price = num_price   
+                            unit_price = 0.00
                     #/ea. /100g /lb /99c
-                    else:
-                        unit_price = num_price
-                        total_price = num_price
-                        if '/lb' in price_unit:
-                            unit_type_id = filter(lambda x: x if x[1]=='lb' else None,units)[0][0]
+                    elif '/lb' in price_unit:
+                        unit_type_id = filter(lambda x: x if x[1]=='lb' else None,units)[0][0]
+                    
+                    raw_price = str(main_amount) + raw_price_cents + raw_price_unit
+                    #print("ORIGINAL: %s" % (card.find('div', {'class': 'price-amount'})))
+                    #print("PARSED: Total price: %s, unit price: %s, price_unit: %s" % (total_price, unit_price, str(unit_type_id)))
+                    
                 
                 #add values to item
                 item_details = [stripAllTags(raw_item), stripAllTags(raw_price), unit_price, unit_type_id, total_price, \
@@ -1023,7 +1034,7 @@ def crawlSobeysStore(flyer_id, store_id, next_url, update_date, units):
             #stop if there's no more flyer pgs    
             next_pg = soup('span', {'class':'next'})
             if  next_pg is None or len(next_pg) < 1:
-                break;
+                break
             next_url = 'https://www.sobeys.com' + next_pg[0].a['href']
             soup = BeautifulSoup(urllib2.urlopen(next_url))
     except:

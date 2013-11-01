@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">GroceryGo</string>
-    <string name="version_name">1.1</string>
+    <string name="version_name">1.2</string>
     <string name="app_email">grocerygo.ca@gmail.com</string>
 
     <string name="upcdatabase_key">f0268314144a9baf5d105e31416b4e09</string>

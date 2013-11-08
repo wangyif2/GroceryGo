@@ -63,7 +63,7 @@ def classify(noun_list, subcategory):
                 if food_cat_solid in set.common_hypernyms(apple_food) or food_cat_nutrient in set.common_hypernyms(pizza_food) :
                     synset = set
                     break
-            logging.debug("For noun '%s', use the sense: %s" % (word, synset.definition))
+            #logging.debug("For noun '%s', use the sense: %s" % (word, synset.definition))
             
             definition = synset.definition
             synonyms = synset.lemma_names
@@ -91,48 +91,48 @@ def classify(noun_list, subcategory):
                     cat = lemmatizer.lemmatize(cat)
                     word = lemmatizer.lemmatize(word)
                     if cat == word:
-                        logging.debug("Found subcategory word '%s' directly in word '%s'" % (cat, word))
-                        logging.debug("Classify word '%s' as subcategory '%s' with score %.2f" % (word, record[1], w_word))
+                        #logging.debug("Found subcategory word '%s' directly in word '%s'" % (cat, word))
+                        #logging.debug("Classify word '%s' as subcategory '%s' with score %.2f" % (word, record[1], w_word))
                         subcategory_score[subcategory_id] += w_word
                         
                     if cat is definition.split(' '):
-                        logging.debug("Found subcategory word '%s' IS the definition of word '%s' (%s)" % (cat, word, definition))
-                        logging.debug("Classify word '%s' as subcategory '%s' with score %.2f" % (word, record[1], w_def))
+                        #logging.debug("Found subcategory word '%s' IS the definition of word '%s' (%s)" % (cat, word, definition))
+                        #logging.debug("Classify word '%s' as subcategory '%s' with score %.2f" % (word, record[1], w_def))
                         subcategory_score[subcategory_id] += w_def
                     elif cat in definition.split(' '):
-                        logging.debug("Found subcategory word '%s' in the definition of word '%s' (%s)" % (cat, word, definition))
-                        logging.debug("Classify word '%s' as subcategory '%s' with score %.2f" % (word, record[1], 0.7*w_def))
+                        #logging.debug("Found subcategory word '%s' in the definition of word '%s' (%s)" % (cat, word, definition))
+                        #logging.debug("Classify word '%s' as subcategory '%s' with score %.2f" % (word, record[1], 0.7*w_def))
                         subcategory_score[subcategory_id] += 0.7*w_def
                         
                     if any(cat is s for s in synonyms):
-                        logging.debug("Found subcategory word '%s' IS the synonyms of word '%s' (%s)" % (cat, word, synonyms))
-                        logging.debug("Classify word '%s' as subcategory '%s' with score %.2f" % (word, record[1], w_syn))
+                        #logging.debug("Found subcategory word '%s' IS the synonyms of word '%s' (%s)" % (cat, word, synonyms))
+                        #logging.debug("Classify word '%s' as subcategory '%s' with score %.2f" % (word, record[1], w_syn))
                         subcategory_score[subcategory_id] += w_syn
                     elif any(cat in s for s in synonyms):
-                        logging.debug("Found subcategory word '%s' in the synonyms of word '%s' (%s)" % (cat, word, synonyms))
-                        logging.debug("Classify word '%s' as subcategory '%s' with score %.2f" % (word, record[1], 0.7*w_syn))
+                        #logging.debug("Found subcategory word '%s' in the synonyms of word '%s' (%s)" % (cat, word, synonyms))
+                        #logging.debug("Classify word '%s' as subcategory '%s' with score %.2f" % (word, record[1], 0.7*w_syn))
                         subcategory_score[subcategory_id] += 0.7*w_syn
                     
                     if any(cat is h for h in hypernyms):
-                        logging.debug("Found subcategory word '%s' IS the hypernyms of word '%s' (%s)" % (cat, word, hypernyms))
-                        logging.debug("Classify word '%s' as subcategory '%s' with score %.2f" % (word, record[1], w_hyp))
+                        #logging.debug("Found subcategory word '%s' IS the hypernyms of word '%s' (%s)" % (cat, word, hypernyms))
+                        #logging.debug("Classify word '%s' as subcategory '%s' with score %.2f" % (word, record[1], w_hyp))
                         subcategory_score[subcategory_id] += w_hyp
                     elif any(cat in h for h in hypernyms):
-                        logging.debug("Found subcategory word '%s' in the hypernyms of word '%s' (%s)" % (cat, word, hypernyms))
-                        logging.debug("Classify word '%s' as subcategory '%s' with score %.2f" % (word, record[1], 0.7*w_hyp))
+                        #logging.debug("Found subcategory word '%s' in the hypernyms of word '%s' (%s)" % (cat, word, hypernyms))
+                        #logging.debug("Classify word '%s' as subcategory '%s' with score %.2f" % (word, record[1], 0.7*w_hyp))
                         subcategory_score[subcategory_id] += 0.7*w_hyp
                     
 
 
-    logging.debug(subcategory_score)
+    #logging.debug(subcategory_score)
                         
     if max(subcategory_score.values()) == 0:
-        logging.debug("unknown id -- miscellaneous!!!")
+        #logging.debug("unknown id -- miscellaneous!!!")
         return misc_id
     
     #compute maximum subcat
     max_id = max(subcategory_score, key = subcategory_score.get);
-    logging.debug("subcategory id = %d" % (max_id));
+    #logging.debug("subcategory id = %d" % (max_id));
     return max_id;
     
 

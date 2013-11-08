@@ -99,11 +99,13 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
 			@Override
 			public void onReceive(Context context, Intent intent) {
 				if (intent.getAction().equals(GroceryGoUtils.BROADCAST_ACTION_RELOAD_GROCERY_LIST)) {
-					// Restart the loader, refreshing all views
-					Bundle b = new Bundle();
-					b.putString("query", mQuery);
-					b.putBoolean("reload", false);
-					getLoaderManager().restartLoader(0, b, frag);
+					if(isAdded()) {
+						// Restart the loader, refreshing all views
+						Bundle b = new Bundle();
+						b.putString("query", mQuery);
+						b.putBoolean("reload", false);
+						getLoaderManager().restartLoader(0, b, frag);
+					}
 				}
 			}
 		};
@@ -115,14 +117,16 @@ public class GroceryListFragment extends SherlockListFragment implements LoaderM
 			@Override
 			public void onReceive(Context context, Intent intent) {
 				if (intent.getAction().equals(GroceryGoUtils.BROADCAST_ACTION_RELOAD_LOCATION)) {
-					// Reload the store distance map
-					mDistanceMap = GroceryStoreDistanceMap.getmStoreDistanceMap();
-					
-					// Restart the loader, refreshing all views
-					Bundle b = new Bundle();
-					b.putString("query", mQuery);
-					b.putBoolean("reload", false);
-					getLoaderManager().restartLoader(0, b, frag);
+					if (isAdded()) {
+						// Reload the store distance map
+						mDistanceMap = GroceryStoreDistanceMap.getmStoreDistanceMap();
+						
+						// Restart the loader, refreshing all views
+						Bundle b = new Bundle();
+						b.putString("query", mQuery);
+						b.putBoolean("reload", false);
+						getLoaderManager().restartLoader(0, b, frag);
+					}
 				}
 			}
 		};

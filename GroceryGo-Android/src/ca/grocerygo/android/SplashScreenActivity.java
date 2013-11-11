@@ -242,6 +242,7 @@ public class SplashScreenActivity extends Activity {
         if (SettingsManager.getNotificationsEnabled(this)) {
             Intent intent = new Intent(this, LocationServiceReceiver.class);
             intent.setAction(LocationServiceReceiver.LOCATION_SERVICE_RECEIVER_ENABLE);
+            ((Activity)mContext).sendBroadcast(intent);
         }
     }
 

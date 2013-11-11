@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <changelog>
-	<release version="GroceryGo v1.2" versioncode="1">
+	<release version="GroceryGo v1.3" versioncode="1">
 		<change>Welcome to GroceryGo</change>
-		<change>Fixed minor issues</change>
+		<change>Added FreshCo to list of supported stores, due to popular demand</change>
+		<change>Improved store distance updates based on location</change>
+		<change>Fixed minor number formatting issue related to non-US locales</change>
 		<change>Please help us by sending your feedback from the About page</change>
 	</release>
 </changelog>

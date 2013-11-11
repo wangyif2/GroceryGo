@@ -65,9 +65,8 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
 		
 		if (closestDist != null) {
 			// Truncate to a single decimal place
-			DecimalFormat oneD = new DecimalFormat("#.#", new DecimalFormatSymbols(Locale.CANADA));
-			Float truc = Float.valueOf(oneD.format((float) (closestDist/1000.0)));
-			distanceTextView.setText(truc.toString() + "km");
+			String truncStr = String.format(Locale.US, "%.1f", (float) (closestDist/1000.0) );
+			distanceTextView.setText(truncStr + "km");
 		} else {
 			distanceTextView.setText(mContext.getString(R.string.grocery_row_distance_missing));
 		}

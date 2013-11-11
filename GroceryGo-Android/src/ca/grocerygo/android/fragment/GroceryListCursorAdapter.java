@@ -21,7 +21,9 @@ import ca.grocerygo.android.database.contentprovider.GroceryotgProvider;
 import ca.grocerygo.android.utils.GroceryGoUtils;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class GroceryListCursorAdapter extends SimpleCursorAdapter {
 	public static final int GLOBAL_SEARCH_CATEGORY = -1;
@@ -63,7 +65,7 @@ public class GroceryListCursorAdapter extends SimpleCursorAdapter {
 		
 		if (closestDist != null) {
 			// Truncate to a single decimal place
-			DecimalFormat oneD = new DecimalFormat("#.#");
+			DecimalFormat oneD = new DecimalFormat("#.#", new DecimalFormatSymbols(Locale.CANADA));
 			Float truc = Float.valueOf(oneD.format((float) (closestDist/1000.0)));
 			distanceTextView.setText(truc.toString() + "km");
 		} else {

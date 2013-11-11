@@ -6,6 +6,7 @@ import android.net.NetworkInfo;
 
 import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -22,7 +23,7 @@ public class ServerURLs {
 	private static final String flyerUrl = AMAZON_BEANSTALK + "/GetFlyerInfo";
 
 	private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.CANADA);
-	private static final DecimalFormat getDecimalFormat = new DecimalFormat("0.00");
+	private static final DecimalFormat getDecimalFormat = new DecimalFormat("0.00", new DecimalFormatSymbols(Locale.CANADA));
 
 	private static String lastRefreshed = null;
 

@@ -11,15 +11,19 @@
 # - nltk (for NLP)
 # - MySQLdb (for connecting to mysql)
 
-import ast
 from bs4 import BeautifulSoup
+from datetime import date
+from dateutil import parser
+from urlparse import urlparse
+import HTMLParser
+import MySQLdb as mdb
+import ast
+import classifier
 import cookielib
 import datetime
-from dateutil import parser
-import HTMLParser
+import getNouns
 import json
 import logging
-import MySQLdb as mdb
 import nltk
 import os
 import re
@@ -29,8 +33,6 @@ import time
 import traceback
 import urllib
 import urllib2
-from urlparse import urlparse
-from datetime import date
 
 
 # Initialize log file (filename based on YYYY_MM_DD_hhmmsscc.log)
@@ -48,8 +50,6 @@ logging.basicConfig(filename=logname, format='%(asctime)s:%(levelname)s: %(messa
 
 
 # Keep these BELOW the logging setup. Otherwise, their loggers get registered as the root.
-import getNouns
-import classifier
 
 
 # Start timing how long it takes to run the whole script
@@ -154,7 +154,7 @@ def getFlyer():
         flyer_url = ""
         if next_url:
             #logging.info("next url: %s" % next_url)
-            
+
             # Metro
             if store_id == 1:
                 try:
@@ -769,8 +769,11 @@ def getFlyer():
                                     unit_price = total_price / num_products
                                 
                                 elif index_dollar != -1:
-                                    total_price = float(raw_price.strip("$"))
-                                    
+                                    try:
+                                        total_price = float(raw_price.strip("$").replace(',', "."))
+                                    except Exception:
+                                        total_price = 0.0
+        
                                     # Default unit_price
                                     unit_price = total_price
                                 elif index_cents != -1:
@@ -937,7 +940,6 @@ def parseFlyerDates(date_str):
     start_month = date.today().month
     start_day = date.today().day
     start_year = date.today().year
-
     #set day
     months = {'jan':1,'feb':2,'mar':3,'apr':4,'may':5,'jun':6,'jul':7,'aug':8,'sep':9,'oct':10,'nov':11,'dec':12}
     pattern = re.compile('(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-zA-Z.]*\s*([0-9]{1,2})', re.IGNORECASE)
@@ -945,8 +947,8 @@ def parseFlyerDates(date_str):
     #if date information is posted in flyer, use that instead
     if matches:
         start_month = months[matches[0][0].lower()]
-        start_date = int(matches[0][1])
-    start_date = datetime.datetime(start_year, start_month, start_date)
+        start_day = int(matches[0][1])
+    start_date = datetime.datetime(start_year, start_month, start_day)
     end_date = start_date + datetime.timedelta(days=6)
     start_date = start_date.strftime('%Y-%m-%d')
     end_date = end_date.strftime('%Y-%m-%d')
@@ -959,7 +961,7 @@ def crawlSobeysStore(flyer_id, store_id, next_url, update_date, units):
     try:
         soup = BeautifulSoup(urllib2.urlopen(next_url))
         store_items = []
-        effective_date = soup('h6', {'class':'no-bottom'})[0].string
+        effective_date = soup('h3', {'class':'h3-editorial'})[0].string
         [start_date, end_date] = parseFlyerDates(effective_date)
         line_number = 1
         #loop through all the pages
@@ -1019,11 +1021,10 @@ def crawlSobeysStore(flyer_id, store_id, next_url, update_date, units):
                     #/ea. /100g /lb /99c
                     elif '/lb' in price_unit:
                         unit_type_id = filter(lambda x: x if x[1]=='lb' else None,units)[0][0]
-                    
+                        
                     raw_price = str(main_amount) + raw_price_cents + raw_price_unit
                     #print("ORIGINAL: %s" % (card.find('div', {'class': 'price-amount'})))
-                    #print("PARSED: Total price: %s, unit price: %s, price_unit: %s" % (total_price, unit_price, str(unit_type_id)))
-                    
+                    #print("PARSED: Total price: %s, unit price: %s, price_unit: %s" % (total_price, unit_price, str(unit_type_id))) 
                 
                 #add values to item
                 item_details = [stripAllTags(raw_item), stripAllTags(raw_price), unit_price, unit_type_id, total_price, \

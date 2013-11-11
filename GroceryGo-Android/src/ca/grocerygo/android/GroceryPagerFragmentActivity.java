@@ -1,5 +1,8 @@
 package ca.grocerygo.android;
 
+import java.util.ArrayList;
+import java.util.Map;
+
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -8,11 +11,15 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import ca.grocerygo.android.fragment.GroceryListFragment;
 import ca.grocerygo.android.utils.GroceryGoUtils;
+import ca.grocerygo.android.utils.GroceryStoreDistanceMap;
+import ca.grocerygo.android.utils.ParcelableStateVar;
+
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -21,6 +28,7 @@ import com.actionbarsherlock.widget.SearchView;
 
 public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
 	public static String EXTRA_LAUNCH_PAGE = "extra_launch_page";
+	public static final String STATE_GLOBALVARS = "state_globalvars";
 	
 	private Context mContext;
 	
@@ -40,6 +48,24 @@ public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Log.d("GGDebug", "onCreate GroceryPagerFragmentActivity");
+		
+		// Check whether we're recreating a previously destroyed instance
+		if (savedInstanceState != null) {
+			// Restore values of members from saved state
+			ParcelableStateVar stateFlyerStoreMap = savedInstanceState.getParcelable(STATE_GLOBALVARS);
+			stateFlyerStoreMap.applyParcelableStateVar();
+			Log.d("GGDebug", "restoring savedInstanceState GroceryPagerFragmentActivity");
+			
+			// Workaround: do a fresh reload of activity
+			Intent i = getBaseContext().getPackageManager().getLaunchIntentForPackage( getBaseContext().getPackageName() );
+			i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			finish();
+			startActivity(i);
+			Log.d("GGDebug", "restarting activity");
+			return;
+		}
+		
 		setContentView(R.layout.grocery_pager_activity);
 		this.mContext = this;
 
@@ -88,8 +114,56 @@ public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
 	}
 
 	@Override
+	protected void onStart() {
+		Log.d("GGDebug", "onStart GroceryPagerFragmentActivity");
+		super.onStart();
+	}
+	
+	@Override
+	protected void onResume() {
+		Log.d("GGDebug", "onResume GroceryPagerFragmentActivity");
+		super.onResume();
+	}
+	
+	@Override
 	protected void onPause() {
+		Log.d("GGDebug", "onPause GroceryPagerFragmentActivity");
 		super.onPause();
+	}
+	
+	@Override
+	protected void onStop() {
+		Log.d("GGDebug", "onStop GroceryPagerFragmentActivity");
+		super.onStop();
+	}
+	
+	@Override
+	protected void onRestart() {
+		Log.d("GGDebug", "onRestart GroceryPagerFragmentActivity");
+		super.onRestart();
+	}
+	
+	@Override
+	public void onSaveInstanceState(Bundle savedInstanceState) {
+		// Save extra variables pertaining to flyers and stores
+		SparseArray<Float> storeDistanceMap = GroceryStoreDistanceMap.getmStoreDistanceMap();
+		Map<String, Integer> mapIconMap = GroceryStoreDistanceMap.getmMapIconMap();
+		Map<String, Integer> storeParentIconMap = GroceryStoreDistanceMap.getmStoreParentIconMap();
+		SparseArray<ArrayList<Integer>> flyerStoreMap = GroceryStoreDistanceMap.getmFlyerStoreMap();
+		SparseArray<ArrayList<Integer>> storeParentStoreMap = GroceryStoreDistanceMap.getmStoreParentStoreMap();
+		
+		ParcelableStateVar stateGlobalVars = new ParcelableStateVar(storeDistanceMap, mapIconMap, storeParentIconMap, flyerStoreMap, storeParentStoreMap);
+		savedInstanceState.putParcelable(STATE_GLOBALVARS, stateGlobalVars);
+		Log.d("GGDebug", "onSaveInstanceState GroceryPagerFragmentActivity - saving the flyer to store mapping");
+		
+		// Always call the superclass so it can save the view hierarchy state
+		super.onSaveInstanceState(savedInstanceState);
+	}
+	
+	@Override
+	protected void onDestroy() {
+		Log.d("GGDebug", "onDestroy GroceryPagerFragmentActivity");
+		super.onDestroy();
 	}
 
 	@Override

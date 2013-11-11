@@ -52,10 +52,12 @@ public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
 		
 		// Check whether we're recreating a previously destroyed instance
 		if (savedInstanceState != null) {
+			/* TODO: Debug
 			// Restore values of members from saved state
 			ParcelableStateVar stateFlyerStoreMap = savedInstanceState.getParcelable(STATE_GLOBALVARS);
 			stateFlyerStoreMap.applyParcelableStateVar();
 			Log.d("GGDebug", "restoring savedInstanceState GroceryPagerFragmentActivity");
+			*/
 			
 			// Workaround: do a fresh reload of activity
 			Intent i = getBaseContext().getPackageManager().getLaunchIntentForPackage( getBaseContext().getPackageName() );
@@ -146,6 +148,7 @@ public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
 		// Save extra variables pertaining to flyers and stores
+		/* TODO: Debug
 		SparseArray<Float> storeDistanceMap = GroceryStoreDistanceMap.getmStoreDistanceMap();
 		Map<String, Integer> mapIconMap = GroceryStoreDistanceMap.getmMapIconMap();
 		Map<String, Integer> storeParentIconMap = GroceryStoreDistanceMap.getmStoreParentIconMap();
@@ -155,6 +158,7 @@ public class GroceryPagerFragmentActivity extends SherlockFragmentActivity {
 		ParcelableStateVar stateGlobalVars = new ParcelableStateVar(storeDistanceMap, mapIconMap, storeParentIconMap, flyerStoreMap, storeParentStoreMap);
 		savedInstanceState.putParcelable(STATE_GLOBALVARS, stateGlobalVars);
 		Log.d("GGDebug", "onSaveInstanceState GroceryPagerFragmentActivity - saving the flyer to store mapping");
+		*/
 		
 		// Always call the superclass so it can save the view hierarchy state
 		super.onSaveInstanceState(savedInstanceState);

@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <changelog>
-	<release version="GroceryGo v1.3" versioncode="1">
-		<change>Welcome to GroceryGo</change>
-		<change>Added FreshCo to list of supported stores, due to popular demand</change>
-		<change>Improved store distance updates based on location</change>
-		<change>Fixed minor number formatting issue related to non-US locales</change>
+	<release version="GroceryGo v1.4" versioncode="1">
+		<change>Added FreshCo to list of supported stores, due to popular demand! Downtown Toronto locations are up, more GTA locations to come soon!</change>
 		<change>Please help us by sending your feedback from the About page</change>
 	</release>
 </changelog>

@@ -3,14 +3,10 @@ package ca.grocerygo.android.gcm;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import ca.grocerygo.android.GroceryApplication;
 import ca.grocerygo.android.R;
-import ca.grocerygo.android.services.NetworkHandler;
+import ca.grocerygo.android.utils.GroceryRefreshTrigger;
 
 /**
  * User: robert
@@ -23,20 +19,10 @@ public class GroceryGCMBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        Log.i(GroceryApplication.TAG, context.getString(R.string.gcm_received));
+        Log.d(GroceryApplication.TAG, context.getString(R.string.gcm_received));
 
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-        SharedPreferences.Editor settingsEditor = settings.edit();
-        settingsEditor.putBoolean(SETTINGS_IS_NEW_DATA_AVA, true);
-        settingsEditor.commit();
+        GroceryRefreshTrigger.enableRefresh(context);
 
-        Log.i(GroceryApplication.TAG, String.valueOf(settings.getBoolean(SETTINGS_IS_NEW_DATA_AVA, false)));
-
-
-        Bundle bundle = new Bundle();
-        bundle.putBoolean(SETTINGS_IS_NEW_DATA_AVA, true);
-        Intent localIntent = new Intent(NetworkHandler.REFRESH_COMPLETED_ACTION).putExtra("bundle", bundle);
-        LocalBroadcastManager.getInstance(context).sendBroadcast(localIntent);
     }
 
 }

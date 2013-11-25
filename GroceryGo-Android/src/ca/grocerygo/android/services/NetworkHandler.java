@@ -142,8 +142,8 @@ public class NetworkHandler extends IntentService {
         Log.i(GroceryApplication.TAG, "refreshing grocery...");
 
 //		this is here for testing purposes
-//		String date = "?date=2013-03-13";
-        String date = ServerURLs.getDateNowAsArg();
+		String date = "?date=2013-03-13";
+//        String date = ServerURLs.getDateNowAsArg();
         String[] requestArgs = new String[]{date};
         String getGrocery = buildGroceryURL(requestArgs);
 

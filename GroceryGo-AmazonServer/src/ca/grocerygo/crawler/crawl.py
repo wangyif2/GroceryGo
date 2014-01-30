@@ -292,6 +292,7 @@ def getFlyer():
                     logging.info("Could not connect to store %d due to URLError: %s" % (store_id, str(e)))
             # Loblaws
             elif store_id == 2:
+                continue
                 try:
                     # Split the URL and the flyer ID info
                     arrUrl = next_url.split("|")
@@ -819,7 +820,7 @@ def getFlyer():
                             store_items += [item_details]
                             
                         items[flyer_id] = store_items
-                except urllib2.URLError as e:
+                except Exception as e:
                     logging.info("Could not connect to store %d due to URLError: %s" % (store_id, str(e)))
                 
             # Sobeys
@@ -1204,37 +1205,41 @@ def crawlFreshcoStore(flyer_id, store_id, next_url, update_date, units):
             if raw_price.find(" ") != -1:
                 raw_price = " ".join(filter(lambda x: x if numeric_pattern.findall(x) else None, raw_price.split(" ")))
             
-            if raw_price and numeric_pattern.findall(raw_price):
-                # If a range given, take the lowest value
-                if raw_price.find("-") != -1:
-                    raw_price = raw_price.split("-")[0].strip()
-                
-                index_ratio = raw_price.find("/")
-                index_dollar = raw_price.find("$")
-                index_cents = raw_price.find("\xa2")
-                if index_ratio != -1:
-                    num_products = float(raw_price[:index_ratio])
-                    total_price = raw_price[index_ratio+1:]
-                    if index_dollar != -1:
-                        total_price = float(total_price.strip().strip("$").strip())
-                    else:
-                        total_price = float(total_price.strip("\xa2").strip("\xc2")) / 100.0
+            try:
+                if raw_price and numeric_pattern.findall(raw_price):
+                    # If a range given, take the lowest value
+                    if raw_price.find("-") != -1:
+                        raw_price = raw_price.split("-")[0].strip()
                     
-                    # Default unit_price
-                    unit_price = total_price / num_products
-                
-                elif index_dollar != -1:
-                    total_price = float(raw_price.strip("$"))
+                    index_ratio = raw_price.find("/")
+                    index_dollar = raw_price.find("$")
+                    index_cents = raw_price.find("\xa2")
+                    if index_ratio != -1:
+                        num_products = float(raw_price[:index_ratio])
+                        total_price = raw_price[index_ratio+1:]
+                        if index_dollar != -1:
+                            total_price = float(total_price.strip().strip("$").strip())
+                        else:
+                            total_price = float(total_price.strip("\xa2").strip("\xc2")) / 100.0
+                        
+                        # Default unit_price
+                        unit_price = total_price / num_products
                     
-                    # Default unit_price
-                    unit_price = total_price
-                    
-                elif index_cents != -1:
-                    total_price = float(raw_price.strip("\xa2").strip("\xc2")) / 100.0
-                    
-                    # Default unit_price
-                    unit_price = total_price
-                
+                    elif index_dollar != -1:
+                        total_price = float(raw_price.strip("$"))
+                        
+                        # Default unit_price
+                        unit_price = total_price
+                        
+                    elif index_cents != -1:
+                        total_price = float(raw_price.strip("\xa2").strip("\xc2")) / 100.0
+                        
+                        # Default unit_price
+                        unit_price = total_price
+            except:
+                total_price = 0.0
+                unit_price = 0.0
+            
                 # When price units are specified, the unit price is usually given in
                 # the "priceunits" key-value pair
                 price_units = item['priceunits']
@@ -1259,9 +1264,9 @@ def crawlFreshcoStore(flyer_id, store_id, next_url, update_date, units):
             
             store_items += [item_details]
         
-        print("FRESHCO, line: ", store_items)
+        #print("FRESHCO, line: ", store_items)
         
-    except urllib2.URLError as e:
+    except Exception as e:
         logging.info("Could not connect to store %d due to URLError: %s" % (store_id, str(e)))
     
     return store_items
@@ -1477,15 +1482,15 @@ try:
         # characters are preserved.
         #print("GROCERY: ", type(grocery_data[0][GROCERY_INDEX_RAW_ITEM]), type(grocery_data[0][GROCERY_INDEX_ORIG_PRICE]))
         
-        if type(grocery_data[0][GROCERY_INDEX_RAW_ITEM]) == str:
-            grocery_data = map(lambda x: [x[GROCERY_INDEX_ITEM_ID]] + [x[GROCERY_INDEX_RAW_ITEM].decode('utf-8')] + [x[GROCERY_INDEX_ORIG_PRICE].decode('utf-8')] + x[GROCERY_INDEX_ORIG_PRICE+1:], grocery_data)
-        else:
-            grocery_data = map(lambda x: [x[GROCERY_INDEX_ITEM_ID]] + [x[GROCERY_INDEX_RAW_ITEM]] + [x[GROCERY_INDEX_ORIG_PRICE]] + x[GROCERY_INDEX_ORIG_PRICE+1:], grocery_data)
-        
-        res_flag = grocery_table.add_batch(grocery_data)
-        if not res_flag:
-            raise RuntimeError("grocery data could not be added to the Grocery table handler")
-        logging.info('\n')
+        if len(grocery_data) > 0 and len(grocery_data[0]) > GROCERY_INDEX_ORIG_PRICE:
+            if type(grocery_data[0][GROCERY_INDEX_RAW_ITEM]) == str:
+                grocery_data = map(lambda x: [x[GROCERY_INDEX_ITEM_ID]] + [x[GROCERY_INDEX_RAW_ITEM].decode('utf-8')] + [x[GROCERY_INDEX_ORIG_PRICE].decode('utf-8')] + x[GROCERY_INDEX_ORIG_PRICE+1:], grocery_data)
+            else:
+                grocery_data = map(lambda x: [x[GROCERY_INDEX_ITEM_ID]] + [x[GROCERY_INDEX_RAW_ITEM]] + [x[GROCERY_INDEX_ORIG_PRICE]] + x[GROCERY_INDEX_ORIG_PRICE+1:], grocery_data)
+            res_flag = grocery_table.add_batch(grocery_data)
+            if not res_flag:
+                raise RuntimeError("grocery data could not be added to the Grocery table handler")
+                logging.info('\n')
     
     # Step 5: Write to Grocery
     grocery_ids = grocery_table.write_data()

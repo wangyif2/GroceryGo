@@ -13,6 +13,7 @@ import ca.grocerygo.android.database.CartTable;
 import ca.grocerygo.android.database.FlyerTable;
 import ca.grocerygo.android.database.GroceryTable;
 import ca.grocerygo.android.database.StoreParentTable;
+import ca.grocerygo.android.utils.GroceryRefreshTrigger;
 import ca.grocerygo.android.utils.GroceryStoreDistanceMap;
 import ca.grocerygo.android.utils.ServerURLs;
 
@@ -75,7 +76,10 @@ public class GroceryViewBinder implements SimpleCursorAdapter.ViewBinder, ViewBi
 			if (dateDiff < 0) {
 				textView.setText(mContext.getString(R.string.grocery_row_expired) + " " + expiryDate);
 				textView.setTextColor(mContext.getResources().getColor(R.color.holo_red_light));
-			} else {
+
+                // Store in the database that we have expired data and would like to be able to refresh
+                GroceryRefreshTrigger.enableRefresh(mContext);
+            } else {
 				textView.setText(mContext.getString(R.string.grocery_row_expires) + " " + expiryDate);
 				textView.setTextColor(mContext.getResources().getColor(R.color.holo_gray_light));
 			}
